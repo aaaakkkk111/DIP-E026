@@ -1,79 +1,109 @@
+import os
+import math
 import gymnasium as gym
 import numpy as np
 from stable_baselines3 import PPO
 from stable_baselines3.common.evaluation import evaluate_policy
-import os
+
 
 class PIDTuningEnv(gym.Env):
     """
-    Custom Environment that wraps InvertedPendulum-v4.
-    The RL agent interacts with this environment by choosing PID coefficients,
-    and this environment uses those coefficients to drive the actual MuJoCo simulation.
+    Custom Environment wrapping InvertedPendulum-v5.
+    Synchronized with interactive_control.py for seamless RL model evaluation and deployment.
     """
-    def __init__(self, render_mode=None):
+    def __init__(self, render_mode=None, target_angle_deg=0.0):
         super(PIDTuningEnv, self).__init__()
 
-        # Load the base environment with optional rendering
-        self.env = gym.make('InvertedPendulum-v4', render_mode=render_mode)
+        # Load base MuJoCo environment
+        self.env = gym.make('InvertedPendulum-v5', render_mode=render_mode)
+        
+        # Match actuator force limits with interactive_control.py
+        self.max_force = 20.0
+        self.env.unwrapped.model.jnt_limited[0] = False
+        self.env.unwrapped.model.actuator_ctrlrange[0] = [-self.max_force, self.max_force]
 
-        # RL algorithms perform best with symmetric, normalized action spaces [-1, 1].
-        # The agent will output 3 values representing Kp, Ki, Kd in the range [-1, 1].
+        # Action space: normalized [-1, 1] for Kp, Ki, Kd
         self.action_space = gym.spaces.Box(low=-1.0, high=1.0, shape=(3,), dtype=np.float32)
 
-        # Observation space remains identical to the base environment
+        # Observation space matches base environment
         self.observation_space = self.env.observation_space
 
-        # Initialize PID memory
+        # PID memory and parameters
         self.integral = 0.0
         self.prev_error = 0.0
         self.current_obs = None
+        self.dt = 0.02  # Time step
+
+        # Setpoint state
+        self.target_angle_deg = target_angle_deg
+        self.target_angle_rad = math.radians(self.target_angle_deg)
 
     def reset(self, seed=None, options=None):
-        """Resets the environment and PID state at the start of each episode."""
+        """Resets the environment and PID state."""
         super().reset(seed=seed)
         self.integral = 0.0
         self.prev_error = 0.0
-        # Gymnasium reset returns (observation, info)
         self.current_obs, info = self.env.reset(seed=seed, options=options)
         return self.current_obs, info
 
     def step(self, action):
         """
-        Takes the RL agent's action (PID bounds), translates it to a control force, 
-        and steps the base environment.
+        Translates RL action into Kp, Ki, Kd gains and applies control force
+        matching the exact algorithm used in interactive_control.py.
         """
-        # 1. Map actions [-1, 1] to STRICTLY POSITIVE, SCALED ranges.
-        # Adjusted to respect MuJoCo's strict [-3.0, 3.0] force limits.
-        kp = (action[0] + 1.0) * 15.0   # Maps to [0, 30]
-        ki = (action[1] + 1.0) * 1.0    # Maps to [0, 2]
-        kd = (action[2] + 1.0) * 2.5    # Maps to [0, 5]
+        # 1. Map actions [-1, 1] to Gain Ranges: Kp in [0, 100], Ki in [0, 10], Kd in [0, 20]
+        kp = (action[0] + 1.0) * 50.0
+        ki = (action[1] + 1.0) * 5.0
+        kd = (action[2] + 1.0) * 10.0
 
-        # 2. Extract current state
-        angle = self.current_obs[1]
-        error = 0.0 - angle 
+        # 2. Extract state variables
+        cart_pos = self.current_obs[0]
+        pole_angle = self.current_obs[1]
+        cart_vel = self.current_obs[2]
+        pole_ang_vel = self.current_obs[3]
 
-        # 3. Compute Integral and Derivative
-        self.integral += error
-        self.integral = np.clip(self.integral, -10.0, 10.0)  # Anti-windup safeguard
+        # 3. Error and Integral calculation matching interactive_control.py
+        error = pole_angle - self.target_angle_rad
+        self.integral += error * self.dt
+        self.integral = float(np.clip(self.integral, -6.0, 6.0))
 
-        derivative = error - self.prev_error
+        derivative = pole_ang_vel
 
-        # 4. Calculate Control Force (PID Equation)
-        force = (kp * error) + (ki * self.integral) + (kd * derivative)
-        self.prev_error = error
+        # 4. Target angle gain scheduling (/ cos_t)
+        cos_t = max(math.cos(self.target_angle_rad), 0.2)
+        kp_eff = kp / cos_t
+        ki_eff = ki / cos_t
+        kd_eff = kd / cos_t
 
-        # 5. Apply the force to the simulation
-        clipped_force = np.clip([force], self.env.action_space.low, self.env.action_space.high)
+        # 5. Feedforward equilibrium force
+        if abs(self.target_angle_rad) > 1e-4:
+            feedforward = 0.8807 * (
+                math.tan(self.target_angle_rad) / math.tan(math.radians(30.0))
+            )
+        else:
+            feedforward = 0.0
 
-        # Gymnasium step returns 5 values
+        # 6. PID force calculation
+        pid_force = feedforward + (kp_eff * error) + (kd_eff * derivative) + (ki_eff * self.integral)
+
+        # 7. Soft return-to-origin cart correction when upright
+        if abs(self.target_angle_rad) < 1e-4:
+            k_cart = 0.8
+            k_vel = 1.2
+            cart_correction = (k_cart * cart_pos + k_vel * cart_vel)
+            pid_force += cart_correction
+
+        # 8. Force clipping
+        clipped_force = np.clip([pid_force], -self.max_force, self.max_force)
+
+        # 9. Step physical simulation
         self.current_obs, base_reward, terminated, truncated, info = self.env.step(clipped_force)
 
-        # 6. Reward Shaping (The "Suicide Bug" Fix)
-        angle_penalty = (angle ** 2) * 10.0 
-        wobble_penalty = (derivative ** 2) * 0.1
+        # 10. Reward Shaping relative to setpoint
+        angle_err = pole_angle - self.target_angle_rad
+        angle_penalty = (angle_err ** 2) * 20.0
+        wobble_penalty = (derivative ** 2) * 0.01
 
-        # max(0.1, ...) guarantees the agent always gets a tiny positive reward for surviving,
-        # but gets a MUCH bigger reward for surviving while perfectly still.
         custom_reward = max(0.1, base_reward - angle_penalty - wobble_penalty)
 
         return self.current_obs, custom_reward, terminated, truncated, info
@@ -86,10 +116,8 @@ class PIDTuningEnv(gym.Env):
 
 
 if __name__ == "__main__":
-    # ---------------------------------------------------------
     # SET THIS TO TRUE TO TRAIN, OR FALSE TO JUST WATCH THE VISUALS
-    TRAIN_MODE = True  
-    # ---------------------------------------------------------
+    TRAIN_MODE = True
 
     MODEL_PATH = "ppo_pid_pendulum_model"
 
@@ -98,10 +126,9 @@ if __name__ == "__main__":
         env = PIDTuningEnv(render_mode=None)
 
         print("Initializing PPO Agent...")
-        model = PPO("MlpPolicy", env, verbose=1, learning_rate=0.0003)
+        model = PPO("MlpPolicy", env, verbose=1, learning_rate=0.0003, n_steps=4096)
 
-        print("Training the agent to find optimal PID coefficients...")
-        # Increased timesteps to 1,000,000 to ensure consistent learning convergence
+        print("Training the agent to find optimal PID coefficients matching interactive controller...")
         model.learn(total_timesteps=1000000)
 
         print("Training completed. Evaluating the tuned controller...")

@@ -26,7 +26,7 @@ class InteractivePendulumApp:
     def __init__(self):
         # 1. Initialize Gymnasium Environment
         self.max_force = 20.0
-        self.env = gym.make("InvertedPendulum-v4", render_mode="human")
+        self.env = gym.make("InvertedPendulum-v5", render_mode="human")
         self.env.unwrapped.model.jnt_limited[0] = False
         self.env.unwrapped.model.actuator_ctrlrange[0] = [-self.max_force, self.max_force]
 
@@ -54,7 +54,7 @@ class InteractivePendulumApp:
         self.kd = 2.2
         self.integral = 0.0
         self.prev_error = 0.0
-        self.dt = 0.04
+        self.dt = 0.02
         
         # Plotting Data Buffers (store last 200 UI steps ~ 8 seconds)
         self.max_plot_len = 200
@@ -383,6 +383,11 @@ class InteractivePendulumApp:
             self.kp_scale.state(["!disabled"])
             self.ki_scale.state(["!disabled"])
             self.kd_scale.state(["!disabled"])
+            
+            # THE FIX: Force the internal variables to match the sliders again!
+            self.kp = self.kp_scale.get()
+            self.ki = self.ki_scale.get()
+            self.kd = self.kd_scale.get()
 
     def reset_env(self):
         self.env.reset()
@@ -431,15 +436,12 @@ class InteractivePendulumApp:
                 # 3.1 Optional: Use PPO to dynamically tune PID gains
                 if self.ai_tuning_enabled and self.model is not None:
                     action, _ = self.model.predict(obs, deterministic=True)
-                    cos_t = max(float(math.cos(self.target_angle_rad)), 0.2)
-                    base_kp = 8.0 / cos_t
-                    base_kd = 1.8 / cos_t
-                    base_ki = 12.0 / cos_t
-
-                    self.kp = float((action[0] + 1.0) * base_kp * 0.6 + 1.0)
-                    self.ki = float((action[1] + 1.0) * base_ki * 0.6 + 0.5)
-                    self.kd = float((action[2] + 1.0) * base_kd * 0.6 + 0.2)
                     
+                    # New, wider matched scaling (adjust these numbers to match your training script exactly)
+                    self.kp = (action[0] + 1.0) * 50.0   # Maps to [0, 100]
+                    self.ki = (action[1] + 1.0) * 5.0    # Maps to [0, 10]
+                    self.kd = (action[2] + 1.0) * 10.0   # Maps to [0, 20]
+
                     if step_counter % 2 == 0:
                         try:
                             self.kp_scale.set(self.kp)
@@ -454,6 +456,7 @@ class InteractivePendulumApp:
                 self.integral = float(np.clip(self.integral, -6.0, 6.0))
                 derivative = pole_ang_vel
 
+                # Updated gain scheduling leveraging target angle
                 cos_t = max(math.cos(self.target_angle_rad), 0.2)
                 kp_eff = self.kp / cos_t
                 kd_eff = self.kd / cos_t
