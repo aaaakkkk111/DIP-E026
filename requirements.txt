@@ -1,0 +1,7 @@
+# Core versions are pinned to make the experiment reproducible across computers.
+gymnasium[mujoco]==1.3.0
+# Gymnasium 1.3.0's live viewer uses the MuJoCo 3.3 camera API.
+# MuJoCo 3.4+ removed mjv_moveCamera's scene argument, breaking mouse camera events.
+mujoco==3.3.7
+stable-baselines3==2.9.0
+torch==2.13.0

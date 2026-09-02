@@ -1,0 +1,55 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python Debugger: Python File",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "python": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+      "justMyCode": true
+    },
+    {
+      "name": "Play trained policy (live window)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}\\play.py",
+      "args": [
+        "--episodes",
+        "5",
+        "--seed",
+        "25",
+        "--reset-noise",
+        "0.08",
+        "--demo-push"
+      ],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "python": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+      "justMyCode": true
+    },
+    {
+      "name": "Evaluate trained policy (headless)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}\\play.py",
+      "args": ["--no-render", "--episodes", "5"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "python": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+      "justMyCode": true
+    },
+    {
+      "name": "Regenerate demonstration GIF",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}\\record_gif.py",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "python": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+      "justMyCode": true
+    }
+  ]
+}
