@@ -28,10 +28,20 @@ class InteractiveForceGUI:
         self.max_actuator_force = 20.0
         self.env = gym.make("InvertedPendulum-v5", render_mode="human")
         self.env.unwrapped.model.jnt_limited[0] = False
+        
+        # Expand Physical MuJoCo Limits
         self.env.unwrapped.model.actuator_ctrlrange[0] = [
             -self.max_actuator_force,
             self.max_actuator_force,
         ]
+        
+        # CRITICAL FIX: Expand Logical Gym Action Space so PPO can output up to 20N
+        self.env.action_space = gym.spaces.Box(
+            low=-self.max_actuator_force,
+            high=self.max_actuator_force,
+            shape=(1,),
+            dtype=np.float32
+        )
 
         # Simulation State
         self.manual_force = 0.0
@@ -304,6 +314,7 @@ class InteractiveForceGUI:
 
             # 4. Compute AI Action vs Manual Drive
             if self.mode == "ppo" and self.model is not None:
+                # model.predict automatically clips outputs strictly to env.action_space
                 action, _ = self.model.predict(obs, deterministic=True)
                 ai_force = float(action[0])
                 total_force = ai_force + effective_disturbance
