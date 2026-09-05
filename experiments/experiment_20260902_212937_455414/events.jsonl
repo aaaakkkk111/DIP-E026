@@ -1,0 +1,6 @@
+{"record_time_s": 0.0, "sim_time_s": 13.110000000001047, "type": "recording_started", "payload": {"duration_s": 10.0, "parameter_file": "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\controller_params.json", "parameter_document": {}}}
+{"record_time_s": 1.6400000000000012, "sim_time_s": 0.0, "type": "manual_reset", "payload": {"controller_configured": false, "cold_start_pitch_deg": 4.0}}
+{"record_time_s": 3.999999999999781, "sim_time_s": 0.0, "type": "manual_reset", "payload": {"controller_configured": false, "cold_start_pitch_deg": 4.0}}
+{"record_time_s": 5.971999999999564, "sim_time_s": 0.0, "type": "manual_reset", "payload": {"controller_configured": false, "cold_start_pitch_deg": 4.0}}
+{"record_time_s": 8.065999999999363, "sim_time_s": 0.0, "type": "manual_reset", "payload": {"controller_configured": false, "cold_start_pitch_deg": 4.0}}
+{"record_time_s": 10.000000000000009, "sim_time_s": 1.9340000000000015, "type": "recording_stopped", "payload": {"reason": "duration_reached"}}

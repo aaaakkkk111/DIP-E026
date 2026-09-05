@@ -1,0 +1,137 @@
+{
+  "task": "Analyse this BalanceBot experiment and return an updated parameter JSON.",
+  "constraints": {
+    "preserve_schema_version": 1,
+    "return_complete_parameter_document": true,
+    "no_speed_yaw_pitch_safety_limits": true,
+    "motor_torque_limit_is_a_physical_parameter": true
+  },
+  "cold_start": true,
+  "current_parameters": {},
+  "parameter_template": {
+    "schema_version": 1,
+    "revision": 1,
+    "notes": "Edit numeric values, save this file, then click '导入参数 JSON'.",
+    "controller": {
+      "q_pitch": 75.0,
+      "q_pitch_rate": 4.0,
+      "q_forward_speed": 6.0,
+      "q_yaw_rate": 1.5,
+      "r_common_torque": 0.22,
+      "r_differential_torque": 0.35,
+      "motor_torque_limit_nm": 4.0,
+      "control_interval_steps": 10,
+      "estimator_alpha": 0.82,
+      "identification_samples": 800,
+      "identification_seed": 7
+    },
+    "initial_command": {
+      "forward_speed_m_s": 0.0,
+      "yaw_rate_rad_s": 0.0
+    },
+    "environment": {
+      "friction": 1.5,
+      "slope_deg": 0.0,
+      "imu_noise_deg_s": 0.0,
+      "imu_delay_ms": 0.0,
+      "motor_delay_ms": 0.0
+    },
+    "recording": {
+      "default_duration_s": 10.0,
+      "sample_period_s": 0.01,
+      "camera_period_s": 0.5,
+      "realtime_plot_window_s": 10.0
+    }
+  },
+  "experiment_summary": {
+    "schema_version": 1,
+    "experiment_id": "experiment_20260902_212937_455414",
+    "started_at": "2026-09-02T21:29:37",
+    "exported_at": "2026-09-02T21:30:02",
+    "parameter_file": "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\controller_params.json",
+    "parameter_at_start": {},
+    "parameter_at_export": {},
+    "controller_configured": false,
+    "learned_feedback_matrix_K": null,
+    "learning_report": null,
+    "environment_at_start": {
+      "flat_ground_model": true,
+      "friction": 1.5,
+      "slope_deg": 0.0,
+      "imu_noise_deg_s": 0.0,
+      "imu_delay_ms": 0.0,
+      "motor_delay_ms": 0.0,
+      "gravity_m_s2": [
+        0.0,
+        0.0,
+        -9.81
+      ],
+      "physics_timestep_s": 0.002
+    },
+    "environment_at_export": {
+      "flat_ground_model": true,
+      "friction": 1.5,
+      "slope_deg": 0.0,
+      "imu_noise_deg_s": 0.0,
+      "imu_delay_ms": 0.0,
+      "motor_delay_ms": 0.0,
+      "gravity_m_s2": [
+        0.0,
+        0.0,
+        -9.81
+      ],
+      "physics_timestep_s": 0.002
+    },
+    "final_command": {
+      "forward_speed": 0.0,
+      "yaw_rate": 0.0,
+      "reference_x": 0.0
+    },
+    "metrics": {
+      "sample_count": 1001,
+      "duration_s": 10.000000000000009,
+      "pitch_rms_deg": 79.58790614515203,
+      "pitch_peak_abs_deg": 89.99743683813286,
+      "forward_speed_peak_abs_m_s": 0.2882638117692643,
+      "wheel_speed_peak_abs_rad_s": 7.653460121592153,
+      "motor_torque_peak_abs_nm": 0.0,
+      "motor_saturation_ratio": null
+    },
+    "files": {
+      "telemetry_csv": "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\telemetry.csv",
+      "telemetry_jsonl": "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\telemetry.jsonl",
+      "events_jsonl": "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\events.jsonl",
+      "plots": [
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\plots\\pitch.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\plots\\wheel_speed.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\plots\\motor_torque.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\plots\\forward_speed.png"
+      ],
+      "camera_frames": [
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\camera_frames\\frame_0000.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\camera_frames\\frame_0001.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\camera_frames\\frame_0002.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\camera_frames\\frame_0003.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\camera_frames\\frame_0004.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\camera_frames\\frame_0005.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\camera_frames\\frame_0006.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\camera_frames\\frame_0007.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\camera_frames\\frame_0008.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\camera_frames\\frame_0009.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\camera_frames\\frame_0010.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\camera_frames\\frame_0011.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\camera_frames\\frame_0012.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\camera_frames\\frame_0013.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\camera_frames\\frame_0014.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\camera_frames\\frame_0015.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\camera_frames\\frame_0016.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\camera_frames\\frame_0017.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\camera_frames\\frame_0018.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\camera_frames\\frame_0019.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_212937_455414\\camera_frames\\frame_0020.png"
+      ]
+    },
+    "camera_capture_error": null
+  },
+  "requested_output_file": "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\controller_params.json"
+}
