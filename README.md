@@ -1,4 +1,8 @@
-# MuJoCo 二轮平衡机器人 Demo
+# DIP-E026
+
+This repository is for Group members of NTU EEE DIP-E026 to manage their code.
+
+## MuJoCo 二轮平衡机器人 Demo
 
 这是一个可直接运行的二轮自平衡小车示例，世界坐标约定为：`X` 前方、`Y` 左方、`Z` 上方。项目不依赖外部模型文件，包含：
 
