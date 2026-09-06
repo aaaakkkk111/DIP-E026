@@ -1,0 +1,2 @@
+[console_scripts]
+balance-bot-lab = app.main:main

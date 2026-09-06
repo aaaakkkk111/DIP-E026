@@ -1,0 +1,7 @@
+
+[dev]
+pytest>=8
+
+[ppo]
+stable-baselines3>=2.3
+gymnasium>=0.29

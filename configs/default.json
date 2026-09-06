@@ -1,0 +1,8 @@
+{
+  "seed": 7,
+  "backend": "simulation",
+  "controller": {"type": "pid", "model_path": "", "pid": {"kp": 22.0, "ki": 1.2, "kd": 2.2}},
+  "physics": {"body_mass_kg": null, "wheel_mass_kg": null, "com_height_m": null, "wheel_radius_m": null, "track_width_m": null, "motor_gain": 1.0, "friction": 0.08, "battery_voltage": 7.4},
+  "safety": {"max_pitch_rad": 0.52, "max_wheel_speed": 25.0, "max_command": 1.0, "watchdog_s": 0.25},
+  "reward": {"survival": 1.0, "angle": 3.0, "angular_velocity": 0.2, "angular_acceleration": 0.05, "position": 0.1, "velocity": 0.05, "motor_effort": 0.01, "motor_jerk": 0.01, "motor_asymmetry": 0.02}
+}
