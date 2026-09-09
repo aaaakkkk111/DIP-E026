@@ -9,7 +9,9 @@ app/control/__init__.py
 app/control/disturbances.py
 app/control/policies.py
 app/experiments/__init__.py
+app/experiments/batch_simulation.py
 app/experiments/manager.py
+app/experiments/physical_validation.py
 app/hardware/__init__.py
 app/hardware/backends.py
 app/physics/__init__.py
@@ -23,6 +25,7 @@ app/telemetry/store.py
 app/training/__init__.py
 app/training/ollama.py
 app/training/pipelines.py
+app/training/ppo_training.py
 app/ui/__init__.py
 app/ui/dashboard.py
 balance_bot_lab.egg-info/PKG-INFO

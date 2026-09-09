@@ -12,6 +12,8 @@ class PhysicsConfig:
     left_right_mismatch: float = 0.; deadband: float = .03; sensor_noise: float = .002
     sensor_bias: float = 0.; sensor_latency_s: float = .01; actuator_latency_s: float = .01
     encoder_quantization: float = .02
+    # Dimensionless system-ID multipliers let randomization cover unknown mass/COM/wheel values without inventing them.
+    body_mass_scale: float = 1.; com_height_scale: float = 1.; wheel_radius_scale: float = 1.
 
 class SimulationBackend:
     """Reduced two-wheel inverted-pendulum model; parameters are deliberately configurable/system-ID values."""
@@ -35,9 +37,9 @@ class SimulationBackend:
         avg=(l+r)/2*self.config.motor_gain*(self.true.battery/max(self.config.battery_voltage,.1)); asym=(r-l)*self.config.left_right_mismatch
         # Coupled pitch/translation dynamics. Coefficients are simulation parameters, not claimed robot measurements.
         old_rate=self.true.pitch_rate
-        pitch_accel=7.5*math.sin(self.true.pitch) - 3.0*avg - .35*self.true.pitch_rate + external_force
+        pitch_accel=7.5*self.config.com_height_scale/self.config.body_mass_scale*math.sin(self.true.pitch) - 3.0*avg/self.config.body_mass_scale - .35*self.true.pitch_rate + external_force
         self.true.pitch_rate += pitch_accel*dt; self.true.pitch += self.true.pitch_rate*dt
-        acceleration=2.0*avg - self.config.friction*self.true.velocity - .2*math.sin(self.true.pitch)
+        acceleration=2.0*avg/self.config.wheel_radius_scale - self.config.friction*self.true.velocity - .2*math.sin(self.true.pitch)
         self.true.velocity += acceleration*dt; self.true.position += self.true.velocity*dt
         self.true.left_speed=self.true.velocity-.5*asym; self.true.right_speed=self.true.velocity+.5*asym
         self.true.pitch_accel=(self.true.pitch_rate-old_rate)/dt; self.true.disturbance=external_force; self.true.timestamp=now

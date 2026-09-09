@@ -40,3 +40,13 @@ python -m app.main --headless-smoke
 `HardwareBackend` intentionally has no invented STM32 serial protocol. It is a configuration-gated adapter with an explicit `send_verified` hook; use `MockHardwareBackend` for end-to-end tests until the exact vendor protocol is independently verified. Ollama is local-only (`http://127.0.0.1:11434`) and can only return validated candidate configurations. It never receives a motor interface.
 
 All persisted runs, SQLite metadata, JSONL telemetry, and checkpoints reside under `results/`.
+
+## Physical validation protocol
+
+The configuration-driven, non-actuating physical-validation experiment lives in `configs/physical_validation_development.json`. It schedules five randomized development trials per controller/condition, freezes a config fingerprint, requires raw telemetry and battery range checks, and checkpoints after each recorded trial. It refuses to arm or validate hardware until `configs/hardware_unverified.json` is replaced from verified vendor documentation and bench checks. Plan it with `python -m app.experiments.physical_validation --plan`; generate a report only after records exist with `python -m app.experiments.physical_validation --report`.
+
+Copy `models/ppo_artifact.manifest.example.json` to each selected PPO manifest and populate it with the exact model hash and validated observation/action compatibility before any physical protocol is allowed to progress.
+
+Create a simulation-only baseline PPO model with `python -m app.training.ppo_training --output models/ppo_baseline.zip --timesteps 10000`. This model is not automatically validated for hardware use.
+
+For checkpointed PPO training/resume and large simulation evaluation, see `python -m app.training.ppo_training --help` and `python -m app.experiments.batch_simulation --help`.

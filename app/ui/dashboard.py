@@ -5,6 +5,7 @@ import math, threading
 from app.control.policies import load_policy
 from app.reward.spec import RewardSpec
 from app.training.ollama import OllamaAdvisor
+from app.experiments.physical_validation import PhysicalValidationRunner, generate_report
 
 class Dashboard:
     """Render-only UI. Control timing lives in ControlEngine's worker thread."""
@@ -12,7 +13,7 @@ class Dashboard:
         self.root,self.engine,self.cc=root,engine,controller_config;root.title("Balance Bot Lab");root.geometry("1180x780")
         top=ttk.Frame(root);top.pack(fill="x",padx=8,pady=5)
         for text,fn in (("START",engine.start),("PAUSE",engine.pause),("RESET",engine.reset),("E-STOP",engine.estop)):ttk.Button(top,text=text,command=fn).pack(side="left",padx=2)
-        self.kind=tk.StringVar(value=controller_config.get("type","pid"));ttk.Combobox(top,textvariable=self.kind,values=["pid","cascaded_pid","lqr","ppo"],width=12,state="readonly").pack(side="left",padx=8);ttk.Button(top,text="Apply controller",command=self.change).pack(side="left")
+        self.kind=tk.StringVar(value=controller_config.get("type","pid"));ttk.Combobox(top,textvariable=self.kind,values=["pid","cascaded_pid","lqr","ppo"],width=12,state="readonly").pack(side="left",padx=8);ttk.Button(top,text="Apply controller",command=self.change).pack(side="left");ttk.Button(top,text="Physical experiment plan",command=self.physical_plan).pack(side="right")
         frame=ttk.PanedWindow(root,orient="horizontal");frame.pack(fill="both",expand=True,padx=8)
         left=ttk.Frame(frame);right=ttk.Frame(frame);frame.add(left,weight=3);frame.add(right,weight=2)
         viewbox=ttk.LabelFrame(left,text="Manufacturer-informed 3D robot view — orbit controls");viewbox.pack(fill="both",expand=True)
@@ -41,6 +42,17 @@ class Dashboard:
         except Exception as exc:self.show_output("Reset failed: "+str(exc))
     def random_force(self):
         d=self.engine.disturbance;d.c.kind="random";d.c.magnitude=self.mag.get();d.c.probability=.5;d.c.direction=self.direction.get()
+    def physical_plan(self):
+        """Schedule/report viewer only; it has no physical command path."""
+        win=tk.Toplevel(self.root);win.title("Physical validation — plan only (DISARMED)");win.geometry("800x600");runner=PhysicalValidationRunner("configs/physical_validation_development.json")
+        ttk.Label(win,text="Frozen experiment schedule. This viewer cannot arm or command hardware.",foreground="#b91c1c").pack(anchor="w",padx=10,pady=8)
+        box=tk.Text(win,wrap="none");box.pack(fill="both",expand=True,padx=10);next_trial=runner.next_trial();box.insert("end",f"Config fingerprint: {runner.fingerprint}\nCompleted: {len(runner.completed())}\nNext: {next_trial}\n\nORDER | CONDITION | CONTROLLER | REPETITION\n")
+        for order,row in enumerate(runner.schedule()):box.insert("end",f"{order:02d} | {row['condition_id']} | {row['controller_id']} | {row['trial']}\n")
+        box.configure(state="disabled")
+        def report():
+            try:self.show_output("Report written: "+str(generate_report(runner.root)))
+            except FileNotFoundError:self.show_output("No physical trial records yet. The report remains unavailable until supervised raw telemetry has been recorded.")
+        ttk.Button(win,text="Generate report from recorded trials",command=report).pack(pady=6)
     def show_output(self,text):self.ollama_output.configure(state="normal");self.ollama_output.delete("1.0","end");self.ollama_output.insert("1.0",text);self.ollama_output.configure(state="disabled")
     def ask_ollama(self):
         self.show_output("Contacting local Ollama…")

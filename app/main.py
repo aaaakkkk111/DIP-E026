@@ -16,7 +16,10 @@ def make_engine(config):
     else: raise ValueError(f"Unknown backend {kind}")
     cc=config["controller"];return ControlEngine(backend,load_policy(cc["type"],cc),SafetyLayer(SafetyConfig(**config.get("safety",{}))),TelemetryStore("results"),permit_arm=kind!="hardware")
 def main():
-    ap=argparse.ArgumentParser();ap.add_argument("--config",default="configs/default.json");ap.add_argument("--headless-smoke",action="store_true");a=ap.parse_args();config=json.loads(Path(a.config).read_text());engine=make_engine(config)
+    ap=argparse.ArgumentParser();ap.add_argument("--config",default="configs/default.json");ap.add_argument("--model-path",help="PPO .zip path; overrides controller.model_path without editing config");ap.add_argument("--controller",choices=["pid","cascaded_pid","lqr","ppo"],help="controller override");ap.add_argument("--headless-smoke",action="store_true");a=ap.parse_args();config=json.loads(Path(a.config).read_text())
+    if a.model_path:config["controller"]["model_path"]=a.model_path
+    if a.controller:config["controller"]["type"]=a.controller
+    engine=make_engine(config)
     if a.headless_smoke:
         engine.start();__import__('time').sleep(.15);engine.pause();engine.telemetry.flush("smoke");print("headless smoke passed",len(engine.telemetry.rows));return
     import tkinter as tk

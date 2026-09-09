@@ -1,0 +1,7 @@
+{
+  "status": "UNVERIFIED_DO_NOT_ARM",
+  "transport": null,
+  "sensor_mapping": null,
+  "motor_scaling": null,
+  "operator_note": "Complete only from verified Yahboom documentation and bench testing."
+}

@@ -13,6 +13,7 @@ from app.experiments.manager import ExperimentManager,ExperimentConfig
 from app.training.ollama import OllamaAdvisor
 from app.training.pipelines import PIDTuningPipeline,RewardSearchPipeline
 from app.config import load_config
+from app.experiments.physical_validation import PhysicalValidationRunner,telemetry_metrics,summary
 
 def test_physics_has_separate_sensor_state():
     b=SimulationBackend(PhysicsConfig(sensor_noise=.1,sensor_latency_s=0),1);b.step(.01);assert b.observe().pitch!=b.true.pitch
@@ -47,3 +48,9 @@ def test_config():
 def test_end_to_end_and_reproducible_experiment(tmp_path):
     t=TelemetryStore(tmp_path);e=ControlEngine(SimulationBackend(seed=1),PIDPolicy(),SafetyLayer(),t);e.start();time.sleep(.04);e.pause();assert len(t.rows)>0 and all("reward" in x for x in t.rows)
     m=ExperimentManager(tmp_path);c=ExperimentConfig(timesteps=30,seed=4);a=m.run(c,PIDPolicy);b=m.run(c,PIDPolicy);assert a==b
+def test_physical_protocol_plan_metrics_and_disarmed_gate(tmp_path):
+    cfg=json.loads(Path("configs/physical_validation_development.json").read_text());cfg["experiment_id"]="test-physical";cfg["hardware_config"]=str(Path("configs/hardware_unverified.json").resolve());path=tmp_path/"protocol.json";path.write_text(json.dumps(cfg));runner=PhysicalValidationRunner(path,tmp_path)
+    assert len(runner.schedule())==45 and runner.next_trial()[0]>=0
+    try:runner.validate_preflight();assert False
+    except RuntimeError:pass
+    m=telemetry_metrics([{"pitch":.1,"pitch_rate":.2,"left_command":.3,"position":.4,"armed":True}]);assert set(m)==set(("survival_time","rms_pitch","peak_pitch","recovery_time","angular_velocity_rms","motor_effort","position_drift","success"))

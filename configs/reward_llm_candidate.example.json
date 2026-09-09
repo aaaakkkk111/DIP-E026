@@ -1,0 +1,14 @@
+{
+  "reward": {
+    "survival": 1.0,
+    "angle": 3.0,
+    "angular_velocity": 0.2,
+    "angular_acceleration": 0.05,
+    "position": 0.1,
+    "velocity": 0.05,
+    "motor_effort": 0.01,
+    "motor_jerk": 0.01,
+    "motor_asymmetry": 0.02
+  },
+  "note": "Replace only numeric reward weights with a validated structured Ollama proposal; do not paste generated code."
+}
