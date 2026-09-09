@@ -1,0 +1,246 @@
+{
+  "task": "Analyse this BalanceBot experiment and return an updated parameter JSON.",
+  "constraints": {
+    "preserve_schema_version": 1,
+    "return_complete_parameter_document": true,
+    "no_speed_yaw_pitch_safety_limits": true,
+    "motor_torque_limit_is_a_physical_parameter": true
+  },
+  "cold_start": false,
+  "current_parameters": {
+    "schema_version": 1,
+    "revision": 1,
+    "notes": "First closed-loop iteration generated from the empty-controller open-loop baseline.",
+    "controller": {
+      "q_pitch": 80.0,
+      "q_pitch_rate": 6.0,
+      "q_forward_speed": 3.0,
+      "q_yaw_rate": 1.0,
+      "r_common_torque": 0.3,
+      "r_differential_torque": 0.6,
+      "motor_torque_limit_nm": 4.0,
+      "control_interval_steps": 8,
+      "estimator_alpha": 0.72,
+      "identification_samples": 1200,
+      "identification_seed": 17
+    },
+    "initial_command": {
+      "forward_speed_m_s": 0.0,
+      "yaw_rate_rad_s": 0.0
+    },
+    "environment": {
+      "friction": 1.5,
+      "slope_deg": 0.0,
+      "imu_noise_deg_s": 0.0,
+      "imu_delay_ms": 0.0,
+      "motor_delay_ms": 0.0
+    },
+    "recording": {
+      "default_duration_s": 10.0,
+      "sample_period_s": 0.01,
+      "camera_period_s": 0.5,
+      "realtime_plot_window_s": 10.0
+    }
+  },
+  "parameter_template": {
+    "schema_version": 1,
+    "revision": 1,
+    "notes": "Edit numeric values, save this file, then click '导入参数 JSON'.",
+    "controller": {
+      "q_pitch": 75.0,
+      "q_pitch_rate": 4.0,
+      "q_forward_speed": 6.0,
+      "q_yaw_rate": 1.5,
+      "r_common_torque": 0.22,
+      "r_differential_torque": 0.35,
+      "motor_torque_limit_nm": 4.0,
+      "control_interval_steps": 10,
+      "estimator_alpha": 0.82,
+      "identification_samples": 800,
+      "identification_seed": 7
+    },
+    "initial_command": {
+      "forward_speed_m_s": 0.0,
+      "yaw_rate_rad_s": 0.0
+    },
+    "environment": {
+      "friction": 1.5,
+      "slope_deg": 0.0,
+      "imu_noise_deg_s": 0.0,
+      "imu_delay_ms": 0.0,
+      "motor_delay_ms": 0.0
+    },
+    "recording": {
+      "default_duration_s": 10.0,
+      "sample_period_s": 0.01,
+      "camera_period_s": 0.5,
+      "realtime_plot_window_s": 10.0
+    }
+  },
+  "experiment_summary": {
+    "schema_version": 1,
+    "experiment_id": "experiment_20260902_214126_707144",
+    "started_at": "2026-09-02T21:41:26",
+    "exported_at": "2026-09-02T21:41:37",
+    "parameter_file": "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\controller_params.json",
+    "parameter_at_start": {
+      "schema_version": 1,
+      "revision": 1,
+      "notes": "First closed-loop iteration generated from the empty-controller open-loop baseline.",
+      "controller": {
+        "q_pitch": 80.0,
+        "q_pitch_rate": 6.0,
+        "q_forward_speed": 3.0,
+        "q_yaw_rate": 1.0,
+        "r_common_torque": 0.3,
+        "r_differential_torque": 0.6,
+        "motor_torque_limit_nm": 4.0,
+        "control_interval_steps": 8,
+        "estimator_alpha": 0.72,
+        "identification_samples": 1200,
+        "identification_seed": 17
+      },
+      "initial_command": {
+        "forward_speed_m_s": 0.0,
+        "yaw_rate_rad_s": 0.0
+      },
+      "environment": {
+        "friction": 1.5,
+        "slope_deg": 0.0,
+        "imu_noise_deg_s": 0.0,
+        "imu_delay_ms": 0.0,
+        "motor_delay_ms": 0.0
+      },
+      "recording": {
+        "default_duration_s": 10.0,
+        "sample_period_s": 0.01,
+        "camera_period_s": 0.5,
+        "realtime_plot_window_s": 10.0
+      }
+    },
+    "parameter_at_export": {
+      "schema_version": 1,
+      "revision": 1,
+      "notes": "First closed-loop iteration generated from the empty-controller open-loop baseline.",
+      "controller": {
+        "q_pitch": 80.0,
+        "q_pitch_rate": 6.0,
+        "q_forward_speed": 3.0,
+        "q_yaw_rate": 1.0,
+        "r_common_torque": 0.3,
+        "r_differential_torque": 0.6,
+        "motor_torque_limit_nm": 4.0,
+        "control_interval_steps": 8,
+        "estimator_alpha": 0.72,
+        "identification_samples": 1200,
+        "identification_seed": 17
+      },
+      "initial_command": {
+        "forward_speed_m_s": 0.0,
+        "yaw_rate_rad_s": 0.0
+      },
+      "environment": {
+        "friction": 1.5,
+        "slope_deg": 0.0,
+        "imu_noise_deg_s": 0.0,
+        "imu_delay_ms": 0.0,
+        "motor_delay_ms": 0.0
+      },
+      "recording": {
+        "default_duration_s": 10.0,
+        "sample_period_s": 0.01,
+        "camera_period_s": 0.5,
+        "realtime_plot_window_s": 10.0
+      }
+    },
+    "controller_configured": true,
+    "learned_feedback_matrix_K": [
+      [
+        -10.204706089086311,
+        -2.1578828394233525,
+        -1.4123715075497918,
+        0.001019142354161959
+      ],
+      [
+        -0.06414774989567593,
+        -0.011869349331680113,
+        -0.018931198008693917,
+        0.3857744630387233
+      ]
+    ],
+    "learning_report": {
+      "samples": 1200,
+      "spectral_radius": 0.9865110900026697,
+      "controllability_rank": 4
+    },
+    "environment_at_start": {
+      "flat_ground_model": true,
+      "friction": 1.9,
+      "slope_deg": 2.5,
+      "imu_noise_deg_s": 0.5,
+      "imu_delay_ms": 10.0,
+      "motor_delay_ms": 10.0,
+      "gravity_m_s2": [
+        0.0,
+        0.0,
+        -9.81
+      ],
+      "physics_timestep_s": 0.002
+    },
+    "environment_at_export": {
+      "flat_ground_model": true,
+      "friction": 1.9,
+      "slope_deg": 2.5,
+      "imu_noise_deg_s": 0.5,
+      "imu_delay_ms": 10.0,
+      "motor_delay_ms": 10.0,
+      "gravity_m_s2": [
+        0.0,
+        0.0,
+        -9.81
+      ],
+      "physics_timestep_s": 0.002
+    },
+    "final_command": {
+      "forward_speed": 0.0,
+      "yaw_rate": 0.0,
+      "reference_x": 0.0
+    },
+    "metrics": {
+      "sample_count": 501,
+      "duration_s": 5.001999999999671,
+      "pitch_rms_deg": 2.495077472468326,
+      "pitch_peak_abs_deg": 4.425168043051166,
+      "forward_speed_peak_abs_m_s": 0.7396939897092494,
+      "wheel_speed_peak_abs_rad_s": 7.147643569765329,
+      "motor_torque_peak_abs_nm": 4.0,
+      "motor_saturation_ratio": 0.3193612774451098
+    },
+    "files": {
+      "telemetry_csv": "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_214126_707144\\telemetry.csv",
+      "telemetry_jsonl": "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_214126_707144\\telemetry.jsonl",
+      "events_jsonl": "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_214126_707144\\events.jsonl",
+      "plots": [
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_214126_707144\\plots\\pitch.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_214126_707144\\plots\\wheel_speed.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_214126_707144\\plots\\motor_torque.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_214126_707144\\plots\\forward_speed.png"
+      ],
+      "camera_frames": [
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_214126_707144\\camera_frames\\frame_0000.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_214126_707144\\camera_frames\\frame_0001.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_214126_707144\\camera_frames\\frame_0002.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_214126_707144\\camera_frames\\frame_0003.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_214126_707144\\camera_frames\\frame_0004.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_214126_707144\\camera_frames\\frame_0005.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_214126_707144\\camera_frames\\frame_0006.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_214126_707144\\camera_frames\\frame_0007.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_214126_707144\\camera_frames\\frame_0008.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_214126_707144\\camera_frames\\frame_0009.png",
+        "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\experiments\\experiment_20260902_214126_707144\\camera_frames\\frame_0010.png"
+      ]
+    },
+    "camera_capture_error": null
+  },
+  "requested_output_file": "C:\\Users\\stato\\Documents\\ChatGPT\\New project 2\\controller_params.json"
+}

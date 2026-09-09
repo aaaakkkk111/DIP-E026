@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "revision": 4,
+  "notes": "Increase pitch restoring authority conservatively while preserving delay robustness and zero torque saturation.",
+  "controller": {
+    "q_pitch": 65.0,
+    "q_pitch_rate": 11.0,
+    "q_forward_speed": 5.0,
+    "q_yaw_rate": 1.5,
+    "r_common_torque": 1.5,
+    "r_differential_torque": 0.9,
+    "motor_torque_limit_nm": 4.0,
+    "control_interval_steps": 4,
+    "estimator_alpha": 0.95,
+    "identification_samples": 1600,
+    "identification_seed": 17
+  },
+  "initial_command": {
+    "forward_speed_m_s": 0.0,
+    "yaw_rate_rad_s": 0.0
+  },
+  "environment": {
+    "friction": 1.9,
+    "slope_deg": 3.0,
+    "imu_noise_deg_s": 0.5,
+    "imu_delay_ms": 10.0,
+    "motor_delay_ms": 10.0
+  },
+  "recording": {
+    "default_duration_s": 10.0,
+    "sample_period_s": 0.01,
+    "camera_period_s": 0.5,
+    "realtime_plot_window_s": 10.0
+  }
+}

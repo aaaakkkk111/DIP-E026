@@ -1,0 +1,24 @@
+{
+  "date": "2026-09-04",
+  "verification": {
+    "python_protocol_selftest": "passed",
+    "python_syntax": "passed",
+    "keil_referenced_files_exist": 11,
+    "bench_motor_control_modules_linked": false,
+    "arm_compilation": "not run: compiler unavailable",
+    "physical_uart_test": "not run: no confirmed device",
+    "physical_control_test": "not run"
+  },
+  "archives": {
+    "6.LQR.zip": {
+      "sha256": "23bfbb35a5e2be1c78c3f40d349b9f953c6bffa39763f2b31e7fbc4e0da53ea0",
+      "source": "D:\\DIP\\STM32平衡车_V2\\10.附件\\源码汇总\\6.LQR.zip",
+      "format": "RAR5"
+    },
+    "4.Balanced_Car_base.zip": {
+      "sha256": "a1bc42be7fb0a28044c912e90fd4a2f5550977efa74789ec831d88a184c5e514",
+      "source": "D:\\DIP\\STM32平衡车_V2\\10.附件\\源码汇总\\4.Balanced_Car_base.zip",
+      "format": "RAR5"
+    }
+  }
+}
