@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>BalanceBot 蓝牙链路验收台</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script defer src="./protocol.js"></script>
+  <script defer src="./app.js"></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">BALANCEBOT · BLE LINK BENCH</p>
+        <h1>蓝牙链路验收台</h1>
+        <p class="subtitle">连接 JDY-23，验证 FFE0/FFE1 双向链路，接收官方固件遥测，并在保持 STM32 本地平衡控制的前提下发送现有控制命令。</p>
+      </div>
+      <div id="connection-pill" class="connection-pill"><span class="dot"></span><span id="connection-text">未连接</span></div>
+    </header>
+
+    <div id="compatibility-notice" class="notice"></div>
+
+    <section class="grid">
+      <article class="panel connection-panel">
+        <div class="panel-inner">
+          <div class="panel-head">
+            <div><h2>设备连接</h2><p>浏览器授权即为网页侧配对；不创建虚拟 COM 口</p></div>
+            <span id="secure-context" class="connection-pill">检查中</span>
+          </div>
+          <div class="actions">
+            <button id="connect-btn" class="btn primary">选择设备并连接</button>
+            <button id="reconnect-btn" class="btn" disabled>重连已授权设备</button>
+            <button id="disconnect-btn" class="btn danger" disabled>安全断开</button>
+          </div>
+          <div class="device-info">
+            <div class="kv"><span>设备</span><strong id="device-name">—</strong></div>
+            <div class="kv"><span>GATT</span><strong id="gatt-state">未连接</strong></div>
+            <div class="kv"><span>服务</span><strong>FFE0</strong></div>
+            <div class="kv"><span>特征属性</span><strong id="char-properties">—</strong></div>
+          </div>
+          <div class="stats">
+            <div class="kv"><span>接收速率</span><strong id="rx-rate">0.0 帧/秒</strong></div>
+            <div class="kv"><span>接收 / 发送</span><strong><span id="rx-count">0</span> / <span id="tx-count">0</span> 帧</strong></div>
+            <div class="kv"><span>最后接收</span><strong id="last-rx">—</strong></div>
+            <div class="kv"><span>UART 配置</span><strong>9600 · 8N1（保持不变）</strong></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel test-panel">
+        <div class="panel-inner">
+          <div class="panel-head">
+            <div><h2>双向链路验收</h2><p>发送停止与开启上报，等待 ACK 和传感器帧</p></div>
+          </div>
+          <ul class="checklist">
+            <li id="check-browser">浏览器提供 Web Bluetooth</li>
+            <li id="check-device">设备已选择并授权</li>
+            <li id="check-gatt">FFE0 / FFE1 已发现</li>
+            <li id="check-notify">FFE1 通知订阅成功</li>
+            <li id="check-ack">STM32 收到 PC 指令并返回 $OK#</li>
+            <li id="check-telemetry">PC 收到 $LV…# 传感器帧</li>
+          </ul>
+          <div class="actions" style="margin-top:16px">
+            <button id="run-test-btn" class="btn success" disabled>开始链路验收</button>
+            <button id="report-on-btn" class="btn" disabled>开启实时上报</button>
+            <button id="report-off-btn" class="btn" disabled>停止实时上报</button>
+          </div>
+          <div id="test-result" class="test-result">连接设备后可开始。</div>
+        </div>
+      </article>
+
+      <article class="panel sensors-panel">
+        <div class="panel-inner">
+          <div class="panel-head">
+            <div><h2>实时传感器</h2><p>完整接收，界面最高 10 Hz 刷新；数值单位沿用官方固件</p></div>
+            <span id="telemetry-age" class="connection-pill">等待数据</span>
+          </div>
+          <div class="sensor-grid">
+            <div class="sensor"><div class="label"><span>左轮速度</span><span>LV</span></div><div class="value" id="sensor-lv">—</div></div>
+            <div class="sensor"><div class="label"><span>右轮速度</span><span>RV</span></div><div class="value" id="sensor-rv">—</div></div>
+            <div class="sensor"><div class="label"><span>Z 轴加速度</span><span>AC</span></div><div class="value" id="sensor-ac">—</div></div>
+            <div class="sensor"><div class="label"><span>平衡角速度</span><span>GY</span></div><div class="value" id="sensor-gy">—</div></div>
+            <div class="sensor"><div class="label"><span>超声波距离</span><span>CSB</span></div><div class="value" id="sensor-csb">—</div></div>
+            <div class="sensor"><div class="label"><span>电池电压</span><span>VT</span></div><div class="value" id="sensor-vt">—<span class="unit">V</span></div></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel wave-panel">
+        <div class="panel-inner">
+          <div class="panel-head">
+            <div><h2>数据波形</h2><p>最近 300 个显示采样点</p></div>
+            <div class="chart-toolbar">
+              <select id="chart-metric" aria-label="选择波形字段">
+                <option value="GY">GY 平衡角速度</option>
+                <option value="AC">AC 加速度</option>
+                <option value="LV">LV 左轮速度</option>
+                <option value="RV">RV 右轮速度</option>
+                <option value="CSB">CSB 距离</option>
+                <option value="VT">VT 电压</option>
+              </select>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="wave-chart"></canvas></div>
+        </div>
+      </article>
+
+      <article class="panel control-panel">
+        <div class="panel-inner">
+          <div class="panel-head">
+            <div><h2>基础控制</h2><p>按住运动，松开立即发送停止</p></div>
+            <button id="emergency-stop" class="btn danger" disabled>停止</button>
+          </div>
+          <label class="safety-lock"><input id="drive-unlock" type="checkbox"> 已架空车轮或确认周围空间安全，解锁运动按钮</label>
+          <div class="drive-grid">
+            <button class="btn drive forward" data-drive="FORWARD" disabled>前进</button>
+            <button class="btn drive rotate-left" data-drive="ROTATE_LEFT" disabled>左旋</button>
+            <button class="btn drive stop" data-drive="STOP" disabled>停止</button>
+            <button class="btn drive rotate-right" data-drive="ROTATE_RIGHT" disabled>右旋</button>
+            <button class="btn drive left" data-drive="LEFT" disabled>左转</button>
+            <button class="btn drive back" data-drive="BACKWARD" disabled>后退</button>
+            <button class="btn drive right" data-drive="RIGHT" disabled>右转</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel pid-panel">
+        <div class="panel-inner">
+          <div class="panel-head">
+            <div><h2>PID 调试</h2><p>兼容官方 AP / AD / VP / VI 格式</p></div>
+          </div>
+          <div class="pid-grid">
+            <div class="field"><label for="pid-ap">AP 平衡 Kp</label><input id="pid-ap" type="number" min="0" max="200" step="0.01"></div>
+            <div class="field"><label for="pid-ad">AD 平衡 Kd</label><input id="pid-ad" type="number" min="0" max="100" step="0.01"></div>
+            <div class="field"><label for="pid-vp">VP 速度 Kp</label><input id="pid-vp" type="number" min="0" max="200" step="0.01"></div>
+            <div class="field"><label for="pid-vi">VI 速度 Ki</label><input id="pid-vi" type="number" min="0" max="100" step="0.01"></div>
+          </div>
+          <div class="actions" style="margin-top:14px">
+            <button id="pid-read-btn" class="btn" disabled>读取并恢复开机 PID</button>
+            <button id="pid-write-btn" class="btn success" disabled>写入四项 PID</button>
+          </div>
+          <p class="hint">官方“查询 PID”命令会先调用 ResetPID，因此按钮按真实副作用命名。PID 写入只改变当前 RAM 参数，是否掉电保存取决于机器人固件。</p>
+        </div>
+      </article>
+
+      <article class="panel terminal-panel">
+        <div class="panel-inner">
+          <div class="panel-head">
+            <div><h2>协议终端</h2><p>用于检查原始 `$...#` 数据与异常响应</p></div>
+            <div class="actions">
+              <button id="clear-log-btn" class="btn small">清空</button>
+              <button id="export-log-btn" class="btn small">导出日志</button>
+            </div>
+          </div>
+          <div class="terminal-layout">
+            <div>
+              <textarea id="raw-command" spellcheck="false" placeholder="$0,0,0,0,0,0,0,0,0,0#"></textarea>
+              <button id="raw-send-btn" class="btn primary" style="margin-top:9px" disabled>发送协议帧</button>
+              <p class="hint">只允许发送以 `$` 开始、以 `#` 结束且不超过 79 字符的官方格式帧。</p>
+            </div>
+            <pre id="protocol-log" class="log" aria-live="polite"></pre>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <p class="footer-note">Web Bluetooth GATT · FFE0 / FFE1 · UART5 9600 8N1</p>
+  </main>
+</body>
+</html>

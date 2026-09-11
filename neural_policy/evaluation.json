@@ -1,0 +1,19 @@
+{
+  "seed_start": 10007,
+  "hybrid_pid_without_neural_residual": {
+    "episodes": 50,
+    "falls": 0,
+    "mean_abs_pitch_deg": 3.4378542368344736,
+    "rms_pitch_deg": 4.221860035278652,
+    "mean_max_abs_pitch_deg": 12.118241842392806,
+    "mean_abs_residual_pwm": 0.0
+  },
+  "hybrid_pid_with_neural_residual": {
+    "episodes": 50,
+    "falls": 0,
+    "mean_abs_pitch_deg": 3.1537056310759435,
+    "rms_pitch_deg": 3.9310381118059197,
+    "mean_max_abs_pitch_deg": 11.953617315585316,
+    "mean_abs_residual_pwm": 98.1874625
+  }
+}

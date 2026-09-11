@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>YahBoom BLE 官方回环固件验收</title>
+  <style>
+    :root { color-scheme: dark; font-family: "Segoe UI", sans-serif; }
+    body { margin: 0; background: #0c1520; color: #e8f0f6; }
+    main { width: min(900px, calc(100% - 32px)); margin: 32px auto; }
+    section { background: #142230; border: 1px solid #2b4559; border-radius: 12px; padding: 18px; margin: 14px 0; }
+    h1 { margin-bottom: 8px; } p { color: #b4c6d3; line-height: 1.6; }
+    button, input { font: inherit; border-radius: 8px; border: 1px solid #3a5d75; padding: 10px 13px; }
+    button { background: #176b8c; color: white; cursor: pointer; margin: 4px; }
+    button:disabled { cursor: not-allowed; opacity: .45; }
+    input { width: min(520px, calc(100% - 28px)); background: #0b1721; color: white; }
+    .status { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px; }
+    .status div { background: #0d1b26; border-radius: 8px; padding: 10px; }
+    .status span { display: block; color: #86a1b3; font-size: 12px; margin-bottom: 4px; }
+    pre { background: #081119; min-height: 260px; max-height: 440px; overflow: auto; padding: 14px; border-radius: 8px; white-space: pre-wrap; word-break: break-word; }
+    .ok { color: #5ee09a; } .err { color: #ff8181; } .rx { color: #71d7ff; } .tx { color: #ffd479; }
+    code { color: #93ddff; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>YahBoom BLE 官方回环固件验收</h1>
+  <p>本页只验证当前已烧录工程实际具备的能力：JDY-23 的 FFE0/FFE1 GATT 链路，以及 STM32 UART5 的逐字节回环。它不发送平衡车控制或 PID 协议。</p>
+
+  <section>
+    <div class="status">
+      <div><span>网页环境</span><strong id="environment">检查中</strong></div>
+      <div><span>设备</span><strong id="device-name">—</strong></div>
+      <div><span>阶段</span><strong id="stage">未连接</strong></div>
+      <div><span>FFE1 属性</span><strong id="properties">—</strong></div>
+    </div>
+    <p>
+      <button id="connect">选择并连接</button>
+      <button id="disconnect" disabled>断开</button>
+      <button id="echo" disabled>发送回环测试</button>
+    </p>
+    <input id="message" value="Hello from PC!" aria-label="发送内容">
+    <button id="send" disabled>发送文本</button>
+  </section>
+
+  <section>
+    <button id="clear">清空日志</button>
+    <pre id="log" aria-live="polite"></pre>
+  </section>
+</main>
+
+<script>
+(() => {
+  "use strict";
+
+  const SERVICE_UUID = "0000ffe0-0000-1000-8000-00805f9b34fb";
+  const CHARACTERISTIC_UUID = "0000ffe1-0000-1000-8000-00805f9b34fb";
+  const encoder = new TextEncoder();
+  const decoder = new TextDecoder("utf-8");
+  const $ = (id) => document.getElementById(id);
+  const ui = {
+    environment: $("environment"), deviceName: $("device-name"), stage: $("stage"),
+    properties: $("properties"), connect: $("connect"), disconnect: $("disconnect"),
+    echo: $("echo"), message: $("message"), send: $("send"), clear: $("clear"), log: $("log")
+  };
+  const state = { device: null, server: null, characteristic: null, connecting: false, expectedEcho: "", received: "" };
+
+  function stamp() {
+    return new Date().toLocaleTimeString("zh-CN", { hour12: false, fractionalSecondDigits: 3 });
+  }
+
+  function log(kind, text) {
+    const line = document.createElement("span");
+    line.className = kind;
+    line.textContent = `[${stamp()}] ${kind.toUpperCase()}  ${text}\n`;
+    ui.log.appendChild(line);
+    ui.log.scrollTop = ui.log.scrollHeight;
+  }
+
+  function setStage(text) { ui.stage.textContent = text; }
+  function sleep(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
+
+  function setReady(ready) {
+    ui.disconnect.disabled = !ready;
+    ui.echo.disabled = !ready;
+    ui.send.disabled = !ready;
+    ui.connect.disabled = ready || state.connecting;
+  }
+
+  function resetGatt() {
+    state.server = null;
+    state.characteristic = null;
+    setReady(false);
+    ui.properties.textContent = "—";
+  }
+
+  function onDisconnected() {
+    const during = state.connecting;
+    resetGatt();
+    setStage(during ? "服务发现期间断开" : "已断开");
+    log("err", during
+      ? "底层 BLE 链路在服务发现阶段被断开；尚未进入 UART/STM32 数据传输。"
+      : "收到 gattserverdisconnected 事件。"
+    );
+  }
+
+  function describeProperties(characteristic) {
+    return ["notify", "indicate", "write", "writeWithoutResponse", "read"]
+      .filter((name) => characteristic.properties[name]).join(", ") || "浏览器未报告";
+  }
+
+  async function connectGatt(device) {
+    let lastError;
+    const retryDelay = [0, 1000, 2200];
+    state.connecting = true;
+    setReady(false);
+
+    for (let i = 0; i < retryDelay.length; i += 1) {
+      const attempt = i + 1;
+      if (retryDelay[i]) await sleep(retryDelay[i]);
+      try {
+        setStage(`GATT 建连 ${attempt}/${retryDelay.length}`);
+        log("info", `尝试 ${attempt}：调用 device.gatt.connect()`);
+        const server = await device.gatt.connect();
+        state.server = server;
+        log("ok", `connect() 已返回，connected=${server.connected}`);
+        if (!server.connected) throw new Error("connect() 返回后 connected=false");
+
+        // 少量稳定时间用于兼容部分 Windows 蓝牙驱动；标准 API 并不要求此等待。
+        await sleep(180);
+        if (!device.gatt.connected) throw new Error("连接在服务发现前已断开");
+
+        setStage("读取 FFE0 服务");
+        const service = await server.getPrimaryService(SERVICE_UUID);
+        log("ok", `已发现服务 ${SERVICE_UUID}`);
+
+        setStage("读取 FFE1 特征");
+        const characteristic = await service.getCharacteristic(CHARACTERISTIC_UUID);
+        state.characteristic = characteristic;
+        ui.properties.textContent = describeProperties(characteristic);
+
+        setStage("订阅 FFE1 通知");
+        characteristic.addEventListener("characteristicvaluechanged", onNotification);
+        await characteristic.startNotifications();
+
+        state.connecting = false;
+        setStage("已连接，可回环测试");
+        setReady(true);
+        log("ok", `连接完成；FFE1 属性：${describeProperties(characteristic)}`);
+        log("info", "固件仅在上电初始化时发送一次 Hello Yahboom!；连接后看不到该旧消息属于正常现象。");
+        return;
+      } catch (error) {
+        lastError = error;
+        log("err", `尝试 ${attempt} 在“${ui.stage.textContent}”失败：${error.name || "Error"}: ${error.message || error}`);
+        resetGatt();
+        if (device.gatt.connected) device.gatt.disconnect();
+      }
+    }
+
+    state.connecting = false;
+    setReady(false);
+    setStage("连接失败");
+    throw lastError || new Error("未知 GATT 错误");
+  }
+
+  async function chooseAndConnect() {
+    if (!navigator.bluetooth) {
+      log("err", "当前浏览器不提供 Web Bluetooth。请使用 Windows Chrome/Edge，并通过 localhost 打开本页。");
+      return;
+    }
+    try {
+      state.connecting = true;
+      setReady(false);
+      const device = await navigator.bluetooth.requestDevice({
+        filters: [
+          { namePrefix: " Ya" },
+          { namePrefix: "Ya" },
+          { namePrefix: "JDY" },
+          { services: [SERVICE_UUID] }
+        ],
+        optionalServices: [SERVICE_UUID]
+      });
+      state.device = device;
+      ui.deviceName.textContent = device.name || "未命名 BLE 设备";
+      device.removeEventListener("gattserverdisconnected", onDisconnected);
+      device.addEventListener("gattserverdisconnected", onDisconnected);
+      log("info", `已选择设备：${JSON.stringify(device.name || "")}`);
+      await connectGatt(device);
+    } catch (error) {
+      state.connecting = false;
+      setReady(false);
+      if (error.name === "NotFoundError") {
+        setStage("用户取消选择");
+        log("info", "设备选择已取消。");
+        return;
+      }
+      log("err", `最终失败：${error.name || "Error"}: ${error.message || error}`);
+      if (`${error.message || error}`.includes("disconnected")) {
+        log("err", "结论：连接在 FFE0 读取前断开，应检查手机占用、JDY-23 供电、Windows 蓝牙缓存及 MediaTek 驱动；与 STM32 UART 代码无关。");
+      }
+    }
+  }
+
+  function onNotification(event) {
+    const view = event.target.value;
+    const bytes = new Uint8Array(view.buffer, view.byteOffset, view.byteLength);
+    const text = decoder.decode(bytes, { stream: true });
+    state.received = (state.received + text).slice(-512);
+    log("rx", `${bytes.length} B | ${JSON.stringify(text)}`);
+    if (state.expectedEcho && state.received.includes(state.expectedEcho)) {
+      log("ok", `UART5 双向回环通过：${JSON.stringify(state.expectedEcho)}`);
+      state.expectedEcho = "";
+    }
+  }
+
+  async function writeText(text, expectEcho = false) {
+    const characteristic = state.characteristic;
+    if (!characteristic || !state.device?.gatt?.connected) throw new Error("设备未连接");
+    const bytes = encoder.encode(text);
+    if (expectEcho) {
+      state.expectedEcho = text;
+      state.received = "";
+    }
+    for (let offset = 0; offset < bytes.length; offset += 20) {
+      const chunk = bytes.slice(offset, offset + 20);
+      if (characteristic.properties.writeWithoutResponse && characteristic.writeValueWithoutResponse) {
+        await characteristic.writeValueWithoutResponse(chunk);
+      } else if (characteristic.properties.write && characteristic.writeValueWithResponse) {
+        await characteristic.writeValueWithResponse(chunk);
+      } else {
+        await characteristic.writeValue(chunk);
+      }
+      if (bytes.length > 20) await sleep(25);
+    }
+    log("tx", `${bytes.length} B | ${JSON.stringify(text)}`);
+  }
+
+  ui.connect.addEventListener("click", chooseAndConnect);
+  ui.disconnect.addEventListener("click", async () => {
+    try {
+      if (state.characteristic) await state.characteristic.stopNotifications();
+    } catch (_) {}
+    if (state.device?.gatt?.connected) state.device.gatt.disconnect();
+    resetGatt();
+    setStage("已主动断开");
+  });
+  ui.echo.addEventListener("click", () => {
+    const token = `ECHO-${Date.now().toString(36)}\r\n`;
+    writeText(token, true).catch((error) => log("err", `回环发送失败：${error.message || error}`));
+  });
+  ui.send.addEventListener("click", () => {
+    writeText(ui.message.value, true).catch((error) => log("err", `发送失败：${error.message || error}`));
+  });
+  ui.clear.addEventListener("click", () => { ui.log.textContent = ""; });
+
+  const validEnvironment = Boolean(navigator.bluetooth && window.isSecureContext);
+  ui.environment.textContent = validEnvironment ? "Web Bluetooth 可用" : "不可用/非安全上下文";
+  ui.connect.disabled = !validEnvironment;
+  log(validEnvironment ? "ok" : "err", `页面初始化；secureContext=${window.isSecureContext}, bluetooth=${Boolean(navigator.bluetooth)}`);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+{
+  "algorithm": "PPO",
+  "model": "hybrid_residual_ppo.zip",
+  "seed": 7,
+  "training_timesteps": 51200,
+  "deterministic_inference": true,
+  "residual_pwm_limit_each_motor": 350,
+  "switch_to_weight_deg": 10.0,
+  "switch_back_to_normal_deg": 7.0,
+  "observation_names": [
+    "pitch_deg",
+    "pitch_rate_deg_s",
+    "forward_speed_m_s",
+    "yaw_rate_rad_s",
+    "encoder_left_counts_5ms",
+    "encoder_right_counts_5ms",
+    "encoder_bias",
+    "encoder_integral",
+    "target_speed_m_s",
+    "target_yaw_rate_rad_s",
+    "base_pwm_left",
+    "base_pwm_right",
+    "weight_mode"
+  ],
+  "observation_scales": [
+    30.0,
+    400.0,
+    1.0,
+    5.0,
+    60.0,
+    60.0,
+    60.0,
+    8000.0,
+    0.5,
+    1.0,
+    2600.0,
+    2600.0,
+    1.0
+  ],
+  "action_order": [
+    "left_pwm_residual",
+    "right_pwm_residual"
+  ],
+  "actor_hidden_layers": [
+    32,
+    32
+  ],
+  "activation": "ReLU"
+}

@@ -2,6 +2,36 @@
 
 This repository is for Group members of NTU EEE DIP-E026 to manage their code.
 
+## STM32固件PID的MuJoCo复现
+
+迁移第一阶段已经加入独立入口 `firmware_pid_sim.py`。它以1 ms物理步长运行MuJoCo，并每5步执行一次厂家Normal或Weight_M PID，包含编码器量化、25 kHz PWM计数、死区补偿、最终限幅、低压/倾倒保护、PWM电机模型以及0至4 kg可调上层负重。该入口不包含LQR、PPO或神经网络策略。
+
+```powershell
+& "C:\Users\stato\AppData\Local\Programs\Python\Python313\python.exe" .\firmware_pid_sim.py
+```
+
+界面采用大字体双栏布局，可切换 Normal/Weight_M，调整负重、目标速度、目标转向、电池电压和轮胎摩擦系数。方向按钮或键盘方向键控制小车前、后、左、右，空格停止；独立的四向扰动按钮支持 1 N、2 N、4 N 三档外力，每次持续 0.10 s。地面是固定在 MuJoCo worldbody 上的静态刚性平面，并使用高刚度接触参数。“镜头跟随 / Camera follow”默认开启，只平滑更新镜头观察中心，仍可手动旋转和缩放；关闭后可自由平移视角。实时区域显示模式、目标/实际速度与转向、PID 参数和分量、编码器、PWM、轮端力矩及当前外力。完整参数来源、验证结果、无界面命令和当前误差边界见 `firmware_pid_sim_report.md`。
+
+## 神经残差辅助控制
+
+第二阶段入口为 `neural_residual_sim.py`，不会替换第一阶段的纯固件PID入口。该模式默认使用官方Normal PID；当绝对俯仰达到10度时切换到Weight_M，回落至7度后切回Normal，滞环用于避免阈值附近频繁切换。小型PPO actor根据姿态、角速度、编码器、运动目标、PID状态和当前模式，为左右电机分别输出不超过±350计数的PWM残差。
+
+直接加载已训练策略并打开MuJoCo：
+
+```powershell
+& "C:\Users\stato\AppData\Local\Programs\Python\Python313\python.exe" .\neural_residual_sim.py
+```
+
+重新训练、对照评估和25度初始姿态无界面验证：
+
+```powershell
+& "C:\Users\stato\AppData\Local\Programs\Python\Python313\python.exe" .\neural_residual_sim.py --train --timesteps 50000
+& "C:\Users\stato\AppData\Local\Programs\Python\Python313\python.exe" .\neural_residual_sim.py --evaluate --episodes 50
+& "C:\Users\stato\AppData\Local\Programs\Python\Python313\python.exe" .\neural_residual_sim.py --headless --duration 6 --initial-pitch-deg 25
+```
+
+已训练模型、输入归一化、切换阈值和评估结果保存在 `neural_policy`。详细结构及本轮对照结果见 `neural_residual_report.md`。
+
 ## MuJoCo 二轮平衡机器人 Demo
 
 这是一个可直接运行的二轮自平衡小车示例，世界坐标约定为：`X` 前方、`Y` 左方、`Z` 上方。项目不依赖外部模型文件，包含：
