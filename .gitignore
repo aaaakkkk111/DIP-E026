@@ -13,3 +13,10 @@ tmp/
 # Operating-system metadata
 Thumbs.db
 .DS_Store
+
+# Route A local secrets and generated experiment/state data
+route_a.env
+route_a/runs/*
+!route_a/runs/.gitkeep
+route_a/state/*
+!route_a/state/.gitkeep

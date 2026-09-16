@@ -1,0 +1,15 @@
+{
+  "profile_mode": "hardware-faithful",
+  "trial_duration_s": 4.0,
+  "maximum_iterations": 60,
+  "api_budget": 60,
+  "bootstrap_max_relative_change": 0.6,
+  "bootstrap_max_absolute_change": 40.0,
+  "bootstrap_min_change_allowance": 10.0,
+  "no_improvement_limit": 12,
+  "automatic_unlock_manual_successes": 3,
+  "telemetry_fast_hz": 10,
+  "telemetry_slow_hz": 2,
+  "physics_timestep_s": 0.001,
+  "control_period_s": 0.005
+}
