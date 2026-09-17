@@ -1,0 +1,17 @@
+# --- core (required) -------------------------------------------------------
+numpy>=1.24
+
+# --- interactive UI --------------------------------------------------------
+PyQt6>=6.4            # or PySide6, or PyQt5 -- the panel auto-detects
+
+# --- 3D viewer (optional, recommended for quick iteration) -----------------
+mujoco>=3.1
+
+# --- PPO training (optional; a NumPy-only trainer is included) -------------
+gymnasium>=0.29
+stable-baselines3>=2.3
+torch>=2.0
+tensorboard
+
+# --- LQR cross-check in the tests (optional) -------------------------------
+scipy>=1.10

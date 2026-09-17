@@ -1,0 +1,58 @@
+STM32 平衡小车数字孪生 —— Windows 运行说明
+==========================================
+
+【第 1 步】装 Python
+  去 python.org 下 Python 3.10 / 3.11 / 3.12
+  安装时【务必勾选 Add python.exe to PATH】
+
+【第 2 步】装依赖
+  双击本目录下的  setup_windows.bat
+  等它跑完，最后应该看到  47 passed  和  50 passed
+
+【第 3 步】跑
+
+  最省事：回到上一层目录（e026），双击这几个 .bat：
+
+    run_gui.bat     ← 交互控制台（先看这个）
+    run_tune.bat    ← 增益滑条调参
+    run_bench.bat   ← 跑 baseline 打分
+
+  或者在本目录按住 Shift + 右键 -> 在此处打开 PowerShell 窗口，然后：
+
+    .\.venv\Scripts\Activate.ps1
+
+    python scripts\sim_gui.py
+        ^ 【交互控制台】MuJoCo 画面直接画在窗口里，一个窗口搞定所有事：
+            · 控制模型   原厂 LQR / 原厂 PID（7 套固件增益任选）
+                         / CEM 调参结果 / PPO 强化学习策略
+            · 姿态滤波   固定用板子真正在跑的 KF.c 卡尔曼（不可切；旧的
+                         10ms 一阶滞后近似只保留在 --imu lag 命令行开关里）
+            · 环境       传感器噪声、地板滑度（真的改接触摩擦系数）、
+                         侧风与风向、电机扭矩噪声、电池电压
+            · 冲击输入   力度 + 作用时间 + 方向（前后左右 / 随机 / 空格键）
+            · 驾驶       WASD 或方向键或拖摇杆，用的是固件自己的目标速度
+                         （前进 0.5 m/s、后退 0.3 m/s、转向 2 rad/s）
+            · 记录       摔倒自动扶起，每回合的存活步数都记下来
+          鼠标拖 3D 画面转视角，滚轮缩放。P 暂停，R 复位。
+
+    python scripts\bench_twin_baseline.py --episodes 40
+        ^ 原厂 LQR / PID 固件的 baseline，输出「存活步数」表
+          加 --backend mujoco 在 MuJoCo 里跑
+          加 --imu lag 换回旧的姿态模型对比
+
+    python scripts\tune_gui.py
+        ^ 【调参界面】MuJoCo 3D + 增益滑条，拖着调、踹一脚看反应
+          滑条中位 = 固件原值，两端 = 1/4 倍 和 4 倍
+          调好按「保存 JSON」，再用下面那条正式打分
+
+    python scripts\tune_twin_baseline.py --firmware stm32_lqr --out tuned_lqr.json
+        ^ 自动搜参数（CEM，约 15 分钟，不用盯着）
+
+    python scripts\bench_twin_baseline.py --params tuned_lqr.json --episodes 40
+        ^ 在没见过的种子上和原厂参数并排对比
+
+    python tests\test_twin_baseline.py
+        ^ 50 项自检：每一条都是孪生对固件的承诺，跪了就说明某个常数对不上了
+
+详细文档看 WINDOWS.md（参数表 / 训练方法）和 TWIN_BASELINE.md（孪生怎么建的、
+这一版从源码里新查出来了什么）。

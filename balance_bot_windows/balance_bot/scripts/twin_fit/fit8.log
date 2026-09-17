@@ -1,0 +1,32 @@
+[8] 迭代  0  本轮 0.139  全局 0.139  摔 1/36  (61s)  未达标: ['ang_std', 'nz_max_d', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp', 'g3_6', 'g6_12', 'g12_100', 'd0_03']
+      {'stall': 0.491, 'damp': 0.0029, 'irot': 0.001, 'dpos': 1475.5, 'dneg': 1488.9, 'delay': 1.5509, 'gnoise': 0.0016, 'k': 3.7172, 'c': 0.1059, 'bl': 0.9095, 'fric': 0.0009, 'ib': 0.9102, 'mnt': 0.2573, 'vib': 0.0249}
+[8] 迭代  1  本轮 0.139  全局 0.139  摔 0/36  (123s)  未达标: ['ang_std', 'nz_max_d', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp', 'g3_6', 'g6_12', 'g12_100', 'd0_03']
+      {'stall': 0.491, 'damp': 0.0029, 'irot': 0.001, 'dpos': 1475.5, 'dneg': 1488.9, 'delay': 1.5509, 'gnoise': 0.0016, 'k': 3.7172, 'c': 0.1059, 'bl': 0.9095, 'fric': 0.0009, 'ib': 0.9102, 'mnt': 0.2573, 'vib': 0.0249}
+[8] 迭代  2  本轮 0.139  全局 0.139  摔 0/36  (187s)  未达标: ['ang_std', 'nz_max_d', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp', 'g3_6', 'g6_12', 'g12_100', 'd0_03']
+      {'stall': 0.491, 'damp': 0.0029, 'irot': 0.001, 'dpos': 1475.5, 'dneg': 1488.9, 'delay': 1.5509, 'gnoise': 0.0016, 'k': 3.7172, 'c': 0.1059, 'bl': 0.9095, 'fric': 0.0009, 'ib': 0.9102, 'mnt': 0.2573, 'vib': 0.0249}
+[8] 迭代  3  本轮 0.139  全局 0.139  摔 0/36  (251s)  未达标: ['ang_std', 'nz_max_d', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp', 'g3_6', 'g6_12', 'g12_100', 'd0_03']
+      {'stall': 0.491, 'damp': 0.0029, 'irot': 0.001, 'dpos': 1475.5, 'dneg': 1488.9, 'delay': 1.5509, 'gnoise': 0.0016, 'k': 3.7172, 'c': 0.1059, 'bl': 0.9095, 'fric': 0.0009, 'ib': 0.9102, 'mnt': 0.2573, 'vib': 0.0249}
+[8] 迭代  4  本轮 0.117  全局 0.117  摔 0/36  (315s)  未达标: ['ang_std', 'nz_max_d', 'rev', 'enc_abs', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp', 'g3_6', 'g6_12', 'd0_03']
+      {'stall': 0.5893, 'damp': 0.0027, 'irot': 0.0014, 'dpos': 1485.2, 'dneg': 1464.6, 'delay': 1.8187, 'gnoise': 0.0015, 'k': 3.1524, 'c': 0.0873, 'bl': 0.7818, 'fric': 0.0027, 'ib': 0.9343, 'mnt': 0.2278, 'vib': 0.0309}
+[8] 迭代  5  本轮 0.117  全局 0.117  摔 0/36  (379s)  未达标: ['ang_std', 'nz_max_d', 'rev', 'enc_abs', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp', 'g3_6', 'g6_12', 'd0_03']
+      {'stall': 0.5893, 'damp': 0.0027, 'irot': 0.0014, 'dpos': 1485.2, 'dneg': 1464.6, 'delay': 1.8187, 'gnoise': 0.0015, 'k': 3.1524, 'c': 0.0873, 'bl': 0.7818, 'fric': 0.0027, 'ib': 0.9343, 'mnt': 0.2278, 'vib': 0.0309}
+[8] 迭代  6  本轮 0.117  全局 0.117  摔 0/36  (454s)  未达标: ['ang_std', 'nz_max_d', 'rev', 'enc_abs', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp', 'g3_6', 'g6_12', 'd0_03']
+      {'stall': 0.5893, 'damp': 0.0027, 'irot': 0.0014, 'dpos': 1485.2, 'dneg': 1464.6, 'delay': 1.8187, 'gnoise': 0.0015, 'k': 3.1524, 'c': 0.0873, 'bl': 0.7818, 'fric': 0.0027, 'ib': 0.9343, 'mnt': 0.2278, 'vib': 0.0309}
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "C:\Users\jiang li\AppData\Local\Programs\Python\Python312\Lib\multiprocessing\spawn.py", line 108, in spawn_main
+    source_process = _winapi.OpenProcess(
+                     ^^^^^^^^^^^^^^^^^^^^
+OSError: [WinError 87] 参数错误。
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "C:\Users\jiang li\AppData\Local\Programs\Python\Python312\Lib\multiprocessing\spawn.py", line 108, in spawn_main
+    source_process = _winapi.OpenProcess(
+                     ^^^^^^^^^^^^^^^^^^^^
+OSError: [WinError 87] 参数错误。
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "C:\Users\jiang li\AppData\Local\Programs\Python\Python312\Lib\multiprocessing\spawn.py", line 108, in spawn_main
+    source_process = _winapi.OpenProcess(
+                     ^^^^^^^^^^^^^^^^^^^^
+OSError: [WinError 87] 参数错误。

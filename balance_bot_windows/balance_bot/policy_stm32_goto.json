@@ -1,0 +1,22 @@
+{
+  "name": "PPO goto (static PID)",
+  "firmware": "stm32_pid",
+  "gains": {
+    "balance_kp": 193.58066477218466,
+    "balance_kd": 0.36025466453616545,
+    "velocity_kp": 76.18423372039572,
+    "velocity_ki": 0.11067839718581951,
+    "turn_kp": 42.0,
+    "turn_kd": 0.1967413529223807,
+    "nav_kv": 1.8011249893940642,
+    "nav_kw": 1.1459627980611569
+  },
+  "_provenance": {
+    "when": "2026-09-11 01:30",
+    "steps": 30000,
+    "backend": "mujoco",
+    "episode_seconds": 25.0,
+    "score_stock": -64.69177614790053,
+    "score_ppo": 423.2902950936015
+  }
+}

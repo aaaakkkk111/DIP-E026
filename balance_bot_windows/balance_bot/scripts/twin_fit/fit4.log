@@ -1,0 +1,41 @@
+[4] 迭代  0  本轮 0.629  全局 0.629  摔 0/36  (42s)  未达标: ['ang_std', 'gyro_rms', 'gyro_pk', 'demand', 'median_d', 'nz_max_d', 'enc_abs', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp']
+      {'stall': 0.6849, 'damp': 0.0125, 'irot': 0.0009, 'dpos': 1493.4, 'dneg': 1464.7, 'delay': 1.1054, 'gnoise': 0.0005, 'k': 17.1, 'c': 0.0609, 'bl': 0.461, 'fric': 0.0004, 'ib': 1.1211, 'mnt': 0.1509}
+[4] 迭代  1  本轮 0.300  全局 0.300  摔 0/36  (83s)  未达标: ['ang_std', 'gyro_rms', 'gyro_pk', 'demand', 'median_d', 'nz_max_d', 'rev', 'enc_abs', 'enc_max', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp']
+      {'stall': 0.4868, 'damp': 0.0123, 'irot': 0.001, 'dpos': 1469.9, 'dneg': 1517.7, 'delay': 2.5935, 'gnoise': 0.0014, 'k': 7.648, 'c': 0.0233, 'bl': 0.4585, 'fric': 0.0002, 'ib': 0.9606, 'mnt': 0.5313}
+[4] 迭代  2  本轮 0.300  全局 0.300  摔 0/36  (125s)  未达标: ['ang_std', 'gyro_rms', 'gyro_pk', 'demand', 'median_d', 'nz_max_d', 'rev', 'enc_abs', 'enc_max', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp']
+      {'stall': 0.4868, 'damp': 0.0123, 'irot': 0.001, 'dpos': 1469.9, 'dneg': 1517.7, 'delay': 2.5935, 'gnoise': 0.0014, 'k': 7.648, 'c': 0.0233, 'bl': 0.4585, 'fric': 0.0002, 'ib': 0.9606, 'mnt': 0.5313}
+[4] 迭代  3  本轮 0.194  全局 0.194  摔 0/36  (166s)  未达标: ['gyro_rms', 'gyro_pk', 'demand', 'median_d', 'nz_max_d', 'rev', 'enc_abs', 'enc_max', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp']
+      {'stall': 0.5208, 'damp': 0.0049, 'irot': 0.0007, 'dpos': 1477.8, 'dneg': 1499.2, 'delay': 2.5813, 'gnoise': 0.0011, 'k': 5.6244, 'c': 0.1805, 'bl': 0.7566, 'fric': 0.0008, 'ib': 1.0522, 'mnt': 0.2992}
+[4] 迭代  4  本轮 0.194  全局 0.194  摔 0/36  (208s)  未达标: ['gyro_rms', 'gyro_pk', 'demand', 'median_d', 'nz_max_d', 'rev', 'enc_abs', 'enc_max', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp']
+      {'stall': 0.5208, 'damp': 0.0049, 'irot': 0.0007, 'dpos': 1477.8, 'dneg': 1499.2, 'delay': 2.5813, 'gnoise': 0.0011, 'k': 5.6244, 'c': 0.1805, 'bl': 0.7566, 'fric': 0.0008, 'ib': 1.0522, 'mnt': 0.2992}
+[4] 迭代  5  本轮 0.194  全局 0.194  摔 0/36  (250s)  未达标: ['gyro_rms', 'gyro_pk', 'demand', 'median_d', 'nz_max_d', 'rev', 'enc_abs', 'enc_max', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp']
+      {'stall': 0.5208, 'damp': 0.0049, 'irot': 0.0007, 'dpos': 1477.8, 'dneg': 1499.2, 'delay': 2.5813, 'gnoise': 0.0011, 'k': 5.6244, 'c': 0.1805, 'bl': 0.7566, 'fric': 0.0008, 'ib': 1.0522, 'mnt': 0.2992}
+[4] 迭代  6  本轮 0.194  全局 0.194  摔 0/36  (292s)  未达标: ['gyro_rms', 'gyro_pk', 'demand', 'median_d', 'nz_max_d', 'rev', 'enc_abs', 'enc_max', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp']
+      {'stall': 0.5208, 'damp': 0.0049, 'irot': 0.0007, 'dpos': 1477.8, 'dneg': 1499.2, 'delay': 2.5813, 'gnoise': 0.0011, 'k': 5.6244, 'c': 0.1805, 'bl': 0.7566, 'fric': 0.0008, 'ib': 1.0522, 'mnt': 0.2992}
+[4] 迭代  7  本轮 0.188  全局 0.188  摔 0/36  (333s)  未达标: ['ang_std', 'gyro_rms', 'gyro_pk', 'median_d', 'nz_max_d', 'rev', 'enc_abs', 'enc_max', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp']
+      {'stall': 0.3961, 'damp': 0.0051, 'irot': 0.0008, 'dpos': 1490.0, 'dneg': 1506.7, 'delay': 2.3024, 'gnoise': 0.0008, 'k': 5.9997, 'c': 0.1386, 'bl': 0.9582, 'fric': 0.0003, 'ib': 0.9795, 'mnt': 0.4168}
+[4] 迭代  8  本轮 0.188  全局 0.188  摔 0/36  (375s)  未达标: ['ang_std', 'gyro_rms', 'gyro_pk', 'median_d', 'nz_max_d', 'rev', 'enc_abs', 'enc_max', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp']
+      {'stall': 0.3961, 'damp': 0.0051, 'irot': 0.0008, 'dpos': 1490.0, 'dneg': 1506.7, 'delay': 2.3024, 'gnoise': 0.0008, 'k': 5.9997, 'c': 0.1386, 'bl': 0.9582, 'fric': 0.0003, 'ib': 0.9795, 'mnt': 0.4168}
+[4] 迭代  9  本轮 0.131  全局 0.131  摔 0/36  (416s)  未达标: ['gyro_rms', 'gyro_pk', 'nz_max_d', 'rev', 'enc_abs', 'enc_max', 'f_gyro', 'f_disp']
+      {'stall': 0.4838, 'damp': 0.005, 'irot': 0.0008, 'dpos': 1496.2, 'dneg': 1503.9, 'delay': 1.4918, 'gnoise': 0.0007, 'k': 4.8675, 'c': 0.1031, 'bl': 0.87, 'fric': 0.0005, 'ib': 1.021, 'mnt': 0.3898}
+[4] 迭代 10  本轮 0.131  全局 0.131  摔 0/36  (458s)  未达标: ['gyro_rms', 'gyro_pk', 'nz_max_d', 'rev', 'enc_abs', 'enc_max', 'f_gyro', 'f_disp']
+      {'stall': 0.4838, 'damp': 0.005, 'irot': 0.0008, 'dpos': 1496.2, 'dneg': 1503.9, 'delay': 1.4918, 'gnoise': 0.0007, 'k': 4.8675, 'c': 0.1031, 'bl': 0.87, 'fric': 0.0005, 'ib': 1.021, 'mnt': 0.3898}
+[4] 迭代 11  本轮 0.131  全局 0.131  摔 0/36  (500s)  未达标: ['gyro_rms', 'gyro_pk', 'nz_max_d', 'rev', 'enc_abs', 'enc_max', 'f_gyro', 'f_disp']
+      {'stall': 0.4838, 'damp': 0.005, 'irot': 0.0008, 'dpos': 1496.2, 'dneg': 1503.9, 'delay': 1.4918, 'gnoise': 0.0007, 'k': 4.8675, 'c': 0.1031, 'bl': 0.87, 'fric': 0.0005, 'ib': 1.021, 'mnt': 0.3898}
+[4] 迭代 12  本轮 0.130  全局 0.130  摔 0/36  (541s)  未达标: ['gyro_rms', 'gyro_pk', 'nz_max_d', 'rev', 'enc_abs', 'enc_max', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp']
+      {'stall': 0.4196, 'damp': 0.0052, 'irot': 0.0008, 'dpos': 1477.4, 'dneg': 1500.3, 'delay': 1.7114, 'gnoise': 0.0006, 'k': 4.8684, 'c': 0.115, 'bl': 0.8539, 'fric': 0.0006, 'ib': 0.9744, 'mnt': 0.1447}
+[4] 迭代 13  本轮 0.103  全局 0.103  摔 0/36  (583s)  未达标: ['ang_std', 'gyro_pk', 'nz_max_d', 'rev', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp']
+      {'stall': 0.4731, 'damp': 0.0043, 'irot': 0.0008, 'dpos': 1474.8, 'dneg': 1495.1, 'delay': 1.3734, 'gnoise': 0.0006, 'k': 4.4471, 'c': 0.1453, 'bl': 0.9446, 'fric': 0.0006, 'ib': 1.0021, 'mnt': 0.2553}
+[4] 迭代 14  本轮 0.103  全局 0.103  摔 0/36  (624s)  未达标: ['ang_std', 'gyro_pk', 'nz_max_d', 'rev', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp']
+      {'stall': 0.4731, 'damp': 0.0043, 'irot': 0.0008, 'dpos': 1474.8, 'dneg': 1495.1, 'delay': 1.3734, 'gnoise': 0.0006, 'k': 4.4471, 'c': 0.1453, 'bl': 0.9446, 'fric': 0.0006, 'ib': 1.0021, 'mnt': 0.2553}
+[4] 迭代 15  本轮 0.103  全局 0.103  摔 0/36  (666s)  未达标: ['ang_std', 'gyro_pk', 'nz_max_d', 'rev', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp']
+      {'stall': 0.4731, 'damp': 0.0043, 'irot': 0.0008, 'dpos': 1474.8, 'dneg': 1495.1, 'delay': 1.3734, 'gnoise': 0.0006, 'k': 4.4471, 'c': 0.1453, 'bl': 0.9446, 'fric': 0.0006, 'ib': 1.0021, 'mnt': 0.2553}
+[4] 迭代 16  本轮 0.103  全局 0.103  摔 0/36  (707s)  未达标: ['ang_std', 'gyro_pk', 'nz_max_d', 'rev', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp']
+      {'stall': 0.4731, 'damp': 0.0043, 'irot': 0.0008, 'dpos': 1474.8, 'dneg': 1495.1, 'delay': 1.3734, 'gnoise': 0.0006, 'k': 4.4471, 'c': 0.1453, 'bl': 0.9446, 'fric': 0.0006, 'ib': 1.0021, 'mnt': 0.2553}
+[4] 迭代 17  本轮 0.101  全局 0.101  摔 0/36  (749s)  未达标: ['ang_std', 'gyro_pk', 'nz_max_d', 'rev', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp']
+      {'stall': 0.4855, 'damp': 0.0046, 'irot': 0.0008, 'dpos': 1465.5, 'dneg': 1505.3, 'delay': 1.9476, 'gnoise': 0.0008, 'k': 4.419, 'c': 0.1535, 'bl': 0.964, 'fric': 0.0007, 'ib': 1.0056, 'mnt': 0.2699}
+[4] 迭代 18  本轮 0.101  全局 0.101  摔 0/36  (791s)  未达标: ['ang_std', 'gyro_pk', 'nz_max_d', 'rev', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp']
+      {'stall': 0.4855, 'damp': 0.0046, 'irot': 0.0008, 'dpos': 1465.5, 'dneg': 1505.3, 'delay': 1.9476, 'gnoise': 0.0008, 'k': 4.419, 'c': 0.1535, 'bl': 0.964, 'fric': 0.0007, 'ib': 1.0056, 'mnt': 0.2699}
+[4] 迭代 19  本轮 0.089  全局 0.089  摔 0/36  (836s)  未达标: ['ang_std', 'gyro_pk', 'nz_max_d', 'rev', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp']
+      {'stall': 0.4598, 'damp': 0.0043, 'irot': 0.0008, 'dpos': 1468.5, 'dneg': 1501.9, 'delay': 1.9322, 'gnoise': 0.001, 'k': 3.8795, 'c': 0.1312, 'bl': 0.9444, 'fric': 0.0005, 'ib': 0.9991, 'mnt': 0.2855}
+[4] 完成

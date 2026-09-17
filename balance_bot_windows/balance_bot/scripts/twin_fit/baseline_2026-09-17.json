@@ -1,0 +1,55 @@
+{
+ "_note": "模式 1 静止基准第十二轮拟合，2026-09-17 冻结为训练基线。改动任何一项都会让已训练的策略失去可比性；改之前先读 TWIN_BASELINE.md 第 10 节。",
+ "_frozen": "2026-09-17",
+ "_validation": {
+  "file": "base_empty.txt (模式 1、补偿 1500、空车静止)",
+  "seeds": "100-107（没参与拟合）",
+  "score": 0.018,
+  "score_meaning": "0 = 每一项都落在用户三次复现的范围内"
+ },
+ "motor": {
+  "stall_torque": 0.5679,
+  "tau_damp": 0.00251,
+  "motor_deadband": 1480,
+  "motor_deadband_neg": 1454.51,
+  "motor_deadband_lr_split": 98.6,
+  "gear_stiffness": 1.7183,
+  "gear_damping": 0.0745,
+  "gear_backlash_deg": 0.8398,
+  "gear_friction": 0.00192
+ },
+ "robot": {
+  "I_body": 0.001422922378940811,
+  "I_rotor": 0.001202,
+  "l_com": 0.034,
+  "m_body": 0.8719999999999999,
+  "m_wheel": 0.035,
+  "r_wheel": 0.0335,
+  "tau_max": 0.4
+ },
+ "sensing": {
+  "PWM_DELAY_TICKS": 1.7538,
+  "GYRO_NOISE_RAD_S": 0.000607,
+  "GYRO_BIAS_RAD_S": 0.035255650890285456,
+  "GYRO_VIB_RAD_S": 0.01621,
+  "GYRO_VIB_MOTION": 0.01265,
+  "IMU_MOUNT_ERROR_DEG": 0.166
+ },
+ "contact": {
+  "ROLLING_RESIST_M": 0.000802,
+  "ROTOR_FRIC_STATIC": 0.00271,
+  "ROTOR_FRIC_KINETIC": 0.0009,
+  "ROTOR_STRIBECK_VEL": 0.6552,
+  "floor_mu": 0.9
+ },
+ "envelope": {
+  "_note": "拟合数据实际覆盖的工况——出了这个角落就是外推",
+  "wheel_speed_peak_frac_of_free": 0.055,
+  "pwm_authority_median_frac": 0.027,
+  "pwm_authority_peak_frac": 0.114,
+  "payload_kg": 0.0,
+  "modes_covered": [
+   1
+  ]
+ }
+}

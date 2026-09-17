@@ -1,0 +1,27 @@
+# 虚拟环境 1.2 GB，绝不入库 / the 1.2 GB venv
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# 训练产物 / training artefacts
+runs/
+*_sb3.zip
+*_vecnorm.pkl
+*.npz
+!policy_stm32_goto*.npz
+
+# 生成物 / generated
+keil_out/nn_gain/
+scripts/twin_fit/real_data/
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+Thumbs.db
+.DS_Store
+
+# tensorboard 日志：二进制、含机器名、对别人没用
+# tensorboard event files: binary, carry the machine name, useless to others
+events.out.tfevents.*

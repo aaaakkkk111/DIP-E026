@@ -1,0 +1,52 @@
+[5] 迭代  0  本轮 0.081  全局 0.081  摔 0/36  (44s)  未达标: ['ang_std', 'gyro_pk', 'nz_max_d', 'rev', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp', 'b_3_8', 'b_16_25']
+      {'stall': 0.4598, 'damp': 0.0043, 'irot': 0.0008, 'dpos': 1468.5, 'dneg': 1501.9, 'delay': 1.9322, 'gnoise': 0.001, 'k': 3.8795, 'c': 0.1312, 'bl': 0.9444, 'fric': 0.0005, 'ib': 0.9991, 'mnt': 0.2855}
+[5] 迭代  1  本轮 0.081  全局 0.081  摔 0/36  (89s)  未达标: ['ang_std', 'gyro_pk', 'nz_max_d', 'rev', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp', 'b_3_8', 'b_16_25']
+      {'stall': 0.4598, 'damp': 0.0043, 'irot': 0.0008, 'dpos': 1468.5, 'dneg': 1501.9, 'delay': 1.9322, 'gnoise': 0.001, 'k': 3.8795, 'c': 0.1312, 'bl': 0.9444, 'fric': 0.0005, 'ib': 0.9991, 'mnt': 0.2855}
+[5] 迭代  2  本轮 0.081  全局 0.081  摔 0/36  (134s)  未达标: ['ang_std', 'gyro_pk', 'nz_max_d', 'rev', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp', 'b_3_8', 'b_16_25']
+      {'stall': 0.4598, 'damp': 0.0043, 'irot': 0.0008, 'dpos': 1468.5, 'dneg': 1501.9, 'delay': 1.9322, 'gnoise': 0.001, 'k': 3.8795, 'c': 0.1312, 'bl': 0.9444, 'fric': 0.0005, 'ib': 0.9991, 'mnt': 0.2855}
+[5] 迭代  3  本轮 0.081  全局 0.081  摔 0/36  (180s)  未达标: ['ang_std', 'gyro_pk', 'nz_max_d', 'rev', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp', 'b_3_8', 'b_16_25']
+      {'stall': 0.4598, 'damp': 0.0043, 'irot': 0.0008, 'dpos': 1468.5, 'dneg': 1501.9, 'delay': 1.9322, 'gnoise': 0.001, 'k': 3.8795, 'c': 0.1312, 'bl': 0.9444, 'fric': 0.0005, 'ib': 0.9991, 'mnt': 0.2855}
+[5] 迭代  4  本轮 0.081  全局 0.081  摔 0/36  (225s)  未达标: ['ang_std', 'gyro_pk', 'nz_max_d', 'rev', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp', 'b_3_8', 'b_16_25']
+      {'stall': 0.4598, 'damp': 0.0043, 'irot': 0.0008, 'dpos': 1468.5, 'dneg': 1501.9, 'delay': 1.9322, 'gnoise': 0.001, 'k': 3.8795, 'c': 0.1312, 'bl': 0.9444, 'fric': 0.0005, 'ib': 0.9991, 'mnt': 0.2855}
+[5] 迭代  5  本轮 0.081  全局 0.081  摔 0/36  (269s)  未达标: ['ang_std', 'gyro_pk', 'nz_max_d', 'rev', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp', 'b_3_8', 'b_16_25']
+      {'stall': 0.4598, 'damp': 0.0043, 'irot': 0.0008, 'dpos': 1468.5, 'dneg': 1501.9, 'delay': 1.9322, 'gnoise': 0.001, 'k': 3.8795, 'c': 0.1312, 'bl': 0.9444, 'fric': 0.0005, 'ib': 0.9991, 'mnt': 0.2855}
+[5] 迭代  6  本轮 0.081  全局 0.081  摔 0/36  (313s)  未达标: ['ang_std', 'gyro_pk', 'nz_max_d', 'rev', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp', 'b_3_8', 'b_16_25']
+      {'stall': 0.4598, 'damp': 0.0043, 'irot': 0.0008, 'dpos': 1468.5, 'dneg': 1501.9, 'delay': 1.9322, 'gnoise': 0.001, 'k': 3.8795, 'c': 0.1312, 'bl': 0.9444, 'fric': 0.0005, 'ib': 0.9991, 'mnt': 0.2855}
+[5] 迭代  7  本轮 0.081  全局 0.081  摔 0/36  (358s)  未达标: ['ang_std', 'gyro_pk', 'nz_max_d', 'rev', 'disp_pp', 'disp_std', 'f_gyro', 'f_disp', 'b_3_8', 'b_16_25']
+      {'stall': 0.4598, 'damp': 0.0043, 'irot': 0.0008, 'dpos': 1468.5, 'dneg': 1501.9, 'delay': 1.9322, 'gnoise': 0.001, 'k': 3.8795, 'c': 0.1312, 'bl': 0.9444, 'fric': 0.0005, 'ib': 0.9991, 'mnt': 0.2855}
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "C:\Users\jiang li\AppData\Local\Programs\Python\Python312\Lib\multiprocessing\spawn.py", line 108, in spawn_main
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "C:\Users\jiang li\AppData\Local\Programs\Python\Python312\Lib\multiprocessing\spawn.py", line 108, in spawn_main
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "C:\Users\jiang li\AppData\Local\Programs\Python\Python312\Lib\multiprocessing\spawn.py", line 108, in spawn_main
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "C:\Users\jiang li\AppData\Local\Programs\Python\Python312\Lib\multiprocessing\spawn.py", line 108, in spawn_main
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "C:\Users\jiang li\AppData\Local\Programs\Python\Python312\Lib\multiprocessing\spawn.py", line 108, in spawn_main
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "C:\Users\jiang li\AppData\Local\Programs\Python\Python312\Lib\multiprocessing\spawn.py", line 108, in spawn_main
+    source_process = _winapi.OpenProcess(
+                     ^^^^^^^^^^^^^^^^^^^^
+    source_process = _winapi.OpenProcess(
+OSError: [WinError 87] 参数错误。
+                     ^^^^^^^^^^^^^^^^^^^^
+OSError: [WinError 87] 参数错误。
+    source_process = _winapi.OpenProcess(
+    source_process = _winapi.OpenProcess(
+    source_process = _winapi.OpenProcess(
+    source_process = _winapi.OpenProcess(
+                     ^^^^^^^^^^^^^^^^^^^^
+                     ^^^^^^^^^^^^^^^^^^^^
+                     ^^^^^^^^^^^^^^^^^^^^
+                     ^^^^^^^^^^^^^^^^^^^^
+OSError: [WinError 87] 参数错误。
+OSError: [WinError 87] 参数错误。
+OSError: [WinError 87] 参数错误。
+OSError: [WinError 87] 参数错误。

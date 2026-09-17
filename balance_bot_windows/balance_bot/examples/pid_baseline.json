@@ -1,0 +1,13 @@
+{
+  "name": "示例：PID 原厂参数（用来验证打分链路）",
+  "firmware": "stm32_pid",
+  "gains": {
+    "balance_kp": 96.0,
+    "balance_kd": 0.48,
+    "velocity_kp": 62.0,
+    "velocity_ki": 0.31,
+    "turn_kp": 14.0,
+    "turn_kd": 0.20,
+    "mid_angle_deg": 1.0
+  }
+}
