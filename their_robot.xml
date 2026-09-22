@@ -1,0 +1,96 @@
+<mujoco model="balance_bot">
+  <compiler angle="radian" autolimits="true" balanceinertia="true"/>
+  <option timestep="0.0025" integrator="Euler" gravity="0 0 -9.81"
+          cone="elliptic" impratio="10"/>
+
+  <default>
+    <geom friction="0.90 0.005 0.0001" solref="0.020 1" solimp="0.95 0.99 0.001"/>
+    <joint damping="0"/>
+  </default>
+
+  <!-- The offscreen framebuffer defaults to 640x480, which silently caps
+       mujoco.Renderer.  The in-window 3D view asks for more than that. -->
+  <visual>
+    <global offwidth="1920" offheight="1080"/>
+    <quality shadowsize="2048" offsamples="4"/>
+    <map znear="0.01" zfar="30"/>
+  </visual>
+
+  <asset>
+    <texture name="sky" type="skybox" builtin="gradient" width="256" height="256"
+             rgb1="0.29 0.33 0.42" rgb2="0.08 0.09 0.12"/>
+    <texture name="grid" type="2d" builtin="checker" width="512" height="512"
+             rgb1="0.22 0.24 0.28" rgb2="0.28 0.30 0.35"/>
+    <material name="grid" texture="grid" texrepeat="12 12" reflectance="0.05"/>
+  </asset>
+
+  <worldbody>
+    <light pos="0 0 4" dir="0 0 -1" diffuse="0.9 0.9 0.9"/>
+    <light pos="3 -3 3" dir="-0.5 0.5 -0.6" diffuse="0.35 0.35 0.4"/>
+    <!-- 地面 μ=0.90：轮子是**花纹橡胶胎**，干燥瓷砖/木地板上实测区间 0.9-1.1，
+         这是这台车最常跑的地面。以前写 1.0 是随手取的整数，从没对过真车；模式 1
+         静止基准对 μ 几乎不敏感（0.7-1.5 综合误差 0.005-0.015），所以改这个数
+         不会动已拟合的基线。GUI 的粗糙度滑块默认就停在这里。
+         mu=0.90: treaded rubber on a dry tile or wood floor, the surface this
+         car actually runs on.  The standstill benchmark barely identifies mu,
+         so this does not move the fitted baseline. -->
+    <geom name="floor" type="plane" size="0 0 0.05" material="grid"
+          friction="0.90 0.005 0.0001"/>
+
+    <body name="chassis" pos="0 0 0.0500">
+      <freejoint name="root"/>
+      <inertial pos="0 0 0.1200" mass="1.5000"
+                diaginertia="0.008000 0.008000 0.008595"/>
+      <geom name="body" type="box"
+            pos="0 0 0.1200"
+            size="0.0400 0.0500 0.1200"
+            rgba="0.25 0.55 0.85 1" mass="0" contype="1" conaffinity="1"/>
+      <geom name="nose" type="capsule" fromto="0 0 0.1200 0.0900 0 0.1200"
+            size="0.008" rgba="0.95 0.75 0.2 1" mass="0" contype="0" conaffinity="0"/>
+      <site name="imu" pos="0 0 0.1200" size="0.006"/>
+
+      <!-- DYNAMIC PAYLOAD (added on top of the generated model; not part of
+           the teammate's RobotParams).  Sits at the top face of the chassis
+           box (centre 0.12, half-height 0.12).  Mass is 0 at compile time and
+           is overwritten per-episode by VelocityCommandWrapper's payload
+           curriculum, exactly as in my_robot.xml.  contype/conaffinity 0 so
+           adding it cannot change the contact set. -->
+      <body name="payload_body" pos="0 0 0.2400">
+        <geom name="payload_geom" type="box" size="0.0300 0.0300 0.0200"
+              rgba="0.9 0.2 0.2 1" mass="0" contype="0" conaffinity="0"/>
+      </body>
+
+      <body name="wheel_l" pos="0 0.0800 0">
+        <joint name="jw_l" type="hinge" axis="0 1 0" armature="0"/>
+        <inertial pos="0 0 0" mass="0.1000"
+                  diaginertia="0.000063 0.000125 0.000063"/>
+        <geom name="gw_l" type="cylinder" size="0.0500 0.0140"
+              quat="0.7071068 0.7071068 0 0" rgba="0.15 0.15 0.18 1" mass="0"/>
+      </body>
+
+      <body name="wheel_r" pos="0 -0.0800 0">
+        <joint name="jw_r" type="hinge" axis="0 1 0" armature="0"/>
+        <inertial pos="0 0 0" mass="0.1000"
+                  diaginertia="0.000063 0.000125 0.000063"/>
+        <geom name="gw_r" type="cylinder" size="0.0500 0.0140"
+              quat="0.7071068 0.7071068 0 0" rgba="0.15 0.15 0.18 1" mass="0"/>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <motor name="m_l" joint="jw_l" gear="1"
+           ctrlrange="-0.6000 0.6000"/>
+    <motor name="m_r" joint="jw_r" gear="1"
+           ctrlrange="-0.6000 0.6000"/>
+  </actuator>
+
+  <sensor>
+    <framequat name="s_quat" objtype="site" objname="imu"/>
+    <gyro name="s_gyro" site="imu"/>
+    <accelerometer name="s_acc" site="imu"/>
+    <framelinvel name="s_vel" objtype="body" objname="chassis"/>
+    <jointvel name="s_wl" joint="jw_l"/>
+    <jointvel name="s_wr" joint="jw_r"/>
+  </sensor>
+</mujoco>
