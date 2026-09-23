@@ -346,6 +346,7 @@ def main():
              "payload": float(np.clip(args.payload, 0.0, 2.0)),
              "cmd_forward": 0.0,
              "cmd_turn": 0.0,
+             "cmd_dirty": False,
              "quit": False,
              "reset": False}
     apply_friction(mj_model, state["friction"])
@@ -365,18 +366,27 @@ def main():
     # them, and every letter key is already bound to a rendering toggle - hence
     # the display glitches when WASD was used here. Arrow keys avoid that.
     def key_callback(keycode):
-        if keycode == glfw.KEY_UP:
-            state["cmd_forward"] = 0.0 if state["cmd_forward"] > 0 else MAX_V_FORWARD
-        elif keycode == glfw.KEY_DOWN:
-            state["cmd_forward"] = 0.0 if state["cmd_forward"] < 0 else -MAX_V_FORWARD
-        elif keycode == glfw.KEY_LEFT:
-            state["cmd_turn"] = 0.0 if state["cmd_turn"] > 0 else MAX_V_TURN
-        elif keycode == glfw.KEY_RIGHT:
-            state["cmd_turn"] = 0.0 if state["cmd_turn"] < 0 else -MAX_V_TURN
-        else:
-            return
-        if panel is not None:
-            panel.set_commands(state["cmd_forward"], state["cmd_turn"])
+        # Runs on MuJoCo's RENDER thread, not the main thread. It must not
+        # touch tkinter: every Tk call has to come from the thread that created
+        # the root window, and calling Scale.set() from here raises
+        # "main thread is not in main loop", which kills the render loop and
+        # freezes the viewer. So only plain state is mutated, and the main loop
+        # pushes the new values onto the sliders when it sees cmd_dirty.
+        try:
+            if keycode == glfw.KEY_UP:
+                state["cmd_forward"] = 0.0 if state["cmd_forward"] > 0 else MAX_V_FORWARD
+            elif keycode == glfw.KEY_DOWN:
+                state["cmd_forward"] = 0.0 if state["cmd_forward"] < 0 else -MAX_V_FORWARD
+            elif keycode == glfw.KEY_LEFT:
+                state["cmd_turn"] = 0.0 if state["cmd_turn"] > 0 else MAX_V_TURN
+            elif keycode == glfw.KEY_RIGHT:
+                state["cmd_turn"] = 0.0 if state["cmd_turn"] < 0 else -MAX_V_TURN
+            else:
+                return
+            state["cmd_dirty"] = True
+        except Exception:
+            # A raise here would take the render thread down with it.
+            pass
 
     if panel is None:
         print("\n--- DRIVING CONTROLS (click the viewer window first) ---")
@@ -407,6 +417,13 @@ def main():
             viewer.sync()
 
             if panel is not None:
+                # Arrow keys are handled on the render thread and can only set
+                # a flag; moving the sliders has to happen here, on the thread
+                # that owns the Tk window.
+                if state["cmd_dirty"]:
+                    state["cmd_dirty"] = False
+                    panel.set_commands(state["cmd_forward"], state["cmd_turn"])
+
                 d = env.unwrapped.data
                 _, pitch, local_vel, v_turn = env._decode_state(
                     np.concatenate([d.qpos, d.qvel]))
