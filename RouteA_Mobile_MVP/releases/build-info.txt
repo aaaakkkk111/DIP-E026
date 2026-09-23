@@ -1,0 +1,16 @@
+Built: 2026-09-23 Asia/Shanghai
+Release: Route A Mobile MVP firmware v1.5 / Android v1.4
+Firmware baseline: official Large Program standard-libraries stm32_Balance_Car_L
+Mode isolation: official modes 1-20 retain their enum numbers and official paths; Route A is mode 21 TEST MODE only
+Firmware project: firmware/USER/stm32_Balance_Car.uvprojx
+Firmware: ARMCC 5.06 update 7 build 960; optimization level 1; full rebuild 0 errors, 2 original filter warnings
+Firmware size: Code=49620 RO-data=6108 RW-data=964 ZI-data=12196
+HEX data range: 0x08000000..0x0800DA57; margin below 0x08010000 = 9640 bytes
+TEST MODE baseline PID: AP96 AD48 VP62 VI31 TP17 TD20
+Android: versionCode=4 versionName=1.4; live six-value PID and training/transaction status
+Android debug/release JVM tests: 8 passed each; assembleDebug passed
+Offline Python protocol/transaction/isolation tests: 18 passed
+APK signing certificate SHA-256: e8eadbd58c91faad46aea3251e5e114dcf6f6b6bf591840911167c5a4fecc8b7
+Real v1.5 mode-isolation acceptance: NOT RUN
+HEX SHA256: EF4996D0FE54A61DA7DBE108C32FEFBA9498AD1A12C8532FF3BF406A923BF3D2
+APK SHA256: 13573F14CBF5F8A6BF3204A07761A9BC200A3D904CEA156844AF4FFA754CDF86

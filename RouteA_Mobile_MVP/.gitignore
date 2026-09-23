@@ -1,0 +1,24 @@
+# Keil/ARMCC generated files
+firmware/OBJ/
+firmware/USER/Listings/
+firmware/USER/*.uvguix.*
+firmware/USER/*.bak
+firmware/USER/*.log
+
+# Android generated/local files
+android/.gradle/
+android/.kotlin/
+android/app/build/
+android/local.properties
+android/signing/*.keystore
+android/signing/*.jks
+
+# Python caches
+__pycache__/
+*.pyc
+
+# IDE and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
