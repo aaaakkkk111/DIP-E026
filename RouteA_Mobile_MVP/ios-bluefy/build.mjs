@@ -1,0 +1,13 @@
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+const root = path.dirname(fileURLToPath(import.meta.url));
+const template = fs.readFileSync(path.join(root, "template.html"), "utf8");
+const css = fs.readFileSync(path.join(root, "src", "styles.css"), "utf8");
+const core = fs.readFileSync(path.join(root, "src", "core.js"), "utf8");
+const app = fs.readFileSync(path.join(root, "src", "app.js"), "utf8");
+const out = template.replace("/*__CSS__*/", css).replace("/*__CORE__*/", core).replace("/*__APP__*/", app);
+if (out.includes("/*__CSS__*/") || out.includes("/*__CORE__*/") || out.includes("/*__APP__*/")) throw new Error("build placeholder remains");
+fs.writeFileSync(path.join(root, "routea_bluefy.html"), out);
+fs.writeFileSync(path.join(root, "index.html"), out);
+console.log(`Built routea_bluefy.html and index.html (${Buffer.byteLength(out)} bytes each)`);

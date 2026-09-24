@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#07111f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>BalanceBot Route A · Bluefy</title>
+  <style>:root{color-scheme:dark;--bg:#07111f;--card:#101e2f;--card2:#13263b;--line:#203a52;--text:#eff7ff;--muted:#8fa7ba;--cyan:#2dd4bf;--blue:#38bdf8;--amber:#fbbf24;--red:#fb4b5c;--green:#4ade80;--nav:80px;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC",system-ui,sans-serif}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;background:radial-gradient(circle at 80% -10%,#12375a 0,transparent 38%),var(--bg);color:var(--text)}body{padding:calc(env(safe-area-inset-top) + 12px) 14px calc(var(--nav) + env(safe-area-inset-bottom) + 82px);overscroll-behavior:none}button,input,textarea{font:inherit}button{touch-action:manipulation}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:760px;margin:auto;padding:4px 2px 16px}.eyebrow{font-size:11px;letter-spacing:.13em;color:var(--cyan);font-weight:800}.topbar h1,.section-head h2{font-size:24px;line-height:1.1;margin:4px 0 0}.pill{border:1px solid #3a5167;background:#132337;color:var(--text);border-radius:999px;padding:10px 13px;min-height:44px;display:flex;align-items:center;gap:8px}.pill span{width:10px;height:10px;border-radius:50%;background:var(--red);box-shadow:0 0 10px var(--red)}.pill.online span{background:var(--green);box-shadow:0 0 10px var(--green)}.pill.connecting span{background:var(--amber);box-shadow:0 0 10px var(--amber)}main{max-width:760px;margin:auto}.page{display:none;animation:fade .18s ease}.page.active{display:block}@keyframes fade{from{opacity:.5;transform:translateY(4px)}}.card{border:1px solid var(--line);background:linear-gradient(150deg,rgba(20,39,59,.96),rgba(12,28,44,.96));border-radius:20px;padding:16px;margin-bottom:12px;box-shadow:0 10px 30px rgba(0,0,0,.16)}.banner,.notice{border-radius:15px;padding:12px 14px;margin-bottom:12px;line-height:1.45}.banner:empty{display:none}.warning{background:#3a2d0f;border:1px solid #765c19;color:#ffe59c}.danger{background:#3d1821;border:1px solid #7f2c3c;color:#ffc7cf}.hero{display:flex;justify-content:space-between;align-items:center;min-height:176px;background:linear-gradient(135deg,#102a42,#0c1b2b)}.hero .label,.metric span{display:block;color:var(--muted);font-size:13px}.hero strong{display:block;font-size:52px;letter-spacing:-.05em;margin:5px 0}.hero small{color:var(--blue)}.ring{width:145px;height:145px}.ring canvas{width:100%;height:100%}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metrics .card{margin:0 0 2px}.metric b{display:block;font-size:19px;margin-top:8px}.card-title,.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.card-title{font-weight:800;margin-bottom:12px}.legend{font-size:11px;color:var(--muted)}.legend i{display:inline-block;width:16px;height:3px;border-radius:2px;background:var(--cyan);margin:0 4px}.legend i+ i{background:var(--amber);margin-left:10px}#chart{display:block;width:100%;height:210px}.status-list{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}.status-list div{padding:10px 0;border-bottom:1px solid var(--line)}.status-list span{display:block;color:var(--muted);font-size:12px}.status-list b{display:block;margin-top:4px;overflow-wrap:anywhere}.section-head{margin:4px 2px 15px}.tag{display:inline-flex;border:1px solid #36516a;border-radius:999px;padding:6px 9px;color:#b9d2e5;font-size:12px}.tag.amber{border-color:#6b561c;color:#ffe08b}.btn,.diag-grid button{min-height:50px;border:1px solid #31516c;border-radius:14px;background:#172c42;color:var(--text);font-weight:750;padding:10px}.btn:active,.diag-grid button:active,.drive-btn:active{transform:scale(.97)}.btn.primary{background:linear-gradient(135deg,#047d78,#0d9b96);border-color:#2dd4bf}.btn.accent{background:#15385c;border-color:#2b78a8}.btn.success{background:#164d35;border-color:#2c8c5f}.btn.danger-btn{background:#511e2b;border-color:#a63a52}.btn.warning-btn{background:#593e13;border-color:#a67825}.btn.full{width:100%;margin-top:10px}.btn.compact{min-height:42px;padding:8px 16px}.btn:disabled,.drive-btn:disabled{opacity:.38;filter:saturate(.35)}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}.drive-pad{display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:96px 96px 96px;gap:8px;padding:12px}.drive-btn{border:1px solid #31516c;background:#172c42;color:white;border-radius:18px;font-size:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;touch-action:none;user-select:none}.drive-btn small{font-size:13px;margin-top:4px}.forward{grid-column:2}.left{grid-row:2;grid-column:1}.right{grid-row:2;grid-column:3}.back{grid-row:3;grid-column:2}.stop-main{grid-row:2;grid-column:2;border-radius:50%;margin:7px;border:2px solid #ff6879;background:radial-gradient(circle,#e92f48,#9b1730);color:white;font-size:17px;font-weight:900;box-shadow:0 0 24px rgba(251,75,92,.35)}.diag-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.diag-grid .span2{grid-column:1/-1}.muted,.footnote{color:var(--muted)}.footnote{font-size:12px;line-height:1.5}.pid-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pid-item{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:13px}.pid-item label{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px}.pid-item label b{color:var(--cyan);font-size:15px}.pid-item input,.form-card input,textarea{width:100%;border:1px solid #2c4861;background:#091827;color:var(--text);border-radius:12px;padding:12px;margin-top:9px;outline:none}.pid-item input:focus,.form-card input:focus,textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 2px rgba(45,212,191,.12)}.delta{font-size:13px;line-height:1.55}.training-flow{display:grid;grid-template-columns:1fr 1fr;gap:9px}.training-flow div{display:flex;align-items:center;gap:9px;color:var(--muted);font-size:13px}.training-flow b{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#1d354a;color:#b9cad9}.training-flow .done{color:var(--text)}.training-flow .done b{background:var(--cyan);color:#052b28}.metric-lines{line-height:1.65;font-size:13px;margin-top:12px}.candidate{line-height:1.6;font-size:13px;margin-top:12px}.form-card label{display:block;color:var(--muted);font-size:13px;margin-bottom:12px}textarea{resize:vertical;line-height:1.4;font-family:"SF Mono",ui-monospace,monospace;font-size:12px}pre{height:250px;overflow:auto;background:#06111c;border-radius:12px;padding:10px;color:#a9c5d8;font:11px/1.55 "SF Mono",ui-monospace,monospace;white-space:pre-wrap;word-break:break-all}.about{font-size:13px;line-height:1.5}.emergency{position:fixed;z-index:20;right:14px;bottom:calc(var(--nav) + env(safe-area-inset-bottom) + 11px);min-height:54px;border:2px solid #ff7180;border-radius:18px;background:#d5213b;color:white;padding:0 18px;font-weight:900;box-shadow:0 8px 28px rgba(213,33,59,.45)}nav{position:fixed;z-index:19;left:0;right:0;bottom:0;height:calc(var(--nav) + env(safe-area-inset-bottom));padding:6px 8px env(safe-area-inset-bottom);display:grid;grid-template-columns:repeat(5,1fr);background:rgba(6,16,27,.94);border-top:1px solid #1e3447;backdrop-filter:blur(18px)}nav button{border:0;background:transparent;color:#7790a5;font-size:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}nav button span{font-size:20px}nav button.active{color:var(--cyan)}#toast{position:fixed;z-index:50;left:50%;bottom:calc(var(--nav) + env(safe-area-inset-bottom) + 78px);transform:translate(-50%,18px);width:min(88%,540px);background:#eaf8ff;color:#07111f;border-radius:13px;padding:12px 15px;text-align:center;font-weight:750;opacity:0;pointer-events:none;transition:.2s}#toast.show{opacity:1;transform:translate(-50%,0)}@media(max-width:380px){.hero strong{font-size:42px}.ring{width:120px;height:120px}.status-list{grid-template-columns:1fr}.topbar h1{font-size:21px}.drive-pad{grid-template-rows:82px 82px 82px}}@media(orientation:landscape) and (max-height:520px){body{padding-top:8px}.topbar{padding-bottom:8px}.hero{min-height:130px}.ring{width:110px;height:110px}.drive-pad{grid-template-rows:72px 72px 72px;max-width:520px;margin:auto}.emergency{right:92px}}
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <div><div class="eyebrow">BALANCEBOT · TEST MODE</div><h1>Route A 控制台</h1></div>
+    <button id="connectionPill" class="pill offline" data-action="connect"><span></span><b>未连接</b></button>
+  </header>
+  <main>
+    <section class="page active" data-page="status">
+      <div id="secureBanner" class="banner warning"></div>
+      <div class="hero card">
+        <div><span class="label">实时倾角</span><strong id="angleHero">--.-°</strong><small id="gyroHero">角速度 --.-</small></div>
+        <div class="ring"><canvas id="angleGauge" width="160" height="160"></canvas></div>
+      </div>
+      <div class="grid metrics">
+        <div class="card metric"><span>电池</span><b id="battery">-- V</b></div>
+        <div class="card metric"><span>遥测频率</span><b id="rxHz">0.0 Hz</b></div>
+        <div class="card metric"><span>左 / 右编码器</span><b id="encoders">-- / --</b></div>
+        <div class="card metric"><span>左 / 右电机</span><b id="motors">-- / --</b></div>
+      </div>
+      <div class="card"><div class="card-title"><span>最近 30 秒</span><span class="legend"><i></i>角度 <i></i>角速度/10</span></div><canvas id="chart" height="210"></canvas></div>
+      <div class="card status-list">
+        <div><span>设备</span><b id="deviceName">—</b></div><div><span>固件</span><b id="firmware">—</b></div>
+        <div><span>平衡</span><b id="balanceState">未确认</b></div><div><span>训练锁</span><b id="lockState">未确认</b></div>
+        <div><span>固件状态</span><b id="fwState">未知</b></div><div><span>最近接收</span><b id="lastRx">—</b></div>
+        <div><span>有效 / 错误帧</span><b id="frameCounts">0 / 0</b></div><div><span>固件丢包</span><b id="dropped">—</b></div>
+      </div>
+    </section>
+
+    <section class="page" data-page="drive">
+      <div class="section-head"><div><span class="eyebrow">按住移动 · 松开即停</span><h2>人工控制</h2></div><span id="driveReady" class="tag">等待连接</span></div>
+      <div class="notice danger">蓝牙断开不一定让小车立刻停止。移动时保持手指按住按钮，异常时按红色停止。</div>
+      <div class="drive-pad card">
+        <button class="drive-btn forward" data-motion="1,0">▲<small>前进</small></button>
+        <button class="drive-btn left" data-motion="3,0">◀<small>左转</small></button>
+        <button class="stop-main" data-action="stop">停止</button>
+        <button class="drive-btn right" data-motion="4,0">▶<small>右转</small></button>
+        <button class="drive-btn back" data-motion="2,0">▼<small>后退</small></button>
+      </div>
+      <div class="two-col">
+        <button class="btn secondary hold" data-motion="0,1">↶ 原地左转</button>
+        <button class="btn secondary hold" data-motion="0,2">↷ 原地右转</button>
+      </div>
+      <div class="card">
+        <div class="card-title"><span>架空电机诊断</span><span class="tag amber">仅平衡启动前</span></div>
+        <p class="muted">将两轮架空后点按。每次脉冲约 0.6 秒；平衡启动或训练锁定后固件会拒绝。</p>
+        <div class="diag-grid"><button data-diag="L+">左轮 +</button><button data-diag="L-">左轮 −</button><button data-diag="R+">右轮 +</button><button data-diag="R-">右轮 −</button><button class="span2" data-diag="STOP">诊断停止</button></div>
+      </div>
+    </section>
+
+    <section class="page" data-page="pid">
+      <div class="section-head"><div><span class="eyebrow">LIVE + EDITABLE</span><h2>PID 参数</h2></div><button class="btn compact" data-action="get-pid">读取</button></div>
+      <div id="pidGrid" class="pid-grid"></div>
+      <div id="pidDelta" class="card delta">先读取当前 PID，才允许人工写入。</div>
+      <button id="manualPidButton" class="btn primary full" data-action="manual-pid" disabled>应用人工 PID</button>
+      <p class="footnote">显示值按固件协议发送，网页不会再次乘以内部倍率。训练开始后，网页和 STM32 都会锁定人工调参。</p>
+    </section>
+
+    <section class="page" data-page="training">
+      <div class="section-head"><div><span class="eyebrow">GUARDED EXPERIMENT</span><h2>LLM 辅助调参</h2></div><span id="trialState" class="tag">IDLE</span></div>
+      <div class="training-flow card">
+        <div data-step="lock"><b>1</b><span>锁定人工调参</span></div><div data-step="baseline"><b>2</b><span>采集基线</span></div><div data-step="review"><b>3</b><span>生成并审核</span></div><div data-step="trial"><b>4</b><span>试验与决策</span></div>
+      </div>
+      <div class="two-col"><button id="trainStart" class="btn primary" data-action="train-start">开始训练并锁定</button><button id="trainStop" class="btn" data-action="train-stop">停止训练并解锁</button></div>
+      <div class="card">
+        <div class="card-title"><span>基线采集</span><span id="sampleCount" class="tag">0 样本</span></div>
+        <div class="two-col"><button id="baselineStart" class="btn" data-action="baseline-start">开始采集</button><button id="baselineFinish" class="btn" data-action="baseline-finish">结束并计算</button></div>
+        <div id="metricsBox" class="metric-lines muted">尚未计算</div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span>候选建议</span><span id="proposalSource" class="tag">无</span></div>
+        <div class="two-col"><button class="btn" data-action="harness">本地 Harness</button><button class="btn accent" data-action="llm">调用 LLM</button></div>
+        <textarea id="proposalJson" rows="9" spellcheck="false" placeholder="严格 JSON 会显示在这里，也可粘贴后点“验证 JSON”"></textarea>
+        <button class="btn full" data-action="validate-json">验证 JSON</button>
+        <div id="candidateBox" class="candidate muted">尚无合格候选</div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span>固件事务</span><span class="tag amber">每步需 ACK</span></div>
+        <div class="two-col"><button id="prepareButton" class="btn" data-action="prepare">审核并 PREPARE</button><button id="applyButton" class="btn warning-btn" data-action="apply">APPLY 候选</button></div>
+        <div class="two-col"><button id="acceptButton" class="btn success" data-action="accept">ACCEPT</button><button id="rollbackButton" class="btn danger-btn" data-action="rollback">ROLLBACK</button></div>
+      </div>
+    </section>
+
+    <section class="page" data-page="settings">
+      <div class="section-head"><div><span class="eyebrow">CONNECTION + RECORDS</span><h2>设置与日志</h2></div></div>
+      <div class="card form-card">
+        <label>BLE Service UUID<input id="serviceUuid" value="0000ffe0-0000-1000-8000-00805f9b34fb"></label>
+        <label>BLE Characteristic UUID<input id="charUuid" value="0000ffe1-0000-1000-8000-00805f9b34fb"></label>
+        <label>名称前缀<input id="namePrefix" value="YahBoom_BL"></label>
+        <div class="two-col"><label>分片字节<input id="chunkSize" type="number" min="1" max="20" value="20"></label><label>分片间隔 ms<input id="chunkDelay" type="number" min="0" max="100" value="18"></label></div>
+        <button class="btn full" data-action="save-settings">保存通信设置</button>
+      </div>
+      <div class="card form-card">
+        <div class="card-title"><span>LLM 接口</span><span class="tag">OpenAI-compatible</span></div>
+        <label>Base URL<input id="llmBase" value="https://api.deepseek.com"></label>
+        <label>Model<input id="llmModel" value="deepseek-chat"></label>
+        <label>API Key（仅本次页面会话）<input id="llmKey" type="password" autocomplete="off" placeholder="sk-..."></label>
+        <label>最大变化 %（固件硬上限 5%）<input id="maxPct" type="number" min="0.1" max="5" step="0.1" value="5"></label>
+        <p class="footnote">浏览器会直接请求所填接口。若服务端不允许 CORS，请使用你自己的 HTTPS 代理地址；密钥不会写入 localStorage 或导出日志。</p>
+      </div>
+      <div class="card">
+        <div class="two-col"><button class="btn primary" data-action="connect">连接小车</button><button class="btn" data-action="disconnect">安全断开</button></div>
+        <button class="btn full" data-action="mock">启动演示模式</button>
+      </div>
+      <div class="card">
+        <div class="card-title"><span>原始通信日志</span><span id="logCount" class="tag">0</span></div><pre id="log"></pre>
+        <div class="two-col"><button class="btn" data-action="export-csv">导出 CSV</button><button class="btn" data-action="export-json">导出完整日志</button></div>
+        <button class="btn full" data-action="clear-log">清空显示</button>
+      </div>
+      <div class="card about"><b>运行要求</b><p>iPhone 15 Plus / iOS 17.5.1：用 Bluefy 打开 HTTPS 页面。Safari、iOS Chrome 和普通本地预览没有 Web Bluetooth。</p></div>
+    </section>
+  </main>
+  <button id="emergencyStop" class="emergency" data-action="stop">■ 紧急停止</button>
+  <nav>
+    <button class="active" data-nav="status"><span>◉</span>状态</button><button data-nav="drive"><span>✥</span>遥控</button><button data-nav="pid"><span>⌁</span>PID</button><button data-nav="training"><span>◇</span>训练</button><button data-nav="settings"><span>⚙</span>设置</button>
+  </nav>
+  <div id="toast" role="status"></div>
+  <script>(function (root, factory) {
+  const api = factory();
+  if (typeof module === "object" && module.exports) module.exports = api;
+  root.RouteACore = api;
+})(typeof globalThis !== "undefined" ? globalThis : this, function () {
+  "use strict";
+
+  const DEFAULT_PID = Object.freeze({ AP: 96, AD: 48, VP: 62, VI: 31, TP: 17, TD: 20 });
+  const PID_KEYS = Object.freeze(["AP", "AD", "VP", "VI", "TP", "TD"]);
+
+  function crc16(text) {
+    const bytes = new TextEncoder().encode(text);
+    let crc = 0xffff;
+    for (const byte of bytes) {
+      crc ^= byte << 8;
+      for (let i = 0; i < 8; i += 1) {
+        crc = crc & 0x8000 ? ((crc << 1) ^ 0x1021) & 0xffff : (crc << 1) & 0xffff;
+      }
+    }
+    return crc;
+  }
+
+  function frame(body) {
+    return `${body},C${crc16(body).toString(16).toUpperCase().padStart(4, "0")}#`;
+  }
+
+  function verify(raw) {
+    if (typeof raw !== "string" || raw[0] !== "$" || !raw.endsWith("#")) return false;
+    const p = raw.lastIndexOf(",C");
+    if (p < 0 || raw.length - p !== 7) return false;
+    const expected = Number.parseInt(raw.slice(p + 2, p + 6), 16);
+    return Number.isFinite(expected) && expected === crc16(raw.slice(1, p));
+  }
+
+  class StreamParser {
+    constructor(max = 256) { this.max = max; this.buffer = ""; }
+    feed(input) {
+      const text = typeof input === "string" ? input : new TextDecoder("ascii").decode(input);
+      const out = [];
+      for (const ch of text) {
+        if (ch === "$") this.buffer = "$";
+        else if (this.buffer) {
+          this.buffer += ch;
+          if (this.buffer.length > this.max) this.buffer = "";
+          else if (ch === "#") { out.push(this.buffer); this.buffer = ""; }
+        }
+      }
+      return out;
+    }
+  }
+
+  function finiteNumber(value, name) {
+    const n = Number(value);
+    if (!Number.isFinite(n)) throw new Error(`${name} 必须是有限数字`);
+    return n;
+  }
+
+  function normalizePid(input) {
+    const p = {};
+    for (const key of PID_KEYS) p[key] = finiteNumber(input[key], key);
+    return p;
+  }
+
+  function pidCsv(pid) {
+    const p = normalizePid(pid);
+    return PID_KEYS.map((key) => p[key].toFixed(2)).join(",");
+  }
+
+  function command(name, id) { return frame(`P1,${name},${Math.trunc(id)}`); }
+  function getPid() { return frame("P1,GET"); }
+  function training(action) { return frame(`P1,TRAIN,${action}`); }
+  function manualSet(pid) { return frame(`P1,MSET,${pidCsv(pid)}`); }
+  function prepare(id, ttl, pid) { return frame(`P1,PREP,${Math.trunc(id)},${Math.trunc(ttl)},${pidCsv(pid)}`); }
+  function motorDiag(action) { return frame(`P1,DIAG,${action}`); }
+
+  function legacyMotion(move, pivot, pid = DEFAULT_PID) {
+    const p = normalizePid(pid);
+    return `${move},${pivot},0,0,0,0,0,AP${p.AP.toFixed(2)},AD${p.AD.toFixed(2)},VP${p.VP.toFixed(2)},VI${p.VI.toFixed(2)},TP${p.TP.toFixed(2)},TD${p.TD.toFixed(2)}#`;
+  }
+
+  function bodyParts(raw) {
+    if (!verify(raw)) return null;
+    return raw.slice(1, raw.lastIndexOf(",C")).split(",");
+  }
+
+  function parsePidStatus(raw) {
+    const x = bodyParts(raw);
+    if (!x || x.length < 11 || x[0] !== "P1" || x[1] !== "PID") return null;
+    try {
+      return {
+        pid: normalizePid({ AP: x[2], AD: x[3], VP: x[4], VI: x[5], TP: x[6], TD: x[7] }),
+        state: Number.parseInt(x[8], 10), trainingLocked: x[9] === "1", balanceStarted: x[10] === "1"
+      };
+    } catch (_) { return null; }
+  }
+
+  function parseFast(raw) {
+    const x = bodyParts(raw);
+    if (!x || x.length < 10 || x[0] !== "T1" || x[1] !== "F") return null;
+    const n = (i, prefix) => finiteNumber(x[i].slice(prefix.length), prefix);
+    try {
+      return {
+        ms: n(2, ""), angle: n(3, "A"), gyro: n(4, "G"), el: n(5, "EL"), er: n(6, "ER"),
+        ml: n(7, "ML"), mr: n(8, "MR"), state: n(9, "S"),
+        trainingLocked: x[10]?.slice(1) === "1", balanceStarted: x[11]?.slice(1) === "1",
+        c1: x[12] ? n(12, "C1") : 0, c2: x[13] ? n(13, "C2") : 0,
+        c3: x[14] ? n(14, "C3") : 0, c4: x[15] ? n(15, "C4") : 0
+      };
+    } catch (_) { return null; }
+  }
+
+  function parseSlow(raw) {
+    const x = bodyParts(raw);
+    if (!x || x.length < 17 || x[0] !== "T1" || x[1] !== "S") return null;
+    const n = (i, prefix) => finiteNumber(x[i].slice(prefix.length), prefix);
+    try {
+      return {
+        ms: n(2, ""), battery: n(3, "V"), balancePwm: n(4, "B"), velocityPwm: n(5, "V"), turnPwm: n(6, "T"),
+        pid: normalizePid({ AP: n(7, "AP"), AD: n(8, "AD"), VP: n(9, "VP"), VI: n(10, "VI"), TP: n(11, "TP"), TD: n(12, "TD") }),
+        dropped: n(13, "D"), trainingLocked: x[14].slice(1) === "1", balanceStarted: x[15].slice(1) === "1", firmware: x[16]
+      };
+    } catch (_) { return null; }
+  }
+
+  function metrics(samples) {
+    if (!Array.isArray(samples) || samples.length === 0) throw new Error("没有可用遥测样本");
+    const sumAngle = samples.reduce((s, x) => s + x.angle * x.angle, 0);
+    const sumGyro = samples.reduce((s, x) => s + x.gyro * x.gyro, 0);
+    return {
+      rmsAngle: Math.sqrt(sumAngle / samples.length),
+      peakAngle: Math.max(...samples.map((x) => Math.abs(x.angle))),
+      rmsGyro: Math.sqrt(sumGyro / samples.length),
+      saturationRate: samples.filter((x) => Math.abs(x.ml) >= 2595 || Math.abs(x.mr) >= 2595).length / samples.length,
+      samples: samples.length
+    };
+  }
+
+  function harness(base, m) {
+    const p = normalizePid(base);
+    if (m.peakAngle > 8) p.AP *= 1.04;
+    if (m.rmsGyro > 20) p.AD *= 1.04;
+    return { schema_version: 1, decision: "propose", stage: "balance", candidate: p, expected_effect: "Simulation Harness balance-stage rule.", requested_test: "balance_recovery", confidence: 0.7 };
+  }
+
+  function validateProposal(raw, base, maxPct = 5) {
+    const p = typeof raw === "string" ? JSON.parse(raw) : raw;
+    const exact = ["schema_version", "decision", "stage", "candidate", "expected_effect", "requested_test", "confidence"];
+    if (Object.keys(p).sort().join() !== exact.sort().join()) throw new Error("LLM JSON 字段不符合固定 schema");
+    if (p.schema_version !== 1 || !["propose", "hold", "rollback"].includes(p.decision) || p.stage !== "balance") throw new Error("LLM 决策或阶段无效");
+    if (!["balance_recovery", "quiet_balance"].includes(p.requested_test)) throw new Error("requested_test 无效");
+    if (typeof p.expected_effect !== "string" || !p.expected_effect.trim() || p.expected_effect.length > 500) throw new Error("expected_effect 无效");
+    p.confidence = finiteNumber(p.confidence, "confidence");
+    if (p.confidence < 0 || p.confidence > 1) throw new Error("confidence 超出 0..1");
+    const b = normalizePid(base), c = normalizePid(p.candidate);
+    if (Object.keys(p.candidate).sort().join() !== PID_KEYS.slice().sort().join()) throw new Error("candidate 必须恰好包含六个 PID");
+    for (const key of ["VP", "VI", "TP", "TD"]) if (Math.abs(c[key] - b[key]) >= 0.005) throw new Error(`${key} 在 balance 阶段不得变化`);
+    if (p.decision === "propose") for (const key of ["AP", "AD"]) {
+      const pct = Math.abs(c[key] - b[key]) * 100 / Math.abs(b[key]);
+      if (!Number.isFinite(pct) || pct > Math.min(5, maxPct) + 1e-9) throw new Error(`${key} 变化 ${pct.toFixed(2)}% 超过限制`);
+    }
+    p.candidate = c;
+    return p;
+  }
+
+  return { DEFAULT_PID, PID_KEYS, crc16, frame, verify, StreamParser, normalizePid, pidCsv, command, getPid, training, manualSet, prepare, motorDiag, legacyMotion, parsePidStatus, parseFast, parseSlow, metrics, harness, validateProposal };
+});
+</script>
+  <script>(function () {
+  "use strict";
+  const C = window.RouteACore;
+  const $ = (id) => document.getElementById(id);
+  const state = {
+    device: null, server: null, characteristic: null, connected: false, mock: false, mockTimer: null,
+    parser: new C.StreamParser(256), currentPid: null, candidate: null, metrics: null, samples: [],
+    trainingLocked: false, balanceStarted: false, firmwareState: 0, firmware: "—",
+    trialState: "IDLE", trialId: 0, heartbeat: null, baseline: false, activeMotion: null,
+    fast: null, slow: null, rxTimes: [], frameOk: 0, frameError: 0, logs: [], telemetry: [],
+    chart: [], sendChain: Promise.resolve(), mockClock: 0, mockPid: { ...C.DEFAULT_PID }
+  };
+  const ranges = { AP: [20, 288], AD: [5, 200], VP: [10, 72], VI: [1, 100], TP: [1, 100], TD: [1, 100] };
+  let toastTimer;
+
+  function nowText() { return new Date().toLocaleTimeString("zh-CN", { hour12: false }); }
+  function toast(message) { const el = $("toast"); el.textContent = message; el.classList.add("show"); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove("show"), 2500); }
+  function log(direction, text) {
+    const item = { time: new Date().toISOString(), direction, text };
+    state.logs.push(item); if (state.logs.length > 1500) state.logs.shift();
+    const shown = state.logs.slice(-120).map((x) => `${x.time.slice(11, 23)} ${x.direction.padEnd(4)} ${x.text}`).join("\n");
+    $("log").textContent = shown; $("log").scrollTop = $("log").scrollHeight; $("logCount").textContent = String(state.logs.length);
+  }
+  function connectionLabel(kind, text) { const p = $("connectionPill"); p.className = `pill ${kind}`; p.querySelector("b").textContent = text; }
+  function trialLabel() { $("trialState").textContent = state.trialState; document.querySelectorAll("[data-step]").forEach((el) => el.classList.remove("done")); if (state.trainingLocked) document.querySelector('[data-step="lock"]').classList.add("done"); if (["BASELINE","REVIEW","PREPARING","PREPARED","APPLYING","TRIAL"].includes(state.trialState)) document.querySelector('[data-step="baseline"]').classList.add("done"); if (["REVIEW","PREPARING","PREPARED","APPLYING","TRIAL"].includes(state.trialState)) document.querySelector('[data-step="review"]').classList.add("done"); if (["PREPARING","PREPARED","APPLYING","TRIAL"].includes(state.trialState)) document.querySelector('[data-step="trial"]').classList.add("done"); }
+
+  function initPidUi() {
+    $("pidGrid").innerHTML = C.PID_KEYS.map((key) => `<div class="pid-item"><label>${key}<b id="live${key}">--</b></label><input id="edit${key}" inputmode="decimal" type="number" step="0.01" min="${ranges[key][0]}" max="${ranges[key][1]}" placeholder="${C.DEFAULT_PID[key].toFixed(2)}"></div>`).join("");
+    C.PID_KEYS.forEach((key) => $("edit" + key).addEventListener("input", updatePidDelta));
+  }
+  function readPidInputs() { const raw = {}; C.PID_KEYS.forEach((key) => raw[key] = $("edit" + key).value); return C.normalizePid(raw); }
+  function setPidUi(pid, copyEdits) { state.currentPid = C.normalizePid(pid); C.PID_KEYS.forEach((key) => { $("live" + key).textContent = state.currentPid[key].toFixed(2); if (copyEdits) $("edit" + key).value = state.currentPid[key].toFixed(2); }); updatePidDelta(); updateUi(); }
+  function updatePidDelta() {
+    if (!state.currentPid) { $("pidDelta").textContent = "先读取当前 PID，才允许人工写入。"; return; }
+    try { const p = readPidInputs(); $("pidDelta").innerHTML = C.PID_KEYS.map((key) => { const d = state.currentPid[key] ? (p[key] - state.currentPid[key]) * 100 / Math.abs(state.currentPid[key]) : 0; return `<b>${key}</b> ${d >= 0 ? "+" : ""}${d.toFixed(2)}%`; }).join("　"); }
+    catch (e) { $("pidDelta").textContent = e.message; }
+  }
+
+  function loadSettings() {
+    let s = {}; try { s = JSON.parse(localStorage.getItem("routea-bluefy-settings") || "{}"); } catch (_) {}
+    for (const [id, fallback] of [["serviceUuid","0000ffe0-0000-1000-8000-00805f9b34fb"],["charUuid","0000ffe1-0000-1000-8000-00805f9b34fb"],["namePrefix","YahBoom_BL"],["chunkSize","20"],["chunkDelay","18"],["llmBase","https://api.deepseek.com"],["llmModel","deepseek-chat"],["maxPct","5"]]) $(id).value = s[id] ?? fallback;
+  }
+  function saveSettings() { const s = {}; ["serviceUuid","charUuid","namePrefix","chunkSize","chunkDelay","llmBase","llmModel","maxPct"].forEach((id) => s[id] = $(id).value.trim()); localStorage.setItem("routea-bluefy-settings", JSON.stringify(s)); toast("设置已保存"); }
+
+  async function connect() {
+    if (state.mock) stopMock();
+    if (!navigator.bluetooth) { toast("当前浏览器没有 Web Bluetooth，请在 Bluefy 中打开 HTTPS 页面"); switchPage("settings"); return; }
+    const service = $("serviceUuid").value.trim().toLowerCase(), characteristic = $("charUuid").value.trim().toLowerCase();
+    try {
+      connectionLabel("connecting", "选择设备");
+      const prefix = $("namePrefix").value.trim();
+      const filters = prefix ? [{ namePrefix: prefix }, { namePrefix: " Yah" }] : [{ services: [service] }];
+      state.device = await navigator.bluetooth.requestDevice({ filters, optionalServices: [service] });
+      state.device.addEventListener("gattserverdisconnected", onDisconnected);
+      $("deviceName").textContent = state.device.name || "BLE 设备";
+      connectionLabel("connecting", "发现服务");
+      state.server = await state.device.gatt.connect();
+      const svc = await state.server.getPrimaryService(service);
+      state.characteristic = await svc.getCharacteristic(characteristic);
+      state.characteristic.addEventListener("characteristicvaluechanged", onNotification);
+      await state.characteristic.startNotifications();
+      state.connected = true; state.mock = false; connectionLabel("online", "BLE 已连接");
+      log("SYS", `FFE0/FFE1 ready: ${state.device.name || "unknown"}`); toast("双向链路已就绪，正在读取 PID"); updateUi();
+      await send(C.getPid());
+    } catch (e) { log("ERR", `${e.name || "Error"}: ${e.message}`); connectionLabel("offline", "连接失败"); toast(`连接失败：${e.message}`); await cleanupConnection(false); }
+  }
+  async function cleanupConnection(requestGattDisconnect) {
+    stopHeartbeat(); releaseMotion(true); state.connected = false; state.characteristic = null; state.server = null;
+    if (requestGattDisconnect && state.device?.gatt?.connected) state.device.gatt.disconnect();
+    connectionLabel("offline", "未连接"); updateUi();
+  }
+  function onDisconnected() { log("SYS", "BLE disconnected"); cleanupConnection(false); toast("蓝牙已断开；请确认小车已经停止"); }
+  async function safeDisconnect() {
+    try { await safeStop(); if (["PREPARING","PREPARED","APPLYING","TRIAL"].includes(state.trialState)) await send(C.command("ROLLBACK", state.trialId)); await delay(120); } catch (_) {}
+    if (state.mock) stopMock(); else await cleanupConnection(true);
+  }
+  function onNotification(event) {
+    const bytes = new Uint8Array(event.target.value.buffer, event.target.value.byteOffset, event.target.value.byteLength);
+    for (const raw of state.parser.feed(bytes)) handleFrame(raw);
+  }
+  function delay(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
+  async function writeChunks(text) {
+    if (state.mock) return mockReceiveCommand(text);
+    if (!state.connected || !state.characteristic) throw new Error("BLE UART 尚未就绪");
+    const bytes = new TextEncoder().encode(text), size = Math.max(1, Math.min(20, Number($("chunkSize").value) || 20)), pause = Math.max(0, Math.min(100, Number($("chunkDelay").value) || 0));
+    for (let i = 0; i < bytes.length; i += size) {
+      const chunk = bytes.slice(i, i + size), ch = state.characteristic;
+      if (typeof ch.writeValue === "function") await ch.writeValue(chunk);
+      else if (typeof ch.writeValueWithResponse === "function") await ch.writeValueWithResponse(chunk);
+      else if (typeof ch.writeValueWithoutResponse === "function") await ch.writeValueWithoutResponse(chunk);
+      else throw new Error("FFE1 不支持写入");
+      if (pause && i + size < bytes.length) await delay(pause);
+    }
+  }
+  function send(text) {
+    log("TX", text);
+    const task = state.sendChain.then(() => writeChunks(text));
+    state.sendChain = task.catch((e) => { log("ERR", `write: ${e.message}`); toast(`发送失败：${e.message}`); });
+    return task;
+  }
+
+  function handleFrame(raw) {
+    log("RX", raw); state.rxTimes.push(Date.now()); state.rxTimes = state.rxTimes.filter((t) => Date.now() - t < 5000); $("lastRx").textContent = nowText();
+    if (raw.startsWith("$P1,") || raw.startsWith("$T1,")) { if (!C.verify(raw)) { state.frameError += 1; updateUi(); return; } state.frameOk += 1; }
+    else state.frameOk += 1;
+    const pid = C.parsePidStatus(raw); if (pid) { setPidUi(pid.pid, !state.currentPid); applyFirmwareFlags(pid); toast("PID 已同步"); }
+    const fast = C.parseFast(raw); if (fast) {
+      state.fast = fast; state.firmwareState = fast.state; state.trainingLocked = fast.trainingLocked; state.balanceStarted = fast.balanceStarted;
+      state.telemetry.push({ at: new Date().toISOString(), ...fast }); if (state.telemetry.length > 10000) state.telemetry.shift();
+      state.chart.push({ at: Date.now(), angle: fast.angle, gyro: fast.gyro }); state.chart = state.chart.filter((p) => Date.now() - p.at <= 60000);
+      if (state.baseline) { state.samples.push(fast); $("sampleCount").textContent = `${state.samples.length} 样本`; }
+      if (fast.state === 2 && state.trialState === "APPLYING") state.trialState = "TRIAL";
+      if (fast.state === 0 && ["PREPARING","PREPARED","APPLYING","TRIAL"].includes(state.trialState)) { state.trialState = "IDLE"; state.trialId = 0; stopHeartbeat(); toast("固件已结束试验或完成回滚"); }
+    }
+    const slow = C.parseSlow(raw); if (slow) { state.slow = slow; state.firmware = slow.firmware; state.trainingLocked = slow.trainingLocked; state.balanceStarted = slow.balanceStarted; setPidUi(slow.pid, false); }
+    if (raw.includes("P1,READY,1")) state.balanceStarted = true;
+    if (raw.includes("P1,ACK,TRAIN_START,")) { state.trainingLocked = true; toast("训练已锁定；人工 PID 已禁用"); setTimeout(() => send(C.getPid()), 120); }
+    if (raw.includes("P1,ACK,TRAIN_STOP,")) { state.trainingLocked = false; state.trialState = "IDLE"; stopHeartbeat(); setTimeout(() => send(C.getPid()), 120); }
+    if (raw.includes("P1,ACK,MSET,")) setTimeout(() => send(C.getPid()), 120);
+    if (raw.includes("P1,ACK,PREP,") && state.trialState === "PREPARING") { state.trialState = "PREPARED"; toast("PREPARE 已获固件确认"); }
+    if (raw.includes("P1,ACK,APPLY,") && state.trialState === "APPLYING") startHeartbeat();
+    if (raw.includes("P1,ACK,ACCEPT,")) { state.trialState = "IDLE"; state.trialId = 0; stopHeartbeat(); toast("候选已接受为新 champion"); setTimeout(() => send(C.getPid()), 120); }
+    if (raw.includes("P1,ACK,ROLLBACK,")) { toast("固件已接收回滚请求"); }
+    const err = raw.match(/P1,ERR,([^,]+)/); if (err) toast(`固件拒绝：${err[1]}`);
+    updateUi(); draw();
+  }
+  function applyFirmwareFlags(p) { state.firmwareState = p.state; state.trainingLocked = p.trainingLocked; state.balanceStarted = p.balanceStarted; }
+
+  function updateUi() {
+    const connected = state.connected || state.mock;
+    $("rxHz").textContent = `${(state.rxTimes.length / 5).toFixed(1)} Hz`;
+    $("frameCounts").textContent = `${state.frameOk} / ${state.frameError}`;
+    $("angleHero").textContent = state.fast ? `${state.fast.angle.toFixed(2)}°` : "--.-°";
+    $("gyroHero").textContent = state.fast ? `角速度 ${state.fast.gyro.toFixed(1)} raw` : "角速度 --.-";
+    $("battery").textContent = state.slow ? `${state.slow.battery.toFixed(2)} V` : "-- V";
+    $("encoders").textContent = state.fast ? `${state.fast.el} / ${state.fast.er}` : "-- / --";
+    $("motors").textContent = state.fast ? `${state.fast.ml} / ${state.fast.mr}` : "-- / --";
+    $("firmware").textContent = state.firmware; $("dropped").textContent = state.slow ? String(state.slow.dropped) : "—";
+    $("balanceState").textContent = state.balanceStarted ? "已启动" : "未启动"; $("lockState").textContent = state.trainingLocked ? "已锁定" : "未锁定";
+    $("fwState").textContent = ["IDLE / 基线", "PREPARED", "TRIAL"][state.firmwareState] || `未知 ${state.firmwareState}`;
+    $("driveReady").textContent = connected ? (state.balanceStarted ? "平衡运行中" : "连接已就绪") : "等待连接";
+    $("manualPidButton").disabled = !connected || !state.currentPid || state.trainingLocked || state.firmwareState !== 0;
+    $("trainStart").disabled = !connected || !state.currentPid || !state.balanceStarted || state.trainingLocked || state.trialState !== "IDLE";
+    $("trainStop").disabled = !connected || !state.trainingLocked;
+    $("baselineStart").disabled = !state.trainingLocked || state.trialState !== "IDLE";
+    $("baselineFinish").disabled = state.trialState !== "BASELINE" || state.samples.length === 0;
+    $("prepareButton").disabled = !state.candidate || !state.trainingLocked || state.trialState !== "REVIEW";
+    $("applyButton").disabled = state.trialState !== "PREPARED";
+    $("acceptButton").disabled = state.trialState !== "TRIAL";
+    $("rollbackButton").disabled = !["PREPARING","PREPARED","APPLYING","TRIAL"].includes(state.trialState);
+    document.querySelectorAll("[data-motion]").forEach((b) => b.disabled = !connected);
+    document.querySelectorAll("[data-diag]").forEach((b) => b.disabled = !connected || state.balanceStarted || state.trainingLocked || state.firmwareState !== 0);
+    trialLabel();
+  }
+
+  function validateManualPid() {
+    const p = readPidInputs(); for (const key of C.PID_KEYS) if (p[key] < ranges[key][0] || p[key] > ranges[key][1]) throw new Error(`${key} 超出固件保护范围 ${ranges[key][0]}..${ranges[key][1]}`); return p;
+  }
+  async function manualPid() { try { if (!state.currentPid) throw new Error("请先读取 PID"); if (state.trainingLocked) throw new Error("训练锁定期间不能人工调参"); const p = validateManualPid(); if (!confirm("确认把六个 PID 写入 STM32？发送后仍需等待 ACK 和读回。")) return; await send(C.manualSet(p)); } catch (e) { toast(e.message); } }
+  async function trainStart() { if (!state.currentPid || !state.balanceStarted || state.trialState !== "IDLE") return toast("需要 PID 已同步、平衡已启动且无活动试验"); await send(C.training("START")); }
+  async function trainStop() { if (["PREPARING","PREPARED","APPLYING","TRIAL"].includes(state.trialState) && !confirm("停止训练会触发回滚。继续？")) return; await safeStop(); await send(C.training("STOP")); }
+  function baselineStart() { if (!state.trainingLocked || state.trialState !== "IDLE") return toast("请先开始训练并锁定人工调参"); state.samples = []; state.metrics = null; state.baseline = true; state.trialState = "BASELINE"; $("sampleCount").textContent = "0 样本"; $("metricsBox").textContent = "采集中…保持小车处于指定测试状态"; updateUi(); }
+  function baselineFinish() { try { state.baseline = false; state.metrics = C.metrics(state.samples); state.trialState = "REVIEW"; const m = state.metrics; $("metricsBox").innerHTML = `倾角 RMS <b>${m.rmsAngle.toFixed(3)}°</b><br>倾角峰值 <b>${m.peakAngle.toFixed(3)}°</b><br>角速度 RMS <b>${m.rmsGyro.toFixed(3)} raw</b><br>PWM 饱和率 <b>${(m.saturationRate * 100).toFixed(2)}%</b>`; updateUi(); } catch (e) { toast(e.message); } }
+  function showProposal(p, source) { state.candidate = p; $("proposalJson").value = JSON.stringify(p, null, 2); $("proposalSource").textContent = source; const c = p.candidate; $("candidateBox").innerHTML = `<b>${p.decision.toUpperCase()}</b> · 置信度 ${(p.confidence * 100).toFixed(0)}%<br>${C.PID_KEYS.map((k) => `${k} ${c[k].toFixed(2)}`).join("　")}<br>${p.expected_effect}`; updateUi(); }
+  function harness() { try { if (state.trialState !== "REVIEW" || !state.metrics) throw new Error("请先完成基线采集"); showProposal(C.validateProposal(C.harness(state.currentPid, state.metrics), state.currentPid, Number($("maxPct").value)), "本地 Harness"); } catch (e) { toast(e.message); } }
+  function validateJson() { try { if (!state.currentPid || state.trialState !== "REVIEW") throw new Error("请先完成基线采集"); showProposal(C.validateProposal($("proposalJson").value, state.currentPid, Number($("maxPct").value)), "手动 JSON"); toast("候选 JSON 验证通过"); } catch (e) { state.candidate = null; updateUi(); toast(`候选被拒绝：${e.message}`); } }
+  async function requestLlm() {
+    try {
+      if (!state.trainingLocked || state.trialState !== "REVIEW" || !state.metrics) throw new Error("请先锁定训练并完成基线采集");
+      const key = $("llmKey").value.trim(); if (!key) throw new Error("请在设置页填写 API Key");
+      const maxPct = Math.min(5, Math.max(.1, Number($("maxPct").value) || 5));
+      const system = "PROMPT_VERSION: route-a-pid-v4-ios. You are a PID tuning adviser for a two-wheel balance robot. Return exactly one JSON object with exactly: schema_version, decision, stage, candidate, expected_effect, requested_test, confidence. decision is propose, hold, or rollback. stage is balance. candidate always contains numeric AP, AD, VP, VI, TP, TD. Change only AP/AD; keep VP/VI/TP/TD exactly equal to current_pid. Stay within harness_limits. requested_test is balance_recovery or quiet_balance. Never output Markdown, PWM, motor commands, or claim acceptance.";
+      const user = { schema_version: 1, current_pid: state.currentPid, stage: "balance", trial_scenario: { name: "balance_recovery", completed: true, motion_command: "stop" }, data_quality: { complete: state.metrics.samples >= 10 }, metrics: { pitch_rms_deg: state.metrics.rmsAngle, pitch_peak_deg: state.metrics.peakAngle, pitch_rate_rms_raw: state.metrics.rmsGyro, pwm_saturation_fraction: state.metrics.saturationRate, sample_count: state.metrics.samples }, recent_history: [], harness_limits: { max_relative_change: maxPct / 100, firmware_hard_cap_percent: 5 } };
+      toast("正在请求 LLM…");
+      const base = $("llmBase").value.trim().replace(/\/$/, "");
+      const response = await fetch(`${base}/chat/completions`, { method: "POST", headers: { "Authorization": `Bearer ${key}`, "Content-Type": "application/json" }, body: JSON.stringify({ model: $("llmModel").value.trim(), response_format: { type: "json_object" }, messages: [{ role: "system", content: system }, { role: "user", content: JSON.stringify(user) }] }) });
+      if (!response.ok) throw new Error(`HTTP ${response.status}: ${(await response.text()).slice(0, 180)}`);
+      const root = await response.json(); const raw = root.choices?.[0]?.message?.content; if (!raw) throw new Error("响应中没有 choices[0].message.content");
+      showProposal(C.validateProposal(raw, state.currentPid, maxPct), "LLM"); toast("LLM 候选已通过本地验证，尚未发给小车");
+    } catch (e) { log("ERR", `LLM: ${e.message}`); toast(`LLM 请求失败：${e.message}`); }
+  }
+  async function prepare() { if (!state.candidate || state.candidate.decision !== "propose" || state.trialState !== "REVIEW") return toast("没有可 PREPARE 的 propose 候选"); if (!confirm("确认把候选发送到固件暂存？此步不会立即改变 PID。")) return; state.trialId = Math.floor(Date.now() / 1000); state.trialState = "PREPARING"; updateUi(); await send(C.prepare(state.trialId, 30000, state.candidate.candidate)); }
+  async function apply() { if (state.trialState !== "PREPARED") return; if (!confirm("APPLY 会在控制边界切换 PID。确认小车周围安全并继续？")) return; state.trialState = "APPLYING"; updateUi(); await send(C.command("APPLY", state.trialId)); startHeartbeat(); }
+  async function accept() { if (state.trialState !== "TRIAL" || !confirm("确认接受当前候选为新的 champion？")) return; await send(C.command("ACCEPT", state.trialId)); }
+  async function rollback() { if (!["PREPARING","PREPARED","APPLYING","TRIAL"].includes(state.trialState)) return; await safeStop(); await send(C.command("ROLLBACK", state.trialId)); }
+  function startHeartbeat() { stopHeartbeat(); state.heartbeat = setInterval(() => { if (["APPLYING","TRIAL"].includes(state.trialState)) send(C.command("HB", state.trialId)); }, 500); }
+  function stopHeartbeat() { if (state.heartbeat) clearInterval(state.heartbeat); state.heartbeat = null; }
+
+  async function safeStop() { releaseMotion(false); if (state.connected || state.mock) { await send(C.legacyMotion(0, 0, state.currentPid || C.DEFAULT_PID)); if (state.trialId) await send(C.command("STOP", state.trialId)); } }
+  function bindMotionButton(button) {
+    const [move, pivot] = button.dataset.motion.split(",").map(Number);
+    const start = async (event) => { event.preventDefault(); if (!(state.connected || state.mock)) return; if (state.activeMotion && state.activeMotion !== button) await releaseMotion(false); state.activeMotion = button; button.setPointerCapture?.(event.pointerId); button.classList.add("pressed"); await send(C.legacyMotion(move, pivot, state.currentPid || C.DEFAULT_PID)); };
+    const stop = (event) => { if (state.activeMotion === button) { event?.preventDefault(); releaseMotion(false); } };
+    button.addEventListener("pointerdown", start); button.addEventListener("pointerup", stop); button.addEventListener("pointercancel", stop); button.addEventListener("lostpointercapture", stop);
+  }
+  async function releaseMotion(silent) { const b = state.activeMotion; state.activeMotion = null; if (b) b.classList.remove("pressed"); if (!silent && (state.connected || state.mock)) await send(C.legacyMotion(0, 0, state.currentPid || C.DEFAULT_PID)); }
+  async function motorDiag(action) { if (state.balanceStarted || state.trainingLocked) return toast("诊断只允许平衡启动前且训练未锁定时使用"); await send(C.motorDiag(action)); }
+
+  function startMock() {
+    if (state.connected) return toast("请先断开真实设备"); stopMock(); state.mock = true; state.connected = false; state.balanceStarted = true; state.firmware = "RA1.5-MOCK"; connectionLabel("online", "演示模式"); $("deviceName").textContent = "Mock YahBoom_BL"; setPidUi(state.mockPid, true);
+    emitMockTelemetry();
+    state.mockTimer = setInterval(emitMockTelemetry, 200);
+    log("SYS", "Mock mode started"); updateUi(); switchPage("status");
+  }
+  function emitMockTelemetry() {
+    try {
+      state.mockClock += 200;
+      const a = Math.sin(state.mockClock / 820) * 2.4 + Math.sin(state.mockClock / 210) * .35;
+      const g = Math.cos(state.mockClock / 820) * 13;
+      mockEmit(C.frame(`T1,F,${state.mockClock},A${a.toFixed(2)},G${g.toFixed(1)},EL${Math.round(g)},ER${Math.round(g + 1)},ML${Math.round(-a * 120)},MR${Math.round(-a * 118)},S${state.firmwareState},L${state.trainingLocked ? 1 : 0},R1,C1${Math.max(0,Math.round(a*20))},C2${Math.max(0,Math.round(-a*20))},C3${Math.max(0,Math.round(a*19))},C4${Math.max(0,Math.round(-a*19))}`));
+      if (state.mockClock % 1000 === 0) mockEmit(C.frame(`T1,S,${state.mockClock},V11.82,B0,V0,T0,AP${state.mockPid.AP.toFixed(2)},AD${state.mockPid.AD.toFixed(2)},VP${state.mockPid.VP.toFixed(2)},VI${state.mockPid.VI.toFixed(2)},TP${state.mockPid.TP.toFixed(2)},TD${state.mockPid.TD.toFixed(2)},D0,L${state.trainingLocked ? 1 : 0},R1,RA1.5-MOCK`));
+    } catch (e) { log("ERR", `mock telemetry: ${e.message}`); }
+  }
+  function stopMock() { if (state.mockTimer) clearInterval(state.mockTimer); state.mockTimer = null; if (state.mock) log("SYS", "Mock mode stopped"); state.mock = false; connectionLabel("offline", "未连接"); updateUi(); }
+  function mockEmit(raw) { for (const f of state.parser.feed(raw)) handleFrame(f); }
+  function mockReceiveCommand(raw) {
+    const body = raw.startsWith("$") && raw.includes(",C") ? raw.slice(1, raw.lastIndexOf(",C")) : "";
+    if (body === "P1,GET") setTimeout(() => mockEmit(C.frame(`P1,PID,${C.pidCsv(state.mockPid)},${state.firmwareState},${state.trainingLocked ? 1 : 0},1`)), 40);
+    else if (body.startsWith("P1,MSET,")) { const v = body.split(",").slice(2).map(Number); C.PID_KEYS.forEach((k,i) => state.mockPid[k] = v[i]); setTimeout(() => mockEmit(C.frame("P1,ACK,MSET,0,0,0")), 40); }
+    else if (body === "P1,TRAIN,START") { state.trainingLocked = true; setTimeout(() => mockEmit(C.frame("P1,ACK,TRAIN_START,0,0,1")), 40); }
+    else if (body === "P1,TRAIN,STOP") { state.trainingLocked = false; state.firmwareState = 0; setTimeout(() => mockEmit(C.frame("P1,ACK,TRAIN_STOP,0,0,0")), 40); }
+    else if (body.startsWith("P1,PREP,")) { state.firmwareState = 1; const id = body.split(",")[2]; setTimeout(() => mockEmit(C.frame(`P1,ACK,PREP,${id},1,1`)), 40); }
+    else if (body.startsWith("P1,APPLY,")) { state.firmwareState = 2; const id = body.split(",")[2]; if (state.candidate) state.mockPid = { ...state.candidate.candidate }; setTimeout(() => mockEmit(C.frame(`P1,ACK,APPLY,${id},1,1`)), 40); }
+    else if (body.startsWith("P1,ACCEPT,")) { const id = body.split(",")[2]; state.firmwareState = 0; setTimeout(() => mockEmit(C.frame(`P1,ACK,ACCEPT,${id},0,1`)), 40); }
+    else if (body.startsWith("P1,ROLLBACK,")) { const id = body.split(",")[2]; state.firmwareState = 0; setTimeout(() => mockEmit(C.frame(`P1,ACK,ROLLBACK,${id},0,1`)), 40); }
+    return Promise.resolve();
+  }
+
+  function draw() { drawGauge(); drawChart(); }
+  function prepCanvas(canvas, height) { const dpr = window.devicePixelRatio || 1, w = canvas.clientWidth || canvas.width, h = height || canvas.clientHeight || canvas.height; if (canvas.width !== Math.round(w*dpr) || canvas.height !== Math.round(h*dpr)) { canvas.width = Math.round(w*dpr); canvas.height = Math.round(h*dpr); } const ctx = canvas.getContext("2d"); ctx.setTransform(dpr,0,0,dpr,0,0); return {ctx,w,h}; }
+  function drawGauge() { const {ctx,w,h} = prepCanvas($("angleGauge")); const a = state.fast ? state.fast.angle : 0, r = Math.min(w,h)/2-12, cx=w/2, cy=h/2; ctx.clearRect(0,0,w,h); ctx.lineWidth=10;ctx.lineCap="round";ctx.strokeStyle="#1d3a51";ctx.beginPath();ctx.arc(cx,cy,r,.75*Math.PI,2.25*Math.PI);ctx.stroke();ctx.strokeStyle=Math.abs(a)>10?"#fb4b5c":"#2dd4bf";ctx.beginPath();ctx.arc(cx,cy,r,.75*Math.PI,.75*Math.PI+Math.max(0,Math.min(1,(a+25)/50))*1.5*Math.PI);ctx.stroke();ctx.save();ctx.translate(cx,cy);ctx.rotate(a*Math.PI/180);ctx.strokeStyle="#eff7ff";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,8);ctx.lineTo(0,-r+18);ctx.stroke();ctx.restore();ctx.fillStyle="#8fa7ba";ctx.font="12px -apple-system";ctx.textAlign="center";ctx.fillText("±25° guard",cx,cy+7); }
+  function drawChart() { const canvas=$("chart"),{ctx,w,h}=prepCanvas(canvas,210);ctx.clearRect(0,0,w,h);ctx.strokeStyle="#1b354b";ctx.lineWidth=1;for(let i=1;i<5;i++){const y=i*h/5;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}const pts=state.chart.filter(p=>Date.now()-p.at<=30000);const series=(key,scale,color)=>{if(pts.length<2)return;ctx.strokeStyle=color;ctx.lineWidth=2;ctx.beginPath();pts.forEach((p,i)=>{const x=w-(Date.now()-p.at)/30000*w,y=h/2-p[key]*scale;i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke()};series("angle",h/30,"#2dd4bf");series("gyro",h/300,"#fbbf24"); }
+
+  function download(name, mime, content) { const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([content],{type:mime}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000); }
+  function exportCsv() { const cols=["at","ms","angle","gyro","el","er","ml","mr","state","trainingLocked","balanceStarted","c1","c2","c3","c4"]; download(`routea-${Date.now()}.csv`,"text/csv;charset=utf-8","\ufeff"+cols.join(",")+"\n"+state.telemetry.map(x=>cols.map(k=>x[k]).join(",")).join("\n")); }
+  function exportJson() { download(`routea-${Date.now()}.json`,"application/json",JSON.stringify({exportedAt:new Date().toISOString(),pid:state.currentPid,metrics:state.metrics,proposal:state.candidate,telemetry:state.telemetry,logs:state.logs},null,2)); }
+  function switchPage(name) { document.querySelectorAll(".page").forEach((p)=>p.classList.toggle("active",p.dataset.page===name));document.querySelectorAll("nav button").forEach((b)=>b.classList.toggle("active",b.dataset.nav===name));window.scrollTo({top:0,behavior:"smooth"});setTimeout(draw,80); }
+  function bind() {
+    document.querySelectorAll("[data-nav]").forEach((b)=>b.addEventListener("click",()=>switchPage(b.dataset.nav)));
+    document.querySelectorAll("[data-motion]").forEach(bindMotionButton);
+    document.querySelectorAll("[data-diag]").forEach((b)=>b.addEventListener("click",()=>motorDiag(b.dataset.diag)));
+    const actions={connect,disconnect:safeDisconnect,stop:safeStop,"get-pid":()=>send(C.getPid()),"manual-pid":manualPid,"train-start":trainStart,"train-stop":trainStop,"baseline-start":baselineStart,"baseline-finish":baselineFinish,harness,llm:requestLlm,"validate-json":validateJson,prepare,apply,accept,rollback,"save-settings":saveSettings,mock:startMock,"export-csv":exportCsv,"export-json":exportJson,"clear-log":()=>{$("log").textContent=""}};
+    document.querySelectorAll("[data-action]").forEach((b)=>b.addEventListener("click",()=>actions[b.dataset.action]?.()));
+    document.addEventListener("visibilitychange",()=>{if(document.hidden)safeStop().catch(()=>{});});window.addEventListener("pagehide",()=>{releaseMotion(false);});window.addEventListener("resize",draw);
+  }
+  function boot() {
+    initPidUi();loadSettings();bind();updateUi();draw();setInterval(()=>{updateUi();draw()},1000);
+    if (!window.isSecureContext) $("secureBanner").textContent="当前页面不是 HTTPS 安全上下文。Bluefy 的 Web Bluetooth 可能不可用，请按 README 用 GitHub Pages 打开。";
+    else if (!navigator.bluetooth) $("secureBanner").textContent="当前浏览器未提供 Web Bluetooth。请确认页面是在 Bluefy 内打开，而不是 Safari、Chrome 或“文件”预览。";
+    else $("secureBanner").textContent="";
+    log("SYS",`页面就绪 secure=${window.isSecureContext} bluetooth=${!!navigator.bluetooth}`);
+    if (new URLSearchParams(location.search).get("mock") === "1") setTimeout(startMock, 0);
+  }
+  boot();
+})();
+</script>
+</body>
+</html>
