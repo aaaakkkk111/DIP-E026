@@ -1,0 +1,10 @@
+
+Starting PPO training (5,000,000 Steps)...
+C:\Users\tzeju\Desktop\E3180 DIP\3Dsim\venv\Lib\site-packages\stable_baselines3\common\callbacks.py:419: UserWarning: Training and eval env are not of the same type<stable_baselines3.common.vec_env.subproc_vec_env.SubprocVecEnv object at 0x0000021BBBE95940> != <stable_baselines3.common.vec_env.dummy_vec_env.DummyVecEnv object at 0x0000021BC49D3770>
+  warnings.warn("Training and eval env are not of the same type" f"{self.training_env} != {self.eval_env}")
+Eval num_timesteps=190000, episode_reward=40.15 +/- 22.94
+Episode length: 49.50 +/- 16.27
+New best mean reward!
+Eval num_timesteps=380000, episode_reward=50.00 +/- 40.03
+Episode length: 71.95 +/- 30.13
+New best mean reward!

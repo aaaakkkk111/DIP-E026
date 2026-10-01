@@ -1,0 +1,21 @@
+
+Training on real_robot.xml at 200Hz, PWM actions (12,000,000 steps, 19 envs)...
+C:\Users\tzeju\Desktop\E3180 DIP\3Dsim\venv\Lib\site-packages\stable_baselines3\common\callbacks.py:419: UserWarning: Training and eval env are not of the same type<stable_baselines3.common.vec_env.subproc_vec_env.SubprocVecEnv object at 0x00000142DF91F590> != <stable_baselines3.common.vec_env.dummy_vec_env.DummyVecEnv object at 0x00000142E70E1250>
+  warnings.warn("Training and eval env are not of the same type" f"{self.training_env} != {self.eval_env}")
+Eval num_timesteps=190000, episode_reward=454.99 +/- 218.51
+Episode length: 559.85 +/- 108.01
+New best mean reward!
+Eval num_timesteps=380000, episode_reward=2079.10 +/- 908.47
+Episode length: 2000.00 +/- 0.00
+New best mean reward!
+Eval num_timesteps=570000, episode_reward=2018.61 +/- 903.62
+Episode length: 2000.00 +/- 0.00
+Eval num_timesteps=760000, episode_reward=2067.57 +/- 878.13
+Episode length: 1995.40 +/- 14.16
+Eval num_timesteps=950000, episode_reward=1990.80 +/- 880.63
+Episode length: 1976.95 +/- 64.48
+Eval num_timesteps=1140000, episode_reward=2079.80 +/- 889.48
+Episode length: 1988.05 +/- 38.40
+New best mean reward!
+Traceback (most recent call last):
+  File "C:\Users\tzeju\AppData\Local\Programs\Python\Python312\Lib\multiprocessing\connection.py", line 317, in _recv_bytes

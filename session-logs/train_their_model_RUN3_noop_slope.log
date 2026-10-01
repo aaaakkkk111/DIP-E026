@@ -1,0 +1,79 @@
+
+Starting PPO training (5,000,000 Steps)...
+C:\Users\tzeju\Desktop\E3180 DIP\3Dsim\venv\Lib\site-packages\stable_baselines3\common\callbacks.py:419: UserWarning: Training and eval env are not of the same type<stable_baselines3.common.vec_env.subproc_vec_env.SubprocVecEnv object at 0x00000273565D1640> != <stable_baselines3.common.vec_env.dummy_vec_env.DummyVecEnv object at 0x000002735F5F3770>
+  warnings.warn("Training and eval env are not of the same type" f"{self.training_env} != {self.eval_env}")
+Eval num_timesteps=190000, episode_reward=41.11 +/- 43.97
+Episode length: 68.10 +/- 24.83
+New best mean reward!
+Eval num_timesteps=380000, episode_reward=173.00 +/- 270.19
+Episode length: 179.80 +/- 138.70
+New best mean reward!
+Eval num_timesteps=570000, episode_reward=482.85 +/- 517.10
+Episode length: 499.25 +/- 256.76
+New best mean reward!
+Eval num_timesteps=760000, episode_reward=1107.02 +/- 478.34
+Episode length: 1000.00 +/- 0.00
+New best mean reward!
+Eval num_timesteps=950000, episode_reward=1158.39 +/- 469.26
+Episode length: 973.90 +/- 78.87
+New best mean reward!
+Eval num_timesteps=1140000, episode_reward=1215.87 +/- 450.41
+Episode length: 939.75 +/- 164.67
+New best mean reward!
+Eval num_timesteps=1330000, episode_reward=1227.78 +/- 445.85
+Episode length: 925.90 +/- 145.42
+New best mean reward!
+Eval num_timesteps=1520000, episode_reward=1233.20 +/- 438.77
+Episode length: 945.65 +/- 129.00
+New best mean reward!
+Eval num_timesteps=1710000, episode_reward=1234.28 +/- 457.21
+Episode length: 915.25 +/- 155.06
+New best mean reward!
+Eval num_timesteps=1900000, episode_reward=1236.99 +/- 436.90
+Episode length: 922.85 +/- 141.06
+New best mean reward!
+Eval num_timesteps=2090000, episode_reward=1231.84 +/- 442.47
+Episode length: 901.20 +/- 167.02
+Eval num_timesteps=2280000, episode_reward=1292.55 +/- 386.60
+Episode length: 963.40 +/- 109.88
+New best mean reward!
+Eval num_timesteps=2470000, episode_reward=1319.49 +/- 371.39
+Episode length: 963.30 +/- 96.70
+New best mean reward!
+Eval num_timesteps=2660000, episode_reward=1366.06 +/- 379.85
+Episode length: 965.95 +/- 98.85
+New best mean reward!
+Eval num_timesteps=2850000, episode_reward=1365.94 +/- 387.62
+Episode length: 960.40 +/- 120.62
+Eval num_timesteps=3040000, episode_reward=1403.03 +/- 376.22
+Episode length: 955.70 +/- 124.50
+New best mean reward!
+Eval num_timesteps=3230000, episode_reward=1437.61 +/- 383.29
+Episode length: 964.40 +/- 107.47
+New best mean reward!
+Eval num_timesteps=3420000, episode_reward=1436.33 +/- 371.36
+Episode length: 964.60 +/- 106.28
+Eval num_timesteps=3610000, episode_reward=1444.42 +/- 368.39
+Episode length: 956.40 +/- 108.85
+New best mean reward!
+Eval num_timesteps=3800000, episode_reward=1473.07 +/- 369.28
+Episode length: 968.60 +/- 94.30
+New best mean reward!
+Eval num_timesteps=3990000, episode_reward=1476.25 +/- 394.04
+Episode length: 951.25 +/- 118.48
+New best mean reward!
+Eval num_timesteps=4180000, episode_reward=1506.45 +/- 382.62
+Episode length: 950.00 +/- 112.44
+New best mean reward!
+Eval num_timesteps=4370000, episode_reward=1527.64 +/- 374.61
+Episode length: 948.85 +/- 122.40
+New best mean reward!
+Eval num_timesteps=4560000, episode_reward=1521.45 +/- 389.59
+Episode length: 947.25 +/- 127.16
+Eval num_timesteps=4750000, episode_reward=1527.83 +/- 374.01
+Episode length: 939.80 +/- 122.75
+New best mean reward!
+Eval num_timesteps=4940000, episode_reward=1546.40 +/- 368.82
+Episode length: 954.90 +/- 114.39
+New best mean reward!
+ 100% ------------------ 5,019,648/5,000,000 [ 0:22:00 < 0:00:00 , 3,401 it/s ]

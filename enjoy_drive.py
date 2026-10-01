@@ -29,21 +29,34 @@ import mujoco.viewer
 import numpy as np
 from stable_baselines3 import PPO
 
-from train_yahboom_3d import YahboomEnv, VelocityCommandWrapper
+from motor_model import action_to_pwm, action_to_torque
+from train_real_robot import (FALL_ANGLE_LIMIT, MAX_PAYLOAD_KG,
+                              MAX_V_FORWARD as TRAIN_MAX_V_FORWARD,
+                              MAX_V_TURN as TRAIN_MAX_V_TURN,
+                              PWMCommandWrapper, RealRobotEnv)
 
-# Matches the command ranges sampled during training (train_yahboom_3d.py).
-# Commanding anything larger asks the policy to track targets it never saw.
-MAX_V_FORWARD = 0.3
-MAX_V_TURN = 0.5
+# Command ranges sampled during training. Imported rather than copied so the
+# sliders cannot drift away from what the policy actually saw; commanding
+# anything larger asks it to track targets it never trained on.
+MAX_V_FORWARD = TRAIN_MAX_V_FORWARD
+MAX_V_TURN = TRAIN_MAX_V_TURN
 
 # What the policy actually saw while training, used to flag settings that ask
 # it to generalise beyond its experience. Friction was fixed at the XML value
 # and the ground was always level, so ANY change to those two is extrapolation;
-# payload was curriculum-ramped across 0-0.2 kg and is the only one of the
+# payload was curriculum-ramped across 0-1.0 kg and is the only one of the
 # three with genuine in-distribution range.
 TRAINED_FRICTION = 0.90
 TRAINED_SLOPE_DEG = 0.0
-TRAINED_PAYLOAD_KG = (0.0, 0.2)
+TRAINED_PAYLOAD_KG = (0.0, MAX_PAYLOAD_KG)
+
+# How far the sliders travel. Deliberately past the trained ceiling/range, so
+# you can find where the policy gives up - that is the point of the sliders.
+# The --friction/--slope/--payload CLI flags and the f/s/p console commands
+# share these same bounds, so a value reachable one way is reachable the other.
+MAX_PAYLOAD_SLIDER = 3.0
+MAX_FRICTION_SLIDER = 2.0
+MAX_SLOPE_SLIDER_DEG = 30.0
 
 GRAVITY = 9.81
 FRICTION_GEOMS = ("floor", "gw_l", "gw_r")
@@ -130,12 +143,15 @@ class ControlPanel:
                                    0.01, state["cmd_turn"], self._on_turn)
 
         self._section("CONDITIONS")
-        self.s_fric = self._slider("Friction        (trained 0.90)", 0.0, 1.5,
-                                   0.05, state["friction"], self._on_friction)
-        self.s_slope = self._slider("Slope  deg      (trained 0)", -15.0, 15.0,
+        self.s_fric = self._slider("Friction        (trained 0.90)", 0.0,
+                                   MAX_FRICTION_SLIDER, 0.05, state["friction"],
+                                   self._on_friction)
+        self.s_slope = self._slider("Slope  deg      (trained 0)",
+                                    -MAX_SLOPE_SLIDER_DEG, MAX_SLOPE_SLIDER_DEG,
                                     0.5, state["slope"], self._on_slope)
-        self.s_load = self._slider("Payload  kg     (trained 0-0.2)", 0.0, 1.5,
-                                   0.05, state["payload"], self._on_payload)
+        self.s_load = self._slider(
+            "Payload  kg     (trained 0-{:.1f})".format(MAX_PAYLOAD_KG),
+            0.0, MAX_PAYLOAD_SLIDER, 0.05, state["payload"], self._on_payload)
 
         row = tk.Frame(self.root, bg=self.BG)
         row.pack(fill="x", padx=10, pady=(4, 8))
@@ -214,7 +230,7 @@ class ControlPanel:
         self.s_fwd.set(forward)
         self.s_turn.set(turn)
 
-    def update_telemetry(self, v_fwd, v_turn, pitch, steps, fell):
+    def update_telemetry(self, v_fwd, v_turn, pitch, steps, fell, pwm, tau):
         lo, hi = TRAINED_PAYLOAD_KG
         warn = []
         if abs(self.state["friction"] - TRAINED_FRICTION) > 1e-9:
@@ -228,10 +244,13 @@ class ControlPanel:
             text=("forward  {:+.3f} / {:+.3f} m/s\n"
                   "yaw      {:+.3f} / {:+.3f} rad/s\n"
                   "pitch    {:+.3f} rad\n"
+                  "pwm      {:+5.0f} {:+5.0f}  counts\n"
+                  "torque   {:+.3f} {:+.3f} Nm\n"
                   "steps    {:d}{}\n"
                   "{}").format(v_fwd, self.state["cmd_forward"],
-                               v_turn, self.state["cmd_turn"],
-                               pitch, steps, "   (FELL)" if fell else "", note),
+                               v_turn, self.state["cmd_turn"], pitch,
+                               pwm[0], pwm[1], tau[0], tau[1],
+                               steps, "   (FELL)" if fell else "", note),
             fg=self.WARN if warn else self.FG)
 
     def pump(self):
@@ -274,15 +293,15 @@ def handle_command(line, state, model, payload_id):
         return True
 
     if cmd == "f":
-        state["friction"] = float(np.clip(value, 0.0, 2.0))
+        state["friction"] = float(np.clip(value, 0.0, MAX_FRICTION_SLIDER))
         apply_friction(model, state["friction"])
         print("  friction -> {:.2f}".format(state["friction"]))
     elif cmd == "s":
-        state["slope"] = float(np.clip(value, -30.0, 30.0))
+        state["slope"] = float(np.clip(value, -MAX_SLOPE_SLIDER_DEG, MAX_SLOPE_SLIDER_DEG))
         apply_slope(model, state["slope"])
         print("  slope -> {:.1f} deg".format(state["slope"]))
     elif cmd == "p":
-        state["payload"] = float(np.clip(value, 0.0, 2.0))
+        state["payload"] = float(np.clip(value, 0.0, MAX_PAYLOAD_SLIDER))
         apply_payload(model, payload_id, state["payload"])
         print("  payload -> {:.2f} kg".format(state["payload"]))
     else:
@@ -308,42 +327,73 @@ def main():
     parser.add_argument("--slope", type=float, default=0.0,
                         help="ground slope in degrees, positive = uphill along +x (default 0)")
     parser.add_argument("--payload", type=float, default=0.0,
-                        help="payload mass in kg (default 0.0; trained across 0.0-0.2)")
-    parser.add_argument("--model", default="models/best_their/best_model.zip",
+                        help="payload mass in kg (default 0.0; trained across 0.0-{:.1f})".format(MAX_PAYLOAD_KG))
+    parser.add_argument("--model", default="models/best_real/best_model.zip",
                         help="policy checkpoint to drive with")
     parser.add_argument("--no-gui", action="store_true",
                         help="skip the slider panel; use arrow keys + terminal commands")
     args = parser.parse_args()
 
-    # models/best/ held the my_robot.xml policies. They have the same 17-dim
-    # observation shape so they would load without error against their_robot.xml
-    # and just saturate its +/-0.6 Nm motors with +/-4.0 Nm commands, which looks
-    # like a bad policy rather than a mismatched one. Refuse instead of guessing.
+    # Older checkpoints under models/best/ and models/best_their/ were trained
+    # on different plants and a different observation layout, so they are not
+    # usable here. Refuse rather than substitute one: a wrong-plant policy loads
+    # cleanly and then simply falls over, which reads as a bad policy rather
+    # than a mismatched one. The action-space check below catches what does load.
     if not os.path.exists(args.model):
         raise SystemExit(
             "{} not found.\n"
-            "Training was retargeted to their_robot.xml (see train_yahboom_3d.py);\n"
-            "run train_yahboom_3d.py to produce a checkpoint for that plant.".format(args.model))
+            "This demo drives the real-robot plant (real_robot.xml, 200 Hz, PWM\n"
+            "actions); run train_real_robot.py to produce a checkpoint for it."
+            .format(args.model))
     policy = PPO.load(args.model)
 
     # max_payload_kg=0.0 so the wrapper's reset zeroes the payload; the value
     # requested here is re-applied on top of every reset instead.
-    env = VelocityCommandWrapper(YahboomEnv(), is_eval=True, max_payload_kg=0.0)
+    # fall_angle_limit must match training. The wrapper defaults to 0.4 rad
+    # (23 deg), but this policy was trained to 0.70 rad (40 deg) to match the
+    # firmware's real cut-out - so the default would reset the robot at attitudes
+    # it can actually recover from, making a working policy look broken.
+    env = PWMCommandWrapper(RealRobotEnv(), is_eval=True, max_payload_kg=0.0,
+                            fall_angle_limit=FALL_ANGLE_LIMIT)
     obs, _ = env.reset()
 
     mj_model = env.unwrapped.model
     payload_id = env.payload_body_id
 
+    # The policy commands PWM in [-1, 1], NOT torque, so compare against the
+    # env's action space rather than the plant's torque cap (0.4 Nm). A leftover
+    # +/-0.6 torque checkpoint from the superseded their_robot.xml runs would
+    # otherwise be read as PWM and drive the motors at 60% of full scale for
+    # what it intended as a gentle nudge.
     trained_hi = float(np.max(policy.action_space.high))
-    if not np.isclose(trained_hi, env.tau_max, atol=1e-3):
+    env_hi = float(np.max(env.action_space.high))
+    if not np.isclose(trained_hi, env_hi, atol=1e-3):
         raise SystemExit(
-            "Action-space mismatch: checkpoint limit +/-{:.2f} Nm, plant limit "
-            "+/-{:.2f} Nm.\n{} belongs to a different robot.".format(
-                trained_hi, env.tau_max, args.model))
+            "Action-space mismatch: checkpoint limit +/-{:.2f}, this env expects "
+            "+/-{:.2f} (PWM).\nA +/-0.4 or +/-0.6 checkpoint is a TORQUE policy "
+            "from the superseded runs and is not usable here."
+            .format(trained_hi, env_hi))
 
-    state = {"friction": float(np.clip(args.friction, 0.0, 2.0)),
-             "slope": float(np.clip(args.slope, -30.0, 30.0)),
-             "payload": float(np.clip(args.payload, 0.0, 2.0)),
+    # Observation-shape guard. The layout has grown every run: 17
+    # instantaneous inputs, then +15 for the 5 history taps x 3 signals (run 3),
+    # +1 for the station-keeping integral (run 6), +1 for the heading-keeping
+    # integral (run 7). SB3 raises its own error on a mismatch, but from deep
+    # inside predict() and without saying which side is which, so check it here
+    # and name both numbers.
+    trained_obs = int(np.prod(policy.observation_space.shape))
+    env_obs = int(np.prod(env.observation_space.shape))
+    if trained_obs != env_obs:
+        raise SystemExit(
+            "Observation mismatch: checkpoint expects {} inputs, this env "
+            "produces {}.\n"
+            "The env layout comes from train_real_robot.py; a checkpoint from an "
+            "earlier layout cannot be driven here. Use a policy trained against "
+            "the current one, or check out the matching revision."
+            .format(trained_obs, env_obs))
+
+    state = {"friction": float(np.clip(args.friction, 0.0, MAX_FRICTION_SLIDER)),
+             "slope": float(np.clip(args.slope, -MAX_SLOPE_SLIDER_DEG, MAX_SLOPE_SLIDER_DEG)),
+             "payload": float(np.clip(args.payload, 0.0, MAX_PAYLOAD_SLIDER)),
              "cmd_forward": 0.0,
              "cmd_turn": 0.0,
              "cmd_dirty": False,
@@ -399,7 +449,6 @@ def main():
                          daemon=True).start()
 
     steps = 0
-    fell = False
     # One control step is FRAME_SKIP * timestep of sim time; pace the loop to
     # that so the demo runs at roughly real time instead of as fast as the CPU
     # allows, which is far too quick to watch or steer.
@@ -424,19 +473,40 @@ def main():
                     state["cmd_dirty"] = False
                     panel.set_commands(state["cmd_forward"], state["cmd_turn"])
 
-                d = env.unwrapped.data
-                _, pitch, local_vel, v_turn = env._decode_state(
-                    np.concatenate([d.qpos, d.qvel]))
-                if steps % 5 == 0:  # ~16Hz refresh, keeps the sim smooth
-                    panel.update_telemetry(local_vel[0], v_turn, pitch, steps, fell)
+                # Refresh on the throttle, or immediately on a fall regardless
+                # of where it lands in the cycle - a fall is rare and worth an
+                # off-cycle update, otherwise it could go unshown entirely (if
+                # it doesn't land on a throttled tick) or, worse, get attributed
+                # to the wrong episode (previously: the flag was only set AFTER
+                # this block ran, so it appeared one refresh late, tagging the
+                # freshly-reset next episode instead of the one that fell).
+                if steps % 5 == 0 or done:  # ~40Hz refresh, keeps the sim smooth
+                    d = env.unwrapped.data
+                    _, pitch, local_vel, v_turn = env._decode_state(
+                        np.concatenate([d.qpos, d.qvel]))
+                    # What the actuator is actually being asked for. Worth
+                    # watching: after the firmware's deadband compensation the
+                    # smallest non-zero command is already 1300 counts / 0.257
+                    # Nm, so the policy holds balance by dithering the sign
+                    # rather than by commanding small torques. A torque trace
+                    # that sits near zero means the wheels are simply idle.
+                    pwm = action_to_pwm(np.asarray(action, dtype=np.float64))
+                    tau = action_to_torque(np.asarray(action, dtype=np.float64),
+                                           d.qvel[6:8])
+                    panel.update_telemetry(local_vel[0], v_turn, pitch, steps,
+                                           done, pwm, tau)
                 if not panel.pump():
                     break
+            elif done and not state["reset"]:
+                # No-gui mode has no telemetry panel to show a fall on; without
+                # this the robot silently snaps upright with no indication
+                # anything happened.
+                print("  fell at step {} - resetting".format(steps))
 
             if done or state["reset"]:
                 # A stumble past the fall threshold triggers an internal reset,
                 # which would otherwise re-randomise the payload. Commands live
                 # in `state` now, so they survive on their own.
-                fell = done and not state["reset"]
                 obs, _ = env.reset()
                 apply_payload(mj_model, payload_id, state["payload"])
                 state["reset"] = False
