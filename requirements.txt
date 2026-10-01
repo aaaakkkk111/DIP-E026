@@ -1,0 +1,21 @@
+# Verified by a clean clone + fresh venv (2026-10-01): these exact versions
+# install cleanly and successfully run train_real_robot.py, enjoy_drive.py,
+# and export_stm32.py against models/best_real/best_model.zip.
+#
+# `gymnasium[mujoco]`, not bare `gymnasium` - the mujoco rendering backend
+# pulls in imageio and packaging as transitive deps that a bare `gymnasium`
+# install does NOT bring in, and the import fails deep inside
+# gymnasium/envs/mujoco/mujoco_rendering.py with no hint that this package is
+# the fix.
+gymnasium[mujoco]==1.3.0
+mujoco==3.2.3
+numpy==2.5.3
+scipy==1.18.1
+stable_baselines3==2.9.0
+torch==2.14.0
+glfw==2.10.2
+
+# Only needed for fix_stls.py, which operates on a meshes/ folder the active
+# models (my_robot.xml, real_robot.xml, their_robot.xml) don't use anymore -
+# not needed to train, drive, or export anything. Install separately if you
+# need it: pip install trimesh
