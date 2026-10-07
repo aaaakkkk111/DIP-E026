@@ -1,0 +1,73 @@
+<mujoco model="dip_e026_real">
+  <!-- Built from the team's measured parameter sheet (PARAMS.md, 2026-09-23).
+       Every value here is measured on the real robot, not fitted. This exists
+       to test whether a policy trained on their_robot.xml transfers. -->
+  <compiler angle="radian" autolimits="true" balanceinertia="true"/>
+  <option timestep="0.001" integrator="Euler" gravity="0 0 -9.81"
+          cone="elliptic" impratio="10"/>
+  <default>
+    <geom friction="0.90 0.005 0.0001" solref="0.020 1" solimp="0.95 0.99 0.001"/>
+    <joint damping="0"/>
+  </default>
+  <asset>
+    <texture name="grid" type="2d" builtin="checker" width="512" height="512"
+             rgb1="0.22 0.24 0.28" rgb2="0.28 0.30 0.35"/>
+    <material name="grid" texture="grid" texrepeat="12 12"/>
+  </asset>
+  <worldbody>
+    <light pos="0 0 4" dir="0 0 -1"/>
+    <geom name="floor" type="plane" size="0 0 0.05" material="grid"
+          friction="0.90 0.005 0.0001"/>
+    <!-- chassis origin sits at the axle, wheel radius 0.0335 above ground -->
+    <body name="chassis" pos="0 0 0.0335">
+      <freejoint name="root"/>
+      <!-- measured: body 0.872 kg, COM 34.0 mm above axle,
+           I_body 1.4229e-3 about the body COM (pitch), I_yaw 1.9093e-3 -->
+      <inertial pos="0 0 0.0340" mass="0.8720"
+                diaginertia="0.0014229 0.0014229 0.0019093"/>
+      <geom name="body" type="box" pos="0 0 0.0340" size="0.030 0.040 0.034"
+            rgba="0.25 0.55 0.85 1" mass="0"/>
+      <body name="payload_body" pos="0 0 0.1050">
+        <!-- rated payload 4.0 kg at 0.105 m above the axle -->
+        <geom name="payload_geom" type="box" size="0.03 0.03 0.02"
+              rgba="0.9 0.2 0.2 1" mass="0" contype="0" conaffinity="0"/>
+      </body>
+      <!-- armature = gearbox-reflected rotor inertia, J_rotor * G^2, with
+           G = 30 for the JGB37-520. This is NOT a numerical fudge: it is 100x
+           the wheel's own 1.96e-5 inertia and it dominates the wheel dynamics.
+
+           With armature="0" the model let one control tick at the smallest
+           non-zero torque (0.257 Nm after deadband compensation) change wheel
+           speed by 65 rad/s - nearly 2x the motor's entire no-load top speed of
+           34.9 - and gave a mechanical time constant of 1.2 ms. No 1:30
+           gearmotor spins up in 4 ms. The consequence was that 100 Hz torque
+           reversals were free, so the policy balanced by shaking the chassis.
+
+           2.25e-3 assumes a rotor inertia of 2.5e-6 kg m^2, giving a time
+           constant of 140 ms, typical for this motor class. TO MEASURE IT:
+           command a fixed PWM, log encoder speed, fit the exponential rise;
+           tau_m is the time to 63% of final speed, and J = tau_m * KV. Training
+           randomises it over 9e-4 .. 4.5e-3 so the policy does not depend on
+           this estimate being exact. -->
+      <body name="wheel_l" pos="0 0.0835 0">
+        <joint name="jw_l" type="hinge" axis="0 1 0" armature="2.25e-3"/>
+        <inertial pos="0 0 0" mass="0.0350"
+                  diaginertia="9.82e-06 1.964e-05 9.82e-06"/>
+        <geom name="gw_l" type="cylinder" size="0.0335 0.0120"
+              quat="0.7071068 0.7071068 0 0" rgba="0.15 0.15 0.18 1" mass="0"/>
+      </body>
+      <body name="wheel_r" pos="0 -0.0835 0">
+        <joint name="jw_r" type="hinge" axis="0 1 0" armature="2.25e-3"/>
+        <inertial pos="0 0 0" mass="0.0350"
+                  diaginertia="9.82e-06 1.964e-05 9.82e-06"/>
+        <geom name="gw_r" type="cylinder" size="0.0335 0.0120"
+              quat="0.7071068 0.7071068 0 0" rgba="0.15 0.15 0.18 1" mass="0"/>
+      </body>
+    </body>
+  </worldbody>
+  <actuator>
+    <!-- driver limit 0.4 Nm at the wheel (motor stalls at 0.5679) -->
+    <motor name="m_l" joint="jw_l" gear="1" ctrlrange="-0.4000 0.4000"/>
+    <motor name="m_r" joint="jw_r" gear="1" ctrlrange="-0.4000 0.4000"/>
+  </actuator>
+</mujoco>

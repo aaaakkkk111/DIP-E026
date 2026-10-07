@@ -1,0 +1,274 @@
+{
+  "executed": true,
+  "run": {
+    "started_utc": "2026-10-05T04:31:40.317852+00:00",
+    "finished_utc": "2026-10-05T04:32:25.510547+00:00",
+    "wall_time_s": 45.1926140000287,
+    "python_executable": "C:\\Users\\Sridevi\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe"
+  },
+  "controller": "tzejun run-7 best_real PPO actor",
+  "controller_type": "standalone PPO PWM policy (not PID residual; no LLM)",
+  "source_commit": "45403944d29ebe7142404ab84a2077b4cb54e49a",
+  "checkpoint": {
+    "path": "models/best_real/best_model.zip",
+    "sha256": "A850B7CD7B0FBB9BDEC828439D4BEC6EFFA589099ACB2405ACDC6FA4F879511D",
+    "expected_sha256": "A850B7CD7B0FBB9BDEC828439D4BEC6EFFA589099ACB2405ACDC6FA4F879511D",
+    "bytes": 194907,
+    "inference_backend": "Stable-Baselines3 PPO.load + PyTorch CPU",
+    "actor_architecture": "34 -> 64 -> 64 -> 2",
+    "critic_architecture": "34 -> 64 -> 64 -> 1",
+    "validation": {
+      "vectors": 4,
+      "max_abs_checkpoint_vs_reference_error": 0.0,
+      "max_abs_checkpoint_vs_export_error": 2.9802322387695312e-08,
+      "passed": true,
+      "tolerance": 2e-05
+    }
+  },
+  "exported_actor": {
+    "path": "firmware/policy_weights.h",
+    "sha256": "019C8390344F2EA8FF7F7AAB51276D777CE118CA38C71F55C813DE94C16131B6",
+    "expected_sha256": "019C8390344F2EA8FF7F7AAB51276D777CE118CA38C71F55C813DE94C16131B6",
+    "architecture": "34 -> 64 -> 64 -> 2; tanh hidden activations; linear clipped output",
+    "validation": {
+      "vectors": 4,
+      "max_abs_checkpoint_vs_reference_error": 0.0,
+      "max_abs_checkpoint_vs_export_error": 2.9802322387695312e-08,
+      "passed": true,
+      "tolerance": 2e-05
+    }
+  },
+  "simulation": {
+    "xml": "real_robot.xml",
+    "mujoco_version": "3.2.3",
+    "numpy_version": "2.5.3",
+    "python_version": "3.12.14",
+    "torch_version": "2.14.0+cpu",
+    "stable_baselines3_version": "2.9.0",
+    "physics_timestep_s": 0.001,
+    "control_rate_hz": 200.0,
+    "episode_steps": 2000,
+    "episode_duration_s": 10.0
+  },
+  "fixed_pitch_protocol": {
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "initial_pitch_rad": "+/-0.17453292519943295 alternating",
+    "initial_pitch_rate_rad_s": 0.0,
+    "wheel_position_rad": 0.0,
+    "target_speed_m_s": 0.0,
+    "target_yaw_rad_s": 0.0,
+    "settling_definition": "first entry into |pitch| < 2 deg sustained for 0.5 s",
+    "success_definition": "settling <1.5 s, recovery overshoot <3 deg, tail RMS pitch <1.5 deg, survived 10 s",
+    "aggregate": {
+      "episodes": 15,
+      "settling_time_s": {
+        "mean": 0.4253333333333334,
+        "std": 0.033565855667130946,
+        "ci95": 0.016986666666666667,
+        "n": 15
+      },
+      "recovery_overshoot_deg": {
+        "mean": 0.0,
+        "std": 0.0,
+        "ci95": 0.0,
+        "n": 15
+      },
+      "steady_rms_pitch_deg": {
+        "mean": 0.30168220680107427,
+        "std": 0.0012366785344600912,
+        "ci95": 0.000625845688160614,
+        "n": 15
+      },
+      "mean_abs_torque_nm": {
+        "mean": 0.28301883295377284,
+        "std": 5.837845413189929e-05,
+        "ci95": 2.9543574002343457e-05,
+        "n": 15
+      },
+      "rms_torque_nm": {
+        "mean": 0.28330076646537183,
+        "std": 4.309638533976717e-05,
+        "ci95": 2.180978013981368e-05,
+        "n": 15
+      },
+      "torque_variance": {
+        "mean": 0.08025931654629713,
+        "std": 2.4423440347650494e-05,
+        "ci95": 1.2359966155875977e-05,
+        "n": 15
+      },
+      "final_x_m": {
+        "mean": 0.04516314760303694,
+        "std": 0.022076386921447266,
+        "ci95": 0.011172193241783005,
+        "n": 15
+      },
+      "mean_v_tail_m_s": {
+        "mean": 0.004105756040007019,
+        "std": 0.00043647999292253,
+        "ci95": 0.00022088935315611413,
+        "n": 15
+      },
+      "mean_yaw_rate_tail_rad_s": {
+        "mean": -9.56850479968205e-05,
+        "std": 3.2353279568824105e-05,
+        "ci95": 1.6373018494125794e-05,
+        "n": 15
+      },
+      "return": {
+        "mean": 3511.2075791408674,
+        "std": 6.025246140024386,
+        "ci95": 3.049195253063022,
+        "n": 15
+      },
+      "duration_s": {
+        "mean": 10.0,
+        "std": 0.0,
+        "ci95": 0.0,
+        "n": 15
+      },
+      "survival_fraction": 1.0,
+      "success_rate": 1.0
+    }
+  },
+  "official_tzejun_schedule": {
+    "episodes": 20,
+    "seeds": [
+      1000,
+      1001,
+      1002,
+      1003,
+      1004,
+      1005,
+      1006,
+      1007,
+      1008,
+      1009,
+      1010,
+      1011,
+      1012,
+      1013,
+      1014,
+      1015,
+      1016,
+      1017,
+      1018,
+      1019
+    ],
+    "payloads_kg": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.25,
+      0.25,
+      0.25,
+      0.25,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.75,
+      0.75,
+      0.75,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "aggregate": {
+      "episodes": 20,
+      "settling_time_s": {
+        "mean": 0.34850000000000003,
+        "std": 0.29655965939241863,
+        "ci95": 0.12997300132598386,
+        "n": 20
+      },
+      "recovery_overshoot_deg": {
+        "mean": 2.3495001403346096,
+        "std": 2.0088861282393555,
+        "ci95": 0.8804331645927135,
+        "n": 20
+      },
+      "steady_rms_pitch_deg": {
+        "mean": 0.1460906610714055,
+        "std": 0.12152625119679851,
+        "ci95": 0.0532612279104443,
+        "n": 20
+      },
+      "mean_abs_torque_nm": {
+        "mean": 0.23728859743407912,
+        "std": 0.03305778510954624,
+        "ci95": 0.01448821311934304,
+        "n": 20
+      },
+      "rms_torque_nm": {
+        "mean": 0.2523289527054803,
+        "std": 0.020292750172476302,
+        "ci95": 0.008893689891871209,
+        "n": 20
+      },
+      "torque_variance": {
+        "mean": 0.06405800413391062,
+        "std": 0.010017347155495166,
+        "ci95": 0.004390295962004664,
+        "n": 20
+      },
+      "final_x_m": {
+        "mean": -0.012571600501518749,
+        "std": 1.1482165639537874,
+        "ci95": 0.503228096818813,
+        "n": 20
+      },
+      "mean_v_tail_m_s": {
+        "mean": 0.005774000724034929,
+        "std": 0.20511801840665264,
+        "ci95": 0.08989693518319636,
+        "n": 20
+      },
+      "mean_yaw_rate_tail_rad_s": {
+        "mean": 0.016760418338576482,
+        "std": 0.32345750664070516,
+        "ci95": 0.14176150264551643,
+        "n": 20
+      },
+      "return": {
+        "mean": 3388.144413380947,
+        "std": 169.06017939771115,
+        "ci95": 74.09389047063195,
+        "n": 20
+      },
+      "duration_s": {
+        "mean": 10.0,
+        "std": 0.0,
+        "ci95": 0.0,
+        "n": 20
+      },
+      "survival_fraction": 1.0,
+      "success_rate": 0.55
+    }
+  },
+  "limitations": [
+    "The run evaluates the repository checkpoint; it does not retrain it.",
+    "The tzejun policy is a standalone PPO PWM controller, so it is not evidence for an LLM reward or PPO-on-PID residual claim.",
+    "The checkpoint was loaded directly with Stable-Baselines3/PyTorch; exported weights were used only as an independent action cross-check.",
+    "Simulation results are not hardware validation."
+  ]
+}

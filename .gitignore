@@ -1,0 +1,15 @@
+.venv/
+.deps/
+.matplotlib/
+__pycache__/
+*.py[cod]
+experiment/
+report/
+legacy_custom_experiment/
+.venv/
+.deps/
+__pycache__/
+*.pyc
+.matplotlib/
+*.tmp
+*.log~

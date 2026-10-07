@@ -1,0 +1,572 @@
+[
+  {
+    "iteration": 0,
+    "weights_trained": {
+      "angle": 0.4,
+      "vel": 0.2,
+      "pos": 0.15,
+      "ctrl": 0.1,
+      "survival": 0.15
+    },
+    "training": {
+      "path": "experiment_comparison\\llm_reward_iter_00.zip",
+      "timesteps": 200000,
+      "seed": 0,
+      "wall_time_s": 478.76088990000426,
+      "reward_kind": "weighted",
+      "weights": {
+        "angle": 0.4,
+        "vel": 0.2,
+        "pos": 0.15,
+        "ctrl": 0.1,
+        "survival": 0.15
+      },
+      "actor": "9-64-64-2",
+      "critic": "9-64-64-1"
+    },
+    "pilot_metrics": [
+      {
+        "suite": "design",
+        "episode": 0,
+        "seed": 400,
+        "initial_pitch_deg": 10.0,
+        "target_v_m_s": 0,
+        "target_yaw_rad_s": 0,
+        "payload_kg": 0,
+        "steps": 2000,
+        "duration_s": 10.0,
+        "survived": true,
+        "return": 155.7775221990209,
+        "settling_time_s": 1.42,
+        "max_abs_pitch_deg": 9.96613216928989,
+        "recovery_overshoot_deg": 0.0,
+        "steady_rms_pitch_deg": 0.043740649620573654,
+        "mean_abs_torque_nm": 0.16083954550660526,
+        "rms_torque_nm": 0.20190830620341818,
+        "torque_variance": 0.04075706014156208,
+        "final_x_m": -3.0883067879015775,
+        "mean_v_tail_m_s": -0.3960666086051817,
+        "mean_yaw_rate_tail_rad_s": -0.00031685099688354504,
+        "success": true
+      },
+      {
+        "suite": "design",
+        "episode": 1,
+        "seed": 401,
+        "initial_pitch_deg": -10.0,
+        "target_v_m_s": 0,
+        "target_yaw_rad_s": 0,
+        "payload_kg": 0,
+        "steps": 2000,
+        "duration_s": 10.0,
+        "survived": true,
+        "return": -301.5087137202157,
+        "settling_time_s": 0.595,
+        "max_abs_pitch_deg": 9.96613216928989,
+        "recovery_overshoot_deg": 0.0,
+        "steady_rms_pitch_deg": 0.03986393877465523,
+        "mean_abs_torque_nm": 0.14903962018866349,
+        "rms_torque_nm": 0.19279298831286878,
+        "torque_variance": 0.03716005242611439,
+        "final_x_m": -3.442070317998013,
+        "mean_v_tail_m_s": -0.4003996203228278,
+        "mean_yaw_rate_tail_rad_s": -0.0005320845068733486,
+        "success": true
+      }
+    ],
+    "score": 1.0116802294197613,
+    "decision": {
+      "iteration": 0,
+      "prompt": "You design reward weights for a PPO residual on a PID balancer. Reply ONLY JSON with angle,vel,pos,ctrl,survival numbers in [0,1] summing to 1. Example: {\"angle\":0.4,\"vel\":0.2,\"pos\":0.15,\"ctrl\":0.1,\"survival\":0.15}. Current={\"angle\": 0.4, \"vel\": 0.2, \"pos\": 0.15, \"ctrl\": 0.1, \"survival\": 0.15} Evaluation={\"episodes\": 2, \"settling_time_s\": {\"mean\": 1.0074999999999998, \"std\": 0.5833630944789017, \"ci95\": 0.8084999999999999, \"n\": 2}, \"recovery_overshoot_deg\": {\"mean\": 0.0, \"std\": 0.0, \"ci95\": 0.0, \"n\": 2}, \"steady_rms_pitch_deg\": {\"mean\": 0.04180229419761444, \"std\": 0.0027412485278483544, \"ci95\": 0.003799176629000055, \"n\": 2}, \"mean_abs_torque_nm\": {\"mean\": 0.15493958284763437, \"std\": 0.008343807209811455, \"ci95\": 0.011563926811582935, \"n\": 2}, \"rms_torque_nm\": {\"mean\": 0.1973506472581435, \"std\": 0.006445503093078534, \"ci95\": 0.008933011532738407, \"n\": 2}, \"torque_variance\": {\"mean\": 0.038958556283838236, \"std\": 0.0025434685475733904, \"ci95\": 0.0035250675611387325, \"n\": 2}, \"final_x_m\": {\"mean\": -3.2651885529497955, \"std\": 0.25014859106768084, \"ci95\": 0.34668825949450677, \"n\": 2}, \"mean_v_tail_m_s\": {\"mean\": -0.3982331144640048, \"std\": 0.003063901968508293, \"ci95\": 0.00424635148329313, \"n\": 2}, \"mean_yaw_rate_tail_rad_s\": {\"mean\": -0.0004244677518784468, \"std\": 0.0001521930744523726, \"ci95\": 0.00021092883979000746, \"n\": 2}, \"return\": {\"mean\": -72.86559576059742, \"std\": 323.3501983617636, \"ci95\": 448.1405112008519, \"n\": 2}, \"duration_s\": {\"mean\": 10.0, \"std\": 0.0, \"ci95\": 0.0, \"n\": 2}, \"survival_fraction\": 1.0, \"success_rate\": 1.0} Iteration=0",
+      "before": {
+        "angle": 0.4,
+        "vel": 0.2,
+        "pos": 0.15,
+        "ctrl": 0.1,
+        "survival": 0.15
+      },
+      "raw_response": "{\"angle\":0.05,\"vel\":0.05,\"pos\":0.05,\"ctrl\":0.45,\"survival\":0.5}",
+      "proposed": {
+        "angle": 0.05,
+        "vel": 0.05,
+        "pos": 0.05,
+        "ctrl": 0.45,
+        "survival": 0.5
+      },
+      "repair_prompt": "Your prior JSON summed to 1.1, not 1. Return corrected JSON with the same five keys, each in [0,1], whose sum is exactly 1. No prose. Prior: {\"angle\":0.05,\"vel\":0.05,\"pos\":0.05,\"ctrl\":0.45,\"survival\":0.5}",
+      "repair_raw_response": "{\"angle\":0.1,\"vel\":0.1,\"pos\":0.1,\"ctrl\":0.4,\"survival\":0.4}",
+      "repair_proposed": {
+        "angle": 0.1,
+        "vel": 0.1,
+        "pos": 0.1,
+        "ctrl": 0.4,
+        "survival": 0.4
+      },
+      "normalization_applied": true,
+      "pre_normalization_sum": 1.1,
+      "accepted": {
+        "angle": 0.09090909090909091,
+        "vel": 0.09090909090909091,
+        "pos": 0.09090909090909091,
+        "ctrl": 0.36363636363636365,
+        "survival": 0.36363636363636365
+      }
+    }
+  },
+  {
+    "iteration": 1,
+    "weights_trained": {
+      "angle": 0.09090909090909091,
+      "vel": 0.09090909090909091,
+      "pos": 0.09090909090909091,
+      "ctrl": 0.36363636363636365,
+      "survival": 0.36363636363636365
+    },
+    "training": {
+      "path": "experiment_comparison\\llm_reward_iter_01.zip",
+      "timesteps": 200000,
+      "seed": 1,
+      "wall_time_s": 1084.682413500006,
+      "reward_kind": "weighted",
+      "weights": {
+        "angle": 0.09090909090909091,
+        "vel": 0.09090909090909091,
+        "pos": 0.09090909090909091,
+        "ctrl": 0.36363636363636365,
+        "survival": 0.36363636363636365
+      },
+      "actor": "9-64-64-2",
+      "critic": "9-64-64-1"
+    },
+    "pilot_metrics": [
+      {
+        "suite": "design",
+        "episode": 0,
+        "seed": 400,
+        "initial_pitch_deg": 10.0,
+        "target_v_m_s": 0,
+        "target_yaw_rad_s": 0,
+        "payload_kg": 0,
+        "steps": 2000,
+        "duration_s": 10.0,
+        "survived": true,
+        "return": -878.6784480850831,
+        "settling_time_s": 0.17500000000000002,
+        "max_abs_pitch_deg": 9.96613216928989,
+        "recovery_overshoot_deg": 0.0,
+        "steady_rms_pitch_deg": 0.04687574966773454,
+        "mean_abs_torque_nm": 0.2658272200660806,
+        "rms_torque_nm": 0.26908496264736254,
+        "torque_variance": 0.07240658051195968,
+        "final_x_m": 0.04012526206475951,
+        "mean_v_tail_m_s": -0.05196105204228923,
+        "mean_yaw_rate_tail_rad_s": -0.677345654539589,
+        "success": true
+      },
+      {
+        "suite": "design",
+        "episode": 1,
+        "seed": 401,
+        "initial_pitch_deg": -10.0,
+        "target_v_m_s": 0,
+        "target_yaw_rad_s": 0,
+        "payload_kg": 0,
+        "steps": 2000,
+        "duration_s": 10.0,
+        "survived": true,
+        "return": -654.5949222195736,
+        "settling_time_s": 0.125,
+        "max_abs_pitch_deg": 9.96613216928989,
+        "recovery_overshoot_deg": 0.0,
+        "steady_rms_pitch_deg": 0.2617868855558812,
+        "mean_abs_torque_nm": 0.26821511004941545,
+        "rms_torque_nm": 0.2710142395259286,
+        "torque_variance": 0.07344866383441609,
+        "final_x_m": -0.0024784012566854657,
+        "mean_v_tail_m_s": 0.01011410567205297,
+        "mean_yaw_rate_tail_rad_s": -0.6393930942674487,
+        "success": true
+      }
+    ],
+    "score": 0.1654331317611808,
+    "decision": {
+      "iteration": 1,
+      "prompt": "You design reward weights for a PPO residual on a PID balancer. Reply ONLY JSON with angle,vel,pos,ctrl,survival numbers in [0,1] summing to 1. Example: {\"angle\":0.4,\"vel\":0.2,\"pos\":0.15,\"ctrl\":0.1,\"survival\":0.15}. Current={\"angle\": 0.09090909090909091, \"vel\": 0.09090909090909091, \"pos\": 0.09090909090909091, \"ctrl\": 0.36363636363636365, \"survival\": 0.36363636363636365} Evaluation={\"episodes\": 2, \"settling_time_s\": {\"mean\": 0.15000000000000002, \"std\": 0.03535533905932738, \"ci95\": 0.04900000000000001, \"n\": 2}, \"recovery_overshoot_deg\": {\"mean\": 0.0, \"std\": 0.0, \"ci95\": 0.0, \"n\": 2}, \"steady_rms_pitch_deg\": {\"mean\": 0.15433131761180788, \"std\": 0.1519651215390121, \"ci95\": 0.21061291317038372, \"n\": 2}, \"mean_abs_torque_nm\": {\"mean\": 0.26702116505774803, \"std\": 0.0016884931999434933, \"ci95\": 0.0023401321836681375, \"n\": 2}, \"rms_torque_nm\": {\"mean\": 0.27004960108664555, \"std\": 0.0013642047636204966, \"ci95\": 0.0018906913409947666, \"n\": 2}, \"torque_variance\": {\"mean\": 0.07292762217318788, \"std\": 0.0007368641838703337, \"ci95\": 0.0010212416560072797, \"n\": 2}, \"final_x_m\": {\"mean\": 0.018823430404037025, \"std\": 0.030125339237982336, \"ci95\": 0.04175159005501607, \"n\": 2}, \"mean_v_tail_m_s\": {\"mean\": -0.020923473185118127, \"std\": 0.0438937649630358, \"ci95\": 0.06083365456005536, \"n\": 2}, \"mean_yaw_rate_tail_rad_s\": {\"mean\": -0.6583693744035188, \"std\": 0.026836512731821513, \"ci95\": 0.03719350906669742, \"n\": 2}, \"return\": {\"mean\": -766.6366851523284, \"std\": 158.45098069169288, \"ci95\": 219.60185534819928, \"n\": 2}, \"duration_s\": {\"mean\": 10.0, \"std\": 0.0, \"ci95\": 0.0, \"n\": 2}, \"survival_fraction\": 1.0, \"success_rate\": 1.0} Iteration=1",
+      "before": {
+        "angle": 0.09090909090909091,
+        "vel": 0.09090909090909091,
+        "pos": 0.09090909090909091,
+        "ctrl": 0.36363636363636365,
+        "survival": 0.36363636363636365
+      },
+      "raw_response": "{\"angle\":0.1,\"vel\":0.05,\"pos\":0.05,\"ctrl\":0.2,\"survival\":0.45}",
+      "proposed": {
+        "angle": 0.1,
+        "vel": 0.05,
+        "pos": 0.05,
+        "ctrl": 0.2,
+        "survival": 0.45
+      },
+      "repair_prompt": "Your prior JSON summed to 0.8500000000000001, not 1. Return corrected JSON with the same five keys, each in [0,1], whose sum is exactly 1. No prose. Prior: {\"angle\":0.1,\"vel\":0.05,\"pos\":0.05,\"ctrl\":0.2,\"survival\":0.45}",
+      "repair_raw_response": "{\"angle\":0.05,\"vel\":0.1,\"pos\":0.2,\"ctrl\":0.35,\"survival\":0.45}",
+      "repair_proposed": {
+        "angle": 0.05,
+        "vel": 0.1,
+        "pos": 0.2,
+        "ctrl": 0.35,
+        "survival": 0.45
+      },
+      "normalization_applied": true,
+      "pre_normalization_sum": 1.15,
+      "accepted": {
+        "angle": 0.04347826086956522,
+        "vel": 0.08695652173913045,
+        "pos": 0.1739130434782609,
+        "ctrl": 0.30434782608695654,
+        "survival": 0.391304347826087
+      }
+    }
+  },
+  {
+    "iteration": 2,
+    "weights_trained": {
+      "angle": 0.04347826086956522,
+      "vel": 0.08695652173913045,
+      "pos": 0.1739130434782609,
+      "ctrl": 0.30434782608695654,
+      "survival": 0.391304347826087
+    },
+    "training": {
+      "path": "experiment_comparison\\llm_reward_iter_02.zip",
+      "timesteps": 200000,
+      "seed": 2,
+      "wall_time_s": 487.96463969998877,
+      "reward_kind": "weighted",
+      "weights": {
+        "angle": 0.04347826086956522,
+        "vel": 0.08695652173913045,
+        "pos": 0.1739130434782609,
+        "ctrl": 0.30434782608695654,
+        "survival": 0.391304347826087
+      },
+      "actor": "9-64-64-2",
+      "critic": "9-64-64-1"
+    },
+    "pilot_metrics": [
+      {
+        "suite": "design",
+        "episode": 0,
+        "seed": 400,
+        "initial_pitch_deg": 10.0,
+        "target_v_m_s": 0,
+        "target_yaw_rad_s": 0,
+        "payload_kg": 0,
+        "steps": 2000,
+        "duration_s": 10.0,
+        "survived": true,
+        "return": 312.78587829566146,
+        "settling_time_s": 0.11,
+        "max_abs_pitch_deg": 9.96613216928989,
+        "recovery_overshoot_deg": 0.0,
+        "steady_rms_pitch_deg": 0.13892183920835513,
+        "mean_abs_torque_nm": 0.205005912666199,
+        "rms_torque_nm": 0.23282964929697014,
+        "torque_variance": 0.054200176073116536,
+        "final_x_m": -1.731573440437715,
+        "mean_v_tail_m_s": -0.3540129141795811,
+        "mean_yaw_rate_tail_rad_s": -9.040130857669344e-05,
+        "success": true
+      },
+      {
+        "suite": "design",
+        "episode": 1,
+        "seed": 401,
+        "initial_pitch_deg": -10.0,
+        "target_v_m_s": 0,
+        "target_yaw_rad_s": 0,
+        "payload_kg": 0,
+        "steps": 2000,
+        "duration_s": 10.0,
+        "survived": true,
+        "return": -148.61894180978965,
+        "settling_time_s": 0.14,
+        "max_abs_pitch_deg": 9.96613216928989,
+        "recovery_overshoot_deg": 0.0,
+        "steady_rms_pitch_deg": 0.04454330841800881,
+        "mean_abs_torque_nm": 0.15536185683484927,
+        "rms_torque_nm": 0.19797255149425308,
+        "torque_variance": 0.03918347938309243,
+        "final_x_m": -3.301362983240459,
+        "mean_v_tail_m_s": -0.3978104170366088,
+        "mean_yaw_rate_tail_rad_s": -6.164296398746901e-16,
+        "success": true
+      }
+    ],
+    "score": 0.1341732573813182,
+    "decision": {
+      "iteration": 2,
+      "prompt": "You design reward weights for a PPO residual on a PID balancer. Reply ONLY JSON with angle,vel,pos,ctrl,survival numbers in [0,1] summing to 1. Example: {\"angle\":0.4,\"vel\":0.2,\"pos\":0.15,\"ctrl\":0.1,\"survival\":0.15}. Current={\"angle\": 0.04347826086956522, \"vel\": 0.08695652173913045, \"pos\": 0.1739130434782609, \"ctrl\": 0.30434782608695654, \"survival\": 0.391304347826087} Evaluation={\"episodes\": 2, \"settling_time_s\": {\"mean\": 0.125, \"std\": 0.021213203435596437, \"ci95\": 0.029400000000000013, \"n\": 2}, \"recovery_overshoot_deg\": {\"mean\": 0.0, \"std\": 0.0, \"ci95\": 0.0, \"n\": 2}, \"steady_rms_pitch_deg\": {\"mean\": 0.09173257381318198, \"std\": 0.06673569912027724, \"ci95\": 0.09249096017453937, \"n\": 2}, \"mean_abs_torque_nm\": {\"mean\": 0.18018388475052413, \"std\": 0.03510364852395096, \"ci95\": 0.048651174714722724, \"n\": 2}, \"rms_torque_nm\": {\"mean\": 0.2154011003956116, \"std\": 0.02464769022878394, \"ci95\": 0.03415995584666272, \"n\": 2}, \"torque_variance\": {\"mean\": 0.046691827728104485, \"std\": 0.010618408060537626, \"ci95\": 0.01471636275622362, \"n\": 2}, \"final_x_m\": {\"mean\": -2.516468211839087, \"std\": 1.1100088307515503, \"ci95\": 1.5383937519466888, \"n\": 2}, \"mean_v_tail_m_s\": {\"mean\": -0.37591166560809497, \"std\": 0.030969511269241485, \"ci95\": 0.04292155279988716, \"n\": 2}, \"mean_yaw_rate_tail_rad_s\": {\"mean\": -4.5200654288654934e-05, \"std\": 6.392337832228164e-05, \"ci95\": 8.859328240455547e-05, \"n\": 2}, \"return\": {\"mean\": 82.08346824293591, \"std\": 326.26247716872354, \"ci95\": 452.1767237033421, \"n\": 2}, \"duration_s\": {\"mean\": 10.0, \"std\": 0.0, \"ci95\": 0.0, \"n\": 2}, \"survival_fraction\": 1.0, \"success_rate\": 1.0} Iteration=2",
+      "before": {
+        "angle": 0.04347826086956522,
+        "vel": 0.08695652173913045,
+        "pos": 0.1739130434782609,
+        "ctrl": 0.30434782608695654,
+        "survival": 0.391304347826087
+      },
+      "raw_response": "{\"angle\":0.1,\"vel\":0.05,\"pos\":0.05,\"ctrl\":0.2,\"survival\":0.45}",
+      "proposed": {
+        "angle": 0.1,
+        "vel": 0.05,
+        "pos": 0.05,
+        "ctrl": 0.2,
+        "survival": 0.45
+      },
+      "repair_prompt": "Your prior JSON summed to 0.8500000000000001, not 1. Return corrected JSON with the same five keys, each in [0,1], whose sum is exactly 1. No prose. Prior: {\"angle\":0.1,\"vel\":0.05,\"pos\":0.05,\"ctrl\":0.2,\"survival\":0.45}",
+      "repair_raw_response": "{\"angle\":0.05,\"vel\":0.1,\"pos\":0.2,\"ctrl\":0.35,\"survival\":0.45}",
+      "repair_proposed": {
+        "angle": 0.05,
+        "vel": 0.1,
+        "pos": 0.2,
+        "ctrl": 0.35,
+        "survival": 0.45
+      },
+      "normalization_applied": true,
+      "pre_normalization_sum": 1.15,
+      "accepted": {
+        "angle": 0.04347826086956522,
+        "vel": 0.08695652173913045,
+        "pos": 0.1739130434782609,
+        "ctrl": 0.30434782608695654,
+        "survival": 0.391304347826087
+      }
+    }
+  },
+  {
+    "iteration": 3,
+    "weights_trained": {
+      "angle": 0.04347826086956522,
+      "vel": 0.08695652173913045,
+      "pos": 0.1739130434782609,
+      "ctrl": 0.30434782608695654,
+      "survival": 0.391304347826087
+    },
+    "training": {
+      "path": "experiment_comparison\\llm_reward_iter_03.zip",
+      "timesteps": 200000,
+      "seed": 3,
+      "wall_time_s": 493.44748489998165,
+      "reward_kind": "weighted",
+      "weights": {
+        "angle": 0.04347826086956522,
+        "vel": 0.08695652173913045,
+        "pos": 0.1739130434782609,
+        "ctrl": 0.30434782608695654,
+        "survival": 0.391304347826087
+      },
+      "actor": "9-64-64-2",
+      "critic": "9-64-64-1"
+    },
+    "pilot_metrics": [
+      {
+        "suite": "design",
+        "episode": 0,
+        "seed": 400,
+        "initial_pitch_deg": 10.0,
+        "target_v_m_s": 0,
+        "target_yaw_rad_s": 0,
+        "payload_kg": 0,
+        "steps": 2000,
+        "duration_s": 10.0,
+        "survived": true,
+        "return": 188.1827630408255,
+        "settling_time_s": 0.135,
+        "max_abs_pitch_deg": 9.96613216928989,
+        "recovery_overshoot_deg": 0.0,
+        "steady_rms_pitch_deg": 0.09180268226532234,
+        "mean_abs_torque_nm": 0.2704236538676743,
+        "rms_torque_nm": 0.27304773396713494,
+        "torque_variance": 0.07455503340594598,
+        "final_x_m": 0.002057143826693739,
+        "mean_v_tail_m_s": 0.0083844565804237,
+        "mean_yaw_rate_tail_rad_s": -0.4280795031477774,
+        "success": true
+      },
+      {
+        "suite": "design",
+        "episode": 1,
+        "seed": 401,
+        "initial_pitch_deg": -10.0,
+        "target_v_m_s": 0,
+        "target_yaw_rad_s": 0,
+        "payload_kg": 0,
+        "steps": 2000,
+        "duration_s": 10.0,
+        "survived": true,
+        "return": 315.0061428398081,
+        "settling_time_s": 0.14,
+        "max_abs_pitch_deg": 9.96613216928989,
+        "recovery_overshoot_deg": 0.0,
+        "steady_rms_pitch_deg": 0.07867803712888458,
+        "mean_abs_torque_nm": 0.2721738920127396,
+        "rms_torque_nm": 0.274292288472863,
+        "torque_variance": 0.07523625365410566,
+        "final_x_m": -0.18424008100200637,
+        "mean_v_tail_m_s": -0.01040408008062575,
+        "mean_yaw_rate_tail_rad_s": -0.41594636544482305,
+        "success": true
+      }
+    ],
+    "score": 0.14602403596971036,
+    "decision": {
+      "iteration": 3,
+      "prompt": "You design reward weights for a PPO residual on a PID balancer. Reply ONLY JSON with angle,vel,pos,ctrl,survival numbers in [0,1] summing to 1. Example: {\"angle\":0.4,\"vel\":0.2,\"pos\":0.15,\"ctrl\":0.1,\"survival\":0.15}. Current={\"angle\": 0.04347826086956522, \"vel\": 0.08695652173913045, \"pos\": 0.1739130434782609, \"ctrl\": 0.30434782608695654, \"survival\": 0.391304347826087} Evaluation={\"episodes\": 2, \"settling_time_s\": {\"mean\": 0.1375, \"std\": 0.0035355339059327407, \"ci95\": 0.004900000000000004, \"n\": 2}, \"recovery_overshoot_deg\": {\"mean\": 0.0, \"std\": 0.0, \"ci95\": 0.0, \"n\": 2}, \"steady_rms_pitch_deg\": {\"mean\": 0.08524035969710346, \"std\": 0.009280525576642187, \"ci95\": 0.012862152233709014, \"n\": 2}, \"mean_abs_torque_nm\": {\"mean\": 0.271298772940207, \"std\": 0.0012376052610670438, \"ci95\": 0.001715233382164002, \"n\": 2}, \"rms_torque_nm\": {\"mean\": 0.273670011219999, \"std\": 0.0008800329305565968, \"ci95\": 0.0012196634156135177, \"n\": 2}, \"torque_variance\": {\"mean\": 0.07489564353002581, \"std\": 0.0004816954569552949, \"ci95\": 0.0006675958431964897, \"n\": 2}, \"final_x_m\": {\"mean\": -0.09109146858765631, \"std\": 0.1317320309926087, \"ci95\": 0.1825712803321261, \"n\": 2}, \"mean_v_tail_m_s\": {\"mean\": -0.001009811750101025, \"std\": 0.013285501681600122, \"ci95\": 0.018412765927828464, \"n\": 2}, \"mean_yaw_rate_tail_rad_s\": {\"mean\": -0.4220129342963002, \"std\": 0.008579423946829172, \"ci95\": 0.011890474948895235, \"n\": 2}, \"return\": {\"mean\": 251.59445294031678, \"std\": 89.67767186885759, \"ci95\": 124.28691220300291, \"n\": 2}, \"duration_s\": {\"mean\": 10.0, \"std\": 0.0, \"ci95\": 0.0, \"n\": 2}, \"survival_fraction\": 1.0, \"success_rate\": 1.0} Iteration=3",
+      "before": {
+        "angle": 0.04347826086956522,
+        "vel": 0.08695652173913045,
+        "pos": 0.1739130434782609,
+        "ctrl": 0.30434782608695654,
+        "survival": 0.391304347826087
+      },
+      "raw_response": "{\"angle\":0.1,\"vel\":0.05,\"pos\":0.05,\"ctrl\":0.2,\"survival\":0.45}",
+      "proposed": {
+        "angle": 0.1,
+        "vel": 0.05,
+        "pos": 0.05,
+        "ctrl": 0.2,
+        "survival": 0.45
+      },
+      "repair_prompt": "Your prior JSON summed to 0.8500000000000001, not 1. Return corrected JSON with the same five keys, each in [0,1], whose sum is exactly 1. No prose. Prior: {\"angle\":0.1,\"vel\":0.05,\"pos\":0.05,\"ctrl\":0.2,\"survival\":0.45}",
+      "repair_raw_response": "{\"angle\":0.05,\"vel\":0.1,\"pos\":0.2,\"ctrl\":0.35,\"survival\":0.45}",
+      "repair_proposed": {
+        "angle": 0.05,
+        "vel": 0.1,
+        "pos": 0.2,
+        "ctrl": 0.35,
+        "survival": 0.45
+      },
+      "normalization_applied": true,
+      "pre_normalization_sum": 1.15,
+      "accepted": {
+        "angle": 0.04347826086956522,
+        "vel": 0.08695652173913045,
+        "pos": 0.1739130434782609,
+        "ctrl": 0.30434782608695654,
+        "survival": 0.391304347826087
+      }
+    }
+  },
+  {
+    "iteration": 4,
+    "weights_trained": {
+      "angle": 0.04347826086956522,
+      "vel": 0.08695652173913045,
+      "pos": 0.1739130434782609,
+      "ctrl": 0.30434782608695654,
+      "survival": 0.391304347826087
+    },
+    "training": {
+      "path": "experiment_comparison\\llm_reward_iter_04.zip",
+      "timesteps": 200000,
+      "seed": 4,
+      "wall_time_s": 493.0559723000042,
+      "reward_kind": "weighted",
+      "weights": {
+        "angle": 0.04347826086956522,
+        "vel": 0.08695652173913045,
+        "pos": 0.1739130434782609,
+        "ctrl": 0.30434782608695654,
+        "survival": 0.391304347826087
+      },
+      "actor": "9-64-64-2",
+      "critic": "9-64-64-1"
+    },
+    "pilot_metrics": [
+      {
+        "suite": "design",
+        "episode": 0,
+        "seed": 400,
+        "initial_pitch_deg": 10.0,
+        "target_v_m_s": 0,
+        "target_yaw_rad_s": 0,
+        "payload_kg": 0,
+        "steps": 2000,
+        "duration_s": 10.0,
+        "survived": true,
+        "return": -1087.9967282618454,
+        "settling_time_s": 0.105,
+        "max_abs_pitch_deg": 9.96613216928989,
+        "recovery_overshoot_deg": 0.0,
+        "steady_rms_pitch_deg": 0.05171485282299779,
+        "mean_abs_torque_nm": 0.2633508736838454,
+        "rms_torque_nm": 0.26603986784601436,
+        "torque_variance": 0.07077717701820713,
+        "final_x_m": 0.044670794759903674,
+        "mean_v_tail_m_s": -0.008884319667231477,
+        "mean_yaw_rate_tail_rad_s": -0.8218953824741674,
+        "success": true
+      },
+      {
+        "suite": "design",
+        "episode": 1,
+        "seed": 401,
+        "initial_pitch_deg": -10.0,
+        "target_v_m_s": 0,
+        "target_yaw_rad_s": 0,
+        "payload_kg": 0,
+        "steps": 2000,
+        "duration_s": 10.0,
+        "survived": true,
+        "return": -1105.3530949204323,
+        "settling_time_s": 0.115,
+        "max_abs_pitch_deg": 9.96613216928989,
+        "recovery_overshoot_deg": 0.0,
+        "steady_rms_pitch_deg": 0.049512509711132816,
+        "mean_abs_torque_nm": 0.26312632078542486,
+        "rms_torque_nm": 0.2658688590251448,
+        "torque_variance": 0.07068624961733312,
+        "final_x_m": -0.0420998505056604,
+        "mean_v_tail_m_s": 0.009673201923337,
+        "mean_yaw_rate_tail_rad_s": -0.8213377176771339,
+        "success": true
+      }
+    ],
+    "score": 0.11506136812670653,
+    "decision": {
+      "iteration": 4,
+      "prompt": "You design reward weights for a PPO residual on a PID balancer. Reply ONLY JSON with angle,vel,pos,ctrl,survival numbers in [0,1] summing to 1. Example: {\"angle\":0.4,\"vel\":0.2,\"pos\":0.15,\"ctrl\":0.1,\"survival\":0.15}. Current={\"angle\": 0.04347826086956522, \"vel\": 0.08695652173913045, \"pos\": 0.1739130434782609, \"ctrl\": 0.30434782608695654, \"survival\": 0.391304347826087} Evaluation={\"episodes\": 2, \"settling_time_s\": {\"mean\": 0.11, \"std\": 0.007071067811865481, \"ci95\": 0.009800000000000008, \"n\": 2}, \"recovery_overshoot_deg\": {\"mean\": 0.0, \"std\": 0.0, \"ci95\": 0.0, \"n\": 2}, \"steady_rms_pitch_deg\": {\"mean\": 0.0506136812670653, \"std\": 0.0015572917488992043, \"ci95\": 0.0021582962496276715, \"n\": 2}, \"mean_abs_torque_nm\": {\"mean\": 0.26323859723463516, \"std\": 0.00015878287720826428, \"ci95\": 0.00022006184045213816, \"n\": 2}, \"rms_torque_nm\": {\"mean\": 0.26595436343557954, \"std\": 0.00012092149687958644, \"ci95\": 0.0001675886444521757, \"n\": 2}, \"torque_variance\": {\"mean\": 0.07073171331777012, \"std\": 6.429538175367668e-05, \"ci95\": 8.910885285652508e-05, \"n\": 2}, \"final_x_m\": {\"mean\": 0.001285472127121639, \"std\": 0.06135611167521275, \"ci95\": 0.08503523236025279, \"n\": 2}, \"mean_v_tail_m_s\": {\"mean\": 0.0003944411280527617, \"std\": 0.013122149358706736, \"ci95\": 0.018186371158757104, \"n\": 2}, \"mean_yaw_rate_tail_rad_s\": {\"mean\": -0.8216165500756507, \"std\": 0.00039432855961137395, \"ci95\": 0.0005465115010927834, \"n\": 2}, \"return\": {\"mean\": -1096.6749115911389, \"std\": 12.272804561046911, \"ci95\": 17.00923932541518, \"n\": 2}, \"duration_s\": {\"mean\": 10.0, \"std\": 0.0, \"ci95\": 0.0, \"n\": 2}, \"survival_fraction\": 1.0, \"success_rate\": 1.0} Iteration=4",
+      "before": {
+        "angle": 0.04347826086956522,
+        "vel": 0.08695652173913045,
+        "pos": 0.1739130434782609,
+        "ctrl": 0.30434782608695654,
+        "survival": 0.391304347826087
+      },
+      "raw_response": "{\"angle\":0.1,\"vel\":0.05,\"pos\":0.05,\"ctrl\":0.2,\"survival\":0.45}",
+      "proposed": {
+        "angle": 0.1,
+        "vel": 0.05,
+        "pos": 0.05,
+        "ctrl": 0.2,
+        "survival": 0.45
+      },
+      "repair_prompt": "Your prior JSON summed to 0.8500000000000001, not 1. Return corrected JSON with the same five keys, each in [0,1], whose sum is exactly 1. No prose. Prior: {\"angle\":0.1,\"vel\":0.05,\"pos\":0.05,\"ctrl\":0.2,\"survival\":0.45}",
+      "repair_raw_response": "{\"angle\":0.05,\"vel\":0.1,\"pos\":0.2,\"ctrl\":0.35,\"survival\":0.45}",
+      "repair_proposed": {
+        "angle": 0.05,
+        "vel": 0.1,
+        "pos": 0.2,
+        "ctrl": 0.35,
+        "survival": 0.45
+      },
+      "normalization_applied": true,
+      "pre_normalization_sum": 1.15,
+      "accepted": {
+        "angle": 0.04347826086956522,
+        "vel": 0.08695652173913045,
+        "pos": 0.1739130434782609,
+        "ctrl": 0.30434782608695654,
+        "survival": 0.391304347826087
+      }
+    }
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "path": "experiment_comparison\\fixed_reward_ppo.zip",
+  "timesteps": 200000,
+  "seed": 0,
+  "wall_time_s": 2173.1483361999854,
+  "reward_kind": "fixed",
+  "weights": null,
+  "actor": "9-64-64-2",
+  "critic": "9-64-64-1"
+}

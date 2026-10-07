@@ -1,0 +1,452 @@
+{
+  "selected": {
+    "pitch": 6.0,
+    "pitch_rate": 0.16,
+    "speed": 0.7,
+    "speed_i": 0.08,
+    "yaw": 0.35,
+    "yaw_rate": 0.0
+  },
+  "sweep": [
+    {
+      "score": 0.3979739269602643,
+      "gains": {
+        "pitch": 0.5,
+        "pitch_rate": 0.02,
+        "speed": 0.3,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 21.69059303455733,
+      "gains": {
+        "pitch": 0.5,
+        "pitch_rate": 0.02,
+        "speed": 0.7,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.579980911282742,
+      "gains": {
+        "pitch": 0.5,
+        "pitch_rate": 0.08,
+        "speed": 0.3,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.4164585557978138,
+      "gains": {
+        "pitch": 0.5,
+        "pitch_rate": 0.08,
+        "speed": 0.7,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 1.280928517538972,
+      "gains": {
+        "pitch": 0.5,
+        "pitch_rate": 0.16,
+        "speed": 0.3,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.8066271082776906,
+      "gains": {
+        "pitch": 0.5,
+        "pitch_rate": 0.16,
+        "speed": 0.7,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 2.257164461893715,
+      "gains": {
+        "pitch": 0.5,
+        "pitch_rate": 0.3,
+        "speed": 0.3,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 2.173394217642321,
+      "gains": {
+        "pitch": 0.5,
+        "pitch_rate": 0.3,
+        "speed": 0.7,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.2851014524452074,
+      "gains": {
+        "pitch": 1.0,
+        "pitch_rate": 0.02,
+        "speed": 0.3,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 11.625498575098346,
+      "gains": {
+        "pitch": 1.0,
+        "pitch_rate": 0.02,
+        "speed": 0.7,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.12304656299807204,
+      "gains": {
+        "pitch": 1.0,
+        "pitch_rate": 0.08,
+        "speed": 0.3,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.26888581927767863,
+      "gains": {
+        "pitch": 1.0,
+        "pitch_rate": 0.08,
+        "speed": 0.7,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.22089247123673447,
+      "gains": {
+        "pitch": 1.0,
+        "pitch_rate": 0.16,
+        "speed": 0.3,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.5088856971084839,
+      "gains": {
+        "pitch": 1.0,
+        "pitch_rate": 0.16,
+        "speed": 0.7,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.38679470178678804,
+      "gains": {
+        "pitch": 1.0,
+        "pitch_rate": 0.3,
+        "speed": 0.3,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 1.0995856337428271,
+      "gains": {
+        "pitch": 1.0,
+        "pitch_rate": 0.3,
+        "speed": 0.7,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.40381667863193715,
+      "gains": {
+        "pitch": 2.0,
+        "pitch_rate": 0.02,
+        "speed": 0.3,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 10.541538896806815,
+      "gains": {
+        "pitch": 2.0,
+        "pitch_rate": 0.02,
+        "speed": 0.7,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.09854083998747458,
+      "gains": {
+        "pitch": 2.0,
+        "pitch_rate": 0.08,
+        "speed": 0.3,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.09033268497516737,
+      "gains": {
+        "pitch": 2.0,
+        "pitch_rate": 0.08,
+        "speed": 0.7,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.14161831763276006,
+      "gains": {
+        "pitch": 2.0,
+        "pitch_rate": 0.16,
+        "speed": 0.3,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.12537358490602166,
+      "gains": {
+        "pitch": 2.0,
+        "pitch_rate": 0.16,
+        "speed": 0.7,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.23974892058940017,
+      "gains": {
+        "pitch": 2.0,
+        "pitch_rate": 0.3,
+        "speed": 0.3,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.19158920825308895,
+      "gains": {
+        "pitch": 2.0,
+        "pitch_rate": 0.3,
+        "speed": 0.7,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.4121881920511322,
+      "gains": {
+        "pitch": 4.0,
+        "pitch_rate": 0.02,
+        "speed": 0.3,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 10.302534504468454,
+      "gains": {
+        "pitch": 4.0,
+        "pitch_rate": 0.02,
+        "speed": 0.7,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.13853119433856342,
+      "gains": {
+        "pitch": 4.0,
+        "pitch_rate": 0.08,
+        "speed": 0.3,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.17291663601773485,
+      "gains": {
+        "pitch": 4.0,
+        "pitch_rate": 0.08,
+        "speed": 0.7,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.09776365698917391,
+      "gains": {
+        "pitch": 4.0,
+        "pitch_rate": 0.16,
+        "speed": 0.3,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.0886310347773361,
+      "gains": {
+        "pitch": 4.0,
+        "pitch_rate": 0.16,
+        "speed": 0.7,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.15070296659603694,
+      "gains": {
+        "pitch": 4.0,
+        "pitch_rate": 0.3,
+        "speed": 0.3,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.138159208901149,
+      "gains": {
+        "pitch": 4.0,
+        "pitch_rate": 0.3,
+        "speed": 0.7,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.5279718989377655,
+      "gains": {
+        "pitch": 6.0,
+        "pitch_rate": 0.02,
+        "speed": 0.3,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 10.229739121979671,
+      "gains": {
+        "pitch": 6.0,
+        "pitch_rate": 0.02,
+        "speed": 0.7,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.1679331332380172,
+      "gains": {
+        "pitch": 6.0,
+        "pitch_rate": 0.08,
+        "speed": 0.3,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.2427801887051368,
+      "gains": {
+        "pitch": 6.0,
+        "pitch_rate": 0.08,
+        "speed": 0.7,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.08052503354490687,
+      "gains": {
+        "pitch": 6.0,
+        "pitch_rate": 0.16,
+        "speed": 0.3,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.0801181885298317,
+      "gains": {
+        "pitch": 6.0,
+        "pitch_rate": 0.16,
+        "speed": 0.7,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.10993151369260934,
+      "gains": {
+        "pitch": 6.0,
+        "pitch_rate": 0.3,
+        "speed": 0.3,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    },
+    {
+      "score": 0.1023349195739441,
+      "gains": {
+        "pitch": 6.0,
+        "pitch_rate": 0.3,
+        "speed": 0.7,
+        "speed_i": 0.08,
+        "yaw": 0.35,
+        "yaw_rate": 0.0
+      }
+    }
+  ]
+}

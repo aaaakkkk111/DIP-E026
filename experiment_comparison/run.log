@@ -1,0 +1,14 @@
+PID calibrated {'pitch': 6.0, 'pitch_rate': 0.16, 'speed': 0.7, 'speed_i': 0.08, 'yaw': 0.35, 'yaw_rate': 0.0}
+LLM-PID decision accepted
+Fixed PPO reused C:\Users\Sridevi\Desktop\sridevi-DIP-recess-week\experiment_comparison\fixed_reward_ppo.zip
+LLM iteration 0 score 1.0116802294197613 decision accepted
+LLM iteration 1 score 0.1654331317611808 decision accepted
+LLM iteration 2 score 0.1341732573813182 decision accepted
+LLM iteration 3 score 0.14602403596971036 decision accepted
+LLM iteration 4 score 0.11506136812670653 decision accepted
+PID-only settle {'mean': 0.07499999999999998, 'std': 1.436487510905098e-17, 'ci95': 7.269629816846642e-18, 'n': 15} RMS {'mean': 0.05118188529831705, 'std': 2.154731266357647e-17, 'ci95': 1.0904444725269962e-17, 'n': 15} success 1.0
+LLM-PID settle {'mean': 0.08, 'std': 0.0, 'ci95': 0.0, 'n': 15} RMS {'mean': 0.08819740419798568, 'std': 2.872975021810196e-17, 'ci95': 1.4539259633693285e-17, 'n': 15} success 1.0
+Fixed-Reward-PPO+PID settle {'mean': 0.3440000000000001, 'std': 0.17041126723312633, 'ci95': 0.08623999999999998, 'n': 15} RMS {'mean': 0.03980407043143908, 'std': 0.005169661543565133, 'ci95': 0.002616209706997541, 'n': 15} success 1.0
+LLM-Reward-PPO+PID settle {'mean': 0.10966666666666666, 'std': 0.005163977794943228, 'ci95': 0.002613333333333336, 'n': 15} RMS {'mean': 0.05068709270412748, 'std': 0.001137285092651687, 'ci95': 0.0005755456665673791, 'n': 15} success 1.0
+tzejun-trained-PPO settle {'mean': 0.4253333333333334, 'std': 0.033565855667130946, 'ci95': 0.016986666666666667, 'n': 15} RMS {'mean': 0.30168220680107427, 'std': 0.0012366785344600912, 'ci95': 0.000625845688160614, 'n': 15} success 1.0
+RESULTS C:\Users\Sridevi\Desktop\sridevi-DIP-recess-week\experiment_comparison\comparison_summary.json

@@ -1,0 +1,18 @@
+{
+  "source_repository": "https://github.com/aaaakkkk111/DIP-E026",
+  "source_branch": "tzejun-branch",
+  "source_commit": "45403944d29ebe7142404ab84a2077b4cb54e49a",
+  "checkpoint": {
+    "path": "models/best_real/best_model.zip",
+    "bytes": 194907,
+    "sha256": "A850B7CD7B0FBB9BDEC828439D4BEC6EFFA589099ACB2405ACDC6FA4F879511D"
+  },
+  "exported_actor": {
+    "path": "firmware/policy_weights.h",
+    "sha256": "019C8390344F2EA8FF7F7AAB51276D777CE118CA38C71F55C813DE94C16131B6"
+  },
+  "mujoco_model": {
+    "path": "real_robot.xml",
+    "sha256": "C098BE4F54C88ECB18C52E78B4A25FBDCFF3D35BD04544F5923A6C425E308584"
+  }
+}

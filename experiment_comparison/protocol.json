@@ -1,0 +1,60 @@
+{
+  "started_utc": "2026-10-05T10:21:28.518265+00:00",
+  "finished_utc": "2026-10-05T11:17:03.343420+00:00",
+  "plant": "real_robot.xml",
+  "physics_dt_s": 0.001,
+  "control_dt_s": 0.005,
+  "fixed_initial_pitch_deg": "+/-10 alternating",
+  "pitch_rate_rad_s": 0,
+  "wheel_position_rad": 0,
+  "eval_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+  ],
+  "timesteps_per_ppo_training": 200000,
+  "llm_iterations": 5,
+  "fixed_reward_checkpoint_reused": true,
+  "ollama_model": "llama3.2:3b",
+  "pid_gains": {
+    "pitch": 6.0,
+    "pitch_rate": 0.16,
+    "speed": 0.7,
+    "speed_i": 0.08,
+    "yaw": 0.35,
+    "yaw_rate": 0.0
+  },
+  "llm_pid_gains": {
+    "pitch": 4.800000000000001,
+    "pitch_rate": 0.192,
+    "speed": 0.84,
+    "speed_i": 0.096,
+    "yaw": 0.32,
+    "yaw_rate": 0.0
+  },
+  "best_llm_reward": {
+    "iteration": 4,
+    "score": 0.11506136812670653,
+    "weights": {
+      "angle": 0.04347826086956522,
+      "vel": 0.08695652173913045,
+      "pos": 0.1739130434782609,
+      "ctrl": 0.30434782608695654,
+      "survival": 0.391304347826087
+    },
+    "checkpoint": "experiment_comparison\\llm_reward_iter_04.zip"
+  },
+  "scientific_note": "tzejun policy is standalone PPO, not an LLM/PID residual"
+}
