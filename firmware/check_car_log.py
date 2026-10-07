@@ -2,7 +2,7 @@
 
 Reads the serial log that the team's rl_trim_helper.py writes
 (rl_serial_log.txt) and, for every run the car reported, prints the checks
-from Step 10 of README-STM32-DEPLOYMENT.md: did it stay up, is the output
+from Step 8 of README-STM32-DEPLOYMENT.md: did it stay up, is the output
 frozen, are there impossible speed readings, did the control loop keep 200 Hz,
 how often the PWM flips sign, and how fast it crept.
 
@@ -27,12 +27,15 @@ import re
 from dataclasses import dataclass, field
 
 TICK_MS = 5
-REASON = {1: "tilted past 40 deg", 2: "motors cut by the stock code (KEY1, its own 40 deg check, or low battery)",
+REASON = {1: "tilted past 40 deg", 2: "motors cut by the stock code (its own 40 deg check, or low battery)",
           3: "wheels spinning free (lifted)"}
-# Reason 2 is also the stock firmware's own 40 deg cut-out, which can fire
-# before rl_mode.c's. A run that reached this pitch fell; one that did not was
-# stopped (KEY1) or lost battery.
+# Mode 28 has no stop button: KEY1 is only read at power-up. A run ends when
+# the car tips past 40 deg (reason 1, or 2 when the stock check fires first),
+# is lifted (3), or the battery runs low (2 with no large tilt). A run that
+# reached FELL_DEG tipped over, whether it fell or was tipped by hand; one that
+# lasted LONG_RUN_S first is counted as having stayed up.
 FELL_DEG = 30.0
+LONG_RUN_S = 5.0
 
 # Even spinning in the air at full PWM the wheels reach ~33 rad/s, 1.1 m/s at
 # the rim (333 RPM at 12 V; motor_model.py agrees), and the pitch-rate term of
@@ -121,19 +124,24 @@ def flip_rate(xs):
     return sum((a > 0) != (b > 0) for a, b in pairs) / len(pairs) if pairs else 0.0
 
 
-def stopped(run):
-    return run.reason == 2 and run.maxp < FELL_DEG
+def stayed_up(run):
+    return run.ms >= LONG_RUN_S * 1000
 
 
 def check(run):
     """-> list of (level, text); level is FAIL, WARN, ok or info."""
     out = []
-    if stopped(run):
-        out.append(("ok", "stayed up until the motors were switched off"))
-    elif run.reason in (1, 2):
-        out.append(("FAIL" if run.ms < 5000 else "WARN", "fell after %.2f s" % (run.ms / 1000.0)))
+    s = run.ms / 1000.0
+    if run.reason in (1, 2) and run.maxp >= FELL_DEG:
+        if stayed_up(run):
+            out.append(("ok", "stayed up %.1f s, then tipped past 40 deg (a fall, or you ended it by hand)" % s))
+        else:
+            out.append(("FAIL", "fell after %.2f s" % s))
+    elif run.reason == 2:
+        out.append(("WARN", "motors cut by the stock code at only %.0f deg after %.1f s: low battery?" % (run.maxp, s)))
     else:
-        out.append(("info", "ended by %s" % REASON.get(run.reason, "reason %d" % run.reason)))
+        out.append(("info", "ended by %s after %.1f s"
+                    % (REASON.get(run.reason, "reason %d" % run.reason), s)))
 
     if len(run.e) >= 2:
         n, pr = longest_same([(r[3], r[4]) for r in run.e])
@@ -233,13 +241,13 @@ def main():
             totals["FAIL"] += 1
         elif any(l == "WARN" for l, _ in res):
             totals["WARN"] += 1
-        stood += stopped(run)
+        stood += stayed_up(run)
         if args.plot:
             p = plot(run, i, folder)
             if p:
                 print("    plot %s" % p)
-    print("\n%d runs: %d stopped by you, %d with a FAIL, %d with only warnings"
-          % (len(runs), stood, totals["FAIL"], totals["WARN"]))
+    print("\n%d runs: %d lasted %.0f s or more, %d with a FAIL, %d with only warnings"
+          % (len(runs), stood, LONG_RUN_S, totals["FAIL"], totals["WARN"]))
     print("Frozen output, impossible speeds or late ticks are firmware problems: fix them before judging the policy.")
 
 

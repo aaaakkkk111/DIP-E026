@@ -1,82 +1,84 @@
-# DIP-E026 — self-balancing robot, RL policy + STM32 deployment
+# DIP-E026 — self-balancing robot: RL policy and STM32 deployment
 
-A two-wheeled self-balancing robot (Yahboom kit hardware) controlled by a PPO
-policy trained in MuJoCo, with a hand-written C port for flashing that same
-policy onto the robot's STM32F103 over UART.
+A PPO policy trained in MuJoCo to balance and drive the Yahboom two-wheeled
+car (STM32F103, MPU6050, AT8236 driver, JGB37-520 motors), plus the C code that
+runs it on the car.
 
-**Current status**: run 8, trained on a motor model and sensor pipeline
-corrected from the car's own logs after run 7 failed on hardware. In
-simulation it holds every stress case tested, and the actual C firmware code
-balances the simulated robot in closed loop — but run 8 has not yet run on the
-car. See [firmware/README-STM32-DEPLOYMENT.md](firmware/README-STM32-DEPLOYMENT.md#readiness-check-before-you-start)'s
-"Readiness check" first, and its
-[Step 10](firmware/README-STM32-DEPLOYMENT.md#step-10--collecting-readings-from-a-car-test)
-for how to run the car test and record its readings, and
-[Step 11](firmware/README-STM32-DEPLOYMENT.md#step-11--what-to-do-next-based-on-the-results)
-for what to do with the results.
+**Status:** the current policy is run 8. It was retrained after run 7 fell on
+the car: the car's own logs showed the simulator's motor model was wrong. Run 8
+passes every simulation and PC check, but **has not run on the car yet**.
 
-## Quickstart
+## Run it in simulation
 
 ```bash
 python -m venv venv
 venv\Scripts\activate          # Windows; `source venv/bin/activate` on Linux/Mac
 pip install -r requirements.txt
-python enjoy_drive.py          # drive the trained policy in simulation
+python enjoy_drive.py          # drive the trained policy; add --no-gui without tkinter
 ```
 
-`enjoy_drive.py` opens a MuJoCo viewer plus a slider panel for the drive
-commands and for stress-testing conditions the policy wasn't trained on
-(friction, slope, payload beyond the trained range). Arrow keys drive too.
-Use `--no-gui` for a terminal-only version if the slider panel's `tkinter`
-dependency isn't available on your system.
+A MuJoCo viewer opens with a slider panel. Drive with the sliders or the arrow
+keys. Other sliders change friction, slope and payload, including beyond the
+trained range.
 
-Verified (2026-10-01): a clean clone + fresh venv + `pip install -r
-requirements.txt` successfully runs `enjoy_drive.py`, `export_stm32.py`, and
-the firmware's own PC-side verification build — not just assumed to work.
+## Put it on the car
 
-## What's actually in this repo
+Follow **[firmware/README-STM32-DEPLOYMENT.md](firmware/README-STM32-DEPLOYMENT.md)**.
+In short:
+
+1. Copy four files from `firmware/` into the team's mode-28 Keil project, edit
+   one line, and add one define.
+2. Build the hex in Keil.
+3. Flash it with FlyMCU.
+4. Start the serial logger.
+5. Select mode 28 and calibrate.
+6. Test in hand, with the wheels off the ground.
+7. Do floor runs.
+8. Check the log with `firmware/check_car_log.py`.
+9. Decide what to do next, using the guide's table.
+
+## What's in this repo
 
 | path | what it is |
 |---|---|
-| `train_real_robot.py` | **the current training script.** Trains against `real_robot.xml`, the measured hardware's actual plant, at 200 Hz, with a PWM (not torque) action space. This is what produced `models/best_real/best_model.zip`. |
-| `real_robot.xml` | MuJoCo model built from the team's measured parameter sheet (mass, wheel geometry, inertia) — the plant the current policy was trained on. |
-| `motor_model.py` | Lumped gearmotor model that turns the policy's PWM output into wheel torque: the firmware's 1300-count compensation, then a true dead zone (~1460 counts, fitted to the car's free-spin log) below which the motor gives no torque. Randomised per training episode. |
-| `enjoy_drive.py` | Interactive demo: drive the trained policy in the MuJoCo viewer, with live sliders for commands and for conditions (friction/slope/payload) to see where the policy's trained envelope ends. |
-| `export_stm32.py` | Exports a trained checkpoint to `firmware/policy_weights.h`, a C header holding the network's weights. |
-| `firmware/` | The STM32 port: `policy.c`/`policy.h` (network inference + observation assembly), generated weight headers, PC-side verification tests, `check_car_log.py` (checks a car-test log), and **[README-STM32-DEPLOYMENT.md](firmware/README-STM32-DEPLOYMENT.md)** — the full flashing guide. Start there for anything hardware-related. |
-| `models/best_real/best_model.zip` | **the current trained policy** (run 8: 34 inputs, 200 Hz, PWM action, eval reward 3637 at 29.64M steps). What `enjoy_drive.py` defaults to and what `firmware/policy_weights.h` and `policy_weights_q.h` were generated from. Run 7 is kept in `models/best_real_RUN7_yaw/` (untracked). |
-| `session-logs/` | Dated write-ups of every training run and why each plant/reward change was made, plus the raw training logs. The detailed history behind every number and design choice in this README. |
-| `.vscode/` | VS Code run configurations for the scripts above, using `venv/` |
-| [`archive/`](archive/README.md) | **Not used by run 8.** The superseded first plants (`my_robot.xml`, `their_robot.xml`) and their training script, the early PID baseline and benchmarks, the mesh-repair script, and the unrelated `inverted_pendulum/` experiment. Kept for history; see its README. Nothing outside `archive/` imports from it. |
+| `train_real_robot.py` | training script: `real_robot.xml` at 200 Hz, PWM actions, inputs computed exactly as the firmware computes them, randomised motor and sensor errors |
+| `real_robot.xml` | MuJoCo model built from the team's measured parameter sheet |
+| `motor_model.py` | turns a PWM command into wheel torque: the firmware's 1300-count compensation, then the motor's real dead zone (about 1460 counts) |
+| `enjoy_drive.py` | interactive simulator demo |
+| `export_stm32.py` | writes the trained network to `firmware/policy_weights.h` |
+| `models/best_real/best_model.zip` | **the current policy**: run 8, 34 inputs, eval reward 3637 at 29.64 M steps |
+| `firmware/` | the C port (`policy.c`/`policy.h`), float and int16 weight headers, PC checks, `check_car_log.py`, and the deployment guide |
+| `session-logs/` | dated write-ups of every run and every change, with the reasons and the raw training logs |
+| `.vscode/` | VS Code run configurations for the scripts above |
+| [`archive/`](archive/README.md) | files run 8 does not use: the first robot models and training script, the PID baseline, an unrelated pendulum project |
 
-## The short version of how we got here
+Checked on a clean clone and a fresh venv (2026-10-01). After the 2026-10-07
+cleanup, training, export and the firmware checks were re-run in the project
+venv.
 
-1. A classical PID controller confirmed the plant of the time
-   (`their_robot.xml`) could sustain driving while balancing — ruling out "the
-   plant is uncontrollable" before blaming RL.
-2. Early training used `their_robot.xml`, a plant model that turned out to be
-   wrong for the real hardware by a wide margin (3.5x COM height, 12x inertia)
-   — a different control problem, not a tolerance issue.
-3. `real_robot.xml` was rebuilt from the team's measured parameters. History
-   taps, an action-rate penalty and two leaky integrals (forward-velocity
-   error, then heading error) followed, to kill steady-state drift that a
-   reward with no memory can't see. Run 7 converged cleanly in simulation.
-4. On the car, run 7 fell within 0.2–2 s. After two integration bugs on the
-   firmware side (a half-rate control loop, a stack overflow), the car's own
-   logs showed the real cause: the motor model treated the firmware's
-   dead-band compensation as useful torque ("no gentle nudge"), when the real
-   gearmotor gives ~nothing below ~1460 counts. Run 7 had learned a control law
-   for an actuator that does not exist; with a realistic dead zone it falls in
-   0.7–2 s in simulation too (`session-logs/2026-10-06-hardware-mode28-diagnosis.md`).
-5. Run 8 corrects the motor model and trains on exactly what the firmware
-   observes: encoder odometry, yaw pinned to 0, IMU calibration errors, a 1–2
-   tick control delay, no wheel angles. Not yet tested on the car.
+## How we got here
 
-## Caveats, stated plainly
+1. A classical PID showed that the early plant (`their_robot.xml`) could
+   balance and drive, which ruled out "uncontrollable" before RL was blamed.
+2. That plant turned out to be wrong for the real car by 3.5× in
+   centre-of-mass height and 12× in inertia. `real_robot.xml` was rebuilt from
+   measured parameters.
+3. History inputs, an action-rate penalty and two leaky integrals (position,
+   then heading) removed the steady drift. Run 7 converged in simulation.
+4. On the car, run 7 fell within 0.2–2 s. The team fixed two firmware bugs, a
+   half-rate loop and a stack overflow. The logs then showed the real cause:
+   the motor model treated the firmware's dead-band compensation as useful
+   torque, while the real motor gives almost nothing below about 1460 counts
+   ([diagnosis](session-logs/2026-10-06-hardware-mode28-diagnosis.md)).
+5. Run 8 fixes the motor model and trains on exactly what the firmware sees:
+   encoder odometry, yaw pinned to 0, IMU calibration errors, a 1–2 tick delay,
+   and no wheel angles.
 
-- Run 8's results are simulation and PC-side verification. **Run 8 has not run
-  on real hardware yet.** Run 7 did, and failed — that failure is what run 8
-  was built from.
+## Caveats
+
+- Run 8's results come from simulation and PC checks only. It has not run on
+  the car.
 - The motor dead zone is fitted to one logged free-spin run plus the parameter
-  sheet, not a proper bench sweep.
+  sheet, not to a bench sweep.
 - Slope and friction have not been characterised for run 8.
+- The mode-28 firmware has no watchdog yet.

@@ -136,9 +136,110 @@ fully reproducible seeded run would need the draws moved after
 `super().reset()`. That change would alter the random stream, so it is not
 part of this refactor.
 
+## Docs rewrite: one spoon-fed deployment path
+
+9. **Rewrote `README.md` and `firmware/README-STM32-DEPLOYMENT.md`** to be
+   shorter, around a single proven route:
+   - the team's mode-28 Keil project (v6), plus the repo's four run-8 files,
+     one edited line in `rl_mode.c`, and one Keil define
+     (`POLICY_NO_FLOAT_INFER`);
+   - then build, FlyMCU, logger, mode select and calibration, in-hand test,
+     floor runs, log check, and what next: Steps 1–9.
+
+   Everything technical moved to Reference sections A–H: log format, action to
+   PWM and the 1300 dead band, hardware and pins, the 34 inputs, timing, stack
+   and safety, PC checks, porting, and evidence. The exact strings come from
+   the team's v6 sources:
+   - the old `policy_build_obs_rp` call;
+   - the Keil define box, `STM32F10X_HD,USE_STDPERIPH_DRIVER`;
+   - the `APP\RL` folder and the `OBJ\stm32_Balance_Car_L.hex` output.
+
+10. **Correction: KEY1 does not stop a run.** I read the stock firmware's
+    start-up (`main.c`, `app_mode.c`, `bsp_key.c` in the team repo's copy,
+    branch `codex/routea-mobile-v1.5`, `RouteA_Mobile_MVP/firmware`):
+    - KEY1 is read only at power-up. The first press confirms the mode,
+      chosen by turning a wheel by hand. The second press sets
+      `Stop_Flag = 0` (`put down key start!`).
+    - Nothing reads KEY1 after that. The pick-up/put-down detection runs only
+      in mode 1, and `Turn_Off()` cuts on tilt above 40°, battery below 9.6 V,
+      or `Stop_Flag`.
+
+    So in mode 28 a run ends only by tipping past 40°, a lifted car, or low
+    battery. Earlier today's Step 10 and the drop-in README said to stop a run
+    with KEY1; both now say to tip the car past 40° by hand.
+
+    `check_car_log.py` changed to match:
+    - reason 2 means the stock 40° check or a low battery;
+    - a run of 5 s or more that ends past 40° counts as "stayed up";
+    - a reason-2 end at low tilt is flagged as a possible low battery.
+
+    Caveat: the team's project is a different copy of the same Yahboom
+    firmware. Its KEY handling was not in their source snapshot, so this rests
+    on the stock code plus their README ("keeps the stock KEY mode
+    selection").
+11. **Dropped from the guide as not applicable:**
+    - **STM32CubeMX steps.** The stock project uses the Standard Peripheral
+      Library (`USE_STDPERIPH_DRIVER`) and has no `.ioc` file to open.
+    - **The 200 Hz timer.** The stock MPU6050 interrupt already runs the loop
+      at 200 Hz.
+    - **The 2 KB stack advice.** It is now 4 KB, as measured necessary.
+    - **The float-inference timing estimates.** They are replaced by the
+      team's measured int16 timings.
+
+### Moved here from the deployment guide
+
+**Slope sweep, run 7 (superseded policy; kept for the method).**
+`apply_slope()` in `enjoy_drive.py` tilts gravity, not the floor, while the
+observation and reward stay world-referenced. That overstates difficulty: an
+earlier policy drifted about 5× worse at a nominal 5° than under a true floor
+tilt (`2026-09-23-slope-run3-invalid.md`). Read the angles as a stress
+ordering, not a real-incline rating.
+
+| slope | hold: steps / v_fwd | +0.15 cmd: steps / v_fwd | +0.30 cmd: steps / v_fwd |
+|---|---|---|---|
+| 0° | 2000 / +0.002 | 2000 / +0.147 (98%) | 2000 / +0.270 (90%) |
+| 2° | 2000 / −0.105 | 2000 / +0.064 | 2000 / +0.187 |
+| 4° | 2000 / −0.213 | 2000 / −0.061 | 2000 / +0.107 |
+| 6° | 2000 / −0.358 | 2000 / −0.177 | 2000 / +0.037 |
+| 8° | 838 / −0.565 (falls) | 2000 / −0.334 | 2000 / −0.135 |
+| 10° | 291 / −0.545 (falls fast) | 973 / −0.520 (falls on 2/3 seeds) | 2000 / −0.300 |
+| 12.5° | 115 / −0.518 (falls) | 145 / −0.549 (falls) | 732 / −0.512 (2/3 full, 1/3 falls at 110) |
+| 15–20° | under 110 steps on every command | — | — |
+
+What the table shows:
+- Up to 6° the robot drifts downhill at about 0.06 m/s per degree while
+  holding station. The leaky integrals are for tracking error, not for
+  rejecting a constant force.
+- 8° is the first angle where holding station fails while driving still
+  works.
+- Above 15° nothing survives half a second.
+- Not tested: friction, and payload combined with slope.
+
+**Motor sizing, measured on the superseded torque-output policy** (0.6 N·m
+driver limit; never re-measured for the PWM policies). Commanded torque over 20
+eval conditions:
+
+| | per wheel | at the motor | share of the 0.6 N·m limit |
+|---|---|---|---|
+| mean | 0.053 N·m | 2.5 mN·m | 8.9 % |
+| p99 | 0.148 N·m | 7.0 mN·m | 24.6 % |
+| peak | 0.442 N·m | 21.0 mN·m | 73.6 % |
+
+The torque was above half the limit 0.04 % of the time and never above 80 %,
+so the motor has ample margin. Still to check: the AT8236 current rating
+against the peak current (21 mN·m / Kt, about 1–2 A for Kt of 0.01–0.02 N·m/A).
+`real_robot.xml`'s driver limit is now 0.4 N·m at the wheel; the motor stalls
+at 0.5679 N·m.
+
+**PID rate sweep, superseded 80 Hz plant.** Of 120 gain sets, the number
+stable was 91 at 80 Hz, 24 at 40 Hz and 0 at 25 Hz. It is about a different
+plant and controller, and does not transfer.
+
 ## Open items
 
-- The on-car run-8 test itself, following Steps 10–11.
+- The on-car run-8 test itself, following Steps 5–8 of the new guide.
+- Optional: a serial `stop` command in `rl_mode.c`, so that a balancing run
+  can end without tipping and its flight recording shows the balancing.
 - A raw-PWM serial command in `rl_mode.c` for the bench sweep.
 - Optional: a longer flight recorder (about 5 s, with commands and roll) in
   `rl_mode.c`, after checking free RAM in the Keil map file.
