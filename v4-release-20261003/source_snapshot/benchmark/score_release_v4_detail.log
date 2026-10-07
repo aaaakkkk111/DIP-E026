@@ -1,0 +1,19 @@
+== 跑分（cem_v3 目标函数，越低越好）==
+DETAIL|normal|空载|w=2.0|falls=0/3|legs_fell=[]|settle_mean=3.48|osc_mean=0.52|settle_part=3.48|osc_part=0.26|fall_part=0.00|pen=3.74
+DETAIL|normal|1kg|w=2.0|falls=2/3|legs_fell=[1, 2]|settle_mean=6.80|osc_mean=2.07|settle_part=2.27|osc_part=0.34|fall_part=10.00|pen=12.61
+DETAIL|normal|2kg|w=1.0|falls=3/3|legs_fell=[0, 0, 0]|settle_mean=-|osc_mean=-|settle_part=0.00|osc_part=0.00|fall_part=30.00|pen=30.00
+DETAIL|normal|4kg|w=1.5|falls=3/3|legs_fell=[0, 0, 0]|settle_mean=-|osc_mean=-|settle_part=0.00|osc_part=0.00|fall_part=30.00|pen=30.00
+DETAIL|normal|空载+3N|w=1.0|falls=0/3|legs_fell=[]|settle_mean=3.50|osc_mean=0.51|settle_part=3.50|osc_part=0.25|fall_part=0.00|pen=3.75
+原厂正常档 (模式1)                总分  111.45   | 空载 3.74  1kg 12.61  2kg 30.00  4kg 30.00  空载+3N 3.75
+DETAIL|heavy|空载|w=2.0|falls=0/3|legs_fell=[]|settle_mean=7.00|osc_mean=33.70|settle_part=7.00|osc_part=16.85|fall_part=0.00|pen=23.85
+DETAIL|heavy|1kg|w=2.0|falls=0/3|legs_fell=[]|settle_mean=7.00|osc_mean=20.73|settle_part=7.00|osc_part=10.36|fall_part=0.00|pen=17.36
+DETAIL|heavy|2kg|w=1.0|falls=0/3|legs_fell=[]|settle_mean=3.35|osc_mean=0.78|settle_part=3.35|osc_part=0.39|fall_part=0.00|pen=3.74
+DETAIL|heavy|4kg|w=1.5|falls=0/3|legs_fell=[]|settle_mean=3.29|osc_mean=0.60|settle_part=3.29|osc_part=0.30|fall_part=0.00|pen=3.59
+DETAIL|heavy|空载+3N|w=1.0|falls=0/3|legs_fell=[]|settle_mean=7.00|osc_mean=33.70|settle_part=7.00|osc_part=16.85|fall_part=0.00|pen=23.85
+原厂负重档                      总分  115.41   | 空载 23.85  1kg 17.36  2kg 3.74  4kg 3.59  空载+3N 23.85
+DETAIL|v4rel|空载|w=2.0|falls=0/3|legs_fell=[]|settle_mean=3.55|osc_mean=0.52|settle_part=3.55|osc_part=0.26|fall_part=0.00|pen=3.81
+DETAIL|v4rel|1kg|w=2.0|falls=0/3|legs_fell=[]|settle_mean=4.09|osc_mean=3.68|settle_part=4.09|osc_part=1.84|fall_part=0.00|pen=5.93
+DETAIL|v4rel|2kg|w=1.0|falls=0/3|legs_fell=[]|settle_mean=3.29|osc_mean=0.50|settle_part=3.29|osc_part=0.25|fall_part=0.00|pen=3.54
+DETAIL|v4rel|4kg|w=1.5|falls=0/3|legs_fell=[]|settle_mean=3.11|osc_mean=0.46|settle_part=3.11|osc_part=0.23|fall_part=0.00|pen=3.34
+DETAIL|v4rel|空载+3N|w=1.0|falls=0/3|legs_fell=[]|settle_mean=3.54|osc_mean=0.52|settle_part=3.54|osc_part=0.26|fall_part=0.00|pen=3.80
+v4 正式版 (固件C核心)             总分   31.83   | 空载 3.81  1kg 5.93  2kg 3.54  4kg 3.34  空载+3N 3.80

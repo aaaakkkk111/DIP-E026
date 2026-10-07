@@ -1,0 +1,121 @@
+
+=== start 17:27:39 ===
+[connected COM3]
+< #tune_io ready -- '?' for state, 'r' to record
+< #tune_io ready -- '?' for state, 'r' to record
+< #tune_io ready -- '?' for state, 'r' to record
+
+=== start 17:29:42 ===
+[connected COM3]
+< #end rows=0 dropped=0
+> r
+17:30:48 UPSHIFT seq 4472: f 0.00 -> 1.00, angle -0.59, ref 0.15, err -0.74 deg, gyro -4353, cmd 0 (moved in last 1 s: yes), osc 18.0
+17:30:48 LATCH seq 4571: f 0.00, osc 66.4
+17:30:50 UPSHIFT seq 4925: f 0.00 -> 1.00, angle -8.07, ref -2.32, err -5.75 deg, gyro -1723, cmd 0 (moved in last 1 s: yes), osc 10.9
+17:30:51 LATCH seq 5025: f 0.00, osc 60.9
+17:31:03 UPSHIFT seq 7483: f 0.00 -> 1.00, angle 0.79, ref -1.96, err +2.75 deg, gyro 3268, cmd 0 (moved in last 1 s: yes), osc 13.6
+17:31:03 LATCH seq 7583: f 0.00, osc 59.0
+17:31:28 UPSHIFT seq 12541: f 0.00 -> 1.00, angle -5.72, ref -0.58, err -5.14 deg, gyro -2418, cmd 0 (moved in last 1 s: yes), osc 13.2
+17:31:29 LATCH seq 12640: f 0.00, osc 70.4
+17:31:31 UPSHIFT seq 13122: f 0.00 -> 1.00, angle -7.01, ref -0.94, err -6.07 deg, gyro -1702, cmd 0 (moved in last 1 s: yes), osc 6.7
+17:31:31 LATCH seq 13222: f 0.00, osc 61.2
+17:31:45 UPSHIFT seq 16036: f 0.00 -> 1.00, angle -6.35, ref 0.13, err -6.48 deg, gyro -1868, cmd 0 (moved in last 1 s: yes), osc 9.1
+17:31:46 LATCH seq 16134: f 0.00, osc 62.6
+17:32:00 UPSHIFT seq 18878: f 0.00 -> 1.00, angle 9.73, ref 0.58, err +9.15 deg, gyro 1115, cmd 1 (moved in last 1 s: yes), osc 4.4
+17:32:01 LATCH seq 18977: f 0.00, osc 65.7
+17:32:01 UPSHIFT seq 19121: f 0.98 -> 1.00, angle -1.66, ref -0.06, err -1.60 deg, gyro 3186, cmd 0 (moved in last 1 s: yes), osc 32.5
+17:32:02 LATCH seq 19220: f 0.00, osc 57.4
+17:32:10 UPSHIFT seq 20884: f 0.00 -> 1.00, angle 0.49, ref -3.20, err +3.69 deg, gyro 4608, cmd 1 (moved in last 1 s: yes), osc 18.6
+17:32:10 LATCH seq 20982: f 0.00, osc 68.4
+> s
+< #end rows=23166 dropped=8110
+< #WARNING dropped samples, seq has gaps
+< #tune_io ready -- '?' for state, 'r' to record
+[serial lost 17:33:36]
+
+=== start 17:46:05 ===
+[connected COM3]
+< #end rows=0 dropped=0
+< #FELL seq=0 ang=1.5
+< #FELL seq=0 ang=1.5
+< #FELL seq=0 ang=0.3
+< #FELL seq=0 ang=-3.7
+< #FELL seq=0 ang=-4.4
+< #FELL seq=0 ang=-12.6
+< #FELL seq=0 ang=-15.7
+< #FELL seq=0 ang=-21.1
+< #FELL seq=0 ang=-24.0
+< #FELL seq=0 ang=-21.5
+< #FELL seq=0 ang=-19.5
+< #FELL seq=0 ang=-18.5
+< #FELL seq=0 ang=-16.8
+< #FELL seq=0 ang=-14.0
+< #FELL seq=0 ang=-11.6
+< #FELL seq=0 ang=-10.3
+< #FELL seq=0 ang=-7.7
+< #tune_io ready -- '?' for state, 'r' to record
+> z2
+r
+17:47:48 UPSHIFT seq 12231: f 0.00 -> 1.00, angle 3.31, ref 2.81, err +0.50 deg, gyro 1200, cmd 0 (moved in last 1 s: no), osc 8.1
+17:47:49 LATCH seq 12331: f 0.00, osc 65.0
+17:47:51 UPSHIFT seq 12725: f 0.00 -> 1.00, angle -0.20, ref 1.56, err -1.76 deg, gyro -2283, cmd 0 (moved in last 1 s: no), osc 12.2
+17:47:51 LATCH seq 12823: f 0.00, osc 68.9
+17:47:52 UPSHIFT seq 13014: f 0.00 -> 1.00, angle 1.85, ref 1.77, err +0.08 deg, gyro -1475, cmd 0 (moved in last 1 s: no), osc 19.8
+17:47:53 LATCH seq 13112: f 0.00, osc 65.1
+17:47:54 UPSHIFT seq 13288: f 0.00 -> 1.00, angle 1.22, ref 0.98, err +0.24 deg, gyro -1448, cmd 0 (moved in last 1 s: no), osc 24.5
+17:47:54 LATCH seq 13388: f 0.00, osc 68.8
+17:47:55 UPSHIFT seq 13572: f 0.00 -> 1.00, angle 3.52, ref 1.32, err +2.20 deg, gyro -1742, cmd 0 (moved in last 1 s: no), osc 19.6
+17:47:55 LATCH seq 13672: f 0.00, osc 68.5
+17:47:57 UPSHIFT seq 13945: f 0.00 -> 1.00, angle 1.15, ref 1.13, err +0.02 deg, gyro -1589, cmd 0 (moved in last 1 s: no), osc 15.5
+17:47:57 LATCH seq 14043: f 0.00, osc 67.7
+17:47:58 UPSHIFT seq 14247: f 0.00 -> 1.00, angle 2.90, ref 1.28, err +1.62 deg, gyro -2003, cmd 0 (moved in last 1 s: no), osc 19.9
+17:47:59 LATCH seq 14347: f 0.00, osc 66.9
+17:48:00 BOOST seq 14492: f 0.08 (latched 0.00), angle -17.87, ref 0.74, cmd 0
+17:48:01 UPSHIFT seq 14711: f 0.60 -> 1.00, angle 0.89, ref 0.74, err +0.15 deg, gyro 2289, cmd 0 (moved in last 1 s: no), osc 16.1
+17:48:01 LATCH seq 14810: f 0.00, osc 66.0
+17:48:02 UPSHIFT seq 15054: f 0.00 -> 1.00, angle -3.15, ref 0.30, err -3.45 deg, gyro -796, cmd 0 (moved in last 1 s: no), osc 13.2
+17:48:03 LATCH seq 15154: f 0.00, osc 69.5
+17:48:03 UPSHIFT seq 15339: f 0.00 -> 1.00, angle 5.18, ref 0.60, err +4.58 deg, gyro 2523, cmd 0 (moved in last 1 s: no), osc 19.5
+17:48:04 LATCH seq 15437: f 0.00, osc 68.3
+17:48:05 UPSHIFT seq 15595: f 0.00 -> 1.00, angle -0.66, ref 0.29, err -0.95 deg, gyro 1493, cmd 0 (moved in last 1 s: no), osc 22.4
+17:48:05 LATCH seq 15694: f 0.00, osc 66.0
+17:48:16 UPSHIFT seq 17922: f 0.00 -> 1.00, angle -1.20, ref 2.92, err -4.12 deg, gyro -2013, cmd 0 (moved in last 1 s: no), osc 20.6
+17:48:17 LATCH seq 18022: f 0.00, osc 68.6
+17:48:38 UPSHIFT seq 22113: f 0.00 -> 1.00, angle 1.89, ref 2.46, err -0.57 deg, gyro -1238, cmd 0 (moved in last 1 s: no), osc 5.9
+17:48:38 LATCH seq 22212: f 0.00, osc 67.3
+17:48:39 BOOST seq 22281: f 0.08 (latched 0.00), angle 12.68, ref 2.65, cmd 0
+17:48:43 UPSHIFT seq 23277: f 0.01 -> 1.00, angle 1.52, ref 1.81, err -0.29 deg, gyro 1487, cmd 0 (moved in last 1 s: no), osc 22.8
+17:48:44 LATCH seq 23376: f 0.00, osc 65.6
+17:48:45 UPSHIFT seq 23551: f 0.00 -> 1.00, angle -3.40, ref 1.68, err -5.08 deg, gyro -477, cmd 0 (moved in last 1 s: no), osc 20.3
+17:48:45 LATCH seq 23650: f 0.00, osc 63.7
+17:48:46 UPSHIFT seq 23868: f 0.00 -> 1.00, angle -0.72, ref 1.05, err -1.77 deg, gyro -2188, cmd 0 (moved in last 1 s: no), osc 15.3
+17:48:47 LATCH seq 23967: f 0.00, osc 61.7
+> s
+< #end rows=25984 dropped=9023
+< #WARNING dropped samples, seq has gaps
+< #tune_io ready -- '?' for state, 'r' to record
+[serial lost 17:49:07]
+
+=== start 17:57:21 ===
+[connected COM3]
+< #end rows=0 dropped=0
+> r
+17:57:55 UPSHIFT seq 2447: f 0.00 -> 1.00, angle -0.53, ref -0.13, err -0.40 deg, gyro -1290, cmd 0 (moved in last 1 s: no), osc 10.4
+17:57:56 LATCH seq 2547: f 0.00, osc 65.9
+17:57:58 UPSHIFT seq 3100: f 0.00 -> 1.00, angle -1.00, ref 0.77, err -1.77 deg, gyro -2407, cmd 0 (moved in last 1 s: no), osc 23.0
+17:57:59 LATCH seq 3199: f 0.00, osc 69.3
+17:58:02 UPSHIFT seq 3835: f 0.00 -> 1.00, angle -0.77, ref 1.17, err -1.94 deg, gyro -1315, cmd 0 (moved in last 1 s: no), osc 9.4
+17:58:03 LATCH seq 3934: f 0.00, osc 66.4
+17:58:05 UPSHIFT seq 4486: f 0.00 -> 1.00, angle -5.81, ref -0.70, err -5.11 deg, gyro -2033, cmd 0 (moved in last 1 s: no), osc 13.7
+17:58:06 LATCH seq 4584: f 0.00, osc 68.2
+17:58:08 UPSHIFT seq 5064: f 0.00 -> 1.00, angle -7.59, ref -1.90, err -5.69 deg, gyro -1707, cmd 0 (moved in last 1 s: no), osc 11.8
+17:58:09 LATCH seq 5164: f 0.00, osc 66.3
+> s
+< #end rows=14022 dropped=4893
+< #WARNING dropped samples, seq has gaps
+17:58:53 UPSHIFT seq 13924: f 0.00 -> 1.00, angle 0.40, ref -0.23, err +0.63 deg, gyro 1121, cmd 0 (moved in last 1 s: no), osc 3.0
+< #FELL seq=14022 ang=-48.1
+< #FELL seq=14022 ang=-44.3
+< #FELL seq=14022 ang=-49.5
+< #FELL seq=14022 ang=-61.7
+[serial lost 17:59:11]
