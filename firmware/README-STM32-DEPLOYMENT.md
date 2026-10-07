@@ -659,6 +659,9 @@ The script writes two files next to itself:
 | `rl_serial_log.txt` | every line the car printed, with the PC time |
 | `rl_runs_summary.txt` | one line per run: length, why it ended, pitch range, mean speed, PWM range |
 
+It **appends** to both. The team's copies already hold the run-7 tests, so
+rename them (for example `rl_serial_log_run7.txt`) before testing run 8.
+
 **Turn auto-trim off before the first run.** The script starts with it on
 (`auto = True` in `main()`), although the team's README says it is off. After
 any run of 1 s or more that ends in a fall, it sends a `trim` computed from
@@ -667,12 +670,37 @@ run 7's simulation, and the last 0.6 s before a fall is mostly the fall
 itself. Left on, it changes the pitch zero between runs and mixes up the
 comparison. Write `auto off` into `cmd.txt` right after starting the script.
 
+### Controls
+
+| control | what it does in mode 28 |
+|---|---|
+| Mode key and OLED | select mode 28 the same way as for the team's v6 build. The OLED then shows `CAL hold` while calibrating, `ARM` while waiting to start, and the left/right PWM while running |
+| **KEY1** | switches the motors on and off. Press it during a run to stop the run and get its flight recording |
+| Starting a run | there is no start button. With the motors on, hold the car upright and still (pitch within 5.7°, roll within 11.5°, not rocking) for 1 s and the policy takes over |
+| Bluetooth app, forward / back | ±0.25 m/s while held |
+| Bluetooth app, left / right | turn at ±0.5 rad/s while held. The diagonal buttons combine both |
+| Releasing the buttons | commands go back to 0: stand still |
+| `cmd.txt` | serial commands, table above |
+
+Automatic cut-outs end a run on their own:
+
+| cut-out | reason code |
+|---|---|
+| pitch or roll past 0.70 rad (40°) | 1 |
+| the stock code's own checks: KEY1, its 40° tilt check, or a low battery | 2 |
+| a wheel faster than 25 rad/s for 0.5 s (car lifted) | 3 |
+
+After a cut-out the car goes back to waiting with its calibration kept. **If
+the motors are still on, it restarts by itself** as soon as it is held upright
+and still for 1 s, so keep a hand on it while setting it back up, or press
+KEY1 first.
+
 ### What the car records
 
 | line | when | fields |
 |---|---|---|
 | `D` | 10 times a second, always | time (ms), state (0 waiting, 1 calibrating, 2 running), pitch (°), forward speed (m/s), left PWM, right PWM, pitch zero (°) |
-| `R` | when a run ends | run length (ms), reason (1 = tilted past 40°, 2 = motors switched off, 3 = wheels spinning free), largest pitch (°) |
+| `R` | when a run ends | run length (ms), reason code (table above), largest pitch (°) |
 | `E`, up to 120 | right after `R` | the **last 0.6 s at the full 200 Hz** (fewer lines if the run was shorter), one line per tick: index, pitch ×100 (°), pitch rate ×100 (°/s), forward speed (mm/s), left PWM, right PWM |
 | `R end` | after the `E` lines | end of the dump |
 | `T` | after `R end` | timing in µs: longest interrupt, stock part, RL part, network, longest gap between ticks, late ticks, total ticks |
@@ -682,23 +710,42 @@ balances, **press KEY1 to stop it** (reason 2) to get the dump. Picking the
 car up instead ends it by tilt or free-spin, and the dump then shows the
 pick-up, not the balancing.
 
+Reason 2 does not always mean you stopped it. The stock 40° check can cut the
+motors before `rl_mode.c`'s own check does, so a fall can also end with reason
+2. Look at the largest pitch: near 40° means it fell.
+
 ### Test session
 
-1. Start the script and write `auto off` into `cmd.txt`.
+1. Rename the old logs, start the script, and write `auto off` into `cmd.txt`.
 2. Write `cal` and hold the car still at its balance point until `cal done`.
 3. One run in hand with the wheels off the floor. Stop it with KEY1.
 4. 3–5 runs on the floor, hand ready to catch. Leave some of them standing
    still for about 10 s; drive others with the app's forward/back and turn
-   buttons. Stop each with KEY1.
-5. Keep both files. They are what the simulation is compared against.
+   buttons. Stop each with KEY1. Note which runs used the buttons: the log
+   does not record commands.
+5. Run `check_car_log.py` on the log (below), then go to Step 11.
+6. Keep both files. They are what the simulation is compared against.
 
 ### What to check for run 8
 
+`firmware/check_car_log.py` does these checks for every run in the log:
+
+```
+python firmware/check_car_log.py path/to/rl_serial_log.txt
+python firmware/check_car_log.py path/to/rl_serial_log.txt --last 5 --plot
+```
+
+`--last N` checks only the last N runs. `--plot` saves a PNG of each run's
+last 0.6 s (pitch, pitch rate, speed, PWM) into `car_log_plots/` next to the
+log; it needs `pip install matplotlib`. Run on the team's run-7 log, it
+reports the known faults: frozen −1923/−1466 output, speed readings of tens
+of m/s, and late ticks on the builds before the timing fix.
+
 | check | read it from | run 7 | run 8 passes if |
 |---|---|---|---|
-| Stays up | `R` length and reason | fell in 0.2–2 s | runs until you stop it (reason 2) |
+| Stays up | `R` length, reason and largest pitch | fell in 0.2–2 s | runs until you stop it (reason 2, largest pitch well under 40°) |
 | Output not frozen | `E` PWM columns | stuck at −1923 / −1466 | changes from tick to tick |
-| No bad speed readings | `E` speed column | single-tick spikes of tens of m/s | within ±1000 mm/s, no isolated spikes |
+| No bad speed readings | `E` speed column | single-tick spikes of tens of m/s | under 1500 mm/s (even in the air the wheels top out near 1100), no jump above 200 mm/s from one tick to the next |
 | Control rate | `T` | — | 0 late ticks, longest gap about 5000 µs, longest interrupt under 5000 µs |
 | PWM sign flips | consecutive `E` rows | about every tick in simulation | roughly 0–27 % of ticks |
 | Standing drift | `D` speed, no button pressed | — | near 0; simulation gives up to ±0.02 m/s |
@@ -717,6 +764,101 @@ the main loop too little time to print that much. To see more, enlarge the
 flight recorder in `rl_mode.c` (`FR_N`, 120 ticks now) and add fields to it,
 checking the free RAM in the Keil map file first. It is printed after the
 run, so it costs no time while the car is balancing.
+
+## Step 11 — What to do next, based on the results
+
+Find the row that matches what `check_car_log.py` and the car showed. Work
+from the top: a row higher up makes the rows below it meaningless.
+
+| what you see | likely cause | what to do | files |
+|---|---|---|---|
+| Any `FAIL` for frozen output, impossible speeds or timing | the firmware integration, not the policy. Run 7 had all three (stack overflow, half-rate loop) | Do not trim or retrain. Confirm the build is the run-8 drop-in on the team's v6 project (4 KB stack, burst IMU read). Send the log and plots | `check_car_log.py --plot` |
+| Falls within 1–2 s, with no firmware `FAIL` | the simulator still differs from the car somewhere | Redo `cal` at the balance point. Repeat the in-hand test: leaning forward must drive both wheels forward. Then send the log and plots for comparison with the simulation | `check_car_log.py --plot`, `enjoy_drive.py` |
+| Stays up but creeps one way with no buttons pressed (10 Hz mean speed above about 0.03 m/s) | pitch zero is off. Simulation: 2° of error gives about 2 cm/s of creep | `trim` in 0.5° steps: creeping forward → `trim -0.5`, creeping backward → `trim 0.5`. If the creep gets worse, go the other way. If it needs more than ±2°, recalibrate instead | `rl_trim_helper.py` (`cmd.txt`) |
+| Stays up but shakes or buzzes, or PWM sign flips above 50 % | the motor dead zone or gearbox backlash differs from the model | bench motor sweep (below), then retrain | `motor_model.py`, `train_real_robot.py` |
+| Stays up, but the forward button gives far from about 0.22 m/s | motor strength differs from the model | bench motor sweep, then retrain | `motor_model.py`, `train_real_robot.py` |
+| Stays up, holds still, drives and turns | run 8 transfers | Longer runs; commands held for several seconds; a 1 kg load; then slopes and different floors. Add the watchdog (Step 7) before any unsupervised use | `check_car_log.py`, `enjoy_drive.py` |
+
+To compare a car run with the simulation, run `python enjoy_drive.py` and give
+it the same command with the sliders or arrow keys. In simulation, run 8 holds
+still to within 1 mm/s and drives at about 90 % of the commanded speed.
+
+### Bench motor sweep
+
+The motor model's dead zone (1460 counts, randomised over 1350–1600) is fitted
+to one free-spin log plus the parameter sheet. To measure it properly:
+
+1. Lift the car so both wheels spin freely.
+2. For each wheel and each direction, step the raw PWM from 0 to 2800 in
+   steps of 50. Hold each step for 1 s and record the steady wheel speed from
+   the encoders.
+3. The dead zone is the PWM at which the wheel starts turning. Compare the
+   speeds with what the model gives (nominal motor, wheels in the air):
+
+   | raw PWM | 1500 | 1705 | 1985 | 2400 | 2800 |
+   |---|---|---|---|---|---|
+   | model wheel speed (rad/s) | 0.8 | 5.9 | 12.8 | 23.1 | 32.9 |
+
+   The car's only free-spin log so far (left ≈ 1985, right ≈ 1705) averaged
+   9.5 rad/s; the model gives 9.35 for that pair. The spec's 333 RPM at 12 V
+   is 34.9 rad/s.
+
+**The mode-28 build has no command for a raw PWM yet.** It needs a small
+addition to `rl_mode.c`: a serial command that sets a fixed PWM while the
+policy is not running, and prints the encoder speed.
+
+If the measured dead zone falls outside 1350–1600, or the top speed is off by
+more than about 10 %, update `motor_model.py` and retrain:
+
+| constant in `motor_model.py` | what to set it from |
+|---|---|
+| `MOTOR_DEAD_ZONE` | the mean measured start-up PWM |
+| `MOTOR_DEAD_ZONE_RANGE` | the measured spread, plus about 100 counts on each side |
+| `TAU_SCALE_RANGE`, `KV_SCALE_RANGE` | widen them if the measured speeds are outside what the model gives; free-spin speed scales with the ratio of the two |
+
+### Retraining and re-flashing
+
+Only after a bench sweep or the car shows the model is wrong. Run everything
+from `3Dsim/` with the venv active.
+
+1. **Back up run 8 first.** Training overwrites `models/best_real/best_model.zip`.
+   Copy `models/best_real/` to `models/best_real_RUN8/`.
+2. Change `"logs/run8"` in `train_real_robot.py` to a new folder name, then
+   train:
+
+   ```
+   python train_real_robot.py
+   ```
+
+   30 M steps took about 2.5 hours for run 8 (9197 s). It writes the best
+   checkpoint to `models/best_real/best_model.zip` and the final one to
+   `models/ppo_real_robot.zip`.
+3. Watch it in simulation: `python enjoy_drive.py`.
+4. Export the weights:
+
+   ```
+   python export_stm32.py                  # policy_weights.h and policy_testvectors.h
+   python firmware/quantize_weights.py     # policy_weights_q.h, the int16 weights policy_q.c uses
+   ```
+
+5. Check the export on the PC (Step 2): build and run `test_policy`. Also run
+   `check_obs_builder.py` if `policy.c` or the sensing in `train_real_robot.py`
+   changed.
+6. Copy `firmware/policy_weights.h` and `firmware/policy_weights_q.h` over
+   the ones in the Keil project, rebuild, flash, and repeat Step 10.
+
+### Python files, in one place
+
+| file | where | used for | needs |
+|---|---|---|---|
+| `rl_trim_helper.py` | team folder `rl_mode28_20261003/` | logging the car, sending commands | `pip install pyserial` |
+| `firmware/check_car_log.py` | this repo | checking each run in a log; `--plot` for graphs | standard library; `pip install matplotlib` for `--plot` |
+| `enjoy_drive.py` | this repo | running the same commands in simulation | `requirements.txt` |
+| `motor_model.py` | this repo | the motor constants a bench sweep would change | — |
+| `train_real_robot.py` | this repo | retraining | `requirements.txt` |
+| `export_stm32.py` | this repo | float weight header and test vectors | `requirements.txt` |
+| `firmware/quantize_weights.py` | this repo | int16 weight header for `policy_q.c` | `requirements.txt` |
+| `firmware/check_obs_builder.py` | this repo | firmware inputs vs training inputs, tick by tick | `requirements.txt`, gcc |
 
 ## Known limitations to expect on hardware
 

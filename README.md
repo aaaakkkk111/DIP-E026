@@ -11,7 +11,9 @@ balances the simulated robot in closed loop — but run 8 has not yet run on the
 car. See [firmware/README-STM32-DEPLOYMENT.md](firmware/README-STM32-DEPLOYMENT.md#readiness-check-before-you-start)'s
 "Readiness check" first, and its
 [Step 10](firmware/README-STM32-DEPLOYMENT.md#step-10--collecting-readings-from-a-car-test)
-for how to run the car test and record its readings.
+for how to run the car test and record its readings, and
+[Step 11](firmware/README-STM32-DEPLOYMENT.md#step-11--what-to-do-next-based-on-the-results)
+for what to do with the results.
 
 ## Quickstart
 
@@ -41,7 +43,7 @@ the firmware's own PC-side verification build — not just assumed to work.
 | `motor_model.py` | Lumped gearmotor model that turns the policy's PWM output into wheel torque: the firmware's 1300-count compensation, then a true dead zone (~1460 counts, fitted to the car's free-spin log) below which the motor gives no torque. Randomised per training episode. |
 | `enjoy_drive.py` | Interactive demo: drive the trained policy in the MuJoCo viewer, with live sliders for commands and for conditions (friction/slope/payload) to see where the policy's trained envelope ends. |
 | `export_stm32.py` | Exports a trained checkpoint to `firmware/policy_weights.h`, a C header holding the network's weights. |
-| `firmware/` | The STM32 port: `policy.c`/`policy.h` (network inference + observation assembly), generated weight headers, PC-side verification tests, and **[README-STM32-DEPLOYMENT.md](firmware/README-STM32-DEPLOYMENT.md)** — the full flashing guide. Start there for anything hardware-related. |
+| `firmware/` | The STM32 port: `policy.c`/`policy.h` (network inference + observation assembly), generated weight headers, PC-side verification tests, `check_car_log.py` (checks a car-test log), and **[README-STM32-DEPLOYMENT.md](firmware/README-STM32-DEPLOYMENT.md)** — the full flashing guide. Start there for anything hardware-related. |
 | `models/best_real/best_model.zip` | **the current trained policy** (run 8: 34 inputs, 200 Hz, PWM action, eval reward 3637 at 29.64M steps). What `enjoy_drive.py` defaults to and what `firmware/policy_weights.h` and `policy_weights_q.h` were generated from. Run 7 is kept in `models/best_real_RUN7_yaw/` (untracked). |
 | `session-logs/` | Dated write-ups of every training run and why each plant/reward change was made, plus the raw training logs. The detailed history behind every number and design choice in this README. |
 | `pid_baseline.py`, `pid_eval_benchmark.py`, `policy_eval_benchmark.py` | A classical cascade-PID controller on the same plant, and benchmarks to compare it against the trained policy head-to-head — used early on to confirm the plant itself supports sustained driving before committing to RL. |

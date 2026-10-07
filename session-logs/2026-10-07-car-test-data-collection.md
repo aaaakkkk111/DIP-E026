@@ -42,12 +42,50 @@ car, then run 8).
   interrupt uses 4.6 ms of each 5 ms tick; a larger post-run buffer is the
   way to get more.
 
+## Later the same day: controls, next steps, log checker
+
+3. **Added the car's controls to Step 10:**
+   - KEY1, the auto-start, the app buttons and their command values, and the
+     cut-out reason codes.
+   - Read from `rl_mode.c` and the patched `app_control.c`.
+   - Added a warning that the car restarts by itself when stood back up with
+     the motors on.
+4. **Added Step 11, "What to do next":**
+   - A decision table from test result to cause, action and files.
+   - The bench motor sweep procedure, with the model's free-spin speed at each
+     PWM.
+   - The retrain and re-flash steps. Run 8 took 9197 s for 30M steps.
+   - A table of every Python file involved and what it needs.
+5. **Wrote `firmware/check_car_log.py`.**
+   - It parses the helper's log and prints, for each run: stayed up or fell,
+     frozen output, impossible speeds and one-tick jumps, timing, PWM
+     sign-flip rate, and the creep from the 10 Hz stream.
+   - `--last N` limits it to the most recent runs; `--plot` saves a PNG of
+     each run.
+   - Standard library only; matplotlib is needed only for `--plot`.
+   - **Checked against the team's run-7 log (11 runs):**
+     - It flags the frozen −1923/−1466 output, the tens-of-m/s speed readings
+       and the late ticks on the half-rate builds.
+     - The plot of the last run shows the sequence: a −10 m/s spike, then the
+       PWM flips to the frozen values, then the fall.
+
+Corrections made while writing it:
+
+- **Reason 2 is not always "stopped by you".** The stock `Turn_Off()` also
+  cuts at 40° by its own angle estimate. Two run-7 runs ended with reason 2
+  at 39–40°. The checker counts reason 2 as a fall when the largest pitch is
+  30° or more, and the guide says so.
+- **"Impossible speed" is 1.5 m/s, not 1 m/s.** In the model, a wheel spinning
+  in the air reaches 32.9 rad/s at PWM 2800, which is 1.10 m/s at the rim.
+  That agrees with the spec's 333 RPM at 12 V. The 9.35 rad/s figure quoted
+  earlier is for the logged free-spin PWMs (about 1985/1705), not for full PWM.
+- **The bench sweep cannot be done on the mode-28 build yet.** It needs a
+  serial command that sets a raw PWM. The guide says this.
+
 ## Open items
 
-- The on-car run-8 test itself, following Step 10.
-- A script that parses `rl_serial_log.txt` and prints the run-8 pass table
-  per run (run length, frozen output, speed spikes, late ticks, sign-flip
-  rate), with plots of the `E` data.
+- The on-car run-8 test itself, following Steps 10–11.
+- A raw-PWM serial command in `rl_mode.c` for the bench sweep.
 - Optional: a longer flight recorder (about 5 s, with commands and roll) in
   `rl_mode.c`, after checking free RAM in the Keil map file.
 - Still open from 2026-10-06: bench motor sweep, watchdog, slope and
