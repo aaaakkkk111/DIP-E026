@@ -9,7 +9,9 @@ corrected from the car's own logs after run 7 failed on hardware. In
 simulation it holds every stress case tested, and the actual C firmware code
 balances the simulated robot in closed loop — but run 8 has not yet run on the
 car. See [firmware/README-STM32-DEPLOYMENT.md](firmware/README-STM32-DEPLOYMENT.md#readiness-check-before-you-start)'s
-"Readiness check" first.
+"Readiness check" first, and its
+[Step 10](firmware/README-STM32-DEPLOYMENT.md#step-10--collecting-readings-from-a-car-test)
+for how to run the car test and record its readings.
 
 ## Quickstart
 

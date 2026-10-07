@@ -39,7 +39,7 @@ Still open — none of it simulated away:
 
 | gap | what settles it |
 |---|---|
-| Zero real-hardware runs of run 8 | the on-car test in Step 9 |
+| Zero real-hardware runs of run 8 | the on-car test in Steps 9–10 |
 | The motor dead zone is fitted to one free-spin log plus the parameter sheet, not swept | 30-min bench sweep: raw PWM 0–2800 per wheel and direction, wheels in the air. If it falls outside 1350–1600, widen `MOTOR_DEAD_ZONE_RANGE` and retrain |
 | Gearbox backlash and motor electrical dynamics are not modelled | on-car behaviour; the policy no longer dithers every tick (sign flips on 0–27 % of ticks vs ~100 % for run 7), which makes backlash matter less |
 | Timing: the team measured 4.6 ms worst case of a 5 ms tick with the burst IMU read | already fits; keep the 4 KB stack and the burst read from their v6 build |
@@ -618,6 +618,105 @@ void TIM6_IRQHandler(void)
    this whole document — if inference plus sensor read doesn't fit in 5 ms,
    the control loop falls behind and nothing else here matters.
 4. Only then set it down, hand hovering to catch it.
+
+## Step 10 — Collecting readings from a car test
+
+This step uses the team's mode-28 build: the policy added as mode 28 inside
+the stock Keil firmware, with run 8 dropped in from
+`rl_mode28_20261003/run8_dropin/`. The car records its own data and prints it
+over the serial port. A PC script saves it. Neither the firmware nor the PC
+script is in this repo; both are in the team's `rl_mode28_20261003` folder.
+
+### Setup
+
+1. Build and flash the run-8 drop-in with Keil and FlyMCU (Step 2b), then
+   **close FlyMCU**, because it holds the serial port.
+2. Leave the USB cable FlyMCU uses plugged in. That is the car's debug port
+   (USART1, 230400 baud).
+3. On the laptop, find the port in Device Manager (the CH340 entry), then:
+
+   ```
+   pip install pyserial
+   cd rl_mode28_20261003
+   python rl_trim_helper.py COM3
+   ```
+
+4. To send a command to the car, type it into `cmd.txt` next to the script
+   and save the file. The script sends it and clears the file.
+
+| command | what it does |
+|---|---|
+| `cal` | recalibrate: hold the car still at its balance point for about 5 s, until `cal done` appears |
+| `st` | print the current state, calibration and PWM |
+| `s` | turn the 10 Hz `D` stream on or off |
+| `trim <deg>` | add `<deg>` to the pitch zero, at most ±5° per command |
+| `auto off` / `auto on` | the script's own auto-trim, not sent to the car (see below) |
+
+The script writes two files next to itself:
+
+| file | contents |
+|---|---|
+| `rl_serial_log.txt` | every line the car printed, with the PC time |
+| `rl_runs_summary.txt` | one line per run: length, why it ended, pitch range, mean speed, PWM range |
+
+**Turn auto-trim off before the first run.** The script starts with it on
+(`auto = True` in `main()`), although the team's README says it is off. After
+any run of 1 s or more that ends in a fall, it sends a `trim` computed from
+the mean speed over the last 0.6 s. Its 0.035 m/s-per-degree gain comes from
+run 7's simulation, and the last 0.6 s before a fall is mostly the fall
+itself. Left on, it changes the pitch zero between runs and mixes up the
+comparison. Write `auto off` into `cmd.txt` right after starting the script.
+
+### What the car records
+
+| line | when | fields |
+|---|---|---|
+| `D` | 10 times a second, always | time (ms), state (0 waiting, 1 calibrating, 2 running), pitch (°), forward speed (m/s), left PWM, right PWM, pitch zero (°) |
+| `R` | when a run ends | run length (ms), reason (1 = tilted past 40°, 2 = motors switched off, 3 = wheels spinning free), largest pitch (°) |
+| `E`, up to 120 | right after `R` | the **last 0.6 s at the full 200 Hz** (fewer lines if the run was shorter), one line per tick: index, pitch ×100 (°), pitch rate ×100 (°/s), forward speed (mm/s), left PWM, right PWM |
+| `R end` | after the `E` lines | end of the dump |
+| `T` | after `R end` | timing in µs: longest interrupt, stock part, RL part, network, longest gap between ticks, late ticks, total ticks |
+
+The detailed `E` and `T` dump only comes out when a run **ends**. If run 8
+balances, **press KEY1 to stop it** (reason 2) to get the dump. Picking the
+car up instead ends it by tilt or free-spin, and the dump then shows the
+pick-up, not the balancing.
+
+### Test session
+
+1. Start the script and write `auto off` into `cmd.txt`.
+2. Write `cal` and hold the car still at its balance point until `cal done`.
+3. One run in hand with the wheels off the floor. Stop it with KEY1.
+4. 3–5 runs on the floor, hand ready to catch. Leave some of them standing
+   still for about 10 s; drive others with the app's forward/back and turn
+   buttons. Stop each with KEY1.
+5. Keep both files. They are what the simulation is compared against.
+
+### What to check for run 8
+
+| check | read it from | run 7 | run 8 passes if |
+|---|---|---|---|
+| Stays up | `R` length and reason | fell in 0.2–2 s | runs until you stop it (reason 2) |
+| Output not frozen | `E` PWM columns | stuck at −1923 / −1466 | changes from tick to tick |
+| No bad speed readings | `E` speed column | single-tick spikes of tens of m/s | within ±1000 mm/s, no isolated spikes |
+| Control rate | `T` | — | 0 late ticks, longest gap about 5000 µs, longest interrupt under 5000 µs |
+| PWM sign flips | consecutive `E` rows | about every tick in simulation | roughly 0–27 % of ticks |
+| Standing drift | `D` speed, no button pressed | — | near 0; simulation gives up to ±0.02 m/s |
+| Forward button | `D` speed | — | about 0.22 m/s (the button sends 0.25; simulation tracks about 90 %) |
+
+If the first two checks fail, stop and send the logs before trying `trim`.
+Trimming only makes sense once the car stays up for several seconds.
+
+### What is not recorded
+
+At full rate, only the last 0.6 s of each run is kept. The rest of a run is
+the 10 Hz `D` lines. Roll, yaw rate, raw encoder counts, the commands and the
+34 network inputs are never printed. Streaming everything at 200 Hz will not
+work: the control interrupt already uses 4.6 ms of every 5 ms, which leaves
+the main loop too little time to print that much. To see more, enlarge the
+flight recorder in `rl_mode.c` (`FR_N`, 120 ticks now) and add fields to it,
+checking the free RAM in the Keil map file first. It is printed after the
+run, so it costs no time while the car is balancing.
 
 ## Known limitations to expect on hardware
 
