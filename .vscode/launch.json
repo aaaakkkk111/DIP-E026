@@ -2,54 +2,77 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Python Debugger: Python File",
+      "name": "Python: current file",
       "type": "debugpy",
       "request": "launch",
       "program": "${file}",
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
-      "python": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
       "justMyCode": true
     },
     {
-      "name": "Play trained policy (live window)",
+      "name": "Drive the trained policy (enjoy_drive.py)",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}\\play.py",
-      "args": [
-        "--episodes",
-        "5",
-        "--seed",
-        "25",
-        "--reset-noise",
-        "0.08",
-        "--demo-push"
-      ],
+      "program": "${workspaceFolder}/enjoy_drive.py",
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
-      "python": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
       "justMyCode": true
     },
     {
-      "name": "Evaluate trained policy (headless)",
+      "name": "Drive without the slider panel (enjoy_drive.py --no-gui)",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}\\play.py",
-      "args": ["--no-render", "--episodes", "5"],
+      "program": "${workspaceFolder}/enjoy_drive.py",
+      "args": ["--no-gui"],
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
-      "python": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
       "justMyCode": true
     },
     {
-      "name": "Regenerate demonstration GIF",
+      "name": "Train (train_real_robot.py, ~2.5 h)",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}\\record_gif.py",
+      "program": "${workspaceFolder}/train_real_robot.py",
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
-      "python": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
       "justMyCode": true
+    },
+    {
+      "name": "Export float weights (export_stm32.py)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/export_stm32.py",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "justMyCode": true
+    },
+    {
+      "name": "Export int16 weights (quantize_weights.py)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/firmware/quantize_weights.py",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "justMyCode": true
+    },
+    {
+      "name": "Check a car-test log (check_car_log.py)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/firmware/check_car_log.py",
+      "args": ["${input:carLog}", "--plot"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "justMyCode": true
+    }
+  ],
+  "inputs": [
+    {
+      "id": "carLog",
+      "type": "promptString",
+      "description": "Path to rl_serial_log.txt",
+      "default": "../rl_mode28_20261003/rl_serial_log.txt"
     }
   ]
 }

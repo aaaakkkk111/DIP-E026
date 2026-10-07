@@ -32,7 +32,7 @@ from stable_baselines3 import PPO
 from train_real_robot import HISTORY_TAPS, N_HISTORY_SIGNALS
 
 # The base 17 inputs have been unchanged since the very first VelocityCommandWrapper
-# run (train_yahboom_3d.py) and are shared by every checkpoint in this project's
+# run (archive/train_yahboom_3d.py) and are shared by every checkpoint in this project's
 # history, torque or PWM, 80 Hz or 200 Hz - so unlike the history/integral block
 # below, these are safe to hand-list rather than import.
 BASE_OBS_NAMES = [

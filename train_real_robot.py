@@ -1,6 +1,7 @@
 """Train on the REAL measured robot, with the policy commanding PWM.
 
-Differences from train_yahboom_3d.py, and why each one is forced:
+Differences from the earlier train_yahboom_3d.py (now in archive/), and why
+each one is forced:
 
 1. Plant is `real_robot.xml`, built from the team's measured parameter sheet.
    `their_robot.xml` is wrong for this hardware by 3.5x in COM height and 12x
@@ -28,7 +29,9 @@ Differences from train_yahboom_3d.py, and why each one is forced:
 """
 import collections
 import os
+import random
 from pathlib import Path
+from typing import Callable
 
 import gymnasium as gym
 import mujoco
@@ -36,15 +39,14 @@ import numpy as np
 from gymnasium.envs.mujoco.mujoco_env import MujocoEnv
 from gymnasium.spaces import Box
 from gymnasium.wrappers import TimeLimit
+from scipy.spatial.transform import Rotation as R
 from stable_baselines3 import PPO
-from stable_baselines3.common.callbacks import CallbackList, EvalCallback
+from stable_baselines3.common.callbacks import BaseCallback, CallbackList, EvalCallback
 from stable_baselines3.common.logger import configure
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import SubprocVecEnv
 
 from motor_model import NOMINAL_MOTOR, action_to_torque, sample_motor
-from train_yahboom_3d import (CurriculumCallback, VelocityCommandWrapper,
-                              linear_schedule)
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 XML_FILE_PATH = os.path.join(CURRENT_DIR, "real_robot.xml")
@@ -256,6 +258,279 @@ EVAL_PAYLOADS = [
 ]
 
 
+# --- shared task: commands, base reward, curriculum ------------------------
+#
+# Moved here from train_yahboom_3d.py (now in archive/) so this file stands on
+# its own; the code is unchanged. Measurements quoted in the comments of this
+# section were taken on that earlier plant (their_robot.xml, 80 Hz) unless they
+# say otherwise. They explain why the reward has its shape; run 8 trains with
+# exactly this reward plus the terms PWMCommandWrapper adds.
+
+SHAPING_GAMMA = 0.99  # matches PPO's default discount factor
+
+# Yaw-rate low-pass for the turn-error term. ~0.1s time constant at 80Hz.
+#
+# WHY: this plant can track a commanded yaw rate on AVERAGE but not moment to
+# moment. Measured against a 0.50 rad/s command: achievable mean yaw is 0.485
+# (97%), while the best achievable INSTANTANEOUS error is 0.277 - 55% of the
+# command. Turning necessarily involves a yaw limit cycle here.
+#
+# Charging instantaneous error therefore prices in an oscillation the robot
+# cannot avoid, and made turning literally not worth doing: a 5M-step run
+# learned to ignore turn commands entirely. Under filtered scoring turning
+# wins. A small instantaneous term is kept alongside it (TURN_INSTANT_WEIGHT)
+# so the policy is not free to satisfy the average by oscillating wildly.
+TURN_LPF = 0.9
+TURN_INSTANT_WEIGHT = 0.2
+
+# Filtered-turn-error weight, sized against the forward axis (2.0), which is the
+# signal strength that demonstrably did get learned. More risks the policy
+# trading away balance to chase yaw.
+TURN_WEIGHT = 2.0
+
+# Eval commands, as fractions of (max_v_forward, max_v_turn), one per eval
+# episode and HELD for the whole episode. Fixed rather than sampled so the
+# score stays comparable between evaluations; starts at (0,0) so standing is
+# still measured. Paired with EVAL_PAYLOADS above.
+EVAL_COMMANDS = [
+    (0.0, 0.0),
+    (1.0, 0.0), (-1.0, 0.0), (0.0, 1.0), (0.0, -1.0),
+    (1.0, 1.0), (1.0, -1.0), (-1.0, 1.0), (-1.0, -1.0),
+    (0.5, 0.0), (-0.5, 0.0), (0.0, 0.5), (0.0, -0.5),
+    (0.5, 0.5), (-0.5, 0.5), (0.5, -0.5), (-0.5, -0.5),
+    (0.75, 0.25), (-0.75, -0.25), (0.25, 0.75),
+]
+
+
+def linear_schedule(initial_value: float) -> Callable[[float], float]:
+    def func(progress_remaining: float) -> float:
+        return progress_remaining * initial_value
+    return func
+
+
+class VelocityCommandWrapper(gym.Wrapper):
+    """Samples forward/turn commands, computes the base reward on simulator
+    ground truth, and ends the episode on a fall. PWMCommandWrapper below
+    builds on it."""
+
+    def __init__(self, env: gym.Env, is_eval=False, max_payload_kg=0.2, max_v_forward=0.3,
+                 max_v_turn=0.5, fall_angle_limit=0.4, settle_steps=10):
+        super().__init__(env)
+        self.is_eval = is_eval
+        self.max_payload_kg = max_payload_kg
+        self.max_v_forward = max_v_forward
+        self.max_v_turn = max_v_turn
+        self.fall_angle_limit = fall_angle_limit
+        # Grace period (in control steps) after reset before the fall check kicks in,
+        # so reset noise/transients can't instantly end the episode.
+        self.settle_steps = settle_steps
+        self.target_v_forward = 0.0
+        self.target_v_turn = 0.0
+        self.command_timer = 0
+        self.steps_since_reset = 0
+        self.eval_episode = 0
+        self.turn_filt = 0.0
+        self.prev_potential = 0.0
+        self.payload_body_id = mujoco.mj_name2id(self.unwrapped.model, mujoco.mjtObj.mjOBJ_BODY, "payload_body")
+
+        # Curriculum caps for training envs, ramped up from 0 by CurriculumCallback.
+        # Eval always uses the full max_* values so the reported metric reflects the real task.
+        self.curriculum_payload_kg = 0.0 if not is_eval else max_payload_kg
+        self.curriculum_v_forward = 0.0 if not is_eval else max_v_forward
+        self.curriculum_v_turn = 0.0 if not is_eval else max_v_turn
+
+        original_obs_space = self.env.observation_space.shape[0]
+        self.observation_space = gym.spaces.Box(low=-np.inf, high=np.inf, shape=(original_obs_space,), dtype=np.float32)
+
+        # Torque limit taken straight from the model's ctrlrange so it can never
+        # silently disagree with the plant. PWMCommandWrapper replaces the
+        # action space with PWM in [-1, 1]; tau_max still normalises the effort
+        # term of the reward.
+        self.tau_max = float(self.unwrapped.model.actuator_ctrlrange[:, 1].max())
+        self.action_space = gym.spaces.Box(low=-self.tau_max, high=self.tau_max,
+                                           shape=(2,), dtype=np.float32)
+
+    def set_curriculum(self, payload_kg, v_forward, v_turn):
+        self.curriculum_payload_kg = payload_kg
+        self.curriculum_v_forward = v_forward
+        self.curriculum_v_turn = v_turn
+
+    def _sample_command_timer(self):
+        # Mostly short segments (reactive command changes), but sometimes a
+        # long steady-state hold up to a full episode, so the policy practises
+        # sustaining one command. Uses this module's MAX_EPISODE_STEPS (2000):
+        # when this class lived in train_yahboom_3d.py it read that module's
+        # 1000 and needed an override here.
+        if random.random() < 0.3:
+            return random.randint(400, MAX_EPISODE_STEPS)
+        return random.randint(100, 300)
+
+    def _get_conditioned_obs(self, raw_obs):
+        # Replaced by PWMCommandWrapper's firmware-exact version.
+        blindfolded_obs = raw_obs[2:].copy()
+        _, _, local_vel, _ = self._decode_state(raw_obs)
+        blindfolded_obs[7:10] = local_vel
+        return np.concatenate([blindfolded_obs, [self.target_v_forward, self.target_v_turn]]).astype(np.float32)
+
+    def _decode_state(self, raw_obs):
+        qw, qx, qy, qz = raw_obs[3:7]
+        rot = R.from_quat([qx, qy, qz, qw])
+        roll, pitch, yaw = rot.as_euler('xyz', degrees=False)
+        QVEL_START_INDEX = 9
+        local_vel = rot.inv().apply(np.array(raw_obs[QVEL_START_INDEX:QVEL_START_INDEX + 3]))
+        actual_v_turn = raw_obs[QVEL_START_INDEX + 5]
+        return roll, pitch, local_vel, actual_v_turn
+
+    def _potential(self, pitch, roll, actual_v_forward, actual_v_lateral, filtered_v_turn):
+        """Potential-based shaping (Ng et al. 1999): F(s,s')=gamma*Phi(s')-Phi(s)
+        added to the reward is policy-invariant, so it can only make the right
+        behavior easier to find, not change what the optimal policy is.
+
+        Caveat since the turn axis switched to a filtered yaw rate: the filter
+        is internal state that is not part of the observation, so Phi is
+        strictly a function of an augmented state rather than the MDP state the
+        policy sees, and the policy-invariance guarantee no longer holds
+        rigorously. It is kept consistent with the main reward term
+        deliberately - having the shaping grade instantaneous yaw while the
+        reward grades filtered yaw would have the two terms pull against each
+        other.
+
+        Each velocity axis blends its own "hold still" term against its own
+        "track the target" term, weighted by how much *that axis* is being
+        commanded. A single shared blend weight let a large turn command
+        dominate the blend and starve the forward axis of tracking signal -
+        measured result was a policy that turned well but never translated.
+        """
+        w_forward = min(1.0, abs(self.target_v_forward) / self.max_v_forward) if self.max_v_forward > 0 else 0.0
+        w_turn = min(1.0, abs(self.target_v_turn) / self.max_v_turn) if self.max_v_turn > 0 else 0.0
+
+        forward_error = actual_v_forward - self.target_v_forward
+        turn_error = filtered_v_turn - self.target_v_turn
+        forward_weight = (1.0 - w_forward) * 0.5 + w_forward * 1.0
+        turn_weight = (1.0 - w_turn) * 0.1 + w_turn * 1.0
+
+        # Attitude is a shared property of the body rather than a per-axis
+        # one, and holding it perfectly level fights the lean that
+        # accelerating requires - so it stays scaled down while any command
+        # is active.
+        posture_weight = 1.0 - max(w_forward, w_turn)
+
+        return (
+            -posture_weight * (pitch ** 2 + roll ** 2)
+            - forward_weight * forward_error ** 2
+            - turn_weight * turn_error ** 2
+            - 0.5 * actual_v_lateral ** 2  # never commanded, always unwanted
+        )
+
+    def reset(self, seed=None, options=None):
+        raw_obs, info = self.env.reset(seed=seed, options=options)
+        self.unwrapped.model.body_mass[self.payload_body_id] = random.uniform(0.0, self.curriculum_payload_kg)
+
+        if self.is_eval:
+            f_frac, t_frac = EVAL_COMMANDS[self.eval_episode % len(EVAL_COMMANDS)]
+            self.eval_episode += 1
+            self.target_v_forward = f_frac * self.max_v_forward
+            self.target_v_turn = t_frac * self.max_v_turn
+        else:
+            self.target_v_forward = random.uniform(-self.curriculum_v_forward, self.curriculum_v_forward)
+            self.target_v_turn = random.uniform(-self.curriculum_v_turn, self.curriculum_v_turn)
+        self.command_timer = self._sample_command_timer()
+        self.steps_since_reset = 0
+
+        roll, pitch, local_vel, actual_v_turn = self._decode_state(raw_obs)
+        # Seed the filter with the actual yaw rate rather than 0, so the first
+        # steps of an episode are not graded against a fictitious history.
+        self.turn_filt = float(actual_v_turn)
+        self.prev_potential = self._potential(pitch, roll, local_vel[0], local_vel[1], self.turn_filt)
+        return self._get_conditioned_obs(raw_obs), info
+
+    def step(self, action):
+        self.steps_since_reset += 1
+        if not self.is_eval:
+            self.command_timer -= 1
+            if self.command_timer <= 0:
+                self.target_v_forward = random.uniform(-self.curriculum_v_forward, self.curriculum_v_forward)
+                self.target_v_turn = random.uniform(-self.curriculum_v_turn, self.curriculum_v_turn)
+                self.command_timer = self._sample_command_timer()
+
+        raw_obs, _, _, _, info = self.env.step(action)
+        roll, pitch, local_vel, actual_v_turn = self._decode_state(raw_obs)
+        actual_v_forward = local_vel[0]
+
+        # Tracking weights sized so that the tilt needed just to accelerate does
+        # not cost more than failing to track; at heavier pitch weights the
+        # optimal policy was "ignore commands, minimise tilt". The effort term
+        # is a fraction-of-available-torque cost, capped at 0.2 (10% of the
+        # alive bonus) when both motors saturate.
+        effort = np.sum(np.square(action / self.tau_max))
+        total_reward = 2.0 - (abs(pitch) * 3.0) - (effort * 0.1)
+        total_reward -= abs(actual_v_forward - self.target_v_forward) * 2.0
+
+        # Turn error is graded on a low-passed yaw rate (see TURN_LPF), plus a
+        # small instantaneous term so the average cannot be satisfied by
+        # oscillating wildly.
+        self.turn_filt = TURN_LPF * self.turn_filt + (1.0 - TURN_LPF) * actual_v_turn
+        total_reward -= abs(self.turn_filt - self.target_v_turn) * TURN_WEIGHT
+        total_reward -= abs(actual_v_turn - self.target_v_turn) * TURN_INSTANT_WEIGHT
+
+        potential = self._potential(pitch, roll, actual_v_forward, local_vel[1], self.turn_filt)
+        total_reward += SHAPING_GAMMA * potential - self.prev_potential
+        self.prev_potential = potential
+
+        terminated = False
+        if self.steps_since_reset > self.settle_steps and (abs(pitch) > self.fall_angle_limit or abs(roll) > self.fall_angle_limit):
+            terminated = True
+            total_reward = -10.0
+
+        return self._get_conditioned_obs(raw_obs), total_reward, terminated, False, info
+
+
+class CurriculumCallback(BaseCallback):
+    """Staged curriculum: stand, then drive forward/back and turn together,
+    then carry payload - instead of ramping everything at once.
+
+    Ramping everything together forces balance and velocity-tracking to
+    compete for gradient signal before balance is solid, which produces a
+    fragile policy. Forward and turn ramp together because staging them
+    (forward first) taught an explicit yaw suppressor during the forward-only
+    phase, which the turn phase then had to undo with exploration already
+    decayed.
+    """
+
+    def __init__(self, total_timesteps, max_payload_kg, max_v_forward, max_v_turn,
+                 stand_phase_end=0.15, velocity_phase_end=0.5, verbose=0):
+        super().__init__(verbose)
+        self.total_timesteps = total_timesteps
+        self.max_payload_kg = max_payload_kg
+        self.max_v_forward = max_v_forward
+        self.max_v_turn = max_v_turn
+        self.stand_phase_end = stand_phase_end
+        self.velocity_phase_end = velocity_phase_end
+
+    def _on_rollout_start(self) -> None:
+        progress = self.num_timesteps / self.total_timesteps
+
+        if progress < self.stand_phase_end:
+            forward_frac, turn_frac, payload_frac = 0.0, 0.0, 0.0
+        elif progress < self.velocity_phase_end:
+            frac = (progress - self.stand_phase_end) / (self.velocity_phase_end - self.stand_phase_end)
+            forward_frac, turn_frac = frac, frac
+            payload_frac = 0.0
+        else:
+            forward_frac, turn_frac = 1.0, 1.0
+            payload_frac = min(1.0, (progress - self.velocity_phase_end) / (1.0 - self.velocity_phase_end))
+
+        self.training_env.env_method(
+            "set_curriculum",
+            self.max_payload_kg * payload_frac,
+            self.max_v_forward * forward_frac,
+            self.max_v_turn * turn_frac,
+        )
+
+    def _on_step(self) -> bool:
+        return True
+
+
 class RealRobotEnv(MujocoEnv):
     def __init__(self):
         temp = mujoco.MjModel.from_xml_path(XML_FILE_PATH)
@@ -275,7 +550,6 @@ class RealRobotEnv(MujocoEnv):
         qpos = self.init_qpos.copy()
         qvel = self.init_qvel.copy()
         roll, pitch = self.np_random.uniform(-RESET_TILT_NOISE, RESET_TILT_NOISE, size=2)
-        from scipy.spatial.transform import Rotation as R
         q = R.from_euler("xyz", [roll, pitch, 0.0]).as_quat()
         qpos[3:7] = [q[3], q[0], q[1], q[2]]
         qvel[:6] += self.np_random.uniform(-RESET_VEL_NOISE, RESET_VEL_NOISE, size=6)
@@ -428,17 +702,6 @@ class PWMCommandWrapper(VelocityCommandWrapper):
         reward -= POSITION_WEIGHT * abs(self._pos_err_true)
         reward -= YAW_WEIGHT * abs(self._yaw_err_true)
         return obs, reward, terminated, truncated, info
-
-    def _sample_command_timer(self):
-        # MUST be overridden. The inherited version closes over the PARENT
-        # module's MAX_EPISODE_STEPS (1000), not this module's (2000), so its
-        # "long hold" branch topped out at half an episode and the policy never
-        # practised holding one command for a full 10 s - the very thing that
-        # code exists to provide. Constants do not follow subclassing.
-        import random
-        if random.random() < 0.3:
-            return random.randint(400, MAX_EPISODE_STEPS)
-        return random.randint(100, 300)
 
     def reset(self, **kwargs):
         self._hist = None          # refilled on the first observation

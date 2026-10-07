@@ -46,14 +46,14 @@ the firmware's own PC-side verification build — not just assumed to work.
 | `firmware/` | The STM32 port: `policy.c`/`policy.h` (network inference + observation assembly), generated weight headers, PC-side verification tests, `check_car_log.py` (checks a car-test log), and **[README-STM32-DEPLOYMENT.md](firmware/README-STM32-DEPLOYMENT.md)** — the full flashing guide. Start there for anything hardware-related. |
 | `models/best_real/best_model.zip` | **the current trained policy** (run 8: 34 inputs, 200 Hz, PWM action, eval reward 3637 at 29.64M steps). What `enjoy_drive.py` defaults to and what `firmware/policy_weights.h` and `policy_weights_q.h` were generated from. Run 7 is kept in `models/best_real_RUN7_yaw/` (untracked). |
 | `session-logs/` | Dated write-ups of every training run and why each plant/reward change was made, plus the raw training logs. The detailed history behind every number and design choice in this README. |
-| `pid_baseline.py`, `pid_eval_benchmark.py`, `policy_eval_benchmark.py` | A classical cascade-PID controller on the same plant, and benchmarks to compare it against the trained policy head-to-head — used early on to confirm the plant itself supports sustained driving before committing to RL. |
-| `train_yahboom_3d.py`, `their_robot.xml`, `models/best_their/` (now untracked) | **Superseded.** An earlier plant model that turned out to be wrong for the actual hardware by 3.5x in COM height and 12x in inertia. Kept for history; `train_real_robot.py` imports some shared infrastructure from `train_yahboom_3d.py` (the curriculum callback, the velocity-command wrapper), but the plant and action space are both current. |
-| `inverted_pendulum/` | A **separate, unrelated** earlier PPO experiment (single-cart inverted pendulum, not the balance car). Has its own README and requirements. |
+| `.vscode/` | VS Code run configurations for the scripts above, using `venv/` |
+| [`archive/`](archive/README.md) | **Not used by run 8.** The superseded first plants (`my_robot.xml`, `their_robot.xml`) and their training script, the early PID baseline and benchmarks, the mesh-repair script, and the unrelated `inverted_pendulum/` experiment. Kept for history; see its README. Nothing outside `archive/` imports from it. |
 
 ## The short version of how we got here
 
-1. A classical PID controller confirmed the plant could sustain driving while
-   balancing — ruling out "the plant is uncontrollable" before blaming RL.
+1. A classical PID controller confirmed the plant of the time
+   (`their_robot.xml`) could sustain driving while balancing — ruling out "the
+   plant is uncontrollable" before blaming RL.
 2. Early training used `their_robot.xml`, a plant model that turned out to be
    wrong for the real hardware by a wide margin (3.5x COM height, 12x inertia)
    — a different control problem, not a tolerance issue.
@@ -80,5 +80,3 @@ the firmware's own PC-side verification build — not just assumed to work.
 - The motor dead zone is fitted to one logged free-spin run plus the parameter
   sheet, not a proper bench sweep.
 - Slope and friction have not been characterised for run 8.
-- `fix_stls.py` and `meshes/` relate to an abandoned mesh-based prototype from
-  day one of the project and aren't part of the active pipeline.

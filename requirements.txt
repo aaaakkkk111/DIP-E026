@@ -15,7 +15,7 @@ stable_baselines3==2.9.0
 torch==2.14.0
 glfw==2.10.2
 
-# Only needed for fix_stls.py, which operates on a meshes/ folder the active
-# models (my_robot.xml, real_robot.xml, their_robot.xml) don't use anymore -
-# not needed to train, drive, or export anything. Install separately if you
-# need it: pip install trimesh
+# Not listed above, install only if needed:
+#   pip install pyserial    - the team's rl_trim_helper.py (car-test logging)
+#   pip install matplotlib  - firmware/check_car_log.py --plot
+#   pip install trimesh     - archive/fix_stls.py (abandoned mesh prototype)

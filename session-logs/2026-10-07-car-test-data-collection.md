@@ -82,6 +82,60 @@ Corrections made while writing it:
 - **The bench sweep cannot be done on the mode-28 build yet.** It needs a
   serial command that sets a raw PWM. The guide says this.
 
+## Repo cleanup: files the current model does not use
+
+I traced what each script imports and loads, then made three changes.
+
+6. **Moved the run-8 dependencies out of `train_yahboom_3d.py`.**
+   `train_real_robot.py` imported `VelocityCommandWrapper`,
+   `CurriculumCallback` and `linear_schedule` from it.
+   - These now live in `train_real_robot.py`, together with the constants they
+     read: `EVAL_COMMANDS`, the turn-reward weights and `SHAPING_GAMMA`. Long
+     comments about the earlier plant are shortened.
+   - `PWMCommandWrapper` no longer overrides `_sample_command_timer`. The
+     override existed only because the parent read the other module's
+     `MAX_EPISODE_STEPS` (1000); in the same module it reads 2000.
+   - **Checked for identical behaviour:**
+     - A seeded 3000-step rollout of the training env and of the eval env,
+       recorded before and after the change, matches bit-for-bit: all
+       observations, rewards and episode ends.
+     - The run-8 checkpoint loads without warnings.
+     - `export_stm32.py` and `quantize_weights.py` regenerate byte-identical
+       headers.
+     - A 1024-step PPO run with the curriculum and eval callbacks works.
+     - `check_obs_builder.py` passes (worst 1.2e-6).
+     - `enjoy_drive.py` imports cleanly.
+7. **Moved 34 unused files into `archive/` with `git mv`, so their history is
+   kept:**
+   - `train_yahboom_3d.py`, `their_robot.xml`, `my_robot.xml`, `enjoy_yahboom.py`;
+   - `pid_baseline.py`, `pid_eval_benchmark.py`, `policy_eval_benchmark.py`;
+   - `fix_stls.py` and `inverted_pendulum/` (26 files).
+
+   `archive/README.md` says what each file was and why it is archived. The
+   archived scripts still run from `archive/`: `train_yahboom_3d` builds its
+   env on `their_robot.xml`.
+8. **Replaced the `.vscode` configs**, which were copied from the pendulum
+   project:
+   - They launched `play.py` and `record_gif.py` and used a `.venv` folder;
+     none of these exist here.
+   - The new configs run `enjoy_drive.py` (with and without the slider panel),
+     training, both exports and `check_car_log.py`, using `venv/`.
+
+Docs:
+- The top-level README now describes the PID scripts as running on the old
+  plant. It previously said "the same plant", which was wrong.
+- `requirements.txt` lists the optional packages: pyserial, matplotlib and
+  trimesh.
+
+**Found, not fixed:** `PWMCommandWrapper.reset()` draws the episode's car
+randomisation (motor, latency, IMU errors) from `np_random` before the parent
+`reset(seed=...)` seeds it. So the first episode after a seeded reset is not
+reproducible: two runs of `check_obs_builder.py` give slightly different
+worst-case numbers. Training is unaffected in any way that matters, but a
+fully reproducible seeded run would need the draws moved after
+`super().reset()`. That change would alter the random stream, so it is not
+part of this refactor.
+
 ## Open items
 
 - The on-car run-8 test itself, following Steps 10–11.
