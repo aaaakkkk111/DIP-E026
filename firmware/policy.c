@@ -2,16 +2,17 @@
  *
  * The network itself is three matrix-vector products with tanh in between, so
  * it is written out directly rather than pulled in through a framework. At
- * 5442-ish parameters (exact count depends on the checkpoint; see the header
- * comment in policy_weights.h) there is nothing for TFLite Micro or X-CUBE-AI
- * to optimise that would repay their code size and build complexity.
+ * ~6,500 parameters (see the header comment in policy_weights.h) there is
+ * nothing for TFLite Micro or X-CUBE-AI to optimise that would repay their
+ * code size and build complexity.
  *
  * Building the OBSERVATION is the larger job here, and it is stateful: the
- * run-7 policy conditions on a 235 ms history of (pitch, pitch rate, forward
- * speed) and on two leaky integrals of tracking error, all of which have to be
- * carried between calls exactly the way train_real_robot.py's Python wrapper
- * carries them between environment steps. See policy_reset_state() and
- * finish_obs() below.
+ * policy conditions on encoder odometry over a 4-tick window, a 235 ms history
+ * of (pitch, pitch rate, forward speed) and two leaky integrals of tracking
+ * error, all carried between calls exactly the way train_real_robot.py's
+ * wrapper carries them between environment steps (run 8 trains on this very
+ * computation, from emulated sensors). See policy_reset_state(),
+ * policy_odom_update() and finish_obs() below.
  *
  * Weights live in flash as `static const`; only a few hundred bytes of
  * activations and history state sit in RAM.
@@ -20,6 +21,13 @@
 #include "policy_weights.h"
 
 #include <math.h>
+#include <stddef.h>   /* size_t - not pulled in by math.h under Keil/ARMCC */
+
+/* Define POLICY_NO_FLOAT_INFER on a build that runs the fixed-point network
+ * (policy_q.c) instead: it leaves out policy_infer() and with it the ~26 KB of
+ * float weight arrays, which matters on a 64 KB-flash F103 build. The
+ * observation builder below is needed either way. */
+#ifndef POLICY_NO_FLOAT_INFER
 
 /* Activation.
  *
@@ -29,12 +37,10 @@
  * expf().
  *
  * POLICY_FAST_TANH swaps in a rational approximation that touches only
- * multiply, add and divide - no exp, no branches beyond the clamp. Validated
- * against the trained (torque-output) network over 2000 random observations:
- * worst-case action error 0.0113 against a 0.6 limit (1.9%), mean 0.0025, and
- * every commanded behaviour survived a full episode in simulation. Has not
- * been re-validated against the current PWM-output checkpoint specifically -
- * do that before trusting it here (see test_policy.c).
+ * multiply, add and divide - no exp, no branches beyond the clamp. For run 8
+ * it was checked in closed loop: this file's odometry + observation builder +
+ * fast-tanh network, compiled and driving the simulated robot, held 10 s on
+ * the nominal car and the worst-case car alike (session log 2026-10-06).
  *
  * Define POLICY_FAST_TANH=0 to use the exact libm version on a target with an
  * FPU, where the saving is not worth the approximation.
@@ -102,11 +108,13 @@ void policy_infer(const float obs[POLICY_N_OBS], float action[POLICY_N_ACT])
     }
 }
 
-/* --- history buffer + leaky integrals --------------------------------------
+#endif /* !POLICY_NO_FLOAT_INFER */
+
+/* --- state: history buffer, leaky integrals, encoder odometry -------------
  *
- * All state a pure C port of train_real_robot.py's PWMCommandWrapper needs
- * between control ticks. Reset with policy_reset_state(), advanced once per
- * tick inside finish_obs() below - never touch these directly.
+ * All state a C port of train_real_robot.py's PWMCommandWrapper needs between
+ * control ticks. Reset with policy_reset_state(); advanced once per tick by
+ * policy_odom_update() and finish_obs() - never touch these directly.
  */
 const int policy_history_taps[POLICY_N_HISTORY_TAPS] = {2, 5, 11, 23, 47};
 
@@ -114,6 +122,23 @@ static float g_hist[POLICY_HISTORY_LEN][POLICY_N_HISTORY_SIGNALS];
 static int   g_hist_head = 0;
 static float g_pos_err = 0.0f;
 static float g_yaw_err = 0.0f;
+
+/* Cumulative counts at the last POLICY_ENC_VEL_WINDOW + 1 ticks, newest at
+ * g_odom_head. g_odom_filled caps the window right after a reset, when fewer
+ * samples exist - training's _sense() does the same. */
+static long g_odom_ring[POLICY_ENC_VEL_WINDOW + 1][2];
+static int  g_odom_head = 0;
+static int  g_odom_filled = 0;
+static long g_odom_cum[2];
+
+/* Clamp, mapping NaN to 0. Inf is caught by the comparisons. */
+static float clampf(float x, float lim)
+{
+    if (x != x) return 0.0f;
+    if (x >  lim) return  lim;
+    if (x < -lim) return -lim;
+    return x;
+}
 
 void policy_reset_state(float pitch, float pitch_rate, float v_forward)
 {
@@ -129,6 +154,37 @@ void policy_reset_state(float pitch, float pitch_rate, float v_forward)
     g_hist_head = 0;
     g_pos_err = 0.0f;
     g_yaw_err = 0.0f;
+
+    /* odom_reset(): counts zeroed, and the reset itself counts as one
+     * zero-count sample, exactly as training's reset observation does. */
+    for (int i = 0; i <= POLICY_ENC_VEL_WINDOW; ++i) {
+        g_odom_ring[i][0] = g_odom_ring[i][1] = 0;
+    }
+    g_odom_cum[0] = g_odom_cum[1] = 0;
+    g_odom_head = 0;
+    g_odom_filled = 1;
+}
+
+void policy_odom_update(long dcount_l, long dcount_r, float pitch, float pitch_rate,
+                        float *wheel_vel_l, float *wheel_vel_r, float *v_forward)
+{
+    const float rad_per_count = 6.28318531f / POLICY_ENC_COUNTS_PER_REV;
+    g_odom_cum[0] += dcount_l;
+    g_odom_cum[1] += dcount_r;
+    g_odom_head = (g_odom_head + 1) % (POLICY_ENC_VEL_WINDOW + 1);
+    g_odom_ring[g_odom_head][0] = g_odom_cum[0];
+    g_odom_ring[g_odom_head][1] = g_odom_cum[1];
+    if (g_odom_filled < POLICY_ENC_VEL_WINDOW) ++g_odom_filled;
+
+    const int n = g_odom_filled;
+    const int back = (g_odom_head - n + POLICY_ENC_VEL_WINDOW + 1) % (POLICY_ENC_VEL_WINDOW + 1);
+    const float k = rad_per_count / ((float)n * POLICY_DT);
+    const float wl = clampf((float)(g_odom_cum[0] - g_odom_ring[back][0]) * k, POLICY_WHEEL_VEL_CLIP);
+    const float wr = clampf((float)(g_odom_cum[1] - g_odom_ring[back][1]) * k, POLICY_WHEEL_VEL_CLIP);
+    *wheel_vel_l = wl;
+    *wheel_vel_r = wr;
+    *v_forward = clampf(POLICY_WHEEL_RADIUS * (0.5f * (wl + wr) + pitch_rate) * cosf(pitch),
+                        POLICY_V_FORWARD_CLIP);
 }
 
 static void hist_push(float pitch, float pitch_rate, float v_forward)
@@ -148,33 +204,37 @@ static const float *hist_at(int ticks_back)
     return g_hist[idx];
 }
 
-/* Shared tail of both public obs-builders: the base 17 inputs (unchanged
- * since run 1), then the two pieces of state that make this a run-7
- * checkpoint rather than an earlier one.
+/* Shared tail of both public obs-builders: the base 17 inputs, then the
+ * history taps and both leaky integrals. Mirror of training's
+ * _get_conditioned_obs().
  *
  * The leaky integrals are updated HERE, as a side effect of building the
- * observation - matching train_real_robot.py's own comment on why: this is
- * the one place called exactly once per control tick, so the value exists
- * before the observation containing it is built. */
+ * observation - this is the one place called exactly once per control tick,
+ * so the value exists before the observation containing it is built. */
 static void finish_obs(float obs[POLICY_N_OBS],
                        const float quat_wxyz[4], float pitch,
-                       float wheel_angle_l, float wheel_angle_r,
                        float v_forward,
                        const float gyro_xyz[3],
                        float wheel_vel_l, float wheel_vel_r,
                        float cmd_forward, float cmd_turn)
 {
-    /* Index 0, 8 and 9 are not measurable on the real robot: the simulator
-     * supplied chassis height and the lateral/vertical components of body
-     * velocity. Substituting constants was verified against the trained
-     * policy in simulation. */
+    /* Sanitised before anything stateful sees them, so one bad sample from
+     * whichever odometry the caller uses cannot latch into the integrals or
+     * the history. No-ops on physical values (see POLICY_V_FORWARD_CLIP). */
+    v_forward   = clampf(v_forward, POLICY_V_FORWARD_CLIP);
+    wheel_vel_l = clampf(wheel_vel_l, POLICY_WHEEL_VEL_CLIP);
+    wheel_vel_r = clampf(wheel_vel_r, POLICY_WHEEL_VEL_CLIP);
+
+    /* Index 0, 5, 6, 8 and 9 are constants the car cannot measure, fed
+     * identically in training: chassis height, the dropped wheel angles, and
+     * lateral/vertical body velocity. */
     obs[0]  = POLICY_NOMINAL_HEIGHT;
     obs[1]  = quat_wxyz[0];
     obs[2]  = quat_wxyz[1];
     obs[3]  = quat_wxyz[2];
     obs[4]  = quat_wxyz[3];
-    obs[5]  = wheel_angle_l;
-    obs[6]  = wheel_angle_r;
+    obs[5]  = 0.0f;               /* wheel angle L, dropped in run 8 */
+    obs[6]  = 0.0f;               /* wheel angle R, dropped in run 8 */
     obs[7]  = v_forward;
     obs[8]  = 0.0f;               /* lateral velocity, not sensed */
     obs[9]  = 0.0f;               /* vertical velocity, not sensed */
@@ -186,13 +246,12 @@ static void finish_obs(float obs[POLICY_N_OBS],
     obs[15] = cmd_forward;
     obs[16] = cmd_turn;
 
-    /* Leaky integrals, both "decay * accumulator + error * dt". Order between
-     * the two does not matter - neither depends on the other - only that both
-     * use this tick's sensor values. gyro_xyz[2] is yaw rate (see
-     * policy_build_obs()'s parameter doc), the same signal the reward and the
-     * training-time wrapper both call "actual_v_turn". */
+    /* Leaky integrals, both "decay * accumulator + error * dt", both clipped.
+     * gyro_xyz[2] is yaw rate. */
     g_pos_err = POLICY_POS_DECAY * g_pos_err
               + (v_forward - cmd_forward) * POLICY_DT;
+    if (g_pos_err >  POLICY_POS_ERR_CLIP) g_pos_err =  POLICY_POS_ERR_CLIP;
+    if (g_pos_err < -POLICY_POS_ERR_CLIP) g_pos_err = -POLICY_POS_ERR_CLIP;
 
     g_yaw_err = POLICY_YAW_DECAY * g_yaw_err
               + (gyro_xyz[2] - cmd_turn) * POLICY_DT;
@@ -217,7 +276,6 @@ static void finish_obs(float obs[POLICY_N_OBS],
 
 void policy_build_obs(float obs[POLICY_N_OBS],
                       const float quat_wxyz[4],
-                      float wheel_angle_l, float wheel_angle_r,
                       float v_forward,
                       const float gyro_xyz[3],
                       float wheel_vel_l, float wheel_vel_r,
@@ -235,13 +293,12 @@ void policy_build_obs(float obs[POLICY_N_OBS],
     if (s < -1.0f) s = -1.0f;
     const float pitch = asinf(s);
 
-    finish_obs(obs, quat_wxyz, pitch, wheel_angle_l, wheel_angle_r, v_forward,
+    finish_obs(obs, quat_wxyz, pitch, v_forward,
               gyro_xyz, wheel_vel_l, wheel_vel_r, cmd_forward, cmd_turn);
 }
 
 void policy_build_obs_rp(float obs[POLICY_N_OBS],
                          float roll, float pitch,
-                         float wheel_angle_l, float wheel_angle_r,
                          float v_forward,
                          const float gyro_xyz[3],
                          float wheel_vel_l, float wheel_vel_r,
@@ -272,6 +329,6 @@ void policy_build_obs_rp(float obs[POLICY_N_OBS],
      * mathematically identical (the roll terms cancel in the extraction
      * formula policy_build_obs() uses), so this just skips a redundant
      * asinf() call. */
-    finish_obs(obs, quat, pitch, wheel_angle_l, wheel_angle_r, v_forward,
+    finish_obs(obs, quat, pitch, v_forward,
               gyro_xyz, wheel_vel_l, wheel_vel_r, cmd_forward, cmd_turn);
 }

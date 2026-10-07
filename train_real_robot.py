@@ -26,6 +26,7 @@ Differences from train_yahboom_3d.py, and why each one is forced:
    clearest reason it cannot transfer. Training against the real actuator is
    the only way to get a policy that works within that constraint.
 """
+import collections
 import os
 from pathlib import Path
 
@@ -41,7 +42,7 @@ from stable_baselines3.common.logger import configure
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import SubprocVecEnv
 
-from motor_model import action_to_torque
+from motor_model import NOMINAL_MOTOR, action_to_torque, sample_motor
 from train_yahboom_3d import (CurriculumCallback, VelocityCommandWrapper,
                               linear_schedule)
 
@@ -201,6 +202,51 @@ YAW_WEIGHT = 3.0
 YAW_CLIP_RAD = 0.2
 YAW_OBS_SCALE = 1.0 / YAW_CLIP_RAD   # maps the clipped range onto [-1, 1]
 
+# --- run 8: train on what the firmware actually observes -----------------
+#
+# Runs 1-7 fed the policy simulator ground truth: exact chassis velocity, the
+# full quaternion including yaw, exact wheel angles and speeds, exact height.
+# The firmware can supply none of that. It builds every input from an
+# MPU6050 and 1320-count encoders (firmware/policy.c finish_obs, the team's
+# odom.c), and on the car the network then met inputs it had never seen
+# (session-logs/2026-10-06-hardware-mode28-diagnosis.md). Every input below
+# is now computed the way the firmware computes it, from emulated sensors.
+#
+# Constants the firmware substitutes for things it cannot measure.
+SENSOR_HEIGHT = 0.0334            # POLICY_NOMINAL_HEIGHT, chassis origin at the axle
+# Encoders: 4x quadrature x 11 ppr x 1:30. Wheel speed is differenced over 4
+# ticks exactly as odom.c does (1 count/tick is already 0.95 rad/s).
+ENC_RAD_PER_COUNT = 2.0 * np.pi / 1320.0
+ENC_VEL_WINDOW = 4
+WHEEL_RADIUS = 0.0335
+# Input sanitising, mirrored in the firmware. On the car one corrupted encoder
+# sample (a stack overflow) produced a ~1e6 m/s v_forward; the unclamped
+# station-keeping integral latched it and pinned the network in saturation
+# for ~15 s. Physical values never come near these clamps.
+V_FORWARD_CLIP = 2.0              # m/s
+WHEEL_VEL_CLIP = 40.0             # rad/s, above the 35 rad/s no-load speed
+POS_ERR_CLIP_M = 0.5              # m, the station-keeping integral
+# Wheel angles (obs 5, 6) are no longer fed to the policy - always 0, here and
+# in the firmware. Absolute wheel angle is physically meaningless, yet run 7
+# learned to depend on it: the team's SIL found 6/10 long drives fell once the
+# angle left the range a 10 s episode reaches, and the firmware had to leak
+# it, which training never did. Kept as zeroed slots so the 34-input layout,
+# the exporter and the fixed-point port do not change.
+#
+# Sense-to-act latency. The firmware computes the action from an IMU sample
+# taken at the start of the 5 ms tick and writes the PWM 4.6 ms later (worst
+# case measured on the car), so the action lands ~1 tick late; the MPU6050's
+# own low-pass filter adds up to another. Run 7 assumed zero.
+ACTION_LATENCY_TICKS = (1, 2)     # per training episode; eval uses 1
+# IMU errors, per training episode. Pitch zero is set by hand at the balance
+# point and varied by 1.5 deg across calibrations on the car; gyro bias is
+# what remains after 'cal' plus thermal drift.
+PITCH_OFFSET_RAD = np.radians(2.0)
+ROLL_OFFSET_RAD = np.radians(2.0)
+GYRO_BIAS_RADS = 0.003            # per axis, +/-
+GYRO_NOISE_RADS = 0.01            # per tick, includes motor vibration
+ATT_NOISE_RAD = 0.002             # complementary-filter output noise
+
 EVAL_PAYLOADS = [
     0.0, 0.0, 0.0, 0.0, 0.0,
     0.25, 0.25, 0.25, 0.25,
@@ -240,9 +286,11 @@ class RealRobotEnv(MujocoEnv):
 class PWMCommandWrapper(VelocityCommandWrapper):
     """Policy commands PWM; the motor model turns that into wheel torque.
 
-    Everything else - observation layout, reward, curriculum - is inherited
-    unchanged from the level-ground training, so this run isolates the change
-    of plant and actuator rather than confounding it with a reward rewrite.
+    The observation is built the way the firmware builds it (policy.c
+    finish_obs + odom.c), from emulated sensors. The reward, termination and
+    curriculum are inherited and stay on simulator ground truth: the policy
+    only ever sees what the car can measure, but is graded on what actually
+    happened.
     """
 
     def __init__(self, env, **kwargs):
@@ -255,42 +303,84 @@ class PWMCommandWrapper(VelocityCommandWrapper):
         self._prev_action = None
         self._pos_err = None
         self._yaw_err = None
+        self._motor = NOMINAL_MOTOR
+        self._act_queue = collections.deque()
+        self._enc_ring = None
+        self._enc_filled = 0
+        self._pitch_off = self._roll_off = 0.0
+        self._gyro_bias = np.zeros(3)
+        self._noisy = False
         base = self.observation_space.shape[0]
         self.observation_space = gym.spaces.Box(
             low=-np.inf, high=np.inf,
             shape=(base + len(HISTORY_TAPS) * N_HISTORY_SIGNALS + 2,),
             dtype=np.float32)
 
+    def _sense(self, raw_obs):
+        """What the firmware would measure this tick: fused roll/pitch, body
+        gyro rates, encoder wheel speeds and odometry forward speed."""
+        rng = self.np_random
+        qw, qx, qy, qz = raw_obs[3:7]
+        roll = np.arctan2(2 * (qw * qx + qy * qz), 1 - 2 * (qx * qx + qy * qy))
+        pitch = np.arcsin(np.clip(2 * (qw * qy - qz * qx), -1.0, 1.0))
+        gyro = np.array(raw_obs[12:15], dtype=np.float64) + self._gyro_bias
+        roll += self._roll_off
+        pitch += self._pitch_off
+        if self._noisy:
+            roll += rng.normal(0.0, ATT_NOISE_RAD)
+            pitch += rng.normal(0.0, ATT_NOISE_RAD)
+            gyro += rng.normal(0.0, GYRO_NOISE_RADS, size=3)
+
+        # Encoders count the wheel relative to the chassis, i.e. the joint
+        # angle, which the simulator zeroes on every reset as odom_reset() does.
+        counts = np.floor(np.asarray(raw_obs[7:9]) / ENC_RAD_PER_COUNT)
+        if self._enc_ring is None:
+            self._enc_ring = collections.deque([np.zeros(2)], maxlen=ENC_VEL_WINDOW + 1)
+            self._enc_filled = 0
+        self._enc_ring.append(counts)
+        self._enc_filled = min(self._enc_filled + 1, ENC_VEL_WINDOW)
+        n = self._enc_filled
+        dt = self.unwrapped.dt
+        wheel_vel = (self._enc_ring[-1] - self._enc_ring[-1 - n]) * ENC_RAD_PER_COUNT / (n * dt)
+        wheel_vel = np.clip(wheel_vel, -WHEEL_VEL_CLIP, WHEEL_VEL_CLIP)
+        # odom.c: the encoders see the wheel relative to the chassis, so the
+        # axle's rolling speed adds the pitch rate; the policy's v_forward is in
+        # the pitched body frame, hence the cos.
+        v_fwd = WHEEL_RADIUS * (0.5 * (wheel_vel[0] + wheel_vel[1]) + gyro[1]) * np.cos(pitch)
+        v_fwd = float(np.clip(v_fwd, -V_FORWARD_CLIP, V_FORWARD_CLIP))
+        return roll, pitch, gyro, wheel_vel, v_fwd
+
     def _get_conditioned_obs(self, raw_obs):
-        base = super()._get_conditioned_obs(raw_obs)
-        _, pitch, local_vel, actual_v_turn = self._decode_state(raw_obs)
+        """Mirror of firmware/policy.c finish_obs(), fed by _sense()."""
+        dt = self.unwrapped.dt
+        roll, pitch, gyro, wheel_vel, v_fwd = self._sense(raw_obs)
+        _, _, local_vel, true_yaw_rate = self._decode_state(raw_obs)
 
-        # Station-keeping integral. Updated HERE because this is the single
-        # place called exactly once per step and once per reset, and because the
-        # value has to exist before the observation that contains it is built.
+        # Two copies of each leaky integral: the sensed one goes in the
+        # observation (what the firmware computes), the true one into the reward
+        # (whether the robot actually held station and heading). With gyro bias
+        # the sensed heading integral drifts while the true heading does not -
+        # the policy has to learn not to chase a bias.
         if self._pos_err is None:
-            self._pos_err = 0.0          # fresh episode: no history to carry
+            self._pos_err = self._pos_err_true = 0.0
+            self._yaw_err = self._yaw_err_true = 0.0
         else:
-            decay = float(np.exp(-self.unwrapped.dt / POSITION_TAU_S))
-            self._pos_err = (decay * self._pos_err
-                             + (local_vel[0] - self.target_v_forward)
-                             * self.unwrapped.dt)
-
-        # Heading-keeping integral. Uses the RAW yaw rate, not self.turn_filt:
-        # the integral of the true rate is the true heading error, and filtering
-        # it first would only add phase lag to a quantity that is already an
-        # accumulator. Raw yaw rate is also what a gyro gives you on hardware.
-        if self._yaw_err is None:
-            self._yaw_err = 0.0
-        else:
-            yd = float(np.exp(-self.unwrapped.dt / YAW_TAU_S))
+            pd = float(np.exp(-dt / POSITION_TAU_S))
+            yd = float(np.exp(-dt / YAW_TAU_S))
+            self._pos_err = float(np.clip(
+                pd * self._pos_err + (v_fwd - self.target_v_forward) * dt,
+                -POS_ERR_CLIP_M, POS_ERR_CLIP_M))
+            self._pos_err_true = float(np.clip(
+                pd * self._pos_err_true + (local_vel[0] - self.target_v_forward) * dt,
+                -POS_ERR_CLIP_M, POS_ERR_CLIP_M))
             self._yaw_err = float(np.clip(
-                yd * self._yaw_err
-                + (actual_v_turn - self.target_v_turn) * self.unwrapped.dt,
+                yd * self._yaw_err + (gyro[2] - self.target_v_turn) * dt,
+                -YAW_CLIP_RAD, YAW_CLIP_RAD))
+            self._yaw_err_true = float(np.clip(
+                yd * self._yaw_err_true + (true_yaw_rate - self.target_v_turn) * dt,
                 -YAW_CLIP_RAD, YAW_CLIP_RAD))
 
-        sample = np.array([pitch, raw_obs[13], local_vel[0]], dtype=np.float32)
-
+        sample = np.array([pitch, gyro[1], v_fwd], dtype=np.float32)
         if self._hist is None:
             # First frame of an episode: no real history exists yet, so repeat
             # the current sample rather than feeding zeros, which would look
@@ -299,17 +389,30 @@ class PWMCommandWrapper(VelocityCommandWrapper):
         self._hist.insert(0, sample)
         del self._hist[HISTORY_LEN:]
 
+        # Yaw pinned to zero, as policy_build_obs_rp() does: the MPU6050 has no
+        # magnetometer, so the car cannot know its heading.
+        cr, sr = np.cos(roll * 0.5), np.sin(roll * 0.5)
+        cp, sp = np.cos(pitch * 0.5), np.sin(pitch * 0.5)
+        base = [SENSOR_HEIGHT, cp * cr, cp * sr, sp * cr, -sp * sr,
+                0.0, 0.0,                       # wheel angles: dropped, see above
+                v_fwd, 0.0, 0.0,                # lateral/vertical: not sensed
+                gyro[0], gyro[1], gyro[2],
+                wheel_vel[0], wheel_vel[1],
+                self.target_v_forward, self.target_v_turn]
         return np.concatenate(
             [base] + [self._hist[t] for t in HISTORY_TAPS]
             + [[self._pos_err * POSITION_OBS_SCALE,
                 self._yaw_err * YAW_OBS_SCALE]]).astype(np.float32)
 
     def step(self, action):
+        action = np.asarray(action, dtype=np.float64)
+        # The action computed this tick reaches the motors latency ticks later.
+        self._act_queue.append(action.copy())
+        applied = self._act_queue.popleft()
         # Wheel angular velocities drive the back-EMF term, so the torque a
         # given PWM delivers depends on how fast the wheels are already going.
-        action = np.asarray(action, dtype=np.float64)
         omega = np.asarray(self.unwrapped.data.qvel[6:8], dtype=np.float64)
-        tau = action_to_torque(action, omega)
+        tau = action_to_torque(applied, omega, self._motor)
         obs, reward, terminated, truncated, info = super().step(tau.astype(np.float32))
 
         # Charge for reversing the motors, not just for the torque magnitude -
@@ -320,10 +423,10 @@ class PWMCommandWrapper(VelocityCommandWrapper):
                 np.sum(np.square(action - self._prev_action)))
         self._prev_action = action.copy()
 
-        # Station keeping. self._pos_err was refreshed by _get_conditioned_obs
-        # during the super().step() call above, so it is current.
-        reward -= POSITION_WEIGHT * abs(self._pos_err)
-        reward -= YAW_WEIGHT * abs(self._yaw_err)
+        # Station keeping and heading, graded on the TRUE integrals refreshed by
+        # _get_conditioned_obs during the super().step() call above.
+        reward -= POSITION_WEIGHT * abs(self._pos_err_true)
+        reward -= YAW_WEIGHT * abs(self._yaw_err_true)
         return obs, reward, terminated, truncated, info
 
     def _sample_command_timer(self):
@@ -342,6 +445,28 @@ class PWMCommandWrapper(VelocityCommandWrapper):
         self._prev_action = None   # no rate penalty on the first step
         self._pos_err = None       # re-zeroed by the first observation
         self._yaw_err = None
+        self._enc_ring = None      # odom_reset()
+        # Everything uncertain about the car is drawn once per training episode
+        # and held fixed through it, the way it is fixed on any one car on any
+        # one run. Eval uses the nominal car (latency 1, no IMU error) so its
+        # score stays comparable between evaluations.
+        rng = self.np_random
+        if self.is_eval:
+            self._motor = NOMINAL_MOTOR
+            latency = ACTION_LATENCY_TICKS[0]
+            self._pitch_off = self._roll_off = 0.0
+            self._gyro_bias = np.zeros(3)
+            self._noisy = False
+        else:
+            self._motor = sample_motor(rng)
+            latency = int(rng.integers(ACTION_LATENCY_TICKS[0], ACTION_LATENCY_TICKS[1] + 1))
+            self._pitch_off = rng.uniform(-PITCH_OFFSET_RAD, PITCH_OFFSET_RAD)
+            self._roll_off = rng.uniform(-ROLL_OFFSET_RAD, ROLL_OFFSET_RAD)
+            self._gyro_bias = rng.uniform(-GYRO_BIAS_RADS, GYRO_BIAS_RADS, size=3)
+            self._noisy = True
+        # Motors are off until the policy is armed, so the in-flight actions
+        # at the start of an episode are zero.
+        self._act_queue = collections.deque([np.zeros(2)] * latency)
         obs, info = super().reset(**kwargs)
 
         # Armature is a MODEL field, so it persists across resets and has to be
@@ -406,7 +531,7 @@ def main():
     # clip_fraction or entropy_loss - so every diagnosis of "why is this slow"
     # was guesswork. The CSV is the cheap one to read back: one row per rollout,
     # greppable without parsing the stdout tables.
-    model.set_logger(configure("logs/run7", ["stdout", "csv"]))
+    model.set_logger(configure("logs/run8", ["stdout", "csv"]))
 
     callback = CallbackList([
         CurriculumCallback(total_timesteps=total_timesteps,

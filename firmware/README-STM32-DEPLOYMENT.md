@@ -2,37 +2,49 @@
 
 Written for: whoever does the firmware port.
 
-**Updated for run 7** (`train_real_robot.py`, `real_robot.xml`): 34 inputs, PWM
-output, 200 Hz control. If you are looking at an older checkout of this file,
-it described a 17-input, torque-output, 80 Hz policy on a different (wrong,
-by 3.5x COM height and 12x inertia) plant — that policy is superseded and
-`policy.c` no longer implements it.
+**Updated for run 8** (`train_real_robot.py`, `real_robot.xml`): 34 inputs, PWM
+output, 200 Hz control, trained against a motor model and sensor pipeline
+corrected from the car's own logs. Run 7 is superseded: on the car it fell
+within 0.2–2 s, and the cause turned out to be the simulator, not the port
+(`session-logs/2026-10-06-hardware-mode28-diagnosis.md`).
 
 The trained network is 34 → 64 → 64 → 2 with tanh activations: **6,530
 parameters, 25.5 KB of flash, 512 bytes of RAM** (re-run `export_stm32.py` and
 read its own printed summary if you export a different checkpoint — these
 numbers are checkpoint-specific, not fixed). Against a 256 KB / 48 KB budget
-the network is a non-issue. The work is in the observation pipeline (now
-stateful — a 235 ms history buffer plus two leaky integrals) and the safety
-layer, not the maths.
+the network is a non-issue. The work is in the observation pipeline (stateful
+— encoder odometry, a 235 ms history buffer and two leaky integrals) and the
+safety layer, not the maths.
 
 ## Readiness check before you start
 
-**This is ready for a careful, instrumented first bench test — not for a
-confident unsupervised deployment.** Nothing about the policy's simulated
-behaviour is in question (it converged cleanly, a specific known defect was
-measured and fixed, and the firmware port is bit-verified against it — see
-Step 2). What's still open is entirely on the hardware-integration side, and
-none of it is fixed by retraining:
+**This is ready for a careful, instrumented on-car test — not for an
+unsupervised deployment.** An earlier version of this section said nothing
+about the policy's simulated behaviour was in question and that retraining
+could not help. The car proved that wrong: the motor model treated the
+firmware's dead-band compensation as useful torque, and run 7 learned a control
+law for an actuator that does not exist. Run 8 fixes that and trains on exactly
+the inputs the firmware computes. What it has been checked against:
 
-| gap | why more training doesn't help |
+| check | result |
 |---|---|
-| Zero real-hardware runs so far | sim-to-real gap is unverified until the first physical test |
-| The 200 Hz / 5 ms timing budget on the actual F103 is an *estimate* (§"Watch the I2C budget"), not measured | firmware/MCU question, not a policy question |
-| `PWM_DEADBAND`/motor constants are per-build, measured on a different unit than yours | needs a bench measurement on your specific motors |
-| Friction sensitivity was never characterised for this plant (slope now has been - see "Known limitations" below) | sim characterisation gap, same caveat: a sim sweep still isn't a hardware measurement |
-| The 180°-yaw-drift fall mode was only measured on the superseded torque policy | needs re-verification, but a measurement, not training |
-| Your sensor-fusion roll/pitch code (outside this repo) hasn't been checked against what the policy expects | integration correctness, not policy quality |
+| Corrected motor model vs the car's own free-spin log | 9.35 vs 9.5 rad/s (old model: 22.3) |
+| Nominal simulated car, 6 commands × 3 seeds × 10 s | 18/18 held, tracking 89–100 % |
+| Each uncertain parameter at its extreme (dead zone 1350/1600, 2-tick delay, motor −15 %, pitch zero ±2°, gyro bias, sensor noise, 1 kg) | 54/54 held |
+| All of the worst at once (dead zone 1600, 2-tick delay, motor −15 %, +2°, noise) | 6/6 held |
+| Firmware observation pipeline vs the training wrapper, tick by tick | ≤ 9e-7 on all 34 inputs (Step 2) |
+| The actual C code (float fast-tanh, and the team's int16 `policy_q.c`) driving the simulated robot in closed loop | held 10 s on the nominal and worst-case car, same tracking as PyTorch |
+
+Still open — none of it simulated away:
+
+| gap | what settles it |
+|---|---|
+| Zero real-hardware runs of run 8 | the on-car test in Step 9 |
+| The motor dead zone is fitted to one free-spin log plus the parameter sheet, not swept | 30-min bench sweep: raw PWM 0–2800 per wheel and direction, wheels in the air. If it falls outside 1350–1600, widen `MOTOR_DEAD_ZONE_RANGE` and retrain |
+| Gearbox backlash and motor electrical dynamics are not modelled | on-car behaviour; the policy no longer dithers every tick (sign flips on 0–27 % of ticks vs ~100 % for run 7), which makes backlash matter less |
+| Timing: the team measured 4.6 ms worst case of a 5 ms tick with the burst IMU read | already fits; keep the 4 KB stack and the burst read from their v6 build |
+| Friction sensitivity, and slope on run 8 | not characterised; the slope sweep below is run 7's |
+| Watchdog / overrun disarm | not yet implemented (Step 7) |
 
 Steps 8–9 below have the safety checkpoints built in at the points they
 actually matter, rather than as a disclaimer at the end.
@@ -104,7 +116,7 @@ From `APP/app_motor.h`:
 1320 counts per wheel revolution = 4 x 11 x 30, exactly as the parameter sheet
 states.
 
-### Deadband is compensated in firmware, not learned
+### Dead band: partly compensated in firmware, the rest learned
 
 ```c
 #define MOTOR_IGNORE_PULSE (1300)
@@ -116,9 +128,15 @@ int PWM_Ignore(int pulse) {
 ```
 
 The offset is added **after** the controller, so a policy's output is a
-pre-compensation command. Note this build uses **1300** while the parameter
-sheet quotes 1480 forward / 1455 reverse — the value is per-build and was
-re-measured. Use whichever matches the firmware you actually flash.
+pre-compensation command. The motor's *actual* dead zone is higher than this
+1300: the parameter sheet measured 1480 forward / 1455 reverse, and the car's
+own free-spin data fits ~1460 (`session-logs/2026-10-06-hardware-mode28-diagnosis.md`).
+Below it the gearmotor produces essentially no torque. Runs 1–7 were trained
+on a motor model that treated the 1300-count offset as useful torque, which is
+why run 7 fell within 0.2–2 s on the car. Run 8 trains with the firmware's 1300
+compensation in front of a motor whose real dead zone is randomised over
+1350–1600 counts per wheel and direction, so the policy covers the gap itself.
+**Keep `MOTOR_IGNORE_PULSE` / `POLICY_PWM_DEADBAND` at 1300.**
 
 ### Confirmed parameters for this build
 
@@ -128,7 +146,8 @@ re-measured. Use whichever matches the firmware you actually flash.
 #define ENCODER_QUAD    4.0f     /* TIM_ENCODERMODE_TI12 */
 ```
 
-Still needed, for `policy_counts_to_rad()` / `policy_odometry()`. **No longer
+Still needed: they fix the 1320 counts per revolution that
+`POLICY_ENC_COUNTS_PER_REV` and training both assume. **No longer
 needed at all**, since the switch to a PWM-output policy (Step 6): gearbox
 efficiency, supply voltage, motor Kt and winding resistance. Those were only
 ever inputs to the torque-to-duty conversion this document used to describe,
@@ -214,11 +233,16 @@ Expected (default build, `POLICY_FAST_TANH=1`):
 
 ```
 mode: fast tanh (approximation, for STM32F103 / no FPU)
-tolerance: 2.0e-02
+tolerance: 5.0e-02
 ...
-worst error: 1.156e-02   (tolerance 2.0e-02)
+worst error: 2.198e-02   (tolerance 5.0e-02)
 PASS
 ```
+
+The fast-tanh tolerance is the measured approximation error of the current
+network plus headroom, and has to be re-measured per checkpoint (run 7: 0.011;
+run 8: 0.020 on realistic inputs, 0.031 on random ones). The exact build below
+is the porting check.
 
 Add `-DPOLICY_FAST_TANH=0` to check the matrix maths in isolation from the
 tanh approximation — expect worst error down around 1e-7 (float32 rounding).
@@ -226,24 +250,26 @@ Anything above ~1e-5 on that build means a real porting bug, almost always
 row/column-major confusion in the matrix loops.
 
 **This only checks `policy_infer()` — the network — on isolated vectors.** It
-does not exercise `policy_build_obs()`'s history buffer or leaky integrals,
-since those depend on a *sequence* of calls, not one observation at a time.
-Check that separately:
+does not exercise the observation pipeline (encoder odometry, history buffer,
+leaky integrals, input clamps), which depends on a *sequence* of calls. Check
+that against the training wrapper itself:
 
 ```bash
-gcc -O2 -o test_obs_builder test_obs_builder.c policy.c -lm
-./test_obs_builder > obs_c.txt
+gcc -O2 -shared -o test_obs_builder.dll test_obs_builder.c policy.c -lm
+..\venv\Scripts\python.exe check_obs_builder.py
 ```
 
-then run the Python reference in the comment at the bottom of
-`test_obs_builder.c` (it imports the real decay/scale constants from
-`train_real_robot.py` rather than hand-copying them, so it can't silently
-drift the way a hand-copied reference could) and diff the two outputs.
-Expect agreement to within ~1e-7 — pure float32-vs-float64 rounding, not
-logic. This is what actually caught (in the sense of would have caught, had
-it existed sooner) the kind of bug a tap-index or decay-constant typo
-produces: `policy_infer()` alone cannot see it, because a wrong observation
-still produces *a* plausible-looking action, just not the trained one.
+`check_obs_builder.py` rolls the actual training wrapper forward — the nominal
+car and a randomised, noisy one — records the raw signals the firmware would
+get each tick (encoder count deltas, fused roll/pitch, gyro, commands), pushes
+them through `policy_reset_state()` + `policy_odom_update()` +
+`policy_build_obs_rp()`, and compares all 34 observations tick by tick.
+Expected: worst disagreement ~1e-7 (float rounding), then `PASS`. A wrong tap
+index, a missing clamp or an off-by-one in a ring buffer shows up here and
+nowhere else — `policy_infer()` alone cannot see it, because a wrong
+observation still produces *a* plausible-looking action, just not the trained
+one. (Built as a DLL rather than an `.exe` because this machine's Windows
+Application Control policy blocks freshly compiled executables.)
 
 ## Step 2b — Toolchain notes (Keil + CubeMX + FlyMCU)
 
@@ -330,10 +356,11 @@ Requirements:
   Originally validated over 2000 random observations against the earlier
   torque policy: worst-case action error 0.0113 against a 0.6 N·m limit
   (1.9%), mean 0.0025, every commanded behaviour surviving a full episode in
-  simulation. Re-checked against the current run-7 checkpoint's own test
-  vectors (`test_policy.c`): worst case 1.16e-02 against a +/-1.0 action
-  limit, still comfortably under the 2% bound. Set `POLICY_FAST_TANH=0` only
-  on a target with an FPU.
+  simulation. On run 8 the worst case is 0.020 of the ±1.0 action range on
+  realistic inputs (mean 0.003). The check that matters is closed-loop: run 8
+  through this fast-tanh build, driving the simulated robot, balanced and
+  tracked the same as PyTorch on the nominal and worst-case cars. Set
+  `POLICY_FAST_TANH=0` only on a target with an FPU.
 
 There is **no FPU setting to enable** on this MCU — if you are following a
 guide that mentions FPv4-SP-D16, that applies to Cortex-M4F parts, not the
@@ -341,28 +368,31 @@ F103.
 
 ## Step 4 — Build the observation each control cycle
 
-The observation is now **stateful**: `policy_build_obs_rp()` carries a 235 ms
-history buffer and two leaky integrals between calls (see `policy.h`'s
-comment above `policy_reset_state()` for why). Call `policy_reset_state()`
-once at controller start-up, and again every time the robot is re-armed after
-a fall — otherwise the integrals and history buffer carry state across an
-event they were never trained to see across.
+The observation is **stateful**: encoder odometry over a 4-tick window, a
+235 ms history buffer and two leaky integrals, all carried between calls (see
+`policy.h`). Run 8 trains on exactly this computation, from emulated sensors,
+and `check_obs_builder.py` (Step 2) proves the two agree. Call
+`policy_reset_state()` when the controller arms, and again every time the
+robot is re-armed after a fall — otherwise state carries across an event the
+policy was never trained to see across.
 
 ```c
-/* Once, before the control loop starts (and again after every fall recovery,
- * once the robot is back upright and re-armed): */
-policy_reset_state(pitch, gyro_xyz[1], policy_odometry(enc_vel_l, enc_vel_r));
+/* On arming (robot upright and still, motors off), and after every fall: */
+policy_reset_state(pitch, gyro_xyz[1], POLICY_WHEEL_RADIUS * gyro_xyz[1] * cosf(pitch));
 
-/* Then every control tick, with an MPU6050 use the roll/pitch entry point: */
+/* Then every control tick, starting the tick AFTER arming: */
+float wheel_vel_l, wheel_vel_r, v_forward;
 float obs[POLICY_N_OBS], action[POLICY_N_ACT];
 
+policy_odom_update(dcount_l, dcount_r,     /* encoder counts since last tick, + = forward */
+                   pitch, gyro_xyz[1],      /* rad, rad/s */
+                   &wheel_vel_l, &wheel_vel_r, &v_forward);
 policy_build_obs_rp(obs,
-                    roll, pitch,       /* rad, from your gyro+accel fusion */
-                    enc_angle_l, enc_angle_r,               /* rad, accumulated */
-                    policy_odometry(enc_vel_l, enc_vel_r),  /* m/s */
-                    gyro_xyz,          /* rad/s, body frame */
-                    enc_vel_l, enc_vel_r,                   /* rad/s */
-                    cmd_forward, cmd_turn);                 /* your setpoints */
+                    roll, pitch,            /* rad, from your gyro+accel fusion */
+                    v_forward,
+                    gyro_xyz,               /* rad/s, body frame: roll, pitch, yaw */
+                    wheel_vel_l, wheel_vel_r,
+                    cmd_forward, cmd_turn); /* your setpoints */
 
 policy_infer(obs, action);
 /* action[0] = left wheel PWM duty fraction in [-1, 1], action[1] = right -
@@ -387,52 +417,48 @@ velocity tracking went 0.278 → 0.276 m/s and turn 0.401 → 0.429 rad/s.
 
 ### Encoders are required
 
-Four inputs — both wheel angles and both wheel velocities — come from
-encoders, and forward velocity is derived from them too. **The AT8236 is only
-a driver and provides no feedback.** If the motors have no encoders, this
-policy cannot be deployed as trained; it would need retraining with an
-observation restricted to what the IMU alone can supply.
+Both wheel velocities come from the encoders, and forward velocity is derived
+from them too. **The AT8236 is only a driver and provides no feedback.** If
+the motors have no encoders, this policy cannot be deployed as trained.
 
-### Three of the 34 inputs the hardware cannot measure
+### Five of the 34 inputs are constants
 
-| index | input | substitute | why it is safe |
+| index | input | value | why |
 |---|---|---|---|
-| 0 | chassis height | `0.05` (nominal) | simulator-only quantity; near-constant while upright |
+| 0 | chassis height | `0.0334` | not measurable; the axle sits one wheel radius up |
+| 5, 6 | wheel angles | `0.0` | dropped in run 8 — physically meaningless, and run 7 had learned to depend on them |
 | 8 | lateral velocity | `0.0` | a differential-drive robot has none by construction |
 | 9 | vertical velocity | `0.0` | zero except during a fall |
 
-`policy_build_obs()` already fills these (measured on the earlier torque
-policy: substituting the constants moved velocity tracking from +0.278 to
-+0.276 m/s with every command still holding a full episode — not re-measured
-against run 7 specifically, but the same three quantities, same substitution).
-
-The remaining 17 of the 34 inputs (history taps, both leaky integrals) are not
-"unmeasurable" in the same sense — they are computed *from* the other sensor
-readings, inside `policy_build_obs()`/`policy_build_obs_rp()` themselves. See
-`policy.c`'s `finish_obs()`.
+Since run 8, training feeds exactly these constants too, so they are not
+approximations any more — they are what the policy saw in every episode.
+`finish_obs()` fills them. The remaining inputs are either sensed (attitude,
+gyro, encoder speeds) or computed from sensed values inside `policy.c`
+(forward speed, history taps, both leaky integrals).
 
 ### The input that matters most
 
-First-layer weight magnitudes, run 7's checkpoint specifically (recompute per
-checkpoint — this is not architectural, it will shift every time the policy is
-retrained):
+First-layer weight magnitudes, run 8's checkpoint specifically, over the 29
+inputs that are not constants (recompute per checkpoint — this shifts every
+time the policy is retrained):
 
 | input | mean \|weight\| |
 |---|---|
-| `yaw_err` (heading integral) | **1.08** |
-| `hist_pitch` @ 10 ms back | 0.65 |
-| `quat_y` (pitch) | 0.63 |
-| `hist_pitch` @ 25 ms back | 0.61 |
-| `hist_pitch` @ 55 ms back | 0.50 |
-| `cmd_turn` | 0.50 |
-| everything else, mean | 0.18 |
+| `yaw_err` (heading integral) | **0.63** |
+| `hist_v_forward` @ 235 ms back | 0.51 |
+| `cmd_turn` | 0.46 |
+| `gyro_yaw` | 0.40 |
+| `cmd_forward` | 0.39 |
+| `quat_y` (pitch) | 0.36 |
+| `hist_pitch` @ 10 ms / 25 ms back | 0.34 / 0.34 |
+| the other 21, mean | 0.18 |
 
-Pitch is still important, but it no longer dominates 13x the way it did on
-the earlier 17-input policy — the heading integral now weighs more than raw
-pitch does, and three of the top six entries are history taps, not
-instantaneous readings. Get the sensor-fusion filter right, but also verify
-the heading-integral bookkeeping (Step 4) end-to-end before closing the loop;
-on this checkpoint it is not a minor term.
+No single input dominates. The heading path (integral, yaw gyro, turn command)
+is the largest group, so verify the gyro-z sign and bias calibration
+end-to-end before closing the loop; pitch is spread across the current reading
+and the history taps. Run 8 was trained with ±0.003 rad/s gyro bias and ±2°
+pitch-zero error, so it tolerates ordinary calibration slop — at +2° pitch zero
+it creeps at ~2 cm/s instead of holding perfectly still.
 
 ## Step 5 — Match the control rate
 
@@ -488,13 +514,14 @@ and do not route this through a Kt/R torque conversion — `policy_torque_to_dut
 no longer exists in `policy.h` for this reason; it belongs to the superseded
 policy and would silently double-convert a value that is already PWM.
 
-`POLICY_PWM_LIMIT`/`POLICY_PWM_DEADBAND` are per-build, same caveat as
-`PWM_Ignore()` itself (§0): the parameter sheet quotes 1480 fwd / 1455 rev for
-a different unit than the 1300 used in simulation. Re-measure your own build's
-deadband and override the macro if it differs; a mismatch here does not cause
-a crash, it just means the policy's dithering assumption (the smallest
-non-zero command is 64% of the driver limit) is calibrated against the wrong
-number.
+**Keep `POLICY_PWM_DEADBAND` (and the stock `MOTOR_IGNORE_PULSE`) at 1300.**
+It is the firmware's *compensation*, part of the action mapping the network
+learned — not the motor's dead zone. (Earlier versions of this guide said to
+re-tune it to your measured dead band; for run 8 that would be wrong.) The
+motor's actual dead zone — ~1460 counts on this car, randomised over
+1350–1600 in training — is handled by the policy itself. If a bench sweep puts
+your motors' dead zone outside 1350–1600, update `MOTOR_DEAD_ZONE_RANGE` in
+`motor_model.py` and retrain rather than touching this constant.
 
 **Bench-verify before closing the loop anyway**: command a known PWM value,
 confirm the wheel spins the expected direction at roughly the expected speed.
@@ -549,13 +576,6 @@ void TIM6_IRQHandler(void)
     long enc_l, enc_r;                 /* counts since last tick */
     /* ... fill these from your existing drivers ... */
 
-    static float wheel_angle_l = 0.0f, wheel_angle_r = 0.0f;
-    float dth_l = policy_counts_to_rad(enc_l, ENCODER_PPR, GEAR_RATIO, ENCODER_QUAD);
-    float dth_r = policy_counts_to_rad(enc_r, ENCODER_PPR, GEAR_RATIO, ENCODER_QUAD);
-    wheel_angle_l += dth_l;  wheel_angle_r += dth_r;
-    float wheel_vel_l = dth_l * POLICY_CONTROL_HZ, wheel_vel_r = dth_r * POLICY_CONTROL_HZ;
-    float v_forward = policy_odometry(wheel_vel_l, wheel_vel_r);
-
     /* 2. Safety layer FIRST, unconditionally (Step 7, items 1 and 4). Items 2
      *    (watchdog) and 3 (current/thermal limit) are NOT shown here - they
      *    depend on hardware specifics outside this repo's scope and still
@@ -567,10 +587,12 @@ void TIM6_IRQHandler(void)
     }
     if (!g_policy_armed) return;
 
-    /* 3. Build observation, infer (Step 4). */
+    /* 3. Odometry, observation, infer (Step 4). */
+    float wheel_vel_l, wheel_vel_r, v_forward;
     float obs[POLICY_N_OBS], action[POLICY_N_ACT];
-    policy_build_obs_rp(obs, roll, pitch, wheel_angle_l, wheel_angle_r, v_forward,
-                        gyro_xyz, wheel_vel_l, wheel_vel_r, g_cmd_forward, g_cmd_turn);
+    policy_odom_update(enc_l, enc_r, pitch, gyro_xyz[1], &wheel_vel_l, &wheel_vel_r, &v_forward);
+    policy_build_obs_rp(obs, roll, pitch, v_forward, gyro_xyz,
+                        wheel_vel_l, wheel_vel_r, g_cmd_forward, g_cmd_turn);
     policy_infer(obs, action);
 
     /* 4. PWM out (Step 6) - no torque conversion, this IS the conversion. */
@@ -599,24 +621,24 @@ void TIM6_IRQHandler(void)
 
 ## Known limitations to expect on hardware
 
-The table below is from the superseded 17-input torque policy on the earlier
-plant and no longer applies — left only so a stale table isn't silently
-deleted without a pointer to where the current numbers actually live. For
-run 7, in simulation:
+Run 8, simulated on the corrected plant (dead-zone motor, 1-tick delay, encoder
+odometry), 3 seeds × 10 s each, steady state after the first 2 s:
 
-| behaviour | status | source |
+| behaviour | nominal car | worst-case car (dead zone 1600, 2-tick delay, motor −15 %, +2° pitch zero, noise) |
 |---|---|---|
-| Balancing, idle | station-keeping drift ~0.001 m/s, heading drift bounded to ~0.35° over 60 s | `session-logs/2026-09-25-run7-yaw-integral.md` |
-| Forward to ±0.3 m/s | tracks 101–104% of command (run 6, unchanged by run 7's yaw-only change) | `session-logs/2026-09-24-...md`, run 6 section |
-| Turning to ±0.5 rad/s | tracks ~96–100% of command (was 105–112% overshoot before the heading integral) | `2026-09-25-run7-yaw-integral.md` |
-| Payload to 1.0 kg | flat and accurate across the whole range (run 6) | same |
-| Slopes | **characterised below** — holds to ~6°, degrades gracefully, breaks down above ~15° | this session, see below |
-| Friction changes | not re-characterised on this plant | — |
+| Hold station | drift −0.001 m/s | −0.020 m/s |
+| Forward +0.15 / +0.30 m/s | +0.136 / +0.267 (91 % / 89 %) | +0.126 at +0.15 |
+| Reverse −0.15 m/s | −0.137 (91 %) | — |
+| Turn +0.50 rad/s | +0.500 (100 %) | — |
+| +0.15 m/s with +0.30 rad/s | +0.136 / +0.300 | — |
+| Payload 1.0 kg | holds; +0.135 at +0.15 | — |
+| Pitch zero ±2° | creeps at ∓0.020 m/s | — |
 
-None of this is hardware-measured — it is simulation only, same caveat as
-everything else in this document.
+Forward tracking is ~90 % rather than run 6/7's ~100 % — the price of a motor
+that delivers nothing in its dead zone. None of this is hardware-measured.
+Friction sensitivity and slope have not been characterised for run 8.
 
-### Slope sweep (run 7, `models/best_real/best_model.zip`, unloaded, 3 seeds)
+### Slope sweep (run 7 — superseded policy, kept for the method)
 
 **Caveat first, because it changes how to read every number below:**
 `apply_slope()` (`enjoy_drive.py`) tilts gravity, not the floor — correct

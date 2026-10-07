@@ -7,12 +7,17 @@
  *                       rounding (1e-5). Any larger error is a porting bug,
  *                       almost always row/column-major confusion.
  *   POLICY_FAST_TANH=1  rational tanh approximation for FPU-less targets ->
- *                       deviates by design. Originally bounded at 0.0113 (a
- *                       0.6 N.m torque limit, the earlier policy) over 2000
- *                       random observations, under 2%. Re-checked against the
- *                       run-7 (PWM) checkpoint's own 4 test vectors: worst
- *                       case 1.16e-02 against a +/-1.0 action limit, still
- *                       under the 2% tolerance below.
+ *                       deviates by design, so this build cannot tell a small
+ *                       porting bug from approximation error - the exact build
+ *                       above is the porting check. The bound is the measured
+ *                       approximation error of the CURRENT network with
+ *                       headroom, and has to be re-measured per checkpoint:
+ *                       run 7 worst 0.0113; run 8 worst 0.031 over 2000
+ *                       random +/-1 observations, 0.020 (mean 0.003) over 5000
+ *                       realistic ones. What justifies using it at all is the
+ *                       closed-loop check: run 8 through this fast-tanh build,
+ *                       driving the simulated robot, tracked identically to
+ *                       PyTorch on the nominal and worst-case cars.
  */
 #include <stdio.h>
 #include <math.h>
@@ -24,7 +29,7 @@
 #endif
 
 #if POLICY_FAST_TANH
-#  define TOL 2.0e-2f
+#  define TOL 5.0e-2f
 #  define MODE "fast tanh (approximation, for STM32F103 / no FPU)"
 #else
 #  define TOL 1.0e-5f

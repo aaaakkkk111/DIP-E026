@@ -36,21 +36,21 @@ from train_real_robot import HISTORY_TAPS, N_HISTORY_SIGNALS
 # history, torque or PWM, 80 Hz or 200 Hz - so unlike the history/integral block
 # below, these are safe to hand-list rather than import.
 BASE_OBS_NAMES = [
-    "z_height          (NOT sensed on hardware - use nominal standing height)",
-    "quat_w            IMU orientation",
-    "quat_x            IMU orientation",
-    "quat_y            IMU orientation  <-- dominant input, get pitch right",
-    "quat_z            IMU orientation",
-    "wheel_angle_L     encoder, accumulated radians",
-    "wheel_angle_R     encoder, accumulated radians",
-    "v_forward         body-frame, from wheel odometry",
+    "z_height          constant 0.0334 (not sensed; training feeds the same)",
+    "quat_w            from fused roll/pitch, yaw pinned to 0",
+    "quat_x            from fused roll/pitch, yaw pinned to 0",
+    "quat_y            from fused roll/pitch, yaw pinned to 0",
+    "quat_z            from fused roll/pitch, yaw pinned to 0",
+    "wheel_angle_L     always 0 since run 8 (dropped)",
+    "wheel_angle_R     always 0 since run 8 (dropped)",
+    "v_forward         r*(mean wheel rate + pitch rate)*cos(pitch), clip +/-2 m/s",
     "v_lateral         (NOT sensed - use 0)",
     "v_vertical        (NOT sensed - use 0)",
     "gyro_roll         rad/s",
     "gyro_pitch        rad/s",
     "gyro_yaw          rad/s",
-    "wheel_vel_L       rad/s from encoder",
-    "wheel_vel_R       rad/s from encoder",
+    "wheel_vel_L       rad/s, encoder counts over 4 ticks, clip +/-40",
+    "wheel_vel_R       rad/s, encoder counts over 4 ticks, clip +/-40",
     "cmd_forward       commanded body-frame velocity, m/s",
     "cmd_turn          commanded yaw rate, rad/s",
 ]
@@ -80,7 +80,7 @@ def obs_names(n_obs):
                 f"hist_v_forward    t-{age_ms}ms ({tap} ticks back)",
             ]
     if n_obs >= len(names) + 1:
-        names.append("pos_err_scaled    leaky integral of (v_forward - cmd_forward)")
+        names.append("pos_err_scaled    leaky integral of (v_forward - cmd_forward), clip +/-0.5 m")
     if n_obs >= len(names) + 1:
         names.append("yaw_err_scaled    leaky integral of (yaw_rate - cmd_turn), clipped")
     return names
