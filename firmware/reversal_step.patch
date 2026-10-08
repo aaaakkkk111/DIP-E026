@@ -1,0 +1,74 @@
+--- a/APP/RL/rl_mode.c
++++ b/APP/RL/rl_mode.c
+@@ -26,6 +26,9 @@
+  *     200 ticks, then 0 for 100, the other wheel at 0, the policy bypassed;
+  *     printed as "M <side> <pwm> <k> <enc_l> <enc_r>" then "M end" ("M end
+  *     cut" if the stock code cut the motors); 'mt off' ends the session
++ *   - two-level step (car_firmware_reversal): 'mt L <pwm> <pwm2>' runs 200
++ *     ticks at pwm, 200 at pwm2, then 100 at 0 (500 M lines, pwm field = the
++ *     first PWM); the 200 Hz stream pauses during an 'mt' session
+  * What the stock firmware provides instead of his drivers: the MPU6050 read
+  * (raw registers, captured in Get_Angle via RL_RawImu), encoders, motor PWM,
+  * keys / OLED / Bluetooth.  His axis-map calibration is not needed: the stock
+@@ -90,11 +93,12 @@
+                                           (printf with floats in the ISR printed garbage) */
+ /* motor step test: the ISR records, TUNE_Poll prints */
+ #define MT_ON_N 200                    /* 1.0 s at the step PWM ... */
+-#define MT_N    300                    /* ... then 0.5 s at 0 (coast-down) */
+-static int   mt_session;               /* 'mt on' .. 'mt off': auto-arm blocked */
++#define MT_N    500                    /* ... then 0.5 s at 0 (coast-down); two-level steps
++                                          (car_firmware_reversal) put 1.0 s at the second PWM between */
++static int   mt_session;               /* 'mt on' .. 'mt off': auto-arm blocked, stream paused */
+ static volatile int mt_active, mt_done, mt_k;   /* mt_done: 1 = complete, 2 = motors cut */
+ static volatile int motors_ok;         /* Turn_Off() == 0 on the last RL_WAIT tick */
+-static int   mt_pwm;
++static int   mt_pwm, mt_pwm2, mt_two;  /* 'mt L <pwm> [<pwm2>]' */
+ static char  mt_side;
+ static short mt_el[MT_N], mt_er[MT_N];
+ /* 200 Hz stream (car_firmware_pidlog): every control tick, in mode 1 and
+@@ -153,7 +157,7 @@
+     unsigned short h = lg_head, n = (unsigned short)((h + 1) % LG_N);
+     short *s = lg[h];
+     ++lg_k;
+-    if (!lg_on || n == lg_tail) return;
++    if (!lg_on || mt_session || n == lg_tail) return;
+     s[0] = (short)lg_k; s[1] = (short)(angle * 100.0f); s[2] = (short)gyro;
+     s[3] = (short)ml; s[4] = (short)mr; s[5] = (short)el; s[6] = (short)er;
+     s[7] = (short)raw_acc[1]; s[8] = (short)raw_acc[2];
+@@ -162,7 +166,9 @@
+ 
+ void LOG_Poll(void)
+ {
+-    while (lg_tail != lg_head) {
++    int n = 16;                        /* at most 16 lines per call: while the ISR is busy the
++                                          ring never empties, and the main loop must go on */
++    while (lg_tail != lg_head && n--) {
+         short *s = lg[lg_tail];
+         printf("P %u %d %d %d %d %d %d %d %d\r\n", (unsigned short)s[0], s[1], s[2], s[3], s[4],
+                s[5], s[6], s[7], s[8]);
+@@ -367,8 +373,9 @@
+     if (mt_active) {                    /* motor step test: raw PWM on one wheel, no policy */
+         if (motors_off) { mt_active = 0; mt_done = 2; return 1; }
+         mt_el[mt_k] = (short)enc_l; mt_er[mt_k] = (short)enc_r;
+-        if (mt_k < MT_ON_N) { if (mt_side == 'L') *ml = mt_pwm; else *mr = mt_pwm; }
+-        if (++mt_k >= MT_N) { mt_active = 0; mt_done = 1; }
++        i = mt_k < MT_ON_N ? mt_pwm : (mt_two && mt_k < 2 * MT_ON_N ? mt_pwm2 : 0);
++        if (mt_side == 'L') *ml = i; else *mr = i;
++        if (++mt_k >= (mt_two ? MT_N : MT_ON_N + 100)) { mt_active = 0; mt_done = 1; }
+         return 1;
+     }
+ 
+@@ -469,7 +476,12 @@
+         else if (rl_state != RL_WAIT)  printf("mt: not in WAIT\r\n");
+         else if (!motors_ok)           printf("mt: motors off (KEY1, tilt, battery)\r\n");
+         else if (mt_active || mt_done) printf("mt: busy\r\n");
+-        else { mt_side = rx[3]; mt_pwm = (int)atof(rx + 5); mt_k = 0; mt_active = 1; }
++        else {
++            const char *q = strchr(rx + 6, ' ');      /* a second number: two-level step */
++            mt_side = rx[3]; mt_pwm = (int)atof(rx + 5);
++            mt_two = q != 0; mt_pwm2 = q ? (int)atof(q) : 0;
++            mt_k = 0; mt_active = 1;
++        }
+     } else {
+         printf("?\r\n");
+     }

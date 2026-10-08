@@ -241,10 +241,131 @@ def sim_pid(model, slack, lat, acc_sd, gyro_sd, gyro_bias, seconds=30.0, settle=
     return s
 
 
+PUSH_H = 0.10                           # push height above the axle, m
+
+
+def sim_push(model, slack, lat, force, dur=0.1, acc_sd=120.0, gyro_sd=5.0, gyro_bias=40.0,
+             settle=3.0, after=1.5, seed=0, imu_h=0.04):
+    """Stock PID standing for settle s, then a horizontal force (N, + forward)
+    at PUSH_H for dur s. Returns per-tick arrays from the push start."""
+    env, _ = S.make_env(slack_deg=(slack, slack), latency_ticks=lat, noisy_imu=False, seed=seed)
+    if model is not None:
+        env._motor = model[0]
+        env.unwrapped.model.dof_armature[T.ROTOR_QVEL] = model[1]
+    m, d = env.unwrapped.model, env.unwrapped.data
+    body = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, "chassis")
+    lever = PUSH_H - float(m.body_ipos[body][2])                 # above the chassis COM
+    rng = np.random.default_rng(seed)
+    kf, pid = StockKF(), StockPID()
+    for _ in range(2000):
+        kf.update(0.0, ACC_LSB_G + rng.normal(0, acc_sd), (gyro_bias + rng.normal(0, gyro_sd)) / GYRO_LSB)
+    r = np.array([0.0, 0.0, imu_h])
+    acc6 = np.zeros(6)
+    prev = np.floor(d.qpos[T.ROTOR_QPOS] / T.ENC_RAD_PER_COUNT)
+    out = {key: [] for key in ("angle", "rate", "pwm", "enc")}
+    n0 = int(settle / DT)
+    try:
+        for k in range(int((settle + after) / DT)):
+            mujoco.mj_rnePostConstraint(m, d)
+            mujoco.mj_objectAcceleration(m, d, mujoco.mjtObj.mjOBJ_BODY, body, acc6, 1)
+            w = d.qvel[3:6]
+            f = acc6[3:] + np.cross(acc6[:3], r) + np.cross(w, np.cross(w, r))
+            accy = f[0] / 9.81 * ACC_LSB_G + rng.normal(0, acc_sd)
+            accz = f[2] / 9.81 * ACC_LSB_G + rng.normal(0, acc_sd)
+            gyro = w[1] * GYRO_LSB + gyro_bias + rng.normal(0, gyro_sd)
+            angle = math.degrees(kf.update(accy, accz, gyro / GYRO_LSB))
+            cnt = np.floor(d.qpos[T.ROTOR_QPOS] / T.ENC_RAD_PER_COUNT)
+            el, er = cnt - prev
+            prev = cnt
+            pwm = pid.step(angle, gyro, el, er)
+            push = n0 <= k < n0 + int(dur / DT)
+            # world-frame force at the COM plus the torque of applying it at PUSH_H
+            d.xfrc_applied[body] = [force, 0, 0, 0, force * lever, 0] if push else 0.0
+            a = 0.0 if pwm == 0 else math.copysign((abs(pwm) - 1300) / 1500, pwm)
+            _, _, term, _, _ = env.step(np.array([a, a]))
+            if k >= n0:
+                out["angle"].append(angle); out["rate"].append((gyro - gyro_bias) / 16.4)
+                out["pwm"].append(pwm); out["enc"].append(el + er)
+            if term:
+                break
+    finally:
+        env.close()
+    return {key: np.array(v, dtype=float) for key, v in out.items()}
+
+
+def response(angle, rate, pwm, enc, t, sgn=None):
+    """Features of a push response, aligned at the peak rate in direction sgn
+    (default: of the largest |rate|; on the car, the PID's swing back after
+    the push): t in s for each sample."""
+    if sgn is None:
+        sgn = np.sign(rate[int(np.argmax(np.abs(rate)))])
+    i = int(np.argmax(sgn * rate))
+    after = t >= t[i]
+    j = i + int(np.argmax(sgn * angle[i:])) if np.any(after) else i       # peak angle in that direction
+    back = np.nonzero((sgn * angle[j:]) <= 0.0)[0]
+    rev = np.nonzero((np.sign(pwm[:j + 1]) == sgn) & (np.arange(j + 1) >= max(0, i - 40)))[0]
+    return dict(peak_rate=float(rate[i]), peak_angle=float(angle[j]), t_rate_to_angle=float(t[j] - t[i]),
+                back_to_0=float(t[j + back[0]] - t[j]) if len(back) else float("nan"),
+                max_wheel=float(np.max(np.abs(enc[max(0, i - 60):j + 1]))),
+                wheel_at_reverse=float(enc[rev[0]]) if len(rev) else float("nan"),
+                pwm_recovery=float(np.median(pwm[j:j + 100][np.abs(pwm[j:j + 100]) > 0])) if j + 1 < len(pwm) else float("nan"),
+                wheel_recovery=float(np.median(enc[j + 20:j + 100])) if j + 20 < len(enc) else float("nan"))
+
+
+def car_pushes(c):
+    _, pushes = car_segments(c)
+    out = []
+    for i in pushes:
+        w = slice(max(0, i - 40), min(len(c["k"]), i + 220))
+        t = (c["k"][w] - c["k"][i]) * DT
+        if np.any(np.abs(c["angle"][w]) > 40):
+            continue
+        cov = len(t) / max(1.0, (c["k"][w][-1] - c["k"][w][0]) + 1)
+        enc = (c["el"][w] + c["er"][w])
+        out.append((float(c["k"][i]), response(c["angle"][w], c["gyro"][w] / 16.4, c["L"][w], enc, t), cov))
+    return out
+
+
+def fmt_resp(r):
+    return (f"rate {r['peak_rate']:+5.0f}, angle {r['peak_angle']:+5.1f} after {1000 * r['t_rate_to_angle']:3.0f} ms, "
+            f"back to 0 in {1000 * r['back_to_0']:4.0f} ms, wheel max {r['max_wheel']:3.0f} / at reversal "
+            f"{r['wheel_at_reverse']:+4.0f} / recovering {r['wheel_recovery']:+4.0f} counts/tick, PWM recovering "
+            f"{r['pwm_recovery']:+5.0f}")
+
+
+def pushes(car_list, models, slack, lat):
+    print(f"\n== pushes: each car push against the simulated stock PID, push force set so the swing-back peak "
+          f"rate matches (slack {slack:.0f} deg, delay {5 * lat} ms, {PUSH_H * 100:.0f} cm high, 0.1 s)")
+    for k0, rc, cov in car_list:
+        print(f"\ncar  (tick {int(k0)}, {cov * 100:.0f} % of ticks logged): {fmt_resp(rc)}")
+        for name, model in models:
+            target = abs(rc["peak_rate"])
+            sgn = -np.sign(rc["peak_rate"])          # the swing back is opposite to the push
+            lo, hi, best = 0.0, 40.0, None
+            for _ in range(12):
+                mid = 0.5 * (lo + hi)
+                s = sim_push(model, slack, lat, sgn * mid)
+                tt = np.arange(len(s["rate"])) * DT
+                if len(tt) < 60 or np.any(np.abs(s["angle"]) > 40):
+                    hi = mid
+                    continue
+                rs = response(s["angle"], s["rate"], s["pwm"], s["enc"], tt, np.sign(rc["peak_rate"]))
+                if np.sign(rs["peak_rate"]) != np.sign(rc["peak_rate"]) or abs(rs["peak_rate"]) < target:
+                    lo = mid
+                else:
+                    hi = mid
+                best = (mid, rs)
+            if best is None:
+                print(f"  {name:15s}: falls at every push size")
+            else:
+                print(f"  {name:15s}: {fmt_resp(best[1])}  ({best[0]:.1f} N)")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--log", default="car_logs/2026-10-08/pid_mode1.txt")
     ap.add_argument("--sim", action="store_true")
+    ap.add_argument("--pushes", action="store_true", help="the car's pushes against the simulated PID")
     ap.add_argument("--slack", type=float, nargs="+", default=[2, 3, 4])
     ap.add_argument("--delay", type=int, nargs="+", default=[1, 2, 3, 4])
     ap.add_argument("--seconds", type=float, default=30.0)
@@ -260,6 +381,10 @@ def main():
     car, stand = report_car(c)
     port_check(c, stand)
     acc_sd, gyro_sd, gyro_bias = args.acc_noise, args.gyro_noise, args.gyro_bias
+
+    if args.pushes:
+        from policy_filter_sim import FITTED_A
+        pushes(car_pushes(c), (("nominal motor", None), ("fitted motor A", FITTED_A)), 2.0, 2)
 
     if args.sim:
         import motor_fit as F
