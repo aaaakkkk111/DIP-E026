@@ -1,0 +1,112 @@
+--- a/APP/RL/rl_mode.c
++++ b/APP/RL/rl_mode.c
+@@ -20,6 +20,12 @@
+  *   - action -> PWM: |a| * 1500 + 1300 dead band, clamp 2800
+  *   - serial commands (USART1, 230400 8N1, the FlyMCU port): 'trim <deg>'
+  *     adds to the pitch zero, 'cal' recalibrates, 'st' prints the state
++ *   - motor step test (2026-10-08, car_firmware_motortest only): 'mt on' starts
++ *     a session (auto-arm blocked), 'mt L <pwm>' / 'mt R <pwm>' runs one step
++ *     in RL_WAIT with the motors enabled: raw signed PWM on that wheel for
++ *     200 ticks, then 0 for 100, the other wheel at 0, the policy bypassed;
++ *     printed as "M <side> <pwm> <k> <enc_l> <enc_r>" then "M end" ("M end
++ *     cut" if the stock code cut the motors); 'mt off' ends the session
+  * What the stock firmware provides instead of his drivers: the MPU6050 read
+  * (raw registers, captured in Get_Angle via RL_RawImu), encoders, motor PWM,
+  * keys / OLED / Bluetooth.  His axis-map calibration is not needed: the stock
+@@ -80,6 +86,17 @@
+ static float run_maxp;
+ static volatile int run_end_reason;    /* set by the ISR, printed + cleared by TUNE_Poll */
+ static volatile long run_end_ms;
++static volatile int cal_print;         /* set by the ISR, printed + cleared by TUNE_Poll
++                                          (printf with floats in the ISR printed garbage) */
++/* motor step test: the ISR records, TUNE_Poll prints */
++#define MT_ON_N 200                    /* 1.0 s at the step PWM ... */
++#define MT_N    300                    /* ... then 0.5 s at 0 (coast-down) */
++static int   mt_session;               /* 'mt on' .. 'mt off': auto-arm blocked */
++static volatile int mt_active, mt_done, mt_k;   /* mt_done: 1 = complete, 2 = motors cut */
++static volatile int motors_ok;         /* Turn_Off() == 0 on the last RL_WAIT tick */
++static int   mt_pwm;
++static char  mt_side;
++static short mt_el[MT_N], mt_er[MT_N];
+ static void timing_freeze(void);
+ static void run_end(int why)
+ {
+@@ -271,8 +288,7 @@
+             rl_calibrated = 1;
+             upright_n = 0;
+             rl_state = RL_WAIT;
+-            printf("cal done: pitch zero %.2f roll zero %.2f bias %.4f %.4f %.4f\r\n",
+-                   pitch_zero * 57.29578f, roll_zero * 57.29578f, bias[0], bias[1], bias[2]);
++            cal_print = 1;
+         }
+         return 1;
+     }
+@@ -314,8 +330,18 @@
+         return 1;
+     }
+ 
+-    /* RL_WAIT: his ST_IDLE auto-arm (needs the motors enabled, i.e. KEY1 pressed) */
+-    upright_n = (!motors_off && fabsf(pitch) < ARM_MAX_TILT && fabsf(roll) < 2.0f * ARM_MAX_TILT
++    motors_ok = !motors_off;
++    if (mt_active) {                    /* motor step test: raw PWM on one wheel, no policy */
++        if (motors_off) { mt_active = 0; mt_done = 2; return 1; }
++        mt_el[mt_k] = (short)enc_l; mt_er[mt_k] = (short)enc_r;
++        if (mt_k < MT_ON_N) { if (mt_side == 'L') *ml = mt_pwm; else *mr = mt_pwm; }
++        if (++mt_k >= MT_N) { mt_active = 0; mt_done = 1; }
++        return 1;
++    }
++
++    /* RL_WAIT: his ST_IDLE auto-arm (needs the motors enabled, i.e. KEY1 pressed;
++       blocked during an 'mt' session) */
++    upright_n = (!mt_session && !motors_off && fabsf(pitch) < ARM_MAX_TILT && fabsf(roll) < 2.0f * ARM_MAX_TILT
+                  && fabsf(gyro[1]) < 0.5f) ? upright_n + 1 : 0;
+     if (upright_n >= ARM_HOLD_N) {
+         odom_reset();
+@@ -369,6 +395,18 @@
+         fr_n = 0; fr_head = 0;
+         run_end_reason = 0;
+     }
++    if (cal_print) {
++        cal_print = 0;
++        printf("cal done: pitch zero %.2f roll zero %.2f bias %.4f %.4f %.4f\r\n",
++               pitch_zero * 57.29578f, roll_zero * 57.29578f, bias[0], bias[1], bias[2]);
++    }
++    if (mt_done) {
++        int k;
++        for (k = 0; k < mt_k; ++k)
++            printf("M %c %d %d %d %d\r\n", mt_side, mt_pwm, k, mt_el[k], mt_er[k]);
++        printf(mt_done == 2 ? "M end cut\r\n" : "M end\r\n");
++        mt_done = 0;
++    }
+     if (!rx_ready) return;
+     if (!strncmp(rx, "trim ", 5)) {
+         float f = (float)atof(rx + 5);
+@@ -385,6 +423,16 @@
+         printf("%s c%d p%.2f z%.2f rz%.2f b%.4f %.4f %.4f L%d R%d n%ld\r\n",
+                nm[rl_state], rl_calibrated, rl_pitch_deg, pitch_zero * 57.29578f, roll_zero * 57.29578f,
+                bias[0], bias[1], bias[2], rl_pwm_l, rl_pwm_r, rl_us_max);
++    } else if (!strcmp(rx, "mt on") || !strcmp(rx, "mt off")) {
++        mt_session = (rx[4] == 'n');
++        if (!mt_session) mt_active = 0;
++        printf("mt %s, battery %.2f V\r\n", mt_session ? "on" : "off", battery);
++    } else if (!strncmp(rx, "mt ", 3) && (rx[3] == 'L' || rx[3] == 'R') && rx[4] == ' ') {
++        if (!mt_session)               printf("mt: send 'mt on' first\r\n");
++        else if (rl_state != RL_WAIT)  printf("mt: not in WAIT\r\n");
++        else if (!motors_ok)           printf("mt: motors off (KEY1, tilt, battery)\r\n");
++        else if (mt_active || mt_done) printf("mt: busy\r\n");
++        else { mt_side = rx[3]; mt_pwm = (int)atof(rx + 5); mt_k = 0; mt_active = 1; }
+     } else {
+         printf("?\r\n");
+     }
+--- a/APP/RL/rl_mode.h
++++ b/APP/RL/rl_mode.h
+@@ -3,7 +3,8 @@
+ #ifndef __RL_MODE_H
+ #define __RL_MODE_H
+ 
+-#define RL_WAIT 0   /* motors off or arming: hold upright 1 s and it starts */
++#define RL_WAIT 0   /* motors off or arming: hold upright 1 s and it starts
++                       (not during an 'mt on' motor-test session; see rl_mode.c) */
+ #define RL_CAL  1   /* his 'cal': hold upright at the balance point, still, 5 s */
+ #define RL_RUN  2   /* the network is driving the motors */
+ 
