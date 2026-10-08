@@ -13,6 +13,11 @@ P line: P <k> <angle*100> <gyro> <L> <R> <encL> <encR> <accY> <accZ>
 
 Writes car_logs/<date>/<name>.txt (every line, prefixed with PC time).
 Needs the COM port to itself: close rl_trim_helper.py and FlyMCU first.
+
+Battery: in mode 28 the car answers 'mt off' with its own battery reading
+('mt off, battery 12.48 V'; outside a motor test the command changes
+nothing). The script sends it once the car is talking and then every
+--battery-every seconds. Mode 1 does not listen, so there is no reading.
 """
 import argparse
 import collections
@@ -30,6 +35,7 @@ def main():
     ap.add_argument("--port", default="COM3")
     ap.add_argument("--name", required=True, help="file name in car_logs/<date>/, without .txt")
     ap.add_argument("--seconds", type=float, default=None)
+    ap.add_argument("--battery-every", type=float, default=30.0, help="seconds; 0 = never ask")
     args = ap.parse_args()
 
     out = os.path.join(ROOT, "car_logs", time.strftime("%Y-%m-%d"), args.name + ".txt")
@@ -46,6 +52,7 @@ def main():
 
     t0 = time.time()
     last_report = t0
+    last_battery = None                             # not asked yet; ask once the car talks
     n_p = n_gap = 0
     prev_k = None
     recent = collections.deque(maxlen=200)          # last second of P samples
@@ -57,6 +64,10 @@ def main():
                 *lines, buf = buf.split(b"\n")
                 now = time.time()
                 stamp = time.strftime("%H:%M:%S", time.localtime(now)) + f".{int(now * 1000) % 1000:03d}"
+                if args.battery_every and lines and (last_battery is None or now - last_battery >= args.battery_every):
+                    sp.write(b"mt off\r\n")
+                    fh.write(f"{stamp} > mt off\n")
+                    last_battery = now
                 for b in lines:
                     s = b.decode("ascii", "replace").strip()
                     if not s:
@@ -73,7 +84,9 @@ def main():
                             n_gap += 1
                         prev_k = v[0]
                         recent.append(v)
-                    elif f[0] != "D":
+                    elif s.startswith("mt off, battery"):
+                        print(f"  battery {f[3]} V (car's reading)", flush=True)
+                    elif f[0] not in ("D", "E"):
                         print(f"  car: {s}", flush=True)
                 if now - last_report >= 2.0:
                     last_report = now

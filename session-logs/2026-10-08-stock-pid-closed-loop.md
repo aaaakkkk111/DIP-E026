@@ -187,3 +187,69 @@ candidates are what differs when a policy runs:
 
 The car now runs `car_firmware_pidlog` (run 11 weights in mode 28). To go
 back, flash `car_firmware_run11`'s hex.
+
+## 6. Follow-up: three suspects ruled out, and calibration
+
+**The attitude filter is ruled out** (`sim_tools/policy_filter_sim.py`). For
+this script only, the simulated policy saw pitch and roll through
+`rl_mode.c`'s complementary filter, fed with a simulated accelerometer
+(gravity included, IMU above the axle) and gyro. Fitted motor A, 2°, 5–15 ms:
+
+| | true angles | car filter |
+|---|---|---|
+| run 8 | 49–74 deg/s | 49–74 deg/s |
+| run 9 | 19–21 deg/s | 18–20 deg/s |
+| run 11 | 19–21 deg/s | 19–21 deg/s |
+
+The filtered pitch was off the true pitch by 0.13–0.36° (sd). With the IMU
+at 8 cm and 29 mg of accelerometer noise (the car's level with the motors
+running), the error was 0.3–1.5° and the wobble still did not change.
+
+**The int16 network is ruled out** (`sim_tools/policy_q_sim.py`).
+`policy_q.c` was copied into numpy, with weights from
+`quantize_weights.quantise()`. The copy agrees with
+`policy_testvectors.h` to 0.0114, exactly the known fast-tanh error. In
+closed loop it matches the float network: run 8 49–75, run 9 19–21, run 11
+19–22 deg/s.
+
+**Gyro vibration is ruled out.** Tick-to-tick jitter of the policy's pitch
+rate (E lines, second difference / √6):
+- car: 5.7 (run 8), 3.4 (run 9), 2.3 (run 11, twice) deg/s;
+- simulator: 10.3 (run 8), 4.3 (run 11).
+
+The car's gyro is smoother than the simulator's, not spikier.
+
+**Run 11 again** (`car_logs/2026-10-08/run11_mode28_stream.txt`, recorded
+with `stream_log.py`; the battery was read by the car itself at 12.44 →
+12.38 V). Two calibrations, by hand, gave pitch zeros 3.2° apart:
+
+| | zero 5.06° | zero 1.87° |
+|---|---|---|
+| runs | 11.5 s, 20.5 s | 26.3 s, 26.3 s, 11.9 s |
+| wheel travel, first 5 s | +0.19, +0.13 m | +0.05, +0.09, +0.08 m |
+| stock angle while balancing | +4.6° | +0.7 to +1.4° |
+| wobble (E lines) | 38.2 deg/s (1 run) | 53.5 deg/s, 5.8 Hz, mean \|PWM\| 1849 |
+
+**Calibration affects drift and run length, not the wobble.** The user
+noticed the drift with the first calibration. The stock PID stood at a
+stock angle of +1.0° (§2), so the true balance point is near +1–2°, and
+`TRAINING_ON_DESKTOP.md`'s "about 3.2°" target looks high. Hand
+calibrations scatter by ±2° or more (today: 1.87, 3.06, 4.54, 5.06), and
+training only randomises the pitch offset by ±2°.
+
+**Logging firmware bug.** `LOG_Poll()` loops until the ring is empty. The
+ring never empties while the ISR is busy (mode 1 always; mode 28 while
+running), so the main loop stalls inside it:
+- in mode 28, D lines and command replies (battery) only appeared between
+  runs;
+- in mode 1, the OLED and the Bluetooth app would not have updated.
+
+Balancing is in the ISR and was unaffected. The next build fixes it by
+printing a bounded number of lines per call.
+
+**What is left:** motor behaviour the stock PID barely exercises.
+- **Reversals at speed.** The policies flip PWM sign every half wobble,
+  with 41–44 % of ticks below |PWM| 1700; the PID flips on 1 % of ticks.
+- **Strong-push recoveries**, which the PID log already contains (§2):
+  compare them in the simulator first, then test reversals on the car if
+  that points there.
