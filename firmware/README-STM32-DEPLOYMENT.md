@@ -3,11 +3,19 @@
 For whoever flashes and tests the car. Do Steps 1–9 in order. The Reference
 section at the end explains the why, and covers porting to other firmware.
 
-**Status:** run 8 (`models/best_real/best_model.zip`) has passed every
-simulation and PC check (Reference H) but **has not run on the car yet**. Run 7
-did, and fell within 0.2–2 s; run 8 was rebuilt from that failure
+**Status (2026-10-08):** run 8 and run 9 have run on the car with these
+steps. Both balance (17–51 s per run) but wobble at about 7 Hz; run 10 is
+being trained against the cause, sense-to-act delay and gearbox slack
+([session log](../session-logs/2026-10-08-run9-run10-delay-and-gear-slack.md)).
+`models/best_real/best_model.zip` is run 9. Run 7 fell within 0.2–2 s; run 8
+was rebuilt from that failure
 ([diagnosis](../session-logs/2026-10-06-hardware-mode28-diagnosis.md)). Treat
-the first session as a supervised test, with a hand ready to catch.
+every new policy's first session as a supervised test, with a hand ready to
+catch.
+
+On this car the `cal done` pitch zero comes out at about **3.2–3.5°** when the
+car is held at its balance point. If yours lands far from that, `trim` to it
+(Step 4's commands).
 
 ## What you need
 
@@ -17,7 +25,7 @@ the first session as a supervised test, with a hand ready to catch.
 | PC software | Keil MDK 5 with ARMCC 5.06; FlyMCU; Python with this repo's `venv`, plus `pip install pyserial` (and `matplotlib` for plots) |
 | Phone | the Yahboom Bluetooth app used for mode 1, to drive the car |
 | From this repo | `firmware/policy.c`, `policy.h`, `policy_weights.h`, `policy_weights_q.h`, and `firmware/check_car_log.py` |
-| From the team | their mode-28 Keil project at its **v6** state (burst IMU read, 4 KB stack), and their folder `rl_mode28_20261003/`, which has `rl_trim_helper.py` |
+| From the team | their mode-28 Keil project at its **v6** state (burst IMU read, 4 KB stack), and their folder `rl_mode28_20261003/`, which has `rl_trim_helper.py`. Without the project: `firmware/assemble_mode28_project.py` builds it from the stock Yahboom project and the folder's `src/` (Step 1 included) |
 
 You do not need STM32CubeMX, an ST-Link or a motor datasheet.
 

@@ -27,6 +27,7 @@ each one is forced:
    clearest reason it cannot transfer. Training against the real actuator is
    the only way to get a policy that works within that constraint.
 """
+import argparse
 import collections
 import os
 import random
@@ -239,7 +240,31 @@ POS_ERR_CLIP_M = 0.5              # m, the station-keeping integral
 # taken at the start of the 5 ms tick and writes the PWM 4.6 ms later (worst
 # case measured on the car), so the action lands ~1 tick late; the MPU6050's
 # own low-pass filter adds up to another. Run 7 assumed zero.
-ACTION_LATENCY_TICKS = (1, 2)     # per training episode; eval uses 1
+#
+# Run 9: run 8 on the car (2026-10-07) balanced for 51 s but oscillated at
+# 6.9 Hz, pitch +/-2.5 deg, PWM swinging close to +/-2800 every ~70 ms. In the
+# simulator run 8 is calm at 5-15 ms and reproduces that oscillation only with
+# 20-35 ms of delay (6.9 Hz and the same 7 % PWM sign-flip rate at 30 ms).
+# The firmware accounts for ~5 ms and the MPU6050 DLPF (98 Hz under the DMP
+# set-up) ~3 ms; the rest is presumably gearbox slack and motor response, not
+# modelled. Run 9 trained over 5-40 ms and picked the best checkpoint at 30 ms.
+#
+# Run 10: gearbox slack. Run 9 is calm in simulation at every delay up to
+# 40 ms, yet on the car it still wobbled at 7.2 Hz (tilt-rate sd 68 deg/s
+# against ~2 in simulation): delay alone cannot produce that. Fitting run 8's
+# AND run 9's car behaviour together over delay x slack
+# (sim_tools/fit_delay_slack.py, session-logs/2026-10-08-*) puts the slack at
+# ~4-6 deg at the wheel with 10-20 ms of delay. The fit under-predicts run 9's
+# wobble by ~2x, so the slack range goes past it. Drawn per wheel, per
+# training episode; the encoders read the motor side of the slack.
+ACTION_LATENCY_TICKS = (1, 6)     # 5-30 ms, per training episode
+EVAL_LATENCY_TICKS = 3            # 15 ms; fixed so evals compare
+GEAR_SLACK_DEG = (0.0, 8.0)       # total free play, motor to wheel, per wheel
+EVAL_GEAR_SLACK_DEG = 5.0         # the fitted car value
+# Joint layout of real_robot.xml (rotors after the wheels).
+WHEEL_QVEL = slice(6, 8)
+ROTOR_QPOS = slice(9, 11)
+ROTOR_QVEL = slice(8, 10)
 # IMU errors, per training episode. Pitch zero is set by hand at the balance
 # point and varied by 1.5 deg across calibrations on the car; gyro bias is
 # what remains after 'cal' plus thermal drift.
@@ -531,16 +556,29 @@ class CurriculumCallback(BaseCallback):
         return True
 
 
+def set_gear_slack(model, slack_deg_l, slack_deg_r):
+    """Total free play of each gearbox, in degrees at the wheel (0 = rigid)."""
+    for i, deg in enumerate((slack_deg_l, slack_deg_r)):
+        half = max(1e-6, 0.5 * np.radians(deg))
+        model.tendon_range[i] = (-half, half)
+
+
 class RealRobotEnv(MujocoEnv):
+    """Raw observation, 17 values, the layout every index in this file uses:
+    root qpos (7), encoder angles (2), root qvel (6), encoder speeds (2). The
+    encoders sit on the motor shaft, so those four values are the ROTORS'
+    (qpos[9:11], qvel[8:10]); the wheels behind the gear slack are not
+    observed, as on the car."""
+
     def __init__(self):
-        temp = mujoco.MjModel.from_xml_path(XML_FILE_PATH)
-        obs_space = Box(low=-np.inf, high=np.inf,
-                        shape=(temp.nq + temp.nv,), dtype=np.float64)
+        obs_space = Box(low=-np.inf, high=np.inf, shape=(17,), dtype=np.float64)
         super().__init__(model_path=XML_FILE_PATH, frame_skip=FRAME_SKIP,
                          observation_space=obs_space, default_camera_config={})
 
     def _get_obs(self):
-        return np.concatenate([self.data.qpos, self.data.qvel]).ravel()
+        d = self.data
+        return np.concatenate([d.qpos[:7], d.qpos[ROTOR_QPOS],
+                               d.qvel[:6], d.qvel[ROTOR_QVEL]]).ravel()
 
     def step(self, action):
         self.do_simulation(action, self.frame_skip)
@@ -605,8 +643,10 @@ class PWMCommandWrapper(VelocityCommandWrapper):
             pitch += rng.normal(0.0, ATT_NOISE_RAD)
             gyro += rng.normal(0.0, GYRO_NOISE_RADS, size=3)
 
-        # Encoders count the wheel relative to the chassis, i.e. the joint
-        # angle, which the simulator zeroes on every reset as odom_reset() does.
+        # Encoders count the motor shaft relative to the chassis (raw_obs[7:9]
+        # is the rotor joint angle, see RealRobotEnv), which the simulator
+        # zeroes on every reset as odom_reset() does. Through the gear slack
+        # this is not quite the wheel.
         counts = np.floor(np.asarray(raw_obs[7:9]) / ENC_RAD_PER_COUNT)
         if self._enc_ring is None:
             self._enc_ring = collections.deque([np.zeros(2)], maxlen=ENC_VEL_WINDOW + 1)
@@ -683,9 +723,10 @@ class PWMCommandWrapper(VelocityCommandWrapper):
         # The action computed this tick reaches the motors latency ticks later.
         self._act_queue.append(action.copy())
         applied = self._act_queue.popleft()
-        # Wheel angular velocities drive the back-EMF term, so the torque a
-        # given PWM delivers depends on how fast the wheels are already going.
-        omega = np.asarray(self.unwrapped.data.qvel[6:8], dtype=np.float64)
+        # Rotor angular velocities drive the back-EMF term, so the torque a
+        # given PWM delivers depends on how fast the motors are already going
+        # (inside the gear slack the rotor and the wheel differ).
+        omega = np.asarray(self.unwrapped.data.qvel[ROTOR_QVEL], dtype=np.float64)
         tau = action_to_torque(applied, omega, self._motor)
         obs, reward, terminated, truncated, info = super().step(tau.astype(np.float32))
 
@@ -711,12 +752,13 @@ class PWMCommandWrapper(VelocityCommandWrapper):
         self._enc_ring = None      # odom_reset()
         # Everything uncertain about the car is drawn once per training episode
         # and held fixed through it, the way it is fixed on any one car on any
-        # one run. Eval uses the nominal car (latency 1, no IMU error) so its
-        # score stays comparable between evaluations.
+        # one run. Eval uses the nominal car (latency EVAL_LATENCY_TICKS, gear
+        # slack EVAL_GEAR_SLACK_DEG, no IMU error) so its score stays
+        # comparable between evaluations.
         rng = self.np_random
         if self.is_eval:
             self._motor = NOMINAL_MOTOR
-            latency = ACTION_LATENCY_TICKS[0]
+            latency = EVAL_LATENCY_TICKS
             self._pitch_off = self._roll_off = 0.0
             self._gyro_bias = np.zeros(3)
             self._noisy = False
@@ -732,13 +774,16 @@ class PWMCommandWrapper(VelocityCommandWrapper):
         self._act_queue = collections.deque([np.zeros(2)] * latency)
         obs, info = super().reset(**kwargs)
 
-        # Armature is a MODEL field, so it persists across resets and has to be
-        # re-set every episode, exactly like payload.
+        # Armature (on the rotor joints) and gear slack (tendon ranges) are
+        # MODEL fields, so they persist across resets and have to be re-set
+        # every episode, exactly like payload.
         m = self.unwrapped.model
         if self.is_eval:
-            m.dof_armature[6:8] = ARMATURE_NOMINAL
+            m.dof_armature[ROTOR_QVEL] = ARMATURE_NOMINAL
+            set_gear_slack(m, EVAL_GEAR_SLACK_DEG, EVAL_GEAR_SLACK_DEG)
         else:
-            m.dof_armature[6:8] = self.np_random.uniform(*ARMATURE_RANGE)
+            m.dof_armature[ROTOR_QVEL] = self.np_random.uniform(*ARMATURE_RANGE)
+            set_gear_slack(m, *self.np_random.uniform(*GEAR_SLACK_DEG, size=2))
         if self.is_eval:
             # Override the parent's random draw with the fixed schedule, so the
             # eval score is comparable between evaluations. eval_episode was
@@ -758,17 +803,43 @@ def make_env(**kwargs):
     return _init
 
 
+# Run 10 continues from run 9 (backed up here before training, because the
+# EvalCallback overwrites models/best_real/) rather than starting over: run 9
+# already balances, tracks and copes with 30 ms; what is new is the slack.
+RUN_NAME = "run10"
+INIT_FROM = "models/best_real_RUN9/best_model.zip"
+FINETUNE_STEPS = 10_000_000
+FINETUNE_LR = 1e-4
+# Run 9 evaluated every 10,000 steps per env (110k total) with 20 episodes of
+# up to 10 s each, one at a time: 39 % of its 3.9 h went to evaluation.
+EVAL_EVERY_STEPS = 250_000
+
+
 def main():
-    best_dir = Path("models/best_real")
+    ap = argparse.ArgumentParser(description="Train the real-robot PWM policy.")
+    ap.add_argument("--init", default=INIT_FROM,
+                    help="checkpoint to continue from, or 'none' to train from scratch "
+                         f"(default: {INIT_FROM})")
+    ap.add_argument("--steps", type=int, default=None,
+                    help=f"total steps (default: {FINETUNE_STEPS:,} when continuing, 30,000,000 from scratch)")
+    ap.add_argument("--run", default=RUN_NAME, help="log folder under logs/")
+    ap.add_argument("--best-dir", default="models/best_real",
+                    help="where the best checkpoint is saved")
+    ap.add_argument("--envs", type=int, default=max(1, (os.cpu_count() or 2) - 1),
+                    help="parallel environments (default: CPU threads - 1)")
+    args = ap.parse_args()
+    from_scratch = args.init.lower() == "none"
+
+    best_dir = Path(args.best_dir)
     best_dir.mkdir(parents=True, exist_ok=True)
-    # 30M, up from 12M. Runs 2 and 3 were BOTH still climbing when their 12M
-    # budget ran out - +202 and +93 reward per 1M steps respectively over their
-    # final third, with the best eval inside the last 3% of the run. Neither
-    # plateaued, oscillated or collapsed, and log_std ended at 0.07-0.09 from an
-    # 0.25 start, so exploration was healthy too. The runs were not failing to
-    # converge; they were being cut off mid-climb.
-    total_timesteps = 30_000_000
-    num_cpu = max(1, (os.cpu_count() or 2) - 1)
+    # From scratch: 30M, up from 12M. Runs 2 and 3 were BOTH still climbing
+    # when their 12M budget ran out - +202 and +93 reward per 1M steps
+    # respectively over their final third, with the best eval inside the last
+    # 3% of the run. Neither plateaued, oscillated or collapsed, and log_std
+    # ended at 0.07-0.09 from an 0.25 start, so exploration was healthy too.
+    # The runs were not failing to converge; they were being cut off mid-climb.
+    total_timesteps = args.steps or (30_000_000 if from_scratch else FINETUNE_STEPS)
+    num_cpu = args.envs
 
     def monitored(**kw):
         f = make_env(**kw)
@@ -777,35 +848,47 @@ def main():
     train_env = SubprocVecEnv([monitored(is_eval=False) for _ in range(num_cpu)])
     eval_env = monitored(is_eval=True)()
 
-    # log_std_init: the action space is now +/-1.0, so SB3's default std of 1.0
-    # is 100% of the range and would clip constantly. Same 25%-of-range rule
-    # that fixed the first run on the previous plant.
-    model = PPO("MlpPolicy", env=train_env,
-                policy_kwargs=dict(net_arch=[64, 64], log_std_init=float(np.log(0.25))),
-                learning_rate=linear_schedule(3e-4), ent_coef=0.01,
-                # 19 envs x n_steps 2048 = 38,912 samples per rollout. At
-                # batch_size 128 and SB3's default n_epochs=10 that was 3,040
-                # gradient updates per rollout - a lot of passes over one
-                # rollout, slow on CPU and prone to over-fitting each batch.
-                # 512 is conventional at this rollout size.
-                n_steps=2048, batch_size=512, device="cpu", verbose=1)
+    if from_scratch:
+        # log_std_init: the action space is now +/-1.0, so SB3's default std of
+        # 1.0 is 100% of the range and would clip constantly. Same
+        # 25%-of-range rule that fixed the first run on the previous plant.
+        model = PPO("MlpPolicy", env=train_env,
+                    policy_kwargs=dict(net_arch=[64, 64], log_std_init=float(np.log(0.25))),
+                    learning_rate=linear_schedule(3e-4), ent_coef=0.01,
+                    # 19 envs x n_steps 2048 = 38,912 samples per rollout. At
+                    # batch_size 128 and SB3's default n_epochs=10 that was 3,040
+                    # gradient updates per rollout - a lot of passes over one
+                    # rollout, slow on CPU and prone to over-fitting each batch.
+                    # 512 is conventional at this rollout size.
+                    n_steps=2048, batch_size=512, device="cpu", verbose=1)
+        curriculum = {}
+    else:
+        # Same hyperparameters as the checkpoint, a gentler learning rate, and
+        # the full command range from the start (the policy already has it);
+        # payload still ramps in over the run.
+        lr = linear_schedule(FINETUNE_LR)
+        model = PPO.load(args.init, env=train_env, device="cpu",
+                         custom_objects={"learning_rate": lr, "lr_schedule": lr})
+        curriculum = dict(stand_phase_end=0.0, velocity_phase_end=0.0)
 
     # Until now the log held ONLY eval rewards - no explained_variance, approx_kl,
     # clip_fraction or entropy_loss - so every diagnosis of "why is this slow"
     # was guesswork. The CSV is the cheap one to read back: one row per rollout,
     # greppable without parsing the stdout tables.
-    model.set_logger(configure("logs/run8", ["stdout", "csv"]))
+    model.set_logger(configure(f"logs/{args.run}", ["stdout", "csv"]))
 
     callback = CallbackList([
         CurriculumCallback(total_timesteps=total_timesteps,
                            max_payload_kg=MAX_PAYLOAD_KG,
-                           max_v_forward=MAX_V_FORWARD, max_v_turn=MAX_V_TURN),
+                           max_v_forward=MAX_V_FORWARD, max_v_turn=MAX_V_TURN,
+                           **curriculum),
         EvalCallback(eval_env, best_model_save_path=str(best_dir),
-                     eval_freq=10000, n_eval_episodes=20),
+                     eval_freq=max(1, EVAL_EVERY_STEPS // num_cpu), n_eval_episodes=20),
     ])
 
     print(f"\nTraining on real_robot.xml at 200Hz, PWM actions "
-          f"({total_timesteps:,} steps, {num_cpu} envs)...")
+          f"({total_timesteps:,} steps, {num_cpu} envs, "
+          f"{'from scratch' if from_scratch else 'from ' + args.init})...")
     try:
         model.learn(total_timesteps=total_timesteps, callback=callback,
                     progress_bar=True)

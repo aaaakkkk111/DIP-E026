@@ -33,7 +33,7 @@ from motor_model import action_to_pwm, action_to_torque
 from train_real_robot import (FALL_ANGLE_LIMIT, MAX_PAYLOAD_KG,
                               MAX_V_FORWARD as TRAIN_MAX_V_FORWARD,
                               MAX_V_TURN as TRAIN_MAX_V_TURN,
-                              PWMCommandWrapper, RealRobotEnv)
+                              PWMCommandWrapper, RealRobotEnv, ROTOR_QVEL)
 
 # Command ranges sampled during training. Imported rather than copied so the
 # sliders cannot drift away from what the policy actually saw; commanding
@@ -483,7 +483,7 @@ def main():
                 if steps % 5 == 0 or done:  # ~40Hz refresh, keeps the sim smooth
                     d = env.unwrapped.data
                     _, pitch, local_vel, v_turn = env._decode_state(
-                        np.concatenate([d.qpos, d.qvel]))
+                        env.unwrapped._get_obs())
                     # What the actuator is actually being asked for. Worth
                     # watching: after the firmware's deadband compensation the
                     # smallest non-zero command is already 1300 counts / 0.257
@@ -492,7 +492,7 @@ def main():
                     # that sits near zero means the wheels are simply idle.
                     pwm = action_to_pwm(np.asarray(action, dtype=np.float64))
                     tau = action_to_torque(np.asarray(action, dtype=np.float64),
-                                           d.qvel[6:8])
+                                           d.qvel[ROTOR_QVEL])
                     panel.update_telemetry(local_vel[0], v_turn, pitch, steps,
                                            done, pwm, tau)
                 if not panel.pump():

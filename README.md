@@ -4,9 +4,13 @@ A PPO policy trained in MuJoCo to balance and drive the Yahboom two-wheeled
 car (STM32F103, MPU6050, AT8236 driver, JGB37-520 motors), plus the C code that
 runs it on the car.
 
-**Status:** the current policy is run 8. It was retrained after run 7 fell on
-the car: the car's own logs showed the simulator's motor model was wrong. Run 8
-passes every simulation and PC check, but **has not run on the car yet**.
+**Status (2026-10-08):** run 8 and run 9 have both run on the car. They
+balance (17–51 s per run, ended by hand) but wobble at about 7 Hz. The causes
+are sense-to-act delay and gearbox slack, both now modelled in the simulator;
+run 10 trains with them. The checkpoint in `models/best_real/` is run 9. See
+[session-logs/2026-10-08-run9-run10-delay-and-gear-slack.md](session-logs/2026-10-08-run9-run10-delay-and-gear-slack.md),
+and [TRAINING_ON_DESKTOP.md](TRAINING_ON_DESKTOP.md) for training on one PC
+and testing on another.
 
 ## Run it in simulation
 

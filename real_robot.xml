@@ -32,7 +32,14 @@
         <geom name="payload_geom" type="box" size="0.03 0.03 0.02"
               rgba="0.9 0.2 0.2 1" mass="0" contype="0" conaffinity="0"/>
       </body>
-      <!-- armature = gearbox-reflected rotor inertia, J_rotor * G^2, with
+      <!-- Run 10: the motor rotor is its own hinge (rotor_l / rotor_r below),
+           coupled to its wheel through a gearbox with slack (tendons bl_l /
+           bl_r). The wheels carry only their own inertia; the motor drives
+           the rotor, so its reaction always lands on the chassis, and the
+           encoders (on the motor shaft) read the rotor. The armature notes
+           below now apply to the rotor joints.
+
+           armature = gearbox-reflected rotor inertia, J_rotor * G^2, with
            G = 30 for the JGB37-520. This is NOT a numerical fudge: it is 100x
            the wheel's own 1.96e-5 inertia and it dominates the wheel dynamics.
 
@@ -50,24 +57,53 @@
            randomises it over 9e-4 .. 4.5e-3 so the policy does not depend on
            this estimate being exact. -->
       <body name="wheel_l" pos="0 0.0835 0">
-        <joint name="jw_l" type="hinge" axis="0 1 0" armature="2.25e-3"/>
+        <joint name="jw_l" type="hinge" axis="0 1 0" armature="0"/>
         <inertial pos="0 0 0" mass="0.0350"
                   diaginertia="9.82e-06 1.964e-05 9.82e-06"/>
         <geom name="gw_l" type="cylinder" size="0.0335 0.0120"
               quat="0.7071068 0.7071068 0 0" rgba="0.15 0.15 0.18 1" mass="0"/>
       </body>
       <body name="wheel_r" pos="0 -0.0835 0">
-        <joint name="jw_r" type="hinge" axis="0 1 0" armature="2.25e-3"/>
+        <joint name="jw_r" type="hinge" axis="0 1 0" armature="0"/>
         <inertial pos="0 0 0" mass="0.0350"
                   diaginertia="9.82e-06 1.964e-05 9.82e-06"/>
         <geom name="gw_r" type="cylinder" size="0.0335 0.0120"
               quat="0.7071068 0.7071068 0 0" rgba="0.15 0.15 0.18 1" mass="0"/>
       </body>
+      <!-- Motor rotors, reflected to the wheel side. They MUST stay after the
+           wheels: qpos = root(7), jw_l, jw_r, jr_l, jr_r and qvel = root(6),
+           jw_l, jw_r, jr_l, jr_r (train_real_robot.py ROTOR_QPOS/ROTOR_QVEL).
+           The tiny mass is only to satisfy the compiler; the inertia is the
+           armature. -->
+      <body name="rotor_l" pos="0 0.0835 0">
+        <joint name="jr_l" type="hinge" axis="0 1 0" armature="2.25e-3"/>
+        <inertial pos="0 0 0" mass="1e-4" diaginertia="1e-9 1e-9 1e-9"/>
+      </body>
+      <body name="rotor_r" pos="0 -0.0835 0">
+        <joint name="jr_r" type="hinge" axis="0 1 0" armature="2.25e-3"/>
+        <inertial pos="0 0 0" mass="1e-4" diaginertia="1e-9 1e-9 1e-9"/>
+      </body>
     </body>
   </worldbody>
+  <!-- Gearbox slack: tendon = rotor angle - wheel angle, free inside the
+       range, a stiff one-sided contact (2 ms) at its ends, solved by MuJoCo's
+       constraint solver so the light wheel stays stable. The range here is
+       ~0 (no slack, the pre-run-10 model); training sets it per episode
+       (train_real_robot.py set_gear_slack). -->
+  <tendon>
+    <fixed name="bl_l" limited="true" range="-1e-6 1e-6" solreflimit="0.002 1">
+      <joint joint="jr_l" coef="1"/>
+      <joint joint="jw_l" coef="-1"/>
+    </fixed>
+    <fixed name="bl_r" limited="true" range="-1e-6 1e-6" solreflimit="0.002 1">
+      <joint joint="jr_r" coef="1"/>
+      <joint joint="jw_r" coef="-1"/>
+    </fixed>
+  </tendon>
   <actuator>
-    <!-- driver limit 0.4 Nm at the wheel (motor stalls at 0.5679) -->
-    <motor name="m_l" joint="jw_l" gear="1" ctrlrange="-0.4000 0.4000"/>
-    <motor name="m_r" joint="jw_r" gear="1" ctrlrange="-0.4000 0.4000"/>
+    <!-- driver limit 0.4 Nm at the wheel (motor stalls at 0.5679); the motor
+         drives the rotor, which drives the wheel through the slack -->
+    <motor name="m_l" joint="jr_l" gear="1" ctrlrange="-0.4000 0.4000"/>
+    <motor name="m_r" joint="jr_r" gear="1" ctrlrange="-0.4000 0.4000"/>
   </actuator>
 </mujoco>
