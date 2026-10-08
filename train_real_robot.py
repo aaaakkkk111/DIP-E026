@@ -205,6 +205,28 @@ YAW_WEIGHT = 3.0
 YAW_CLIP_RAD = 0.2
 YAW_OBS_SCALE = 1.0 / YAW_CLIP_RAD   # maps the clipped range onto [-1, 1]
 
+# --- run 11: wobble -------------------------------------------------------
+#
+# Runs 8-10 wobble at 5-8 Hz on the car (run 9: pitch-rate sd 68 deg/s) and,
+# with gear slack, in simulation (run 10 at 5 deg / 15 ms: ~30 deg/s). Nothing
+# in the reward priced it. A fast wobble keeps the AVERAGE pitch, speed and
+# position nearer zero than a slow sway, so the reward preferred it: standing
+# at 5 deg / 15 ms, run 10 scored 1.77 per step against 1.64 for a plain PD
+# controller that holds the same car at 9 deg/s rms. And the action-rate term
+# barely sees it (-0.002/step for run 10).
+#
+# Penalty on the true chassis pitch rate, squared so it falls mostly on the
+# wobble rather than on the brief pitch rates of leaning into a manoeuvre.
+# At w = 1.5 the calm PD wins (1.60 vs 1.36); without slack the policies are
+# calm (1.7 deg/s) and pay < 0.002/step; driving still pays (run 10 driving
+# 1.37/step vs > 1.7/step lost by not driving). Capped so that a car that
+# cannot avoid wobbling never gains by falling: uncapped, 64 deg/s would cost
+# 1.9/step against the +2 alive bonus; at the cap a heavily wobbling car still
+# nets ~+0.7/step. The cap starts at 47 deg/s; at 0.75 (41 deg/s) it clipped
+# run 10's wobble peaks and cut its penalty from 0.42 to 0.30/step.
+PITCH_RATE_WEIGHT = 1.5           # per (rad/s)^2
+PITCH_RATE_PENALTY_MAX = 1.0      # per step
+
 # --- run 8: train on what the firmware actually observes -----------------
 #
 # Runs 1-7 fed the policy simulator ground truth: exact chassis velocity, the
@@ -742,6 +764,10 @@ class PWMCommandWrapper(VelocityCommandWrapper):
         # _get_conditioned_obs during the super().step() call above.
         reward -= POSITION_WEIGHT * abs(self._pos_err_true)
         reward -= YAW_WEIGHT * abs(self._yaw_err_true)
+
+        # Wobble, on the true chassis pitch rate (qvel[4], body frame).
+        q = float(self.unwrapped.data.qvel[4])
+        reward -= min(PITCH_RATE_WEIGHT * q * q, PITCH_RATE_PENALTY_MAX)
         return obs, reward, terminated, truncated, info
 
     def reset(self, **kwargs):
@@ -803,11 +829,12 @@ def make_env(**kwargs):
     return _init
 
 
-# Run 10 continues from run 9 (backed up here before training, because the
-# EvalCallback overwrites models/best_real/) rather than starting over: run 9
-# already balances, tracks and copes with 30 ms; what is new is the slack.
-RUN_NAME = "run10"
-INIT_FROM = "models/best_real_RUN9/best_model.zip"
+# Run 11 continues from run 10 (backed up here before training, because the
+# EvalCallback overwrites models/best_real/) rather than starting over: run 10
+# already balances, tracks and copes with slack and delay; what is new is the
+# wobble penalty (PITCH_RATE_WEIGHT). Run 10 continued from run 9 the same way.
+RUN_NAME = "run11"
+INIT_FROM = "models/best_real_RUN10/best_model.zip"
 FINETUNE_STEPS = 10_000_000
 FINETUNE_LR = 1e-4
 # Run 9 evaluated every 10,000 steps per env (110k total) with 20 episodes of

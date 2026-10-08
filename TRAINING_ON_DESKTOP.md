@@ -13,8 +13,9 @@ cable. So the desktop trains and the laptop builds, flashes and tests. GitHub
 you finish. Only the desktop changes training code and models; only the
 laptop adds car logs. Then the two never conflict.
 
-Background for the current run (run 10, gear slack):
-`session-logs/2026-10-08-run9-run10-delay-and-gear-slack.md`.
+Background for the current run (run 11: gear slack plus a wobble penalty; run
+10 before it): `session-logs/2026-10-08-run9-run10-delay-and-gear-slack.md`,
+sections 6–8.
 
 ## 1. Desktop, once
 
@@ -43,17 +44,19 @@ venv\Scripts\activate
 python train_real_robot.py
 ```
 
-That is run 10 as configured in `train_real_robot.py`: it continues from
-`models/best_real_RUN9/best_model.zip` for 10M steps with gear slack 0–8° and
-delay 5–30 ms. On the laptop's 12-thread CPU run 9 managed ~3,500 steps/s
-when not evaluating, so expect about 1–1.5 h there; a desktop with more
-threads is faster. Keep the desktop awake (*Settings → System → Power →
-Sleep: Never* while plugged in).
+`train_real_robot.py` is currently set up as **run 11** (already trained,
+2026-10-08). It continues from `models/best_real_RUN10/best_model.zip` for
+10M steps, with gear slack 0–8°, delay 5–30 ms, and the wobble penalty
+(`PITCH_RATE_WEIGHT`). Run it again only after changing `RUN_NAME` and
+`INIT_FROM` for the next run. On the desktop (20 threads, 19 envs), 10M steps
+took 41–54 min; on the laptop's 12 threads expect about 1–1.5 h. Keep the
+desktop awake (*Settings → System → Power → Sleep: Never* while plugged in).
 
 - The best checkpoint goes to `models/best_real/best_model.zip` (overwritten as
   it improves), the final one to `models/ppo_real_robot.zip`.
-- Progress: `logs/run10/progress.csv`; the column `eval/mean_reward` is the
-  score at 5° slack and 15 ms.
+- Progress: `logs/<run>/progress.csv`; the column `eval/mean_reward` is the
+  score at 5° slack and 15 ms. Scores are only comparable within one reward:
+  run 11 added a term.
 - Options: `--steps N`, `--init none` (from scratch, 30M steps), `--run NAME`
   (log folder), `--envs N`.
 
@@ -63,22 +66,24 @@ Sleep: Never* while plugged in).
 python sim_tools/compare_models.py
 ```
 
-It compares run 8, run 9 and the new `models/best_real` on the simulated car.
-Run 10 is worth flashing if, in the **5° slack** rows, its pitch-rate sd is a
-few deg/s where run 8 and run 9 show tens, all eight training-like cars hold
-10 s, and tracking stays above ~85 %. (On the car, run 8 showed 95 deg/s and
-run 9 68 deg/s.)
+It compares run 9, run 10 and `models/best_real` (now run 11) on the simulated
+car; `--model NAME=PATH` picks others. A new run is worth flashing if it is
+calmer than the last one in the **5° slack** rows, all eight training-like cars
+hold 10 s, and tracking stays above ~85 %. "A few deg/s" turned out to be too
+strict: the best plain PD controller manages about 8 deg/s at 5° and 15 ms.
+On the car, run 8 showed 95 deg/s and run 9 68 deg/s. Run 11 in simulation, at
+5° slack: 15–25 deg/s standing (run 10: 20–47) and 15–18 driving (run 10: 28).
 
 ## 4. Desktop: export and push
 
 ```
 python export_stm32.py
 python firmware/quantize_weights.py
-mkdir models\best_real_RUN10
-copy models\best_real\best_model.zip models\best_real_RUN10\
-git add -f models/best_real/best_model.zip models/best_real_RUN10/best_model.zip
+mkdir models\best_real_RUN11
+copy models\best_real\best_model.zip models\best_real_RUN11\
+git add -f models/best_real/best_model.zip models/best_real_RUN11/best_model.zip
 git add firmware/policy_weights.h firmware/policy_weights_q.h firmware/policy_testvectors.h
-git commit -m "Run 10: trained with gear slack"
+git commit -m "Run 11: trained with the wobble penalty"
 git push
 ```
 
@@ -93,13 +98,13 @@ of the exported network is
 2. Make a project folder for the new weights (once per run), leaving the
    flashed ones intact:
    ```
-   robocopy C:\Users\USER\Desktop\car_firmware_run9 C:\Users\USER\Desktop\car_firmware_run10 /E /XD OBJ Objects Listings
+   robocopy C:\Users\USER\Desktop\car_firmware_run9 C:\Users\USER\Desktop\car_firmware_run11 /E /XD OBJ Objects Listings
    ```
 3. Copy `firmware\policy_weights.h` and `firmware\policy_weights_q.h` into
-   `car_firmware_run10\stm32_Balance_Car_L\APP\RL\`, replacing the old ones.
+   `car_firmware_run11\stm32_Balance_Car_L\APP\RL\`, replacing the old ones.
    Nothing else changes.
 4. Keil: *Project → Open Project* →
-   `car_firmware_run10\stm32_Balance_Car_L\USER\stm32_Balance_Car.uvprojx`,
+   `car_firmware_run11\stm32_Balance_Car_L\USER\stm32_Balance_Car.uvprojx`,
    then **F7**. Expect `0 Error(s), 4 Warning(s)`. The hex is
    `...\OBJ\stm32_Balance_Car_L.hex`.
 5. FlyMCU: that hex, COM3, *Auto Reload Before Program* ticked, *Program
