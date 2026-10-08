@@ -1,0 +1,101 @@
+--- a/APP/RL/rl_mode.c
++++ b/APP/RL/rl_mode.c
+@@ -97,6 +97,16 @@
+ static int   mt_pwm;
+ static char  mt_side;
+ static short mt_el[MT_N], mt_er[MT_N];
++/* 200 Hz stream (car_firmware_pidlog): every control tick, in mode 1 and
++   mode 28, "P <k> <angle*100> <gyro> <L> <R> <encL> <encR> <accY> <accZ>":
++   the stock Angle_Balance (deg) and Gyro_Balance (raw, -gyro X), the PWM
++   that reached the motors (0 when cut), the encoder deltas, and the raw
++   accelerometer Y and Z the stock Kalman filter uses. The ISR fills a ring,
++   LOG_Poll prints it; a gap in k means the ring overflowed. */
++#define LG_N 128
++static short lg[LG_N][9];
++static volatile unsigned short lg_head, lg_tail, lg_k;
++static int lg_on = 1;                  /* 'p' toggles (mode 28 only: mode 1 has no receive) */
+ static void timing_freeze(void);
+ static void run_end(int why)
+ {
+@@ -137,6 +147,29 @@
+     raw_gyro[0] = gx; raw_gyro[1] = gy; raw_gyro[2] = gz;
+ }
+ 
++/* called at the end of every control tick, all modes (stock app_control.c) */
++void TUNE_Sample(float gyro, float angle, int ml, int mr, int el, int er)
++{
++    unsigned short h = lg_head, n = (unsigned short)((h + 1) % LG_N);
++    short *s = lg[h];
++    ++lg_k;
++    if (!lg_on || n == lg_tail) return;
++    s[0] = (short)lg_k; s[1] = (short)(angle * 100.0f); s[2] = (short)gyro;
++    s[3] = (short)ml; s[4] = (short)mr; s[5] = (short)el; s[6] = (short)er;
++    s[7] = (short)raw_acc[1]; s[8] = (short)raw_acc[2];
++    lg_head = n;
++}
++
++void LOG_Poll(void)
++{
++    while (lg_tail != lg_head) {
++        short *s = lg[lg_tail];
++        printf("P %u %d %d %d %d %d %d %d %d\r\n", (unsigned short)s[0], s[1], s[2], s[3], s[4],
++               s[5], s[6], s[7], s[8]);
++        lg_tail = (unsigned short)((lg_tail + 1) % LG_N);
++    }
++}
++
+ /* sensor -> body (forward, left, up) = (+Y, -X, +Z) */
+ static void to_body(const float s[3], float b[3])
+ {
+@@ -395,6 +428,7 @@
+         fr_n = 0; fr_head = 0;
+         run_end_reason = 0;
+     }
++    LOG_Poll();
+     if (cal_print) {
+         cal_print = 0;
+         printf("cal done: pitch zero %.2f roll zero %.2f bias %.4f %.4f %.4f\r\n",
+@@ -423,6 +457,9 @@
+         printf("%s c%d p%.2f z%.2f rz%.2f b%.4f %.4f %.4f L%d R%d n%ld\r\n",
+                nm[rl_state], rl_calibrated, rl_pitch_deg, pitch_zero * 57.29578f, roll_zero * 57.29578f,
+                bias[0], bias[1], bias[2], rl_pwm_l, rl_pwm_r, rl_us_max);
++    } else if (!strcmp(rx, "p")) {
++        lg_on = !lg_on;
++        printf("stream %s\r\n", lg_on ? "on" : "off");
+     } else if (!strcmp(rx, "mt on") || !strcmp(rx, "mt off")) {
+         mt_session = (rx[4] == 'n');
+         if (!mt_session) mt_active = 0;
+--- a/APP/RL/rl_mode.h
++++ b/APP/RL/rl_mode.h
+@@ -26,5 +26,7 @@
+ 
+ void RL_IsrBegin(void);
+ void RL_IsrEnd(void);
++/* prints the 200 Hz stream TUNE_Sample() collects (main loop only) */
++void LOG_Poll(void);
+ 
+ #endif
+--- a/APP/RL/removed_modes21_27_stubs.c
++++ b/APP/RL/removed_modes21_27_stubs.c
+@@ -36,9 +36,8 @@
+ /* tune_io.h -- the serial test console (logging, injection) is also left out
+  * of this RL-only build to fit 64 KB.  No logging -> the OLED keeps updating;
+  * no injection -> nothing is added to the motor command.  TUNE_Init/Poll/RxByte
+- * are mode 28's own serial console now (rl_mode.c). */
+-void TUNE_Sample(float gyro, float angle, int ml, int mr, int el, int er)
+-{ (void)gyro; (void)angle; (void)ml; (void)mr; (void)el; (void)er; }
++ * are mode 28's own serial console now (rl_mode.c), and TUNE_Sample is its
++ * 200 Hz stream (car_firmware_pidlog). */
+ int  TUNE_Inject(void) { return 0; }
+ int  TUNE_Injecting(void) { return 0; }
+ void TUNE_Fell(void) {}
+--- a/USER/main.c
++++ b/USER/main.c
+@@ -70,6 +70,7 @@
+ 
+ 	while(1)
+ 	{
++		if(mode == Normal) LOG_Poll(); //mode 1: the 200 Hz stream (rl_mode.c, car_firmware_pidlog)
+ 		if(mode >= LiDar_avoid)//开启雷达模式 接收的数据 //Activate radar mode to receive data
+ 		{
+ 				if(lidar_new_pack == 1)  //放在这解算雷达数据,不可在中断解算  //Put it here to solve radar data, do not interrupt the calculation
