@@ -89,9 +89,14 @@ def ms(v):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--csv", default="car_logs/2026-10-08/motor_reversal.csv")
+    ap.add_argument("--csv", default=None, help="default car_logs/2026-10-08/motor_reversal.csv "
+                    "(motor_lowpwm.csv with --lowpwm)")
+    ap.add_argument("--lowpwm", action="store_true", help="the low-PWM set (motor_reversal_test.py --set lowpwm)")
     args = ap.parse_args()
-    data = load(args.csv)
+    if args.lowpwm:
+        lowpwm_report(load(args.csv or "car_logs/2026-10-08/motor_lowpwm.csv"))
+        return
+    data = load(args.csv or "car_logs/2026-10-08/motor_reversal.csv")
     print("counts/tick (x 0.952 = rad/s at the wheel); times in ms after the PWM change.  car | fitted model A")
     print(f"{'step':>22s}   {'speed before':>13s}   {'to half way':>11s}   {'to zero':>11s}   {'final speed':>13s}")
     sums = collections.defaultdict(list)
@@ -108,9 +113,6 @@ def main():
     print("\ncar / model time to half way, median by kind: "
           + ", ".join(f"{k} {np.median(v):.2f} (n {len(v)})" for k, v in sums.items()))
 
-
-if __name__ == "__main__":
-    main()
 
 
 # ---------------------------------------------------------------- extended model
@@ -158,3 +160,52 @@ def fit_extension(data):
     sol = least_squares(res, [0.4, 0.5], bounds=([0.2, 0.0], [1.5, 10.0]), diff_step=1e-3)
     base = 0.5 * float(np.sum(res([0.4, 0.0]) ** 2))
     return sol.x[0], sol.x[1] / 1000, float(sol.cost), base
+
+
+# ---------------------------------------------------------------- low-PWM set
+def lowpwm_report(data, limit=0.75, visc=0.00054):
+    """motor_lowpwm.csv: thresholds from rest and from motion, small steps,
+    low-PWM reversals; car against the corrected motor (limit + viscous)."""
+    rad = RAD_PER_COUNT / 0.005
+    print("speeds in rad/s at the wheel (car | model); times in ms after the change")
+    print("\nthreshold from rest (2 s at the PWM): speed in the last 0.5 s, first count, time to 63 % of that speed")
+    for side in "LR":
+        for sgn in (1, -1):
+            cells = []
+            for p in (1420, 1440, 1460, 1480, 1500, 1520):
+                key = (side, sgn * p, sgn * p)
+                if key not in data:
+                    continue
+                e, m = data[key], sim_ext(*key, limit, visc)
+                vc, vm = sgn * np.mean(e[300:400]) * rad, sgn * np.mean(m[300:400]) * rad
+                first = np.nonzero(sgn * e[1:400] > 0)[0]
+                sm = sgn * smooth(e, 5) * rad
+                t63 = np.nonzero(sm[1:400] >= 0.63 * vc)[0] if vc > 0.3 else []
+                cells.append(f"{p}: {vc:4.1f}|{vm:4.1f} {5 * (first[0] + 1) if len(first) else '-':>4} "
+                             f"{5 * (t63[0] + 1) if len(t63) else '-':>4}")
+            print(f"  {side} {'fwd' if sgn > 0 else 'rev'}  " + "   ".join(cells))
+    print("\nfrom motion (1 s at 1800, then 1 s at the PWM): speed in the last 0.25 s")
+    for side in "LR":
+        for sgn in (1, -1):
+            cells = []
+            for p in (1420, 1440, 1460, 1480, 1500):
+                key = (side, sgn * 1800, sgn * p)
+                if key in data:
+                    e, m = data[key], sim_ext(*key, limit, visc)
+                    cells.append(f"{p}: {sgn * np.mean(e[350:400]) * rad:4.1f}|{sgn * np.mean(m[350:400]) * rad:4.1f}")
+            print(f"  {side} {'fwd' if sgn > 0 else 'rev'}  " + "   ".join(cells))
+    print("\nsmall steps and low-PWM reversals: speed before | after (car / model), time to half way (car / model)")
+    for side in "LR":
+        for sgn in (1, -1):
+            for p1, p2 in ((1500, 1600), (1500, 1700), (1600, 1800), (1700, 1500), (1700, 1600), (2000, 1500),
+                           (1600, -1600), (1700, -1500), (1500, -1500)):
+                key = (side, sgn * p1, sgn * p2)
+                if key not in data:
+                    continue
+                fc, fm = features(data[key]), features(sim_ext(*key, limit, visc))
+                print(f"  {side} {sgn * p1:+5d} -> {sgn * p2:+5d}: {fc['v0'] * rad:+5.1f}/{fm['v0'] * rad:+5.1f} -> "
+                      f"{fc['v1'] * rad:+5.1f}/{fm['v1'] * rad:+5.1f}   half way {ms(fc['t_half'])}/{ms(fm['t_half'])}")
+
+
+if __name__ == "__main__":
+    main()

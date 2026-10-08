@@ -57,24 +57,35 @@ def run_two(car, side, p1, p2, patience):
     raise SystemExit(f"gave up on mt {side} {p1} {p2} after {patience:.0f} s")
 
 
-def steps():
+def steps(which="reversal"):
     out = []
     for side in "LR":
         for sgn in (1, -1):
-            for p1, slow in ((2000, 1600), (2800, 1800)):
-                for p2 in (0, -1500, -1700, -2000, -2800, slow):
-                    out.append((side, sgn * p1, sgn * p2))
+            if which == "reversal":
+                pairs = [(p1, p2) for p1, slow in ((2000, 1600), (2800, 1800))
+                         for p2 in (0, -1500, -1700, -2000, -2800, slow)]
+            else:                                       # "lowpwm": the region near the dead zone
+                pairs = ([(p, p) for p in (1420, 1440, 1460, 1480, 1500, 1520)]          # from rest, 2 s
+                         + [(1800, p) for p in (1420, 1440, 1460, 1480, 1500)]          # from motion
+                         + [(1500, 1600), (1500, 1700), (1600, 1800)]                   # small steps up
+                         + [(1700, 1500), (1700, 1600), (2000, 1500)]                   # small steps down
+                         + [(1600, -1600), (1700, -1500), (1500, -1500)])               # low-PWM reversals
+            out += [(side, sgn * p1, sgn * p2) for p1, p2 in pairs]
     return out
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--port", default="COM3")
-    ap.add_argument("--out", default=os.path.join("car_logs", time.strftime("%Y-%m-%d"), "motor_reversal.csv"))
+    ap.add_argument("--set", choices=("reversal", "lowpwm"), default="reversal",
+                    help="reversal: the 48 steps above; lowpwm: 80 steps near the dead zone "
+                         "(thresholds from rest and from motion, small steps, low-PWM reversals)")
+    ap.add_argument("--out", default=None, help="default car_logs/<date>/motor_<set>.csv")
     ap.add_argument("--wait", type=float, default=600)
     args = ap.parse_args()
 
-    out = args.out if os.path.isabs(args.out) else os.path.join(ROOT, args.out)
+    out = args.out or os.path.join("car_logs", time.strftime("%Y-%m-%d"), f"motor_{args.set}.csv")
+    out = out if os.path.isabs(out) else os.path.join(ROOT, out)
     if os.path.exists(out):
         sys.exit(f"{out} exists; use --out")
     os.makedirs(os.path.dirname(out), exist_ok=True)
@@ -100,7 +111,7 @@ def main():
         print(f"  starting in {i}")
         time.sleep(1.0)
 
-    todo = steps()
+    todo = steps(args.set)
     with open(out, "w", newline="") as fh:
         w = csv.writer(fh)
         w.writerow(["step", "side", "pwm1", "pwm2", "k", "enc_l", "enc_r"])
