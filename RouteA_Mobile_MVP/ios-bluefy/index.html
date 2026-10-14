@@ -72,7 +72,7 @@
         <button id="presetNormal" class="preset" data-profile="N"><b>Normal</b><small>官方模式1</small><span>96 / 48 / 62 / 31 / 17 / 20</span></button>
         <button id="presetLoad" class="preset" data-profile="L"><b>Load</b><small>官方模式4</small><span>96 / 75 / 70 / 35 / 14 / 20</span></button>
       </div>
-      <p class="footnote">Load还会启用官方倍率：平衡×2.0、速度×1.35、转向×1.0。</p>
+      <p class="footnote">Load目标倍率：平衡×2.0、速度×1.35、转向×1.0；切换时同步平滑过渡。</p>
     </div>
 
     <div class="card">
@@ -89,7 +89,7 @@
         <label>TD <small id="liveTD">实际 --</small><input id="editTD" inputmode="decimal"></label>
       </div>
       <button id="applyManual" class="btn primary full" data-action="manual-apply">应用人工PID</button>
-      <p class="footnote">没有相对百分比限制；仍受PC端绝对保护范围和STM32事务状态约束。收到实际参数遥测后才显示为已应用。</p>
+      <p class="footnote">更新时保留速度积分与滤波状态，PID和配置倍率在500 ms内平滑过渡。收到完成响应并读回一致后才确认已应用。没有相对百分比限制。</p>
     </div>
 
     <div class="card">
@@ -267,6 +267,11 @@
     }
     return pid;
   }
+  function pidMatches(actual, expected) {
+    if (!actual || !expected) return false;
+    return PID_KEYS.every((key) => Number.isFinite(Number(actual[key])) &&
+      Math.abs(Number(actual[key]) - Number(expected[key])) <= 0.011);
+  }
   function presetPid(profile) {
     const preset = PRESETS[profile];
     if (!preset) throw new Error("配置必须是 N 或 L");
@@ -325,7 +330,7 @@
         osc: prefixed(x[5], "O"), lean: prefixed(x[6], "N"), el: prefixed(x[7], "EL"),
         er: prefixed(x[8], "ER"), ml: prefixed(x[9], "ML"), mr: prefixed(x[10], "MR"),
         state: prefixed(x[11], "S"), trainingLocked: prefixed(x[12], "L") === 1,
-        profile: profileField(x[13])
+        profile: profileField(x[13]), transitionStep: x[14] ? prefixed(x[14], "U") : 0
       };
     } catch (_) { return null; }
   }
@@ -412,7 +417,7 @@
 
   return {
     PID_KEYS, RANGES, PRESETS, ACTIONS, crc16, frame, verify, StreamParser,
-    finiteNumber, normalizePid, validatePid, presetPid, pidCsv, getPid,
+    finiteNumber, normalizePid, validatePid, pidMatches, presetPid, pidCsv, getPid,
     training, command, prepare, manualSet, motorDiag, legacyMotion,
     parseStatus, parseFast, parseSlow, metrics, scoreMetrics, metricsDangerous,
     validateDecision, mockDecision
@@ -535,6 +540,9 @@
     state.auto.enabled = false;
     state.auto.collecting = false;
     state.connected = false;
+    state.pendingManual = null;
+    state.fast = null;
+    state.currentPid = null;
     state.characteristic = null;
     state.server = null;
     if (disconnectGatt && state.device?.gatt?.connected) state.device.gatt.disconnect();
@@ -604,6 +612,7 @@
       state.firmwareState = status.state;
       state.trainingLocked = status.trainingLocked;
       state.balanceStarted = status.balanceStarted;
+      confirmManual(status);
       syncManualFields();
       toast("STM32状态已同步");
     }
@@ -667,14 +676,16 @@
       send(C.getPid());
       scheduleNextBaseline(1200);
     } else if (command === "ROLLBACK") state.auto.phase = "ROLLING_BACK";
+    else if (command === "ROLLED_BACK" && state.auto.enabled && state.auto.phase === "ROLLING_BACK") afterRollback();
     else if (command === "MSET_APPLIED") {
-      state.pendingManual = null;
+      if (state.pendingManual) state.pendingManual.appliedAck = true;
       send(C.getPid());
-      toast("人工参数已在5 ms边界应用");
+      toast("500 ms平滑应用完成，正在读回实际PID");
     }
     updateUi();
   }
   function handleFirmwareError(code) {
+    state.pendingManual = null;
     toast(`固件拒绝：${code}`);
     log("ERR", `firmware rejected command: ${code}`);
     if (state.auto.enabled) {
@@ -685,6 +696,16 @@
     }
   }
 
+  function confirmManual(status) {
+    const pending = state.pendingManual;
+    if (!pending || !pending.appliedAck) return;
+    if (status.profile === pending.profile && C.pidMatches(status.pid, pending.pid)) {
+      state.pendingManual = null;
+      state.manualDirty = false;
+      syncManualFields(true);
+      toast("人工PID已平滑应用，STM32读回确认一致");
+    } else log("ERR", "MSET_APPLIED received but PID readback differs; waiting for matching status");
+  }
   function syncManualFields(force = false) {
     if (!state.currentPid) return;
     for (const key of C.PID_KEYS) {
@@ -700,12 +721,15 @@
   }
   async function applyManual(profile, pid) {
     if (state.trainingLocked || state.auto.enabled) return toast("请先停止自动训练");
+    if (!state.currentPid) return toast("请先同步实际PID");
+    if (state.pendingManual || state.fast?.transitionStep) return toast("正在应用，请等待STM32确认");
     try {
       const valid = C.validatePid(pid);
-      state.pendingManual = { profile, pid: valid };
+      state.pendingManual = { profile, pid: valid, appliedAck: false };
+      updateUi();
       await send(C.manualSet(profile, valid));
       toast("人工参数已排队；等待STM32实际参数确认");
-    } catch (error) { toast(error.message); }
+    } catch (error) { state.pendingManual = null; updateUi(); toast(error.message); }
   }
   function applyPreset(profile) {
     applyManual(profile, C.presetPid(profile));
@@ -795,6 +819,7 @@
     updateUi();
     try {
       const decision = await requestLlmDecision(metrics);
+      if (!state.auto.enabled) return;
       state.auto.decision = decision;
       state.auto.candidatePid = { ...decision.candidate };
       state.auto.candidateProfile = decision.target_profile;
@@ -878,6 +903,7 @@
     if (!(state.connected || state.mock)) return toast("请先连接小车");
     if (!state.balanceStarted) return toast("请先在小车端按键启动平衡");
     if (!state.currentPid) return toast("尚未同步实际PID");
+    if (state.pendingManual || state.fast?.transitionStep) return toast("请等待人工参数应用完成");
     if (!state.mock && !$("llmKey").value.trim()) { switchPage("settings"); return toast("请先填写LLM API Key"); }
     if (state.auto.enabled) return;
     state.auto.enabled = true;
@@ -1028,22 +1054,23 @@
     $("activeProfileTag").textContent = `当前 ${state.profile}`;
     $("presetNormal").classList.toggle("active", state.profile === "N");
     $("presetLoad").classList.toggle("active", state.profile === "L");
-    $("manualLockTag").textContent = state.trainingLocked ? "训练锁定" : "可编辑";
-    const manualDisabled = !connected || state.trainingLocked || state.auto.enabled;
+    $("manualLockTag").textContent = state.trainingLocked ? "训练锁定" : state.pendingManual ? "等待应用确认" : state.fast?.transitionStep ? "平滑过渡中" : "可编辑";
+    $("applyManual").textContent = state.pendingManual ? "平滑应用中，请稍候…" : "应用人工PID";
+    const manualDisabled = !connected || !state.currentPid || state.trainingLocked || state.auto.enabled || !!state.pendingManual || !!state.fast?.transitionStep;
     for (const id of ["presetNormal", "presetLoad", "applyManual", "manualProfile", ...C.PID_KEYS.map((key) => "edit" + key)]) $(id).disabled = manualDisabled;
     document.querySelectorAll("[data-motion]").forEach((button) => button.disabled = !connected);
     $("autoPhaseTag").textContent = state.auto.enabled ? "运行中" : state.auto.phase === "ERROR" ? "错误" : "停止";
     $("autoPhase").textContent = state.auto.phase;
     $("autoCycle").textContent = String(state.auto.cycle);
     $("autoNext").textContent = nextAutoText();
-    $("autoStart").disabled = !connected || !state.balanceStarted || state.auto.enabled || !state.currentPid;
+    $("autoStart").disabled = !connected || !state.balanceStarted || state.auto.enabled || !state.currentPid || !!state.pendingManual || !!state.fast?.transitionStep;
     $("autoPause").disabled = !state.auto.enabled && !state.trainingLocked;
   }
   function nextAutoText() {
     const map = {
       IDLE: "点击开始自动LLM调参", STARTING: "等待STM32训练锁",
       BASELINE: "采集当前基线", LLM: "等待LLM决策", PREPARING: "暂存候选",
-      APPLYING: "在5 ms边界应用", SETTLING: "排除切换瞬态", TRIAL1: "首个实车评估窗口",
+      APPLYING: "500 ms平滑应用，等待固件进入TRIAL", SETTLING: "排除切换瞬态", TRIAL1: "首个实车评估窗口",
       TRIAL2: "确认改善是否保持", ACCEPTING: "接受为新基准", ACCEPTED: "同步新基准",
       ROLLING_BACK: "恢复上一组确认参数", ROLLED_BACK: "同步回滚结果",
       HOLD: "保持当前参数后进入下一轮", ERROR: "检查日志与LLM设置"
@@ -1122,7 +1149,7 @@
     state.mockChampionProfile = "N";
     state.currentPid = { ...state.mockPid };
     state.profile = "N";
-    state.firmware = "RA3.0-MOCK";
+    state.firmware = "RA3.1-MOCK";
     $("deviceName").textContent = "Mock YahBoom_BL";
     connectionLabel("online", "模拟设备");
     state.mockTimer = setInterval(emitMockTelemetry, 200);
@@ -1151,7 +1178,7 @@
     const ml = Math.round(-angle * 430), mr = Math.round(-angle * 420);
     mockEmit(C.frame(`T3,F,${state.mockClock},A${angle.toFixed(2)},G${gyro.toFixed(1)},O${osc.toFixed(3)},N${lean.toFixed(3)},EL${Math.round(gyro / 8)},ER${Math.round(gyro / 8 + 1)},ML${ml},MR${mr},S${state.mockState},L${state.trainingLocked ? 1 : 0},P${state.mockProfile}`));
     if (state.mockClock % 1000 === 0) {
-      mockEmit(C.frame(`T3,S,${state.mockClock},V11.82,A2${(amplitude * amplitude / 2).toFixed(3)},G2${(amplitude * amplitude * 1012).toFixed(3)},PK${(amplitude * 1.22).toFixed(2)},X0.000,AP${state.mockPid.AP.toFixed(2)},AD${state.mockPid.AD.toFixed(2)},VP${state.mockPid.VP.toFixed(2)},VI${state.mockPid.VI.toFixed(2)},TP${state.mockPid.TP.toFixed(2)},TD${state.mockPid.TD.toFixed(2)},P${state.mockProfile},D0,B1,RA3.0-MOCK`));
+      mockEmit(C.frame(`T3,S,${state.mockClock},V11.82,A2${(amplitude * amplitude / 2).toFixed(3)},G2${(amplitude * amplitude * 1012).toFixed(3)},PK${(amplitude * 1.22).toFixed(2)},X0.000,AP${state.mockPid.AP.toFixed(2)},AD${state.mockPid.AD.toFixed(2)},VP${state.mockPid.VP.toFixed(2)},VI${state.mockPid.VI.toFixed(2)},TP${state.mockPid.TP.toFixed(2)},TD${state.mockPid.TD.toFixed(2)},P${state.mockProfile},D0,B1,RA3.1-MOCK`));
     }
   }
   function mockEmit(raw) { handleFrame(raw); }
@@ -1166,7 +1193,7 @@
       state.mockProfile = parts[2];
       state.mockPid = C.normalizePid(Object.fromEntries(C.PID_KEYS.map((key, index) => [key, parts[3 + index]])));
       state.mockChampionPid = { ...state.mockPid }; state.mockChampionProfile = state.mockProfile;
-      ack("MSET_QUEUED", 0); setTimeout(() => ack("MSET_APPLIED", 0), 60);
+      ack("MSET_QUEUED", 0); setTimeout(() => ack("MSET_APPLIED", 0), 500);
     } else if (command === "PREP") {
       state.auto.trialId = Number(parts[2]);
       state.mockCandidateProfile = parts[4];
@@ -1174,7 +1201,8 @@
       state.mockState = 1; ack("PREP", state.auto.trialId);
     } else if (command === "APPLY") {
       state.mockPid = { ...state.mockCandidatePid }; state.mockProfile = state.mockCandidateProfile;
-      state.mockState = 2; ack("APPLY", Number(parts[2]));
+      ack("APPLY", Number(parts[2]));
+      setTimeout(() => { state.mockState = 2; }, 500);
     } else if (command === "HB") ack("HB", Number(parts[2]));
     else if (command === "ACCEPT") {
       state.mockChampionPid = { ...state.mockPid }; state.mockChampionProfile = state.mockProfile;
