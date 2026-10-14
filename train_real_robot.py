@@ -49,6 +49,39 @@ from stable_baselines3.common.vec_env import SubprocVecEnv
 
 from motor_model import NOMINAL_MOTOR, action_to_torque, sample_motor
 
+
+def _opt_out_of_power_throttling():
+    """Keep Windows from running this process in efficiency mode (EcoQoS).
+
+    Windows 11 throttles processes it judges to be in the background, which
+    on a hybrid CPU (the desktop's i7-12700KF) confines them to the
+    efficiency cores. Run 12 dropped from ~6,500 to ~1,500 steps/s three
+    minutes in, with every worker ~86 % idle, and went straight back to
+    6,500-7,800 when this was switched off for its processes. Called at
+    import, so it covers the SubprocVecEnv workers too (they import this
+    module). Process-scoped; does nothing on other systems or on failure."""
+    if os.name != "nt":
+        return
+    try:
+        import ctypes
+        import ctypes.wintypes as w
+
+        class _State(ctypes.Structure):
+            _fields_ = [("Version", w.ULONG), ("ControlMask", w.ULONG), ("StateMask", w.ULONG)]
+
+        k32 = ctypes.WinDLL("kernel32")
+        k32.GetCurrentProcess.restype = w.HANDLE
+        k32.SetProcessInformation.argtypes = [w.HANDLE, ctypes.c_int, ctypes.c_void_p, w.DWORD]
+        # ProcessPowerThrottling (4): execution-speed (0x1) and timer-resolution
+        # (0x4) throttling controlled by us, and off.
+        st = _State(1, 0x1 | 0x4, 0)
+        k32.SetProcessInformation(k32.GetCurrentProcess(), 4, ctypes.byref(st), ctypes.sizeof(st))
+    except Exception:
+        pass
+
+
+_opt_out_of_power_throttling()
+
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 XML_FILE_PATH = os.path.join(CURRENT_DIR, "real_robot.xml")
 
@@ -106,14 +139,14 @@ N_HISTORY_SIGNALS = 3
 # drawn rather than whether the policy improved. Same defect that was already
 # fixed for the commands and for slope; it was missed here when the range grew.
 # Gearbox-reflected rotor inertia at the wheel, J_rotor * G^2 (see real_robot.xml).
+# It dominates the wheel dynamics (100x the wheel's own inertia).
 #
-# Randomised per episode because the rotor inertia is estimated, not measured:
-# the range spans rotor inertias of 1.0e-6 to 5.0e-6 kg m^2 through the 1:30 box,
-# which brackets this motor class. A policy trained across the range does not
-# depend on the estimate being right, which matters because this term dominates
-# the wheel dynamics - it is 100x the wheel's own inertia.
-ARMATURE_NOMINAL = 2.25e-3
-ARMATURE_RANGE = (9.0e-4, 4.5e-3)
+# Run 12: measured by the step test on the car (2026-10-08), 1.45e-3 / 1.51e-3
+# kg m^2, a 92-97 ms time constant. It was estimated at 2.25e-3 and randomised
+# over 9e-4 .. 4.5e-3. The range now brackets the measurement, plus the
+# fit's flat valley toward a lighter, weaker motor (about 1.0e-3).
+ARMATURE_NOMINAL = 1.5e-3
+ARMATURE_RANGE = (1.1e-3, 2.0e-3)
 
 # Penalty on how fast the command changes, per step: -w * sum((a_t - a_{t-1})^2).
 #
@@ -224,8 +257,41 @@ YAW_OBS_SCALE = 1.0 / YAW_CLIP_RAD   # maps the clipped range onto [-1, 1]
 # 1.9/step against the +2 alive bonus; at the cap a heavily wobbling car still
 # nets ~+0.7/step. The cap starts at 47 deg/s; at 0.75 (41 deg/s) it clipped
 # run 10's wobble peaks and cut its penalty from 0.42 to 0.30/step.
-PITCH_RATE_WEIGHT = 1.5           # per (rad/s)^2
+#
+# Run 12: OFF. The car's "wobble" that motivated it (57-95 deg/s) was the
+# hand push at the end of each run, read from the E lines
+# (session-logs/2026-10-08-lowpwm-stiction-and-the-e-line-artifact.md); run
+# 11's real balancing wobble is 12-22 deg/s, which the simulator with the
+# measured motor already reproduces. On that motor (2 deg, 10 ms), run 11
+# against run 10 bought 1.3 deg/s of calm (13.4 vs 14.7) for a quarter of the
+# push tolerance: it falls from a 4 N x 0.1 s push that run 10 survives,
+# because recovering from a push needs exactly the fast pitch rates this term
+# charges. Set the weight back above 0 to re-enable it.
+#
+# Run 13: back ON at a third of run 11's weight, now that training has
+# pushes. Run 12 (pushes, no penalty) matched the stock PID's push tolerance
+# but stood at 25-35 deg/s on the 2 deg car, twice runs 10-11. At 0.5 a
+# 30 deg/s wobble costs ~0.14/step and a 15 deg/s one ~0.035, a pull toward
+# calm. Run 11's penalty cost push tolerance only because nothing in its
+# training ever pushed it; here a policy that stops recovering falls.
+PITCH_RATE_WEIGHT = 0.5           # per (rad/s)^2; run 11 used 1.5, run 12 0
 PITCH_RATE_PENALTY_MAX = 1.0      # per step
+
+# --- run 12: pushes -----------------------------------------------------
+#
+# No run so far saw a disturbance beyond the small tilt at reset. On the
+# measured motor (2 deg, 10 ms), pushed 10 cm above the axle for 0.1 s, the
+# stock PID survives 3 N both ways, run 10 2 N and run 11 1 N
+# (session-logs/2026-10-08-run12-*). Training episodes now get random shoves
+# along the car's own forward axis, applied as pid_sim.sim_push applies them
+# (a force at the chassis COM plus its torque about it). Training only:
+# evaluation, and simlib's test cars, stay push-free so their scores compare.
+# The size ramps in with the velocity curriculum (CurriculumCallback), so
+# balance comes first.
+PUSH_MAX_N = 4.0                  # uniform 0..max, either direction
+PUSH_DURATION_S = (0.05, 0.15)
+PUSH_HEIGHT_M = (0.05, 0.15)      # above the axle
+PUSH_INTERVAL_S = (1.5, 4.0)      # from the end of one push to the next
 
 # --- run 8: train on what the firmware actually observes -----------------
 #
@@ -279,18 +345,27 @@ POS_ERR_CLIP_M = 0.5              # m, the station-keeping integral
 # ~4-6 deg at the wheel with 10-20 ms of delay. The fit under-predicts run 9's
 # wobble by ~2x, so the slack range goes past it. Drawn per wheel, per
 # training episode; the encoders read the motor side of the slack.
-ACTION_LATENCY_TICKS = (1, 6)     # 5-30 ms, per training episode
-EVAL_LATENCY_TICKS = 3            # 15 ms; fixed so evals compare
-GEAR_SLACK_DEG = (0.0, 8.0)       # total free play, motor to wheel, per wheel
-EVAL_GEAR_SLACK_DEG = 5.0         # the fitted car value
+#
+# Run 12: both pinned down by measurement (2026-10-08). The slack is ~2 deg
+# (hand measurement 1-2 mm at the tyre edge, i.e. 2-3.5 deg). The stock PID,
+# run through the measured motor, matches the car standing still only at
+# ~2 deg and <= 15 ms; at 3-4 deg or 20 ms it falls into a 10 Hz limit cycle
+# the car does not show. The 4-6 deg / 10-20 ms of the policy-only fit was
+# compensating for the mis-modelled motor.
+ACTION_LATENCY_TICKS = (1, 3)     # 5-15 ms, per training episode
+EVAL_LATENCY_TICKS = 2            # 10 ms; fixed so evals compare
+GEAR_SLACK_DEG = (0.0, 4.0)       # total free play, motor to wheel, per wheel
+EVAL_GEAR_SLACK_DEG = 2.0         # the measured car value
 # Joint layout of real_robot.xml (rotors after the wheels).
 WHEEL_QVEL = slice(6, 8)
 ROTOR_QPOS = slice(9, 11)
 ROTOR_QVEL = slice(8, 10)
 # IMU errors, per training episode. Pitch zero is set by hand at the balance
-# point and varied by 1.5 deg across calibrations on the car; gyro bias is
-# what remains after 'cal' plus thermal drift.
-PITCH_OFFSET_RAD = np.radians(2.0)
+# point; gyro bias is what remains after 'cal' plus thermal drift. Run 12:
+# hand calibrations on 2026-10-08 scattered over 1.87-5.06 deg, about ±2 deg
+# around a balance point near +1-2 deg (the stock PID's), so the pitch-zero
+# error range goes from ±2 to ±4 deg.
+PITCH_OFFSET_RAD = np.radians(4.0)
 ROLL_OFFSET_RAD = np.radians(2.0)
 GYRO_BIAS_RADS = 0.003            # per axis, +/-
 GYRO_NOISE_RADS = 0.01            # per tick, includes motor vibration
@@ -401,6 +476,9 @@ class VelocityCommandWrapper(gym.Wrapper):
         self.curriculum_payload_kg = payload_kg
         self.curriculum_v_forward = v_forward
         self.curriculum_v_turn = v_turn
+
+    def set_push_curriculum(self, frac):
+        """Pushes are PWMCommandWrapper's; nothing to do here."""
 
     def _sample_command_timer(self):
         # Mostly short segments (reactive command changes), but sometimes a
@@ -573,6 +651,8 @@ class CurriculumCallback(BaseCallback):
             self.max_v_forward * forward_frac,
             self.max_v_turn * turn_frac,
         )
+        # Pushes ramp in with the commands: none while learning to stand.
+        self.training_env.env_method("set_push_curriculum", forward_frac)
 
     def _on_step(self) -> bool:
         return True
@@ -644,6 +724,11 @@ class PWMCommandWrapper(VelocityCommandWrapper):
         self._pitch_off = self._roll_off = 0.0
         self._gyro_bias = np.zeros(3)
         self._noisy = False
+        # Pushes (PUSH_*): off until the curriculum sets a scale above 0.
+        self._push_scale = 0.0
+        self._push_left = 0           # ticks left in the current push
+        self._push_next = 0           # ticks until the next push starts
+        self._chassis_id = mujoco.mj_name2id(self.unwrapped.model, mujoco.mjtObj.mjOBJ_BODY, "chassis")
         base = self.observation_space.shape[0]
         self.observation_space = gym.spaces.Box(
             low=-np.inf, high=np.inf,
@@ -740,8 +825,43 @@ class PWMCommandWrapper(VelocityCommandWrapper):
             + [[self._pos_err * POSITION_OBS_SCALE,
                 self._yaw_err * YAW_OBS_SCALE]]).astype(np.float32)
 
+    def set_push_curriculum(self, frac):
+        self._push_scale = 0.0 if self.is_eval else float(frac)
+
+    def _schedule_push(self):
+        dt = self.unwrapped.dt
+        self._push_next = int(self.np_random.uniform(*PUSH_INTERVAL_S) / dt)
+
+    def _update_push(self):
+        """Start, hold or end a push; the wrench stays in xfrc_applied while
+        the push lasts (all five physics substeps of the tick)."""
+        d = self.unwrapped.data
+        if self._push_left > 0:
+            self._push_left -= 1
+            if self._push_left == 0:
+                d.xfrc_applied[self._chassis_id] = 0.0
+                self._schedule_push()
+            return
+        if self._push_scale <= 0.0:
+            return
+        self._push_next -= 1
+        if self._push_next > 0:
+            return
+        rng, m = self.np_random, self.unwrapped.model
+        force = rng.choice((-1.0, 1.0)) * rng.uniform(0.0, PUSH_MAX_N * self._push_scale)
+        lever = rng.uniform(*PUSH_HEIGHT_M) - float(m.body_ipos[self._chassis_id][2])
+        # Along the car's own heading, horizontal; torque = r x F with r up.
+        fwd = d.xmat[self._chassis_id].reshape(3, 3)[:, 0].copy()
+        fwd[2] = 0.0
+        fwd /= max(np.linalg.norm(fwd), 1e-9)
+        f = force * fwd
+        d.xfrc_applied[self._chassis_id] = [f[0], f[1], 0.0, -lever * f[1], lever * f[0], 0.0]
+        self._push_left = max(1, int(round(rng.uniform(*PUSH_DURATION_S) / self.unwrapped.dt)))
+
     def step(self, action):
         action = np.asarray(action, dtype=np.float64)
+        if not self.is_eval:
+            self._update_push()
         # The action computed this tick reaches the motors latency ticks later.
         self._act_queue.append(action.copy())
         applied = self._act_queue.popleft()
@@ -799,6 +919,10 @@ class PWMCommandWrapper(VelocityCommandWrapper):
         # at the start of an episode are zero.
         self._act_queue = collections.deque([np.zeros(2)] * latency)
         obs, info = super().reset(**kwargs)
+        # No push carried over from the last episode; the first comes 1.5-4 s in.
+        self.unwrapped.data.xfrc_applied[self._chassis_id] = 0.0
+        self._push_left = 0
+        self._schedule_push()
 
         # Armature (on the rotor joints) and gear slack (tendon ranges) are
         # MODEL fields, so they persist across resets and have to be re-set
@@ -829,12 +953,20 @@ def make_env(**kwargs):
     return _init
 
 
-# Run 11 continues from run 10 (backed up here before training, because the
-# EvalCallback overwrites models/best_real/) rather than starting over: run 10
-# already balances, tracks and copes with slack and delay; what is new is the
-# wobble penalty (PITCH_RATE_WEIGHT). Run 10 continued from run 9 the same way.
-RUN_NAME = "run11"
-INIT_FROM = "models/best_real_RUN10/best_model.zip"
+# Run 12 trains FROM SCRATCH (30M steps) on the measured motor (with
+# stiction), slack and delay, with run 11's wobble penalty switched off
+# (PITCH_RATE_WEIGHT). The plant changed too much to
+# fine-tune (torque limit 0.4 -> 0.75 N m, friction ~7x, a viscous term), and
+# run 11's fine-tune from run 10 could not leave run 10's way of balancing.
+# Runs 10 and 11 continued from runs 9 and 10; pass --init PATH to continue
+# from a checkpoint instead (10M steps by default).
+#
+# Run 13 continues from run 12's FINAL checkpoint (better push tolerance than
+# its best-eval one, same wobble and tracking) for 10M steps, with pushes at
+# full strength from the start and the wobble penalty at 0.5. Pass --init none
+# to train from scratch (30M) as run 12 did.
+RUN_NAME = "run13"
+INIT_FROM = "models/ppo_real_robot_RUN12_30M.zip"
 FINETUNE_STEPS = 10_000_000
 FINETUNE_LR = 1e-4
 # Run 9 evaluated every 10,000 steps per env (110k total) with 20 episodes of

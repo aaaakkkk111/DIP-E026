@@ -13,9 +13,13 @@ cable. So the desktop trains and the laptop builds, flashes and tests. GitHub
 you finish. Only the desktop changes training code and models; only the
 laptop adds car logs. Then the two never conflict.
 
-Background for the current run (run 11: gear slack plus a wobble penalty; run
-10 before it): `session-logs/2026-10-08-run9-run10-delay-and-gear-slack.md`,
-sections 6–8.
+Background for the current run (run 13: the measured motor with stiction,
+pushes in training, and a mild wobble penalty; run 12 before it):
+`session-logs/2026-10-08-run12-measured-motor-and-pushes.md`. The motor
+measurements behind it are in the laptop's 2026-10-08 logs (motor step test,
+stock PID, reversal test, low-PWM stiction). Turning speed, calibration and
+the two firmware edits run 13 needs:
+`session-logs/2026-10-10-turning-calibration-mujoco.md`.
 
 ## 1. Desktop, once
 
@@ -44,48 +48,85 @@ venv\Scripts\activate
 python train_real_robot.py
 ```
 
-`train_real_robot.py` is currently set up as **run 11** (already trained,
-2026-10-08). It continues from `models/best_real_RUN10/best_model.zip` for
-10M steps, with gear slack 0–8°, delay 5–30 ms, and the wobble penalty
-(`PITCH_RATE_WEIGHT`). Run it again only after changing `RUN_NAME` and
-`INIT_FROM` for the next run. On the desktop (20 threads, 19 envs), 10M steps
-took 41–54 min; on the laptop's 12 threads expect about 1–1.5 h. Keep the
-desktop awake (*Settings → System → Power → Sleep: Never* while plugged in).
+`train_real_robot.py` is currently set up as **run 13** (already trained,
+2026-10-09). It continues from `models/ppo_real_robot_RUN12_30M.zip` (run
+12's final checkpoint) for 10M steps, with:
+- the measured motor and stiction;
+- gear slack 0–4° and delay 5–15 ms;
+- pushes;
+- the wobble penalty at 0.5.
+
+Run it again only after changing `RUN_NAME` and `INIT_FROM` for the next
+run.
+
+On the desktop (20 threads, 19 envs), 10M steps take about 40 min and 30M
+from scratch about 1.6 h. On the laptop's 12 threads, expect about 1.5–2×
+that. Keep the desktop awake (*Settings → System → Power → Sleep: Never*
+while plugged in). The script opts itself and its workers out of Windows
+efficiency mode, which had cut run 12's speed to a quarter.
 
 - The best checkpoint goes to `models/best_real/best_model.zip` (overwritten as
-  it improves), the final one to `models/ppo_real_robot.zip`.
-- Progress: `logs/<run>/progress.csv`; the column `eval/mean_reward` is the
-  score at 5° slack and 15 ms. Scores are only comparable within one reward:
-  run 11 added a term.
+  it improves), the final one to `models/ppo_real_robot.zip`. The best is
+  chosen by the push-free eval, so for a push-trained run also check the
+  final one (§3).
+- Progress: `logs/<run>/progress.csv`. The column `eval/mean_reward` is the
+  score at 2° slack and 10 ms, with no pushes. Scores are only comparable
+  within one reward and one simulator: runs 11–13 changed both.
 - Options: `--steps N`, `--init none` (from scratch, 30M steps), `--run NAME`
   (log folder), `--envs N`.
 
 ## 3. Desktop: check it in simulation
 
 ```
-python sim_tools/compare_models.py
+python sim_tools/compare_models.py --slack 2 3 --delay 1 2 3
 ```
 
-It compares run 9, run 10 and `models/best_real` (now run 11) on the simulated
-car; `--model NAME=PATH` picks others. A new run is worth flashing if it is
-calmer than the last one in the **5° slack** rows, all eight training-like cars
-hold 10 s, and tracking stays above ~85 %. "A few deg/s" turned out to be too
-strict: the best plain PD controller manages about 8 deg/s at 5° and 15 ms.
-On the car, run 8 showed 95 deg/s and run 9 68 deg/s. Run 11 in simulation, at
-5° slack: 15–25 deg/s standing (run 10: 20–47) and 15–18 driving (run 10: 28).
+It compares runs 11, 12 and `models/best_real` (now run 13) on the simulated
+car; `--model NAME=PATH` picks others. Use the car's measured 2–3° of slack and
+5–15 ms of delay. The defaults (0 and 5°) are from before the motor was
+measured.
+
+**The old car criteria were wrong.** Wobble numbers taken from the E lines
+(the flight recorder's last 0.6 s) measured the final push, not the
+balancing: runs 8, 9 and 11 "95, 68, 57.5 deg/s". Run 11's real mid-run
+wobble, from the 200 Hz stream, is 12–22 deg/s, and the simulator with the
+measured motor reproduces it (13.5–21). So judge a car run from the stream,
+mid-run (`sim_tools/stream_log.py`), and compare it with `simlib.run()`.
+
+A new run is worth flashing if, on the 2° car:
+- it is no wobblier standing still than the last one;
+- all eight training-like cars hold 10 s;
+- tracking stays above about 85 %;
+- it survives at least as many pushes (the push check is in the run-12
+  session log, §6).
+
+Reference, simulated at 2° slack:
+
+| | standing wobble | survives 3 N × 0.1 s (of 18) |
+|---|---|---|
+| stock PID | 6.6–6.9 deg/s | 17 |
+| run 11 | 11–16 | 0 |
+| run 12 | 26–35 | 14 |
+| run 13 | 24–33 | 18 |
 
 ## 4. Desktop: export and push
+
+For the next run (14 here; use its number):
 
 ```
 python export_stm32.py
 python firmware/quantize_weights.py
-mkdir models\best_real_RUN11
-copy models\best_real\best_model.zip models\best_real_RUN11\
-git add -f models/best_real/best_model.zip models/best_real_RUN11/best_model.zip
+mkdir models\best_real_RUN14
+copy models\best_real\best_model.zip models\best_real_RUN14\
+git add -f models/best_real/best_model.zip models/best_real_RUN14/best_model.zip
 git add firmware/policy_weights.h firmware/policy_weights_q.h firmware/policy_testvectors.h
-git commit -m "Run 11: trained with the wobble penalty"
+git commit -m "Run 14: <what changed>"
 git push
 ```
+
+If you chose the final checkpoint over the best one (as for runs 12 and 13),
+copy `models\ppo_real_robot.zip` to `models\best_real\best_model.zip` before
+exporting.
 
 `models/` is git-ignored, hence `git add -f`. If gcc is installed, the PC check
 of the exported network is
@@ -96,39 +137,52 @@ of the exported network is
 
 1. `git pull` in the repo.
 2. Make a project folder for the new weights (once per run), leaving the
-   flashed ones intact:
+   flashed ones intact. Copy from the newest build: `car_firmware_reversal`
+   (it has the 200 Hz stream that `stream_log.py` records), or your run 12
+   folder if you made one from it:
    ```
-   robocopy C:\Users\USER\Desktop\car_firmware_run9 C:\Users\USER\Desktop\car_firmware_run11 /E /XD OBJ Objects Listings
+   robocopy C:\Users\USER\Desktop\car_firmware_reversal C:\Users\USER\Desktop\car_firmware_run13 /E /XD OBJ Objects Listings
    ```
 3. Copy `firmware\policy_weights.h` and `firmware\policy_weights_q.h` into
-   `car_firmware_run11\stm32_Balance_Car_L\APP\RL\`, replacing the old ones.
-   Nothing else changes.
-4. Keil: *Project → Open Project* →
-   `car_firmware_run11\stm32_Balance_Car_L\USER\stm32_Balance_Car.uvprojx`,
-   then **F7**. Expect `0 Error(s), 4 Warning(s)`. The hex is
+   `car_firmware_run13\stm32_Balance_Car_L\APP\RL\`, replacing the old ones.
+4. **Run 13 only, once:** two edits in that folder's `APP\RL\rl_mode.c`. A
+   folder copied from `car_firmware_run13` already has them.
+   ```c
+   #define CMD_W           1.00f        /* was 0.50; runs 12-13 track up to 1.5 rad/s in sim */
+   ```
+   and, in the block that finishes `cal`, one line after
+   `att_from_acc(ab, &roll_zero, &pitch_zero);`:
+   ```c
+   pitch_zero = roll_zero = 0.0f;   /* fixed zero: cal now only measures gyro bias, in any still pose */
+   ```
+5. Keil: *Project → Open Project* →
+   `car_firmware_run13\stm32_Balance_Car_L\USER\stm32_Balance_Car.uvprojx`,
+   then **F7**. Expect `0 Error(s)`. The hex is
    `...\OBJ\stm32_Balance_Car_L.hex`.
-5. FlyMCU: that hex, COM3, *Auto Reload Before Program* ticked, *Program
+6. FlyMCU: that hex, COM3, *Auto Reload Before Program* ticked, *Program
    OptionBytes when ISP* unticked, *Reset@DTR Low, ISP@RTS High*, **Start
    ISP**, then close FlyMCU.
-6. Logger, in `rl_mode28_20261003`:
-   `..\venv\Scripts\python.exe rl_trim_helper.py COM3`. Then write `auto off`
-   to `cmd.txt`, **every time it starts**. Watch it from a second terminal:
-   `Get-Content rl_runs_summary.txt -Wait -Tail 5`.
-7. Car: switch on, mode 28, KEY1, hold still at the balance point until `cal
-   done`. If the pitch zero is not about 3.2°, `trim` it there (±5° per
-   command, one at a time; e.g. `trim 3` from about 0).
-8. KEY1, stand it up near `p 0.0`, let go when the OLED shows `L… R…`. Let it
-   balance ~10 s, then **push it over** past 40° (not catch, lift or switch
-   off, or the 200 Hz recording shows no balancing). Three runs.
-9. Stop the logger (Ctrl+C), copy `rl_serial_log.txt` and
-   `rl_runs_summary.txt` into `car_logs\<date>\`, then commit and push. Check
-   the runs with
-   `python firmware/check_car_log.py car_logs/<date>/rl_serial_log.txt`, and
-   compare the wobble with run 8 and run 9 using
-   `sim_tools/simlib.py`'s `car_stats()` (see `sim_tools/fit_delay_slack.py`).
+7. Logger: `python sim_tools/stream_log.py --name run13_1` (one name per
+   session). It writes `car_logs\<date>\run13_1.txt` itself and needs COM3 to
+   itself, so close FlyMCU and `rl_trim_helper.py`.
+8. Car: switch on, select mode 28 and leave it **still in any position** for
+   about 5 s (`cal` measures the gyro bias; with the step 4 edit the pitch
+   zero is fixed at 0, so no balance point and no `trim`). KEY1, stand it up;
+   it starts after 1 s upright.
+9. Let it stand ~20 s with no input, turn both ways with the app, drive, and
+   give a few gentle pushes. End each run by **pushing it over** past 40° (not
+   catch, lift or switch off). Three runs.
+10. Stop the logger (Ctrl+C), then commit and push `car_logs\<date>\`. Judge
+    the wobble from the middle of a run, not the start or the final push. In
+    simulation run 13 sways at 24–33 deg/s standing at 2° slack; run 11's car
+    runs were 12–22.
+11. If it creeps forward standing still, send `trim -1` (each degree is about
+    1 cm/s of creep; `trim 1` if it creeps back). `trim` needs
+    `rl_trim_helper.py` (`..\venv\Scripts\python.exe rl_trim_helper.py COM3`
+    in `rl_mode28_20261003`), so stop `stream_log.py` first.
 
-To go back to an earlier policy, flash the hex in `car_firmware_run8` or
-`car_firmware_run9`.
+To go back to an earlier policy, flash the hex in `car_firmware_run12` (if
+you kept it), `car_firmware_run11` or `car_firmware_run9`.
 
 ## Using Claude Code on the desktop
 

@@ -10,6 +10,9 @@ wobbled on the car.
     python sim_tools/fit_delay_slack.py --log car_logs/<date>/rl_serial_log.txt \
         --policy run9=models/best_real_RUN9/best_model.zip=20:14:00-20:20:00 ...
 
+A policy spec may end with =LOG to read that run from a different log, e.g.
+    run11=models/best_real_RUN11/best_model.zip=15:55:00-15:57:00=car_logs/2026-10-08/rl_serial_log.txt
+
 Result on 2026-10-07: slack ~4-6 deg at the wheel with 10-20 ms of delay; the
 simulation reproduces run 8 well but run 9's wobble at only ~half size.
 """
@@ -46,8 +49,8 @@ def main():
 
     pols = []
     for spec in args.policy or DEFAULT_POLICIES:
-        name, path, window = spec.split("=")
-        car = S.car_stats(args.log, *window.split("-"))
+        name, path, window, *log = spec.split("=")
+        car = S.car_stats(log[0] if log else args.log, *window.split("-"))
         pols.append((name, S.load(path), car))
         print(f"car, {name}: {car['runs']} runs, {car['ticks']} ticks of balancing: "
               f"rate sd {car['rate_sd']:.1f} deg/s, {car['freq']:.1f} Hz, full PWM {car['sat']:.0f} %, "

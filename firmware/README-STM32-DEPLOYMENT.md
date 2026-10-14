@@ -3,19 +3,25 @@
 For whoever flashes and tests the car. Do Steps 1–9 in order. The Reference
 section at the end explains the why, and covers porting to other firmware.
 
-**Status (2026-10-08):** run 8 and run 9 have run on the car with these
-steps. Both balance (17–51 s per run) but wobble at about 7 Hz; run 10 is
-being trained against the cause, sense-to-act delay and gearbox slack
-([session log](../session-logs/2026-10-08-run9-run10-delay-and-gear-slack.md)).
-`models/best_real/best_model.zip` is run 9. Run 7 fell within 0.2–2 s; run 8
+**Status (2026-10-14):** runs 8, 9 and 11 have balanced on the car with these
+steps (11–51 s per run). Their large "wobble" numbers turned out to be the
+final hand push; mid-run they sway about as the simulator predicts
+([session log](../session-logs/2026-10-08-run12-measured-motor-and-pushes.md)).
+`models/best_real/best_model.zip` is run 13, trained with pushes and not yet
+on the car. Run 7 fell within 0.2–2 s; run 8
 was rebuilt from that failure
 ([diagnosis](../session-logs/2026-10-06-hardware-mode28-diagnosis.md)). Treat
 every new policy's first session as a supervised test, with a hand ready to
 catch.
 
-On this car the `cal done` pitch zero comes out at about **3.2–3.5°** when the
-car is held at its balance point. If yours lands far from that, `trim` to it
-(Step 4's commands).
+**From run 13** the firmware fixes the pitch zero at 0, so `cal` only measures
+the gyro bias and the car just has to be still, in any position. Make the two
+`rl_mode.c` edits in `TRAINING_ON_DESKTOP.md` §5, step 4. If it creeps
+forward standing still, `trim -1` (about 1 cm/s per degree).
+
+**Builds before run 13:** the `cal done` pitch zero comes out at about
+**3.2–3.5°** when the car is held at its balance point. If yours lands far
+from that, `trim` to it (Step 4's commands).
 
 ## What you need
 

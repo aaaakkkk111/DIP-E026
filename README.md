@@ -4,13 +4,21 @@ A PPO policy trained in MuJoCo to balance and drive the Yahboom two-wheeled
 car (STM32F103, MPU6050, AT8236 driver, JGB37-520 motors), plus the C code that
 runs it on the car.
 
-**Status (2026-10-08):** run 8 and run 9 have both run on the car. They
-balance (17–51 s per run, ended by hand) but wobble at about 7 Hz. The causes
-are sense-to-act delay and gearbox slack, both now modelled in the simulator;
-run 10 trains with them. The checkpoint in `models/best_real/` is run 9. See
-[session-logs/2026-10-08-run9-run10-delay-and-gear-slack.md](session-logs/2026-10-08-run9-run10-delay-and-gear-slack.md),
+**Status (2026-10-14):** runs 8, 9 and 11 have balanced on the car, 11–51 s
+per run, ended by hand. The simulator now uses the motor measured on the car,
+with stiction, and about 2° of gear slack. The stock PID and run 11's real
+balancing both match it: run 11 sways at 12–22 deg/s on the car and 13.5–21 in
+simulation.
+
+The checkpoint in `models/best_real/` is **run 13**, not yet tested on the
+car. It was trained on that motor with pushes, and in simulation it survives a
+3 N shove as often as the stock PID does. Its firmware needs two
+`rl_mode.c` edits: turning at 1.0 rad/s instead of 0.5, and a fixed pitch
+zero, so `cal` only needs the car held still. See
+[session-logs/2026-10-08-run12-measured-motor-and-pushes.md](session-logs/2026-10-08-run12-measured-motor-and-pushes.md),
+[session-logs/2026-10-10-turning-calibration-mujoco.md](session-logs/2026-10-10-turning-calibration-mujoco.md),
 and [TRAINING_ON_DESKTOP.md](TRAINING_ON_DESKTOP.md) for training on one PC
-and testing on another.
+and testing on another (§5 has the firmware edits).
 
 ## Run it in simulation
 
@@ -46,11 +54,12 @@ In short:
 | path | what it is |
 |---|---|
 | `train_real_robot.py` | training script: `real_robot.xml` at 200 Hz, PWM actions, inputs computed exactly as the firmware computes them, randomised motor and sensor errors |
-| `real_robot.xml` | MuJoCo model built from the team's measured parameter sheet |
-| `motor_model.py` | turns a PWM command into wheel torque: the firmware's 1300-count compensation, then the motor's real dead zone (about 1460 counts) |
+| `real_robot.xml` | MuJoCo model built from the team's measured parameter sheet, with the motor rotors behind a gearbox with slack |
+| `motor_model.py` | turns a PWM command into wheel torque, as measured on the car: the firmware's 1300-count compensation, a dead zone of 1485 at rest and 1400 when turning, 0.75 N·m limit, Coulomb and viscous friction |
 | `enjoy_drive.py` | interactive simulator demo |
 | `export_stm32.py` | writes the trained network to `firmware/policy_weights.h` |
-| `models/best_real/best_model.zip` | **the current policy**: run 8, 34 inputs, eval reward 3637 at 29.64 M steps |
+| `models/best_real/best_model.zip` | **the current policy**: run 13, 34 inputs. Earlier runs are kept as `models/best_real_RUN*/` and `models/ppo_real_robot_RUN*` |
+| `sim_tools/`, `car_logs/` | the motor tests, car-log analysis and simulator checks behind the measured model, and the car's logs |
 | `firmware/` | the C port (`policy.c`/`policy.h`), float and int16 weight headers, PC checks, `check_car_log.py`, and the deployment guide |
 | `session-logs/` | dated write-ups of every run and every change, with the reasons and the raw training logs |
 | `.vscode/` | VS Code run configurations for the scripts above |
@@ -76,13 +85,24 @@ venv.
    ([diagnosis](session-logs/2026-10-06-hardware-mode28-diagnosis.md)).
 5. Run 8 fixes the motor model and trains on exactly what the firmware sees:
    encoder odometry, yaw pinned to 0, IMU calibration errors, a 1–2 tick delay,
-   and no wheel angles.
+   and no wheel angles. Runs 8, 9 and 11 balance on the car.
+6. The motors were then measured on the car: steps, reversals and low-PWM
+   stiction. The stock PID, run through the measured motor, matches the car.
+   The policies' large "wobble" numbers turned out to be the final hand push in
+   the flight recorder; their real balancing matches the simulator too.
+7. Runs 12 and 13 train on the measured motor with pushes
+   ([log](session-logs/2026-10-08-run12-measured-motor-and-pushes.md)).
 
 ## Caveats
 
-- Run 8's results come from simulation and PC checks only. It has not run on
-  the car.
-- The motor dead zone is fitted to one logged free-spin run plus the parameter
-  sheet, not to a bench sweep.
-- Slope and friction have not been characterised for run 8.
+- Run 13 has not run on the car yet.
+- In simulation, runs 12 and 13 sway about twice as much standing still as run
+  11: 24–35 against 11–16 deg/s at 2° of slack. That is the price of their
+  push tolerance; the stock PID manages 7.
+- Turning above 0.5 rad/s and the fixed pitch zero are checked in simulation
+  only: 100 % tracking up to 1.5 rad/s, about 1 cm/s of creep per degree of
+  zero error, no falls within ±4°.
+- MuJoCo is pinned to 3.2.7: Windows Smart App Control blocks 3.2.3 on the
+  desktop. It reproduces run 13's numbers exactly.
+- Slope and friction have not been characterised.
 - The mode-28 firmware has no watchdog yet.

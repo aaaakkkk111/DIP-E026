@@ -50,12 +50,10 @@
            gearmotor spins up in 4 ms. The consequence was that 100 Hz torque
            reversals were free, so the policy balanced by shaking the chassis.
 
-           2.25e-3 assumes a rotor inertia of 2.5e-6 kg m^2, giving a time
-           constant of 140 ms, typical for this motor class. TO MEASURE IT:
-           command a fixed PWM, log encoder speed, fit the exponential rise;
-           tau_m is the time to 63% of final speed, and J = tau_m * KV. Training
-           randomises it over 9e-4 .. 4.5e-3 so the policy does not depend on
-           this estimate being exact. -->
+           Measured 2026-10-08 (step test on the car): 1.45e-3 / 1.51e-3,
+           a time constant of 92-97 ms (the earlier estimate, 2.25e-3, gave
+           140 ms). Training randomises it per episode around 1.5e-3
+           (train_real_robot.py ARMATURE_RANGE). -->
       <body name="wheel_l" pos="0 0.0835 0">
         <joint name="jw_l" type="hinge" axis="0 1 0" armature="0"/>
         <inertial pos="0 0 0" mass="0.0350"
@@ -76,11 +74,11 @@
            The tiny mass is only to satisfy the compiler; the inertia is the
            armature. -->
       <body name="rotor_l" pos="0 0.0835 0">
-        <joint name="jr_l" type="hinge" axis="0 1 0" armature="2.25e-3"/>
+        <joint name="jr_l" type="hinge" axis="0 1 0" armature="1.5e-3"/>
         <inertial pos="0 0 0" mass="1e-4" diaginertia="1e-9 1e-9 1e-9"/>
       </body>
       <body name="rotor_r" pos="0 -0.0835 0">
-        <joint name="jr_r" type="hinge" axis="0 1 0" armature="2.25e-3"/>
+        <joint name="jr_r" type="hinge" axis="0 1 0" armature="1.5e-3"/>
         <inertial pos="0 0 0" mass="1e-4" diaginertia="1e-9 1e-9 1e-9"/>
       </body>
     </body>
@@ -101,9 +99,10 @@
     </fixed>
   </tendon>
   <actuator>
-    <!-- driver limit 0.4 Nm at the wheel (motor stalls at 0.5679); the motor
-         drives the rotor, which drives the wheel through the slack -->
-    <motor name="m_l" joint="jr_l" gear="1" ctrlrange="-0.4000 0.4000"/>
-    <motor name="m_r" joint="jr_r" gear="1" ctrlrange="-0.4000 0.4000"/>
+    <!-- driver limit 0.75 Nm at the wheel, fitted to the car's reversal test
+         (2026-10-08; was 0.4). Must match motor_model.TAU_DRIVER_LIMIT. The
+         motor drives the rotor, which drives the wheel through the slack -->
+    <motor name="m_l" joint="jr_l" gear="1" ctrlrange="-0.7500 0.7500"/>
+    <motor name="m_r" joint="jr_r" gear="1" ctrlrange="-0.7500 0.7500"/>
   </actuator>
 </mujoco>

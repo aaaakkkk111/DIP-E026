@@ -361,7 +361,7 @@ def main():
     payload_id = env.payload_body_id
 
     # The policy commands PWM in [-1, 1], NOT torque, so compare against the
-    # env's action space rather than the plant's torque cap (0.4 Nm). A leftover
+    # env's action space rather than the plant's torque cap (0.75 Nm). A leftover
     # +/-0.6 torque checkpoint from the superseded their_robot.xml runs would
     # otherwise be read as PWM and drive the motors at 60% of full scale for
     # what it intended as a gentle nudge.

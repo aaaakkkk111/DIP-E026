@@ -8,7 +8,9 @@
 # gymnasium/envs/mujoco/mujoco_rendering.py with no hint that this package is
 # the fix.
 gymnasium[mujoco]==1.3.0
-mujoco==3.2.3
+# 3.2.7, not 3.2.3: on 2026-10-10 Windows Smart App Control started blocking
+# 3.2.3's _structs .pyd; 3.2.7 loads and reproduces run 13's numbers exactly.
+mujoco==3.2.7
 numpy==2.5.3
 scipy==1.18.1
 stable_baselines3==2.9.0
