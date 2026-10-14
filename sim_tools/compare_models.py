@@ -15,8 +15,8 @@ import os
 import simlib as S
 
 DEFAULT_MODELS = [("run11", "models/best_real_RUN11/best_model.zip"),
-                  ("run12", "models/ppo_real_robot_RUN12_30M.zip"),
-                  ("run13", "models/best_real/best_model.zip")]
+                  ("run13", "models/ppo_real_robot_RUN13_10M.zip"),
+                  ("new", "models/best_real/best_model.zip")]
 
 
 def fmt(s):

@@ -18,11 +18,19 @@ Battery: in mode 28 the car answers 'mt off' with its own battery reading
 ('mt off, battery 12.48 V'; outside a motor test the command changes
 nothing). The script sends it once the car is talking and then every
 --battery-every seconds. Mode 1 does not listen, so there is no reading.
+
+Commands: type a line and Enter to send it to the car (mode 28), e.g.
+  st          state; 'z' is the pitch zero in use
+  trim -1.5   add -1.5 deg to the pitch zero (|trim| <= 5 per command)
+  cal         calibrate again (hold the car still at the balance point)
+The car's 'cal done: pitch zero ...' line and the replies are printed.
 """
 import argparse
 import collections
 import os
+import queue
 import sys
+import threading
 import time
 
 import serial
@@ -49,6 +57,16 @@ def main():
     sp.rts = False
     sp.open()
     print(f"recording {args.port} to {out}", flush=True)
+    print("type a command + Enter to send it to the car: st, trim <deg>, cal; Ctrl+C to stop", flush=True)
+
+    typed = queue.Queue()
+
+    def read_keyboard():
+        for line in sys.stdin:
+            if line.strip():
+                typed.put(line.strip())
+
+    threading.Thread(target=read_keyboard, daemon=True).start()
 
     t0 = time.time()
     last_report = t0
@@ -60,10 +78,15 @@ def main():
     with open(out, "w", encoding="utf-8", buffering=1) as fh:
         try:
             while args.seconds is None or time.time() - t0 < args.seconds:
-                buf += sp.read(8192)
+                buf += sp.read(max(1, sp.in_waiting))
                 *lines, buf = buf.split(b"\n")
                 now = time.time()
                 stamp = time.strftime("%H:%M:%S", time.localtime(now)) + f".{int(now * 1000) % 1000:03d}"
+                while not typed.empty():
+                    cmd = typed.get()
+                    sp.write((cmd + "\r\n").encode())
+                    fh.write(f"{stamp} > {cmd}\n")
+                    print(f"  sent: {cmd}", flush=True)
                 if args.battery_every and lines and (last_battery is None or now - last_battery >= args.battery_every):
                     sp.write(b"mt off\r\n")
                     fh.write(f"{stamp} > mt off\n")

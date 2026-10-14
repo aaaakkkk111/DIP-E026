@@ -274,7 +274,14 @@ YAW_OBS_SCALE = 1.0 / YAW_CLIP_RAD   # maps the clipped range onto [-1, 1]
 # 30 deg/s wobble costs ~0.14/step and a 15 deg/s one ~0.035, a pull toward
 # calm. Run 11's penalty cost push tolerance only because nothing in its
 # training ever pushed it; here a policy that stops recovering falls.
-PITCH_RATE_WEIGHT = 0.5           # per (rad/s)^2; run 11 used 1.5, run 12 0
+#
+# Run 14: back to run 11's 1.5, trained FROM SCRATCH with pushes. On the car
+# (2026-10-14) run 13 stood at 26-36 deg/s mid-run, as simulated (23-37), and
+# the 0.5 fine-tune had not calmed it. The stock PID on the same car stands at
+# 7.6 deg/s and recovers from hard hand pushes, so calm and push-tolerant is
+# possible on this hardware; run 11 showed 1.5 buys calm, run 13 that pushes
+# keep the push tolerance.
+PITCH_RATE_WEIGHT = 1.5           # per (rad/s)^2; run 11 1.5, run 12 0, run 13 0.5
 PITCH_RATE_PENALTY_MAX = 1.0      # per step
 
 # --- run 12: pushes -----------------------------------------------------
@@ -965,8 +972,11 @@ def make_env(**kwargs):
 # its best-eval one, same wobble and tracking) for 10M steps, with pushes at
 # full strength from the start and the wobble penalty at 0.5. Pass --init none
 # to train from scratch (30M) as run 12 did.
-RUN_NAME = "run13"
-INIT_FROM = "models/ppo_real_robot_RUN12_30M.zip"
+#
+# Run 14 trains from scratch (30M steps) with pushes and the wobble penalty at
+# 1.5: a fine-tune from run 13 would keep run 13's way of balancing.
+RUN_NAME = "run14"
+INIT_FROM = "none"
 FINETUNE_STEPS = 10_000_000
 FINETUNE_LR = 1e-4
 # Run 9 evaluated every 10,000 steps per env (110k total) with 20 episodes of

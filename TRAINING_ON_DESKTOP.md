@@ -48,13 +48,17 @@ venv\Scripts\activate
 python train_real_robot.py
 ```
 
-`train_real_robot.py` is currently set up as **run 13** (already trained,
-2026-10-09). It continues from `models/ppo_real_robot_RUN12_30M.zip` (run
-12's final checkpoint) for 10M steps, with:
+`train_real_robot.py` is currently set up as **run 14 (not trained yet)**:
+from scratch, 30M steps, with:
 - the measured motor and stiction;
 - gear slack 0–4° and delay 5–15 ms;
 - pushes;
-- the wobble penalty at 0.5.
+- the wobble penalty at **1.5** (run 13: 0.5, run 11: 1.5 without pushes).
+
+Why: on the car (2026-10-14) run 13 stood at 26–36 deg/s mid-run, as the
+simulator predicted, while the stock PID stands at 7.6 deg/s on the same car
+and recovers from hard hand pushes. Goal: calm like the PID *and* push-proof.
+Background: `session-logs/2026-10-14-run13-on-car-and-run14.md`.
 
 Run it again only after changing `RUN_NAME` and `INIT_FROM` for the next
 run.
@@ -81,8 +85,8 @@ efficiency mode, which had cut run 12's speed to a quarter.
 python sim_tools/compare_models.py --slack 2 3 --delay 1 2 3
 ```
 
-It compares runs 11, 12 and `models/best_real` (now run 13) on the simulated
-car; `--model NAME=PATH` picks others. Use the car's measured 2–3° of slack and
+It compares runs 11, 13 and `models/best_real` (the new run once trained;
+until then it is run 13) on the simulated car; `--model NAME=PATH` picks others. Use the car's measured 2–3° of slack and
 5–15 ms of delay. The defaults (0 and 5°) are from before the motor was
 measured.
 
@@ -93,6 +97,11 @@ wobble, from the 200 Hz stream, is 12–22 deg/s, and the simulator with the
 measured motor reproduces it (13.5–21). So judge a car run from the stream,
 mid-run (`sim_tools/stream_log.py`), and compare it with `simlib.run()`.
 
+**Run 14's target** (the stock PID's level): standing wobble at most about
+10 deg/s at 2° slack, 5–15 ms, and surviving 3 N × 0.1 s in at least 15 of
+18. If it is calm but no longer push-proof, the penalty is too strong for the
+pushes (try 1.0); if it is push-proof but not calm, too weak.
+
 A new run is worth flashing if, on the 2° car:
 - it is no wobblier standing still than the last one;
 - all eight training-like cars hold 10 s;
@@ -102,12 +111,12 @@ A new run is worth flashing if, on the 2° car:
 
 Reference, simulated at 2° slack:
 
-| | standing wobble | survives 3 N × 0.1 s (of 18) |
-|---|---|---|
-| stock PID | 6.6–6.9 deg/s | 17 |
-| run 11 | 11–16 | 0 |
-| run 12 | 26–35 | 14 |
-| run 13 | 24–33 | 18 |
+| | standing wobble | on the car (stream, mid-run) | survives 3 N × 0.1 s (of 18) |
+|---|---|---|---|
+| stock PID | 6.6–6.9 deg/s | 7.6 | 17 |
+| run 11 | 11–16 | 12–22 | 0 |
+| run 12 | 26–35 | | 14 |
+| run 13 | 24–33 | 26–36 | 18 |
 
 ## 4. Desktop: export and push
 
