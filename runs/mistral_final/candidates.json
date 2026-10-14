@@ -1,0 +1,56 @@
+[
+  {
+    "loss": 0.7812057748077622,
+    "path": "C:\\Users\\Sridevi\\Desktop\\mistral_tzejun_rewardcode_v3\\runs\\mistral_final\\candidate_00.zip",
+    "reward": {
+      "reward_code": "reward = -( 1.5*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate/2.0) + 0.8*pow2(position_error/0.25) + 1.2*pow2(speed_err/0.15) + 1.6*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2)) + 0.7"
+    },
+    "iteration": 0,
+    "accepted_as_best": true
+  },
+  {
+    "loss": 681.6114191903066,
+    "path": "C:\\Users\\Sridevi\\Desktop\\mistral_tzejun_rewardcode_v3\\runs\\mistral_final\\candidate_01.zip",
+    "reward": {
+      "reward_code": "reward = clip(-1.5*(pitch/0.1745 + pitch_rate**2 + position_error**2) - 1.2*speed_err - 1.6*yaw_err - 0.4*effort - 0.2*slew + 1, -10.0, 10.0)"
+    },
+    "iteration": 1,
+    "accepted_as_best": false
+  },
+  {
+    "loss": 0.6460977531890975,
+    "path": "C:\\Users\\Sridevi\\Desktop\\mistral_tzejun_rewardcode_v3\\runs\\mistral_final\\candidate_02.zip",
+    "reward": {
+      "reward_code": "reward = -(1.2*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate/2.0) + 0.8*pow2(position_error/0.25) + 1.5*pow2(speed_err/0.15) + 1.6*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2)) + 0.7"
+    },
+    "iteration": 2,
+    "accepted_as_best": true
+  },
+  {
+    "loss": 0.7934407666030656,
+    "path": "C:\\Users\\Sridevi\\Desktop\\mistral_tzejun_rewardcode_v3\\runs\\mistral_final\\candidate_03.zip",
+    "reward": {
+      "reward_code": "reward = -(1.0*pow2(pitch/0.1745) + 0.5*pow2(pitch_rate/1.0) + 1.5*pow2(speed_err/0.15) + 1.6*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2)) + 0.7"
+    },
+    "iteration": 3,
+    "accepted_as_best": false
+  },
+  {
+    "loss": 0.6660851745967792,
+    "path": "C:\\Users\\Sridevi\\Desktop\\mistral_tzejun_rewardcode_v3\\runs\\mistral_final\\candidate_04.zip",
+    "reward": {
+      "reward_code": "reward = clip(-(1.2*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate) + 1.5*pow2(speed_err/0.15) + 0.8*pow2(position_error/0.25) + 2.0*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2) + 0.5), -10.0, 10.0)"
+    },
+    "iteration": 4,
+    "accepted_as_best": false
+  },
+  {
+    "loss": 169.648856447605,
+    "path": "C:\\Users\\Sridevi\\Desktop\\mistral_tzejun_rewardcode_v3\\runs\\mistral_final\\candidate_05.zip",
+    "reward": {
+      "reward_code": "reward = -(1.2*pow2(pitch/0.1745) + 0.5*pow2(pitch_rate/2.0) + 0.8*pow2(position_error/0.25) + 1.6*pow2(yaw_err/0.25) + 1.5*pow2(speed_err/0.15) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2)) + 0.7"
+    },
+    "iteration": 5,
+    "accepted_as_best": false
+  }
+]

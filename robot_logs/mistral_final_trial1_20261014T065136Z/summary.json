@@ -1,0 +1,9 @@
+{
+  "label": "mistral_final_trial1",
+  "requested_seconds": 120.0,
+  "n_samples": 0,
+  "read_only": true,
+  "armed_by": "physical KEY1 only; logger never writes serial",
+  "scope": "Streamed telemetry (~20 Hz snapshots), not the full 200 Hz loop",
+  "status": "no telemetry received; check port/cable and that the board streams"
+}

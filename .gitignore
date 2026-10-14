@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.pyc
+.matplotlib/
+
+# Heavy per-seed trajectory dumps (kept out of git; regenerate via evaluate)
+runs/**/*.csv
+runs/**/*.npz
+# Earlier/stale run (the final run is runs/mistral_final)
+runs/mistral_seed00_*/
+runs/smoke_*/
+
+# Keil build intermediates (the .hex is kept)
+*.o
+*.crf
+*.d
+*.dep
+*.lnp
+*.axf
+*.map
+*.htm
+*.lst
+*.bak
+*.scvd
+*.iex
+*.__i
+*.uvguix.*
+Objects/
+Listings/
+DebugConfig/

@@ -1,0 +1,254 @@
+[
+  {
+    "iteration": 0,
+    "model": "mistral:latest",
+    "attempts": [
+      {
+        "attempt": 0,
+        "code": null,
+        "error": "no reward_code found in the response JSON",
+        "raw": " {\"reward_code\": \"clip(-(1.6*pow2(pitch/0.1745) + 0.6*pow2(pitch_rate/2.0) + 0.9*pow2(position_error/0.25) + 1.4*pow2(speed_err/0.15) + 1.5*pow2(yaw_err/0.25) + 0.4*pow2(effort/0.4) + 0.4*pow2(slew/0.2) + 0.5*tanh(0.1*yaw_err) + 0.2*tanh(0.1*speed_err) - 0.5*tanh(0.1*reversal_rate) + 1.0, 'rationale': 'Adjusted the reward to penalize yaw and speed errors, reversal rate, and increased the reward fo"
+      },
+      {
+        "attempt": 1,
+        "code": null,
+        "error": "no reward_code found in the response JSON",
+        "raw": " {\"reward_code\": \"reward = clip(-(1.6*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate/2.0) + 0.8*pow2(position_error/0.25) + 1.5*pow2(speed_err/0.15) + 1.4*pow2(yaw_err/0.25) + 0.5*pow2(effort/0.4) + 0.6*pow2(slew/0.2) - 0.5*pow2(v_forward/0.1)) + 0.8, rationale\": \"Reduces pitch instability, penalizes high pitch rate, rewards position accuracy, penalizes speed error, penalizes yaw error, penalizes high e"
+      },
+      {
+        "attempt": 2,
+        "code": "reward = -( 1.5*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate/2.0) + 0.8*pow2(position_error/0.25) + 1.2*pow2(speed_err/0.15) + 1.6*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2)) + 0.7",
+        "error": ""
+      }
+    ],
+    "prompt_sha256": "c5e6aead84714fa3d64dbe2f99fea049a0852af4cdaeccd54a65a0a614ab0abc",
+    "status": "accepted",
+    "llm_contributed": true,
+    "code_accepted": "reward = -( 1.5*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate/2.0) + 0.8*pow2(position_error/0.25) + 1.2*pow2(speed_err/0.15) + 1.6*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2)) + 0.7",
+    "validation_error": "",
+    "latency_s": 90.85899999999674,
+    "n_attempts": 3,
+    "raw_response": " {\"reward_code\": \"reward = -( 1.5*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate/2.0) + 0.8*pow2(position_error/0.25) + 1.2*pow2(speed_err/0.15) + 1.6*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2)) + 0.7\", \"rationale\": \"The new reward function is simplified and focuses on balancing (pitch), steady state (pitch_rate, yaw_rate, position_error), speed control (speed_err), and motor control (effort, slew). The weights are adjusted to give more importance to pitch and yaw stability, and less to motor control, to address the 'pitch_rms_deg' and 'yaw_rms_rad_s' issues.\"}",
+    "checkpoint": "C:\\Users\\Sridevi\\Desktop\\mistral_tzejun_rewardcode_v3\\runs\\mistral_final\\candidate_00.zip",
+    "checkpoint_sha256": "8a7c95ac0462f6c8cc4a3b6dd3a6491229ac98a0a666fbfcf109f244c949c987",
+    "reward": {
+      "reward_code": "reward = -( 1.5*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate/2.0) + 0.8*pow2(position_error/0.25) + 1.2*pow2(speed_err/0.15) + 1.6*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2)) + 0.7"
+    },
+    "validation_selection_loss": 0.7812057748077622,
+    "actor_max_weight_change": 0.013261377811431885,
+    "accepted_as_best": true,
+    "added_timesteps_so_far": 40960,
+    "elapsed_s": 188.84400000004098
+  },
+  {
+    "iteration": 1,
+    "model": "mistral:latest",
+    "attempts": [
+      {
+        "attempt": 0,
+        "code": null,
+        "error": "no reward_code found in the response JSON",
+        "raw": " {\"reward_code\": \"clip(-(1.5*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate/2.0) + 0.8*pow2(position_error/0.25) + 1.2*pow2(speed_err/0.15) + 1.6*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2)) + 0.7 + 0.1*(1-stationkeeping_success) + 0.3*(survived-0.9865766216441555), \\\"rationale\\\": \\\"Reduce pitch, pitch_rate, position_error, speed_err, yaw_err, and slew; reward alive bonus for high sta"
+      },
+      {
+        "attempt": 1,
+        "code": null,
+        "error": "no reward_code found in the response JSON",
+        "raw": " {\"reward_code\": \"reward = clip(-0.5*pow2(pitch/0.1745) - 0.5*pow2(pitch_rate) - 0.5*pow2(yaw_err/0.25) - 0.5*pow2(speed_err/0.15) - 0.5*pow2(effort/0.4) - 0.5*pow2(slew/0.2) + 1.0, 'rationale': 'Reduces pitch, yaw, speed and effort errors, penalizes motor chatter and action change, and provides a small alive bonus.'}\""
+      },
+      {
+        "attempt": 2,
+        "code": "reward = clip(-(1.5*pow2(pitch/0.1745) + 1.2*pow2(speed_err/0.15) + 2.0*pow2(yaw_err/0.25) + 0.5*pow2(effort/0.4) + 0.3*pow2(slew/0.2) + 0.1*min(abs(v_forward - target_v), 0.3), -10.0, 10.0)",
+        "error": "validation failed: syntax error: '(' was never closed (<unknown>, line 1)",
+        "raw": " {\"reward_code\": \"reward = clip(-(1.5*pow2(pitch/0.1745) + 1.2*pow2(speed_err/0.15) + 2.0*pow2(yaw_err/0.25) + 0.5*pow2(effort/0.4) + 0.3*pow2(slew/0.2) + 0.1*min(abs(v_forward - target_v), 0.3), -10.0, 10.0)\", \"rationale\": \"Improving on the previous reward code, we added a penalty for speed error (speed_err) and modified the yaw error (yaw_err) term to reduce yaw rate oscillations. Also, we added"
+      },
+      {
+        "attempt": 3,
+        "code": "reward = clip(-1.5*(pitch/0.1745 + pitch_rate**2 + position_error**2) - 1.2*speed_err - 1.6*yaw_err - 0.4*effort - 0.2*slew + 1, -10.0, 10.0)",
+        "error": ""
+      }
+    ],
+    "prompt_sha256": "e2560bc395a1bd4d482d5999f2bedcacc340d47a7340c0e6f484dbb638acc7e8",
+    "status": "accepted",
+    "llm_contributed": true,
+    "code_accepted": "reward = clip(-1.5*(pitch/0.1745 + pitch_rate**2 + position_error**2) - 1.2*speed_err - 1.6*yaw_err - 0.4*effort - 0.2*slew + 1, -10.0, 10.0)",
+    "validation_error": "",
+    "latency_s": 106.46899999998277,
+    "n_attempts": 4,
+    "raw_response": " {\"reward_code\": \"reward = clip(-1.5*(pitch/0.1745 + pitch_rate**2 + position_error**2) - 1.2*speed_err - 1.6*yaw_err - 0.4*effort - 0.2*slew + 1, -10.0, 10.0)\", \"rationale\": \"The reward is composed of the absolute deviation from the upright position (pitch) and velocity (speed_err), a term that punishes excessive pitch rate (pitch_rate**2), positioning error (position_error**2), and effort (effort). Additionally, excessive yaw rate (yaw_err) and action change (slew) are penalized. A small positive bonus is added to promote survival.\"}",
+    "checkpoint": "C:\\Users\\Sridevi\\Desktop\\mistral_tzejun_rewardcode_v3\\runs\\mistral_final\\candidate_01.zip",
+    "checkpoint_sha256": "0aaaba2e331e51a4917db217828a5744f04a0c271fdd7258e1e363dae492db01",
+    "reward": {
+      "reward_code": "reward = clip(-1.5*(pitch/0.1745 + pitch_rate**2 + position_error**2) - 1.2*speed_err - 1.6*yaw_err - 0.4*effort - 0.2*slew + 1, -10.0, 10.0)"
+    },
+    "validation_selection_loss": 681.6114191903066,
+    "actor_max_weight_change": 0.00868961215019226,
+    "accepted_as_best": false,
+    "added_timesteps_so_far": 81920,
+    "elapsed_s": 349.81300000002375
+  },
+  {
+    "iteration": 2,
+    "model": "mistral:latest",
+    "attempts": [
+      {
+        "attempt": 0,
+        "code": null,
+        "error": "no reward_code found in the response JSON",
+        "raw": " {\"reward_code\": \"clip(-(1.5*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate/2.0) + 0.8*pow2(position_error/0.25) + 1.2*pow2(speed_err/0.15) + 1.6*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2) + 0.5*pow2(yaw_rms_rad_s/0.08841009271399979) + 0.2*pow2(speed_rms_m_s/0.01939137432850875) + 0.1*pow2(reversal_rate/0.9865766216441555) - 0.2, -10.0, 10.0)\", \"rationale\": \"Adjusting the reward fun"
+      },
+      {
+        "attempt": 1,
+        "code": "reward = clip(-(2.0*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate) + 1.0*pow2(yaw_err/0.25) + 1.2*pow2(speed_err/0.15) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2) + 0.5*stationkeeping_success), -10.0, 10.0)",
+        "error": "validation failed: unknown name: stationkeeping_success",
+        "raw": " {\"reward_code\": \"reward = clip(-(2.0*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate) + 1.0*pow2(yaw_err/0.25) + 1.2*pow2(speed_err/0.15) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2) + 0.5*stationkeeping_success), -10.0, 10.0)\", \"rationale\": \"The current reward code penalizes pitch, pitch rate, yaw error, speed error, effort, and slew, and rewards stationkeeping success. The pitch and yaw errors are caus"
+      },
+      {
+        "attempt": 2,
+        "code": "reward = -(1.2*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate/2.0) + 0.8*pow2(position_error/0.25) + 1.5*pow2(speed_err/0.15) + 1.6*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2)) + 0.7",
+        "error": ""
+      }
+    ],
+    "prompt_sha256": "cb8fad704f95190be4374fc56fc4811cac42568e2da9455cc0e6199a0efa10a0",
+    "status": "accepted",
+    "llm_contributed": true,
+    "code_accepted": "reward = -(1.2*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate/2.0) + 0.8*pow2(position_error/0.25) + 1.5*pow2(speed_err/0.15) + 1.6*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2)) + 0.7",
+    "validation_error": "",
+    "latency_s": 92.40600000001723,
+    "n_attempts": 3,
+    "raw_response": " {\"reward_code\": \"reward = -(1.2*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate/2.0) + 0.8*pow2(position_error/0.25) + 1.5*pow2(speed_err/0.15) + 1.6*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2)) + 0.7\", \"rationale\": \"Adjusted the weights to slightly penalize pitch, pitch rate, position error, speed error, yaw error, effort, and slew, while adding a slight positive alive bonus.\"}",
+    "checkpoint": "C:\\Users\\Sridevi\\Desktop\\mistral_tzejun_rewardcode_v3\\runs\\mistral_final\\candidate_02.zip",
+    "checkpoint_sha256": "396573df3dbab87d1d15ae456361b4927441679686d2e2401cd79ab7f6ba896d",
+    "reward": {
+      "reward_code": "reward = -(1.2*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate/2.0) + 0.8*pow2(position_error/0.25) + 1.5*pow2(speed_err/0.15) + 1.6*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2)) + 0.7"
+    },
+    "validation_selection_loss": 0.6460977531890975,
+    "actor_max_weight_change": 0.02214336395263672,
+    "accepted_as_best": true,
+    "added_timesteps_so_far": 122880,
+    "elapsed_s": 502.0320000000065
+  },
+  {
+    "iteration": 3,
+    "model": "mistral:latest",
+    "attempts": [
+      {
+        "attempt": 0,
+        "code": "reward = clip(-(1.2*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate/2.0) + 0.8*pow2(position_error/0.25) + 1.5*pow2(speed_err/0.15) + 1.6*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2) + 0.5*pow2(yaw_rms_rad_s/0.05) + 0.3*pow2(speed_rms_m_s/0.02)) + 0.7 + 0.2*survived",
+        "error": "validation failed: syntax error: '(' was never closed (<unknown>, line 1)",
+        "raw": " {\"reward_code\": \"reward = clip(-(1.2*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate/2.0) + 0.8*pow2(position_error/0.25) + 1.5*pow2(speed_err/0.15) + 1.6*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2) + 0.5*pow2(yaw_rms_rad_s/0.05) + 0.3*pow2(speed_rms_m_s/0.02)) + 0.7 + 0.2*survived\", \"rationale\": \"Adjusted the reward to penalize yaw and speed oscillations and reward survival.\"}"
+      },
+      {
+        "attempt": 1,
+        "code": "reward = -(1.2*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate/2.0) + 0.8*pow2(position_error/0.25) + 1.5*pow2(speed_err/0.15) + 1.6*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2)) + 0.7 - 0.2*(stationkeeping_success + reversal_rate)",
+        "error": "validation failed: unknown name: stationkeeping_success",
+        "raw": " {\"reward_code\": \"reward = -(1.2*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate/2.0) + 0.8*pow2(position_error/0.25) + 1.5*pow2(speed_err/0.15) + 1.6*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2)) + 0.7 - 0.2*(stationkeeping_success + reversal_rate)\", \"rationale\": \"Reduce pitch and yaw errors, reduce position error, reduce speed error, reduce effort, reduce slew, and penalize stationkee"
+      },
+      {
+        "attempt": 2,
+        "code": "reward = -(1.0*pow2(pitch/0.1745) + 0.5*pow2(pitch_rate/1.0) + 1.5*pow2(speed_err/0.15) + 1.6*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2)) + 0.7",
+        "error": ""
+      }
+    ],
+    "prompt_sha256": "c471f0e509c30898ab6160b7365f21417d3fcaa01f25eb7aecd51ba2f71b838a",
+    "status": "accepted",
+    "llm_contributed": true,
+    "code_accepted": "reward = -(1.0*pow2(pitch/0.1745) + 0.5*pow2(pitch_rate/1.0) + 1.5*pow2(speed_err/0.15) + 1.6*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2)) + 0.7",
+    "validation_error": "",
+    "latency_s": 79.93699999997625,
+    "n_attempts": 3,
+    "raw_response": " {\"reward_code\": \"reward = -(1.0*pow2(pitch/0.1745) + 0.5*pow2(pitch_rate/1.0) + 1.5*pow2(speed_err/0.15) + 1.6*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2)) + 0.7\", \"rationale\": \"Minimize pitch angle and pitch rate, penalize speed error, yaw error, effort and slew, with a positive alive bonus.\"}",
+    "checkpoint": "C:\\Users\\Sridevi\\Desktop\\mistral_tzejun_rewardcode_v3\\runs\\mistral_final\\candidate_03.zip",
+    "checkpoint_sha256": "869de39c68f78d63d717fae4aa9d3396d9187f30e3a31d9b094a7ee7a0e80e86",
+    "reward": {
+      "reward_code": "reward = -(1.0*pow2(pitch/0.1745) + 0.5*pow2(pitch_rate/1.0) + 1.5*pow2(speed_err/0.15) + 1.6*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2)) + 0.7"
+    },
+    "validation_selection_loss": 0.7934407666030656,
+    "actor_max_weight_change": 0.021371766924858093,
+    "accepted_as_best": false,
+    "added_timesteps_so_far": 163840,
+    "elapsed_s": 659.1410000000033
+  },
+  {
+    "iteration": 4,
+    "model": "mistral:latest",
+    "attempts": [
+      {
+        "attempt": 0,
+        "code": null,
+        "error": "no reward_code found in the response JSON",
+        "raw": " {\"reward_code\": \"reward = clip(-(1.2*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate/2.0) + 0.8*pow2(position_error/0.25) + 1.5*pow2(speed_err/0.15) + 1.6*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2) + 0.5*pow2(yaw_rms_rad_s/0.046908116593216635) - 0.2*pow2(reversal_rate - 0.9842421210605303)) + 0.7, \\\"rationale\\\": \\\"Reduce pitch and yaw oscillations and reversals, and encourage statio"
+      },
+      {
+        "attempt": 1,
+        "code": "reward = clip(-(1.5*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate) + 0.5*pow2(position_error/0.25) + 1.2*pow2(speed_err/0.15) + 1.6*pow2(yaw_err/0.25) + 0.2*pow2(effort/0.4) + 0.3*pow2(slew/0.2) + 0.1*pow2(torque_left) + 0.1*pow2(torque_right), -10.0, 10.0)",
+        "error": "validation failed: syntax error: '(' was never closed (<unknown>, line 1)",
+        "raw": " {\"reward_code\": \"reward = clip(-(1.5*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate) + 0.5*pow2(position_error/0.25) + 1.2*pow2(speed_err/0.15) + 1.6*pow2(yaw_err/0.25) + 0.2*pow2(effort/0.4) + 0.3*pow2(slew/0.2) + 0.1*pow2(torque_left) + 0.1*pow2(torque_right), -10.0, 10.0)\", \"rationale\": \"Reducing pitch and pitch_rate rewards to decrease pitch oscillations, increasing position_error and adding torque"
+      },
+      {
+        "attempt": 2,
+        "code": null,
+        "error": "no reward_code found in the response JSON",
+        "raw": " {\"reward_code\": \"reward = clip(-1.2*pow2(pitch/0.1745) - 0.8*pow2(pitch_rate) - 1.0*pow2(position_error/0.25) - 1.5*pow2(speed_err/0.15) - 1.6*pow2(yaw_err/0.25) - 0.3*pow2(effort/0.4) - 0.2*pow2(slew/0.2) + 0.7, 'rationale': 'Reducing pitch, pitch_rate, position_error, speed_err, yaw_err, effort, and slew, and adding a small positive alive bonus.'}\""
+      },
+      {
+        "attempt": 3,
+        "code": "reward = clip(-(1.2*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate) + 1.5*pow2(speed_err/0.15) + 0.8*pow2(position_error/0.25) + 2.0*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2) + 0.5), -10.0, 10.0)",
+        "error": ""
+      }
+    ],
+    "prompt_sha256": "6025bf2f28ce97be4770df6cb1b695439b74cc17ce4f22b248a59f682ccbadb2",
+    "status": "accepted",
+    "llm_contributed": true,
+    "code_accepted": "reward = clip(-(1.2*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate) + 1.5*pow2(speed_err/0.15) + 0.8*pow2(position_error/0.25) + 2.0*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2) + 0.5), -10.0, 10.0)",
+    "validation_error": "",
+    "latency_s": 117.26500000001397,
+    "n_attempts": 4,
+    "raw_response": " {\"reward_code\": \"reward = clip(-(1.2*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate) + 1.5*pow2(speed_err/0.15) + 0.8*pow2(position_error/0.25) + 2.0*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2) + 0.5), -10.0, 10.0)\", \"rationale\": \"Reducing the weight for pitch and pitch_rate, increasing the weight for yaw_err and reducing the weight for speed_err, effort and slew to address the weak metrics shown in the report. The survival term is now assumed to be always 1.0.\"}",
+    "checkpoint": "C:\\Users\\Sridevi\\Desktop\\mistral_tzejun_rewardcode_v3\\runs\\mistral_final\\candidate_04.zip",
+    "checkpoint_sha256": "d4edd973dfad4ec95a1c8718d34ae874142bd17598b93c27372b10f138d76bc1",
+    "reward": {
+      "reward_code": "reward = clip(-(1.2*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate) + 1.5*pow2(speed_err/0.15) + 0.8*pow2(position_error/0.25) + 2.0*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2) + 0.5), -10.0, 10.0)"
+    },
+    "validation_selection_loss": 0.6660851745967792,
+    "actor_max_weight_change": 0.01371738687157631,
+    "accepted_as_best": false,
+    "added_timesteps_so_far": 204800,
+    "elapsed_s": 832.9380000000237
+  },
+  {
+    "iteration": 5,
+    "model": "mistral:latest",
+    "attempts": [
+      {
+        "attempt": 0,
+        "code": "reward = clip(-(1.2*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate/2.0) + 0.8*pow2(position_error/0.25) + 1.5*pow2(speed_err/0.15) + 1.6*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2) + 0.5*pow2(yaw_rms_rad_s/0.046908116593216635) + 0.2*pow2(speed_rms_m_s/0.020315035188554122)) + 0.7 + 0.2*survived",
+        "error": "validation failed: syntax error: '(' was never closed (<unknown>, line 1)",
+        "raw": " {\"reward_code\": \"reward = clip(-(1.2*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate/2.0) + 0.8*pow2(position_error/0.25) + 1.5*pow2(speed_err/0.15) + 1.6*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2) + 0.5*pow2(yaw_rms_rad_s/0.046908116593216635) + 0.2*pow2(speed_rms_m_s/0.020315035188554122)) + 0.7 + 0.2*survived\", \"rationale\": \"Adjusting the reward to penalize high yaw and speed erro"
+      },
+      {
+        "attempt": 1,
+        "code": "reward = -(1.2*pow2(pitch/0.1745) + 0.5*pow2(pitch_rate/2.0) + 0.8*pow2(position_error/0.25) + 1.6*pow2(yaw_err/0.25) + 1.5*pow2(speed_err/0.15) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2)) + 0.7",
+        "error": ""
+      }
+    ],
+    "prompt_sha256": "a5c9add8b8bab929be98459ac6daa37091765bd8078f4e0589855809cbc713c7",
+    "status": "accepted",
+    "llm_contributed": true,
+    "code_accepted": "reward = -(1.2*pow2(pitch/0.1745) + 0.5*pow2(pitch_rate/2.0) + 0.8*pow2(position_error/0.25) + 1.6*pow2(yaw_err/0.25) + 1.5*pow2(speed_err/0.15) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2)) + 0.7",
+    "validation_error": "",
+    "latency_s": 86.95299999997951,
+    "n_attempts": 2,
+    "raw_response": " {\"reward_code\": \"reward = -(1.2*pow2(pitch/0.1745) + 0.5*pow2(pitch_rate/2.0) + 0.8*pow2(position_error/0.25) + 1.6*pow2(yaw_err/0.25) + 1.5*pow2(speed_err/0.15) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2)) + 0.7\", \"rationale\": \"Reduced the weight of pitch_rate to improve pitch_rms_deg, increased the weight of yaw_err to reduce yaw_rms_rad_s, and added a small positive alive bonus.\"}",
+    "checkpoint": "C:\\Users\\Sridevi\\Desktop\\mistral_tzejun_rewardcode_v3\\runs\\mistral_final\\candidate_05.zip",
+    "checkpoint_sha256": "fb4fa7e04e5626c84761f8af941a9853243f5240c128095323cb7f138c5f06b9",
+    "reward": {
+      "reward_code": "reward = -(1.2*pow2(pitch/0.1745) + 0.5*pow2(pitch_rate/2.0) + 0.8*pow2(position_error/0.25) + 1.6*pow2(yaw_err/0.25) + 1.5*pow2(speed_err/0.15) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2)) + 0.7"
+    },
+    "validation_selection_loss": 169.648856447605,
+    "actor_max_weight_change": 0.020545344799757004,
+    "accepted_as_best": false,
+    "added_timesteps_so_far": 245760,
+    "elapsed_s": 982.0630000000237
+  }
+]

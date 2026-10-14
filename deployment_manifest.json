@@ -1,0 +1,26 @@
+{
+  "staged_utc": "2026-10-14T06:42:44.310311+00:00",
+  "source_run": "runs\\mistral_final",
+  "condition": "mistral",
+  "selected_checkpoint_sha256": "038001ed832aee118e1bf05b93a6a0eed994e94c644f8c596d0fa8d9caf4c841",
+  "base_checkpoint_sha256": "a850b7cd7b0fbb9bdec828439d4bec6effa589099acb2405acdc6fa4f879511d",
+  "reward_weights": null,
+  "actual_added_timesteps": 245760,
+  "beats_parent_on_validation": true,
+  "forced": false,
+  "staged_policy_weights_sha256": "10cbc0f4fecfac062500f9222fcc0b64b5badb08b605793177d35e990fcdd93d",
+  "staged_policy_testvectors_sha256": "f57669a2765c9c765ef04c9a41a6885f9350870b5abd6c809ec8dc7b54dbd403",
+  "frozen_backup_dir": "C:\\Users\\Sridevi\\Desktop\\mistral_tzejun_rewardcode_v3\\stm32_Balance_Car_L\\APP\\YbHybrid\\_frozen_backup",
+  "firmware_self_test_tolerance": 0.002,
+  "hardware_verified": false,
+  "fresh_hex_present": false,
+  "flashed": false,
+  "note": "Standalone NN; no PID residual. Firmware re-quantizes float weights at boot. Trained on the reference observation pipeline (chassis velocity) + latency randomization; the firmware uses wheel odometry, a documented residual train/deploy gap. Absolute yaw is unobservable (6-axis IMU); only yaw-rate drift is controllable.",
+  "gated_next_steps": [
+    "1. Open stm32_Balance_Car_L/USER/stm32_Balance_Car.uvprojx in uVision and Rebuild All.",
+    "2. Confirm 0 errors and a FRESH OBJ_*/*.hex timestamp AFTER this staging time.",
+    "3. Run verify_export parity + the unarmed 200-tick real-inference preflight.",
+    "4. Supported sensor/motor-direction checks, then a short restrained trial.",
+    "5. Brief supported floor release only if all prior checks pass. KEY1 stop reachable."
+  ]
+}

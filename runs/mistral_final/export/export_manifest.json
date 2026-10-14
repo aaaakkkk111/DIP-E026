@@ -1,0 +1,23 @@
+{
+  "purpose": "finetuned_tzejun_actor_export_isolated_to_this_project",
+  "exported_actor_header_sha256": "10cbc0f4fecfac062500f9222fcc0b64b5badb08b605793177d35e990fcdd93d",
+  "selected_checkpoint_sha256": "038001ed832aee118e1bf05b93a6a0eed994e94c644f8c596d0fa8d9caf4c841",
+  "base_checkpoint_sha256": "a850b7cd7b0fbb9bdec828439d4bec6effa589099acb2405acdc6fa4f879511d",
+  "actor": "34-64(tanh)-64(tanh)-2(linear clipped) standalone",
+  "actor_parameters": 6530,
+  "reward_weights": {
+    "reward_code": "reward = -(1.2*pow2(pitch/0.1745) + 1.0*pow2(pitch_rate/2.0) + 0.8*pow2(position_error/0.25) + 1.5*pow2(speed_err/0.15) + 1.6*pow2(yaw_err/0.25) + 0.3*pow2(effort/0.4) + 0.2*pow2(slew/0.2)) + 0.7"
+  },
+  "sb3_export_max_abs_action_error": 5.960464477539063e-08,
+  "written_into": "C:\\Users\\Sridevi\\Desktop\\mistral_tzejun_rewardcode_v3\\runs\\mistral_final\\export",
+  "touches_original_keil": false,
+  "hardware_verified": false,
+  "requires_fresh_keil_build": true,
+  "condition": "mistral",
+  "run_seed_index": 0,
+  "ppo_seed": 7,
+  "inherited_num_timesteps": 29830000,
+  "actual_added_timesteps": 245760,
+  "llm_model": "mistral:latest",
+  "reward_mechanism": "llm_written_code"
+}

@@ -1,0 +1,35 @@
+{
+  "label": "mistral_final_trial1",
+  "requested_seconds": 120.0,
+  "n_samples": 1006,
+  "read_only": true,
+  "armed_by": "physical KEY1 only; logger never writes serial",
+  "scope": "Streamed telemetry (~20 Hz snapshots), not the full 200 Hz loop",
+  "max_abs_pitch_deg": 78.34405517578125,
+  "max_abs_roll_deg": 37.19865036010742,
+  "max_abs_pwm_counts": 2600.0,
+  "fell": false,
+  "fault_codes": [
+    128
+  ],
+  "fault_meanings": [
+    "physical KEY1 stop"
+  ],
+  "battery_v_range": [
+    12.135401725769043,
+    12.257096290588379
+  ],
+  "armed_fraction": 0.562624254473161,
+  "stopped_fraction": 0.437375745526839,
+  "feedback_for_model": {
+    "pitch_rms_deg": 3.032555063390769,
+    "yaw_rate_rms_rad_s": 0.35983010006831023,
+    "speed_rms_m_s": 0.11617209417920682,
+    "mean_speed_m_s": 0.020182064303183134,
+    "net_displacement_m": 0.8568894110503606,
+    "dominant_failure": "none_observed",
+    "note": "Use these as the real-world gap vs sim. High yaw_rate_rms or net displacement under zero command => raise yaw/position/speed emphasis and/or train with more sensing-latency randomisation.",
+    "armed_samples": 566,
+    "armed_coverage_ok": true
+  }
+}
