@@ -295,7 +295,13 @@ PITCH_RATE_PENALTY_MAX = 1.0      # per step
 # evaluation, and simlib's test cars, stay push-free so their scores compare.
 # The size ramps in with the velocity curriculum (CurriculumCallback), so
 # balance comes first.
-PUSH_MAX_N = 4.0                  # uniform 0..max, either direction
+# Run 15: 3 N, not 4. The stock PID survives 3 N x 0.1 s but never 4 N, and
+# 10-23 % of run 14's pushes were above its limit; surviving those needs a
+# twitchy controller, which run 14's wobble penalty then fought.
+PUSH_MAX_N = 3.0                  # uniform 0..max, either direction
+# Run 15: no wobble penalty during a push and for this long after it, so
+# recovering hard is not charged; calm is graded only when left alone.
+PENALTY_PAUSE_S = 1.0
 PUSH_DURATION_S = (0.05, 0.15)
 PUSH_HEIGHT_M = (0.05, 0.15)      # above the axle
 PUSH_INTERVAL_S = (1.5, 4.0)      # from the end of one push to the next
@@ -735,6 +741,7 @@ class PWMCommandWrapper(VelocityCommandWrapper):
         self._push_scale = 0.0
         self._push_left = 0           # ticks left in the current push
         self._push_next = 0           # ticks until the next push starts
+        self._calm_pause = 0          # ticks left without the wobble penalty
         self._chassis_id = mujoco.mj_name2id(self.unwrapped.model, mujoco.mjtObj.mjOBJ_BODY, "chassis")
         base = self.observation_space.shape[0]
         self.observation_space = gym.spaces.Box(
@@ -864,6 +871,7 @@ class PWMCommandWrapper(VelocityCommandWrapper):
         f = force * fwd
         d.xfrc_applied[self._chassis_id] = [f[0], f[1], 0.0, -lever * f[1], lever * f[0], 0.0]
         self._push_left = max(1, int(round(rng.uniform(*PUSH_DURATION_S) / self.unwrapped.dt)))
+        self._calm_pause = self._push_left + int(PENALTY_PAUSE_S / self.unwrapped.dt)
 
     def step(self, action):
         action = np.asarray(action, dtype=np.float64)
@@ -894,7 +902,10 @@ class PWMCommandWrapper(VelocityCommandWrapper):
 
         # Wobble, on the true chassis pitch rate (qvel[4], body frame).
         q = float(self.unwrapped.data.qvel[4])
-        reward -= min(PITCH_RATE_WEIGHT * q * q, PITCH_RATE_PENALTY_MAX)
+        if self._calm_pause > 0:
+            self._calm_pause -= 1
+        else:
+            reward -= min(PITCH_RATE_WEIGHT * q * q, PITCH_RATE_PENALTY_MAX)
         return obs, reward, terminated, truncated, info
 
     def reset(self, **kwargs):
@@ -929,6 +940,7 @@ class PWMCommandWrapper(VelocityCommandWrapper):
         # No push carried over from the last episode; the first comes 1.5-4 s in.
         self.unwrapped.data.xfrc_applied[self._chassis_id] = 0.0
         self._push_left = 0
+        self._calm_pause = 0
         self._schedule_push()
 
         # Armature (on the rotor joints) and gear slack (tendon ranges) are
@@ -975,7 +987,10 @@ def make_env(**kwargs):
 #
 # Run 14 trains from scratch (30M steps) with pushes and the wobble penalty at
 # 1.5: a fine-tune from run 13 would keep run 13's way of balancing.
-RUN_NAME = "run14"
+#
+# Run 15 is run 14 with pushes capped at 3 N and the wobble penalty paused
+# for 1 s after each push (session-logs/2026-10-14-run14-desktop.md §3-4).
+RUN_NAME = "run15"
 INIT_FROM = "none"
 FINETUNE_STEPS = 10_000_000
 FINETUNE_LR = 1e-4

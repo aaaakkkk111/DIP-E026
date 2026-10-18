@@ -48,17 +48,22 @@ venv\Scripts\activate
 python train_real_robot.py
 ```
 
-`train_real_robot.py` is currently set up as **run 14 (not trained yet)**:
-from scratch, 30M steps, with:
+`train_real_robot.py` is currently set up as **run 15 (trained 2026-10-18;
+`models/best_real` is its final checkpoint)**: from scratch, 30M steps, with:
 - the measured motor and stiction;
 - gear slack 0–4° and delay 5–15 ms;
-- pushes;
-- the wobble penalty at **1.5** (run 13: 0.5, run 11: 1.5 without pushes).
+- pushes up to **3 N** (runs 12–14: 4 N, more than even the stock PID
+  survives);
+- the wobble penalty at 1.5, **paused for 1 s after each push**
+  (`PENALTY_PAUSE_S`), so recovering hard isn't charged.
 
 Why: on the car (2026-10-14) run 13 stood at 26–36 deg/s mid-run, as the
 simulator predicted, while the stock PID stands at 7.6 deg/s on the same car
-and recovers from hard hand pushes. Goal: calm like the PID *and* push-proof.
-Background: `session-logs/2026-10-14-run13-on-car-and-run14.md`.
+and recovers from hard hand pushes. Run 14 (penalty 1.5, 4 N pushes) was
+calmer but lost push tolerance. Run 15 keeps run 13's push tolerance and is
+about 20 % calmer, still short of the PID. Background:
+`session-logs/2026-10-14-run13-on-car-and-run14.md`,
+`2026-10-14-run14-desktop.md`, `2026-10-18-run15-desktop.md`.
 
 Run it again only after changing `RUN_NAME` and `INIT_FROM` for the next
 run.
@@ -97,7 +102,7 @@ wobble, from the 200 Hz stream, is 12–22 deg/s, and the simulator with the
 measured motor reproduces it (13.5–21). So judge a car run from the stream,
 mid-run (`sim_tools/stream_log.py`), and compare it with `simlib.run()`.
 
-**Run 14's target** (the stock PID's level): standing wobble at most about
+**The calm target** (the stock PID's level; runs 14 and 15 missed it): standing wobble at most about
 10 deg/s at 2° slack, 5–15 ms, and surviving 3 N × 0.1 s in at least 15 of
 18. If it is calm but no longer push-proof, the penalty is too strong for the
 pushes (try 1.0); if it is push-proof but not calm, too weak.
@@ -117,6 +122,8 @@ Reference, simulated at 2° slack:
 | run 11 | 11–16 | 12–22 | 0 |
 | run 12 | 26–35 | | 14 |
 | run 13 | 24–33 | 26–36 | 18 |
+| run 14 final | 17–28 | | 5 |
+| run 15 final | 20–25 | (expect ~21–27) | 18 |
 
 ## 4. Desktop: export and push
 
@@ -146,9 +153,14 @@ of the exported network is
 
 1. `git pull` in the repo.
 2. Make a project folder for the new weights (once per run), leaving the
-   flashed ones intact. Copy from the newest build: `car_firmware_reversal`
-   (it has the 200 Hz stream that `stream_log.py` records), or your run 12
-   folder if you made one from it:
+   flashed ones intact. **For run 15:** copy `car_firmware_run13`, which
+   already has the stream and the step 4 edits, so only the headers change
+   (use `run15` for `run13` in steps 3, 5 and 7):
+   ```
+   robocopy C:\Users\USER\Desktop\car_firmware_run13 C:\Users\USER\Desktop\car_firmware_run15 /E /XD OBJ Objects Listings
+   ```
+   Run 13 itself was copied from `car_firmware_reversal` (the 200 Hz stream
+   that `stream_log.py` records):
    ```
    robocopy C:\Users\USER\Desktop\car_firmware_reversal C:\Users\USER\Desktop\car_firmware_run13 /E /XD OBJ Objects Listings
    ```

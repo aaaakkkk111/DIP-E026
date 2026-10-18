@@ -4,15 +4,18 @@ A PPO policy trained in MuJoCo to balance and drive the Yahboom two-wheeled
 car (STM32F103, MPU6050, AT8236 driver, JGB37-520 motors), plus the C code that
 runs it on the car.
 
-**Status (2026-10-14):** runs 8, 9 and 11 have balanced on the car, 11–51 s
+**Status (2026-10-19):** runs 8, 9, 11 and 13 have balanced on the car, 11–58 s
 per run, ended by hand. The simulator now uses the motor measured on the car,
 with stiction, and about 2° of gear slack. The stock PID and run 11's real
 balancing both match it: run 11 sways at 12–22 deg/s on the car and 13.5–21 in
 simulation.
 
-The checkpoint in `models/best_real/` is **run 13**, not yet tested on the
-car. It was trained on that motor with pushes, and in simulation it survives a
-3 N shove as often as the stock PID does. Its firmware needs two
+The checkpoint in `models/best_real/` is **run 15**, not yet tested on the
+car. It was trained on that motor with pushes up to 3 N. In simulation it
+survives a 3 N shove as often as the stock PID does, like run 13 (on the car
+since 2026-10-14), and stands about 20 % calmer than run 13, though still
+about 3× wobblier than the PID
+([log](session-logs/2026-10-18-run15-desktop.md)). Its firmware needs two
 `rl_mode.c` edits: turning at 1.0 rad/s instead of 0.5, and a fixed pitch
 zero, so `cal` only needs the car held still. See
 [session-logs/2026-10-08-run12-measured-motor-and-pushes.md](session-logs/2026-10-08-run12-measured-motor-and-pushes.md),
