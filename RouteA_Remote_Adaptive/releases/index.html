@@ -1,0 +1,1352 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#06121e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>BalanceBot Remote Adaptive · Bluefy</title>
+  <style>:root{--bg:#06121e;--panel:#0c1d2b;--card:#102638;--line:#234158;--text:#eef8ff;--muted:#8faabd;--cyan:#2dd4bf;--blue:#3b82f6;--amber:#fbbf24;--red:#fb4b5c;--green:#4ade80;--nav:66px;color-scheme:dark}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:radial-gradient(circle at 90% 0,#123554 0,transparent 35%),var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC",sans-serif}body{padding:calc(env(safe-area-inset-top) + 10px) 14px calc(var(--nav) + env(safe-area-inset-bottom) + 82px)}button,input,select{font:inherit}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:900px;margin:auto;padding:8px 2px 14px}.eyebrow{font-size:11px;letter-spacing:.13em;color:var(--cyan);font-weight:800}.topbar h1,.section-head h2{margin:3px 0 0;font-size:24px}.pill,.tag{border:1px solid var(--line);background:#0b2030;color:var(--muted);border-radius:999px;padding:8px 11px;font-size:12px}.pill{display:flex;gap:7px;align-items:center}.pill i{width:8px;height:8px;border-radius:50%;background:#60788a}.pill.online i{background:var(--green);box-shadow:0 0 10px var(--green)}.pill.connecting i{background:var(--amber)}main{max-width:900px;margin:auto}.page{display:none}.page.active{display:block}.card{background:linear-gradient(145deg,rgba(18,43,62,.98),rgba(10,29,43,.98));border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:12px;box-shadow:0 10px 30px rgba(0,0,0,.15)}.notice{border-radius:15px;padding:12px 14px;margin-bottom:12px;font-size:13px;line-height:1.55}.notice.safe{background:#0d332a;border:1px solid #22634e;color:#c5fae0}.notice.warning{background:#362b12;border:1px solid #725a20;color:#ffe8a4}.notice.danger{background:#3a1820;border:1px solid #7b2937;color:#ffd1d7}.hidden{display:none!important}.hero{display:flex;justify-content:space-between;align-items:center;min-height:150px}.hero .label,.hero-side span{display:block;color:var(--muted);font-size:12px}.hero strong{display:block;font-size:52px;line-height:1.1;margin:6px 0}.hero small{color:var(--muted)}.hero-side{min-width:138px;display:grid;gap:5px;text-align:right}.hero-side b{font-size:17px;margin-bottom:9px}.grid{display:grid;gap:10px}.metrics{grid-template-columns:1fr 1fr}.metric{margin:0;min-height:86px}.metric span,.status-list span,.decision span,.auto-controls span{display:block;color:var(--muted);font-size:12px}.metric b{display:block;font-size:20px;margin-top:9px}.card-title,.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.card-title{font-weight:800;margin-bottom:12px}.section-head{margin:8px 2px 14px}.legend{font-size:11px;color:var(--muted);font-weight:400}.legend i{display:inline-block;width:16px;height:3px;border-radius:2px;margin:0 4px}.angle-line{background:var(--cyan)}.gyro-line{background:var(--amber)}canvas{display:block;width:100%}.status-list{display:grid;grid-template-columns:1fr 1fr;gap:14px}.status-list b{display:block;margin-top:4px;font-size:13px;word-break:break-word}.preset-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.preset{border:1px solid var(--line);background:#0a1a28;color:var(--text);border-radius:16px;padding:14px;text-align:left;min-height:118px}.preset b,.preset small,.preset span{display:block}.preset b{font-size:19px}.preset small{color:var(--cyan);margin:4px 0 12px}.preset span{color:var(--muted);font-size:11px;line-height:1.45}.preset.active{border-color:var(--cyan);box-shadow:0 0 0 2px rgba(45,212,191,.13)}button:disabled,input:disabled,select:disabled{opacity:.42}.field,.form-card label,.pid-grid label{display:block;color:var(--muted);font-size:12px}.pid-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}.pid-grid label{background:#0a1b29;border:1px solid var(--line);border-radius:15px;padding:11px}.pid-grid small{float:right;color:var(--cyan)}input,select{width:100%;margin-top:8px;border:1px solid #31526a;background:#071622;color:var(--text);border-radius:11px;padding:11px;outline:none}input:focus,select:focus{border-color:var(--cyan)}.btn,.compact,.drive-btn,.stop-main,.diag-grid button{border:1px solid var(--line);background:#173148;color:var(--text);border-radius:14px;padding:13px;font-weight:750}.btn.primary{background:#126d67;border-color:#2dd4bf}.btn.accent{background:linear-gradient(135deg,#2563eb,#7c3aed);border-color:#7790ff}.btn.danger-btn{background:#742435;border-color:#fb7185}.full{width:100%;margin-top:10px}.compact{padding:7px 11px;font-size:12px}.footnote{color:var(--muted);font-size:12px;line-height:1.55}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}.drive-pad{display:grid;grid-template:repeat(3,82px)/repeat(3,1fr);gap:8px;max-width:470px;margin:0 auto 12px}.drive-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:24px;touch-action:none}.drive-btn small{font-size:12px;margin-top:4px}.forward{grid-column:2}.left{grid-row:2;grid-column:1}.right{grid-row:2;grid-column:3}.back{grid-row:3;grid-column:2}.stop-main{grid-row:2;grid-column:2;border-radius:50%;margin:5px;background:#c5223c;border-color:#ff7185}.danger-tag{color:#ffd1d7}.auto-controls{display:grid;grid-template-columns:1fr 1fr;gap:10px}.auto-controls>div{background:#0a1b29;border-radius:13px;padding:12px}.auto-controls b{display:block;margin-top:6px}.auto-controls>div:last-child{grid-column:1/-1}.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.metric-grid>div,.decision>div{background:#0a1b29;border-radius:13px;padding:11px}.metric-grid span{display:block;color:var(--muted);font-size:11px}.metric-grid b{display:block;margin-top:6px;font-size:16px}.decision{display:grid;gap:9px}.decision b{display:block;margin-top:5px;font-size:13px;line-height:1.5}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:9px 7px;border-bottom:1px solid var(--line);white-space:nowrap;text-align:right}th:first-child,td:first-child{text-align:left}.form-card label{margin-bottom:12px}pre{height:250px;overflow:auto;background:#04101a;border-radius:12px;padding:10px;color:#a9c7d9;font:11px/1.55 "SF Mono",monospace;white-space:pre-wrap;word-break:break-all}.emergency{position:fixed;z-index:30;right:14px;bottom:calc(var(--nav) + env(safe-area-inset-bottom) + 12px);border:2px solid #ff7185;border-radius:17px;background:#d5213b;color:#fff;padding:15px 18px;font-weight:900;box-shadow:0 8px 28px rgba(213,33,59,.45)}nav{position:fixed;z-index:25;left:0;right:0;bottom:0;height:calc(var(--nav) + env(safe-area-inset-bottom));padding:5px 8px env(safe-area-inset-bottom);display:grid;grid-template-columns:repeat(4,1fr);background:rgba(4,14,24,.95);border-top:1px solid var(--line);backdrop-filter:blur(18px)}nav button{border:0;background:transparent;color:#7892a7;font-size:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}nav button span{font-size:20px}nav button.active{color:var(--cyan)}#toast{position:fixed;z-index:50;left:50%;bottom:calc(var(--nav) + env(safe-area-inset-bottom) + 80px);transform:translate(-50%,18px);width:min(88%,540px);background:#effaff;color:#07111f;border-radius:13px;padding:12px 15px;text-align:center;font-weight:750;opacity:0;pointer-events:none;transition:.2s}#toast.show{opacity:1;transform:translate(-50%,0)}@media(min-width:700px){.metrics{grid-template-columns:repeat(4,1fr)}.pid-grid{grid-template-columns:repeat(3,1fr)}.metric-grid{grid-template-columns:repeat(4,1fr)}}@media(max-width:380px){.hero strong{font-size:44px}.preset-grid{grid-template-columns:1fr}.topbar h1{font-size:20px}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div><span class="eyebrow">BALANCEBOT · MODE 21 · RA3.3-DIRECT</span><h1>远程自适应控制</h1></div>
+  <button id="connectionPill" class="pill offline" data-action="connect"><i></i><b>未连接</b></button>
+</header>
+
+<main>
+  <section class="page active" data-page="status">
+    <div id="secureBanner" class="notice warning hidden"></div>
+    <div class="notice safe">STM32始终执行5 ms实时平衡；Normal/Load选择和PID优化由手机决定。手机未连接时保持最后一组已确认参数。</div>
+
+    <div class="hero card">
+      <div>
+        <span class="label">实时倾角</span>
+        <strong id="angleHero">--.-°</strong>
+        <small id="gyroHero">角速度 --.- raw</small>
+      </div>
+      <div class="hero-side">
+        <span>当前配置</span><b id="profileHero">—</b>
+        <span>自动训练</span><b id="autoHero">未启动</b>
+      </div>
+    </div>
+
+    <div class="grid metrics">
+      <div class="card metric"><span>电池</span><b id="battery">-- V</b></div>
+      <div class="card metric"><span>遥测频率</span><b id="rxHz">0.0 Hz</b></div>
+      <div class="card metric"><span>左 / 右编码器</span><b id="encoders">-- / --</b></div>
+      <div class="card metric"><span>左 / 右PWM</span><b id="motors">-- / --</b></div>
+      <div class="card metric"><span>osc</span><b id="oscValue">--</b></div>
+      <div class="card metric"><span>lean</span><b id="leanValue">--°</b></div>
+      <div class="card metric"><span>角度RMS</span><b id="rmsValue">--°</b></div>
+      <div class="card metric"><span>综合代价</span><b id="scoreValue">--</b></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>最近30秒</span><span class="legend"><i class="angle-line"></i>角度 <i class="gyro-line"></i>角速度/10</span></div>
+      <canvas id="chart" height="220"></canvas>
+    </div>
+
+    <div class="card status-list">
+      <div><span>设备</span><b id="deviceName">—</b></div>
+      <div><span>固件</span><b id="firmware">—</b></div>
+      <div><span>平衡启动</span><b id="balanceState">未确认</b></div>
+      <div><span>训练锁</span><b id="trainingLock">未确认</b></div>
+      <div><span>固件事务</span><b id="firmwareState">未知</b></div>
+      <div><span>最近接收</span><b id="lastRx">—</b></div>
+      <div><span>有效 / 错误帧</span><b id="frameCounts">0 / 0</b></div>
+      <div><span>固件发送丢弃</span><b id="dropped">—</b></div>
+      <div><span>最小剩余栈</span><b id="stackFree">—</b></div>
+      <div><span>最大控制周期间隔</span><b id="controlGap">—</b></div>
+      <div><span>最大控制执行耗时</span><b id="controlExec">—</b></div>
+    </div>
+  </section>
+
+  <section class="page" data-page="manual">
+    <div class="section-head"><div><span class="eyebrow">MANUAL CONTROL</span><h2>人工控制与调参</h2></div><span id="manualLockTag" class="tag">可编辑</span></div>
+    <div class="notice warning">自动训练运行时，人工PID和预设按钮会锁定。先停止自动训练才能人工修改。</div>
+
+    <div class="card">
+      <div class="card-title"><span>两组官方预设</span><span id="activeProfileTag" class="tag">当前 —</span></div>
+      <div class="preset-grid">
+        <button id="presetNormal" class="preset" data-profile="N"><b>Normal</b><small>官方模式1</small><span>96 / 48 / 62 / 31 / 17 / 20</span></button>
+        <button id="presetLoad" class="preset" data-profile="L"><b>Load</b><small>官方模式4</small><span>96 / 75 / 70 / 35 / 14 / 20</span></button>
+      </div>
+      <p class="footnote">Load目标倍率：平衡×2.0、速度×1.35、转向×1.0；仅通过预设按钮显式切换。普通调参不改变配置或倍率。</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>当前与人工候选PID</span><button class="compact" data-action="get-pid">同步</button></div>
+      <label class="field">当前所属配置（使用上方预设按钮切换）
+        <select id="manualProfile" disabled><option value="N">Normal</option><option value="L">Load</option></select>
+      </label>
+      <div class="pid-grid">
+        <label>AP <small id="liveAP">实际 --</small><input id="editAP" inputmode="decimal"></label>
+        <label>AD <small id="liveAD">实际 --</small><input id="editAD" inputmode="decimal"></label>
+        <label>VP <small id="liveVP">实际 --</small><input id="editVP" inputmode="decimal"></label>
+        <label>VI <small id="liveVI">实际 --</small><input id="editVI" inputmode="decimal"></label>
+        <label>TP <small id="liveTP">实际 --</small><input id="editTP" inputmode="decimal"></label>
+        <label>TD <small id="liveTD">实际 --</small><input id="editTD" inputmode="decimal"></label>
+      </div>
+      <button class="btn full" data-action="probe">测试通信（不修改PID）</button>
+      <p class="footnote">先测试通信，再重复应用不变的PID。状态页提供栈余量与控制周期诊断；需固件RA3.3-DIRECT。</p>
+      <div class="two-col"><button id="applyBalance" class="btn" data-action="manual-balance">更新平衡环 AP / AD</button><button id="applyVelocity" class="btn" data-action="manual-velocity">更新速度环 VP / VI</button></div>
+      <button id="applyTurn" class="btn full" data-action="manual-turn">更新转向环 TP / TD</button>
+      <button id="applyManual" class="btn primary full" data-action="manual-apply">更新全部PID</button>
+      <p class="footnote">更新时保留积分与滤波状态，下个5 ms控制边界直接赋值；单环按钮只写对应两项。收到完成响应并读回一致后才确认已应用。没有相对百分比限制。</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>移动控制</span><span class="tag danger-tag">按住移动</span></div>
+      <div class="drive-pad">
+        <button class="drive-btn forward" data-motion="1,0">▲<small>前进</small></button>
+        <button class="drive-btn left" data-motion="3,0">◀<small>左转</small></button>
+        <button class="stop-main" data-action="stop">停止</button>
+        <button class="drive-btn right" data-motion="4,0">▶<small>右转</small></button>
+        <button class="drive-btn back" data-motion="2,0">▼<small>后退</small></button>
+      </div>
+      <div class="two-col">
+        <button class="btn" data-motion="0,1">↶ 原地左转</button>
+        <button class="btn" data-motion="0,2">↷ 原地右转</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" data-page="auto">
+    <div class="section-head"><div><span class="eyebrow">FULL AUTO · LLM SUPERVISOR</span><h2>自动LLM调参</h2></div><span id="autoPhaseTag" class="tag">停止</span></div>
+    <div class="notice danger">启动后会自动把候选直接应用到实车。请扶车、清空周围区域，并保留物理断电手段。</div>
+
+    <div class="auto-controls card">
+      <button id="autoStart" class="btn accent" data-action="auto-start">开始自动LLM调参</button>
+      <button id="autoPause" class="btn danger-btn" data-action="auto-pause">停止并回滚活动试验</button>
+      <div><span>阶段</span><b id="autoPhase">IDLE</b></div>
+      <div><span>循环</span><b id="autoCycle">0</b></div>
+      <div><span>下一步</span><b id="autoNext">连接并同步小车</b></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>本轮窗口指标</span><span id="windowSamples" class="tag">0样本</span></div>
+      <div class="metric-grid">
+        <div><span>综合代价</span><b id="metricScore">--</b></div>
+        <div><span>角度RMS</span><b id="metricRms">--</b></div>
+        <div><span>角度峰值</span><b id="metricPeak">--</b></div>
+        <div><span>角速度RMS</span><b id="metricGyro">--</b></div>
+        <div><span>osc均值</span><b id="metricOsc">--</b></div>
+        <div><span>lean均值</span><b id="metricLean">--</b></div>
+        <div><span>PWM饱和率</span><b id="metricSat">--</b></div>
+        <div><span>电机负担</span><b id="metricEffort">--</b></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>最近LLM决策</span><span id="decisionAction" class="tag">尚无</span></div>
+      <div class="decision">
+        <div><span>目标配置</span><b id="decisionProfile">—</b></div>
+        <div><span>候选PID</span><b id="decisionPid">—</b></div>
+        <div><span>理由</span><b id="decisionReason">等待首个基线窗口</b></div>
+        <div><span>预期</span><b id="decisionEffect">—</b></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>自动优化历史</span><button class="compact" data-action="export-json">导出</button></div>
+      <div class="table-wrap"><table><thead><tr><th>#</th><th>动作</th><th>配置</th><th>分数</th><th>结果</th></tr></thead><tbody id="historyBody"><tr><td colspan="5">尚无记录</td></tr></tbody></table></div>
+    </div>
+  </section>
+
+  <section class="page" data-page="settings">
+    <div class="section-head"><div><span class="eyebrow">CONNECTION · MODEL · LOG</span><h2>设置</h2></div></div>
+
+    <div class="card form-card">
+      <div class="card-title"><span>BLE UART</span><span class="tag">9600 baud</span></div>
+      <label>Service UUID<input id="serviceUuid" value="0000ffe0-0000-1000-8000-00805f9b34fb"></label>
+      <label>Characteristic UUID<input id="charUuid" value="0000ffe1-0000-1000-8000-00805f9b34fb"></label>
+      <label>设备名称前缀<input id="namePrefix" value="YahBoom_BL"></label>
+      <div class="two-col"><label>分片字节<input id="chunkSize" type="number" value="20" min="1" max="20"></label><label>分片间隔ms<input id="chunkDelay" type="number" value="18" min="0" max="100"></label></div>
+    </div>
+
+    <div class="card form-card">
+      <div class="card-title"><span>LLM接口</span><span class="tag">OpenAI-compatible</span></div>
+      <label>Base URL<input id="llmBase" value="https://api.deepseek.com"></label>
+      <label>Model<input id="llmModel" value="deepseek-chat"></label>
+      <label>API Key（不持久化）<input id="llmKey" type="password" autocomplete="off" placeholder="sk-..."></label>
+      <p class="footnote">网页直接请求该接口。若接口禁止CORS，需要使用自己的HTTPS代理；API Key不会写入localStorage或导出文件。</p>
+    </div>
+
+    <div class="card form-card">
+      <div class="card-title"><span>自动循环时间</span><span class="tag">毫秒</span></div>
+      <div class="two-col"><label>基线窗口<input id="baselineMs" type="number" value="4000" min="3000" max="20000"></label><label>切换稳定期<input id="settleMs" type="number" value="1500" min="500" max="5000"></label></div>
+      <div class="two-col"><label>评估窗口<input id="evalMs" type="number" value="6000" min="3000" max="20000"></label><label>最低改善%<input id="improvementPct" type="number" value="3" min="0" max="30" step="0.5"></label></div>
+      <button class="btn primary full" data-action="save-settings">保存设置</button>
+    </div>
+
+    <div class="card">
+      <div class="two-col"><button class="btn primary" data-action="connect">连接小车</button><button class="btn" data-action="disconnect">安全断开</button></div>
+      <button class="btn full" data-action="mock">启动模拟设备</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>原始通信日志</span><span id="logCount" class="tag">0</span></div>
+      <pre id="log"></pre>
+      <div class="two-col"><button class="btn" data-action="export-csv">导出CSV</button><button class="btn" data-action="clear-log">清空显示</button></div>
+    </div>
+  </section>
+</main>
+
+<button id="emergencyStop" class="emergency" data-action="stop">■ 紧急停止</button>
+<nav>
+  <button class="active" data-nav="status"><span>◉</span>状态</button>
+  <button data-nav="manual"><span>✥</span>人工</button>
+  <button data-nav="auto"><span>◇</span>自动</button>
+  <button data-nav="settings"><span>⚙</span>设置</button>
+</nav>
+<div id="toast" role="status"></div>
+<script>(function (root, factory) {
+  const api = factory();
+  if (typeof module === "object" && module.exports) module.exports = api;
+  root.RouteACore = api;
+})(typeof globalThis !== "undefined" ? globalThis : this, function () {
+  "use strict";
+
+  const PID_KEYS = Object.freeze(["AP", "AD", "VP", "VI", "TP", "TD"]);
+  const RANGES = Object.freeze({
+    AP: Object.freeze([20, 288]), AD: Object.freeze([5, 200]),
+    VP: Object.freeze([10, 72]), VI: Object.freeze([1, 100]),
+    TP: Object.freeze([1, 100]), TD: Object.freeze([1, 100])
+  });
+  const PRESETS = Object.freeze({
+    N: Object.freeze({ name: "Normal / 官方模式1", AP: 96, AD: 48, VP: 62, VI: 31, TP: 17, TD: 20, balanceScale: 1, velocityScale: 1, turnScale: 1 }),
+    L: Object.freeze({ name: "Load / 官方模式4", AP: 96, AD: 75, VP: 70, VI: 35, TP: 14, TD: 20, balanceScale: 2, velocityScale: 1.35, turnScale: 1 })
+  });
+  const ACTIONS = Object.freeze(["switch_preset", "propose_pid", "hold", "rollback", "stop"]);
+
+  function crc16(text) {
+    const bytes = new TextEncoder().encode(text);
+    let crc = 0xffff;
+    for (const byte of bytes) {
+      crc ^= byte << 8;
+      for (let i = 0; i < 8; i += 1) crc = crc & 0x8000 ? ((crc << 1) ^ 0x1021) & 0xffff : (crc << 1) & 0xffff;
+    }
+    return crc;
+  }
+  function frame(body) { return `$${body},C${crc16(body).toString(16).toUpperCase().padStart(4, "0")}#`; }
+  function verify(raw) {
+    if (typeof raw !== "string" || raw[0] !== "$" || !raw.endsWith("#")) return false;
+    const pos = raw.lastIndexOf(",C");
+    if (pos < 0 || raw.length - pos !== 7) return false;
+    const expected = Number.parseInt(raw.slice(pos + 2, pos + 6), 16);
+    return Number.isFinite(expected) && expected === crc16(raw.slice(1, pos));
+  }
+  class StreamParser {
+    constructor(max = 384) { this.max = max; this.buffer = ""; }
+    feed(input) {
+      const text = typeof input === "string" ? input : new TextDecoder("ascii").decode(input);
+      const out = [];
+      for (const ch of text) {
+        if (ch === "$") this.buffer = "$";
+        else if (this.buffer) {
+          this.buffer += ch;
+          if (this.buffer.length > this.max) this.buffer = "";
+          else if (ch === "#") { out.push(this.buffer); this.buffer = ""; }
+        }
+      }
+      return out;
+    }
+  }
+  function finiteNumber(value, name) {
+    const n = Number(value);
+    if (value === null || value === undefined || String(value).trim() === "" || !Number.isFinite(n)) throw new Error(`${name} 必须是有限数字`);
+    return n;
+  }
+  function normalizePid(input) {
+    const pid = {};
+    for (const key of PID_KEYS) pid[key] = finiteNumber(input[key], key);
+    return pid;
+  }
+  function validatePid(input) {
+    const pid = normalizePid(input);
+    for (const key of PID_KEYS) {
+      const [min, max] = RANGES[key];
+      if (pid[key] < min || pid[key] > max) throw new Error(`${key} 超出PC保护范围 ${min}..${max}`);
+    }
+    return pid;
+  }
+  function pidMatches(actual, expected) {
+    if (!actual || !expected) return false;
+    return PID_KEYS.every((key) => Number.isFinite(Number(actual[key])) &&
+      Math.abs(Number(actual[key]) - Number(expected[key])) <= 0.011);
+  }
+  function presetPid(profile) {
+    const preset = PRESETS[profile];
+    if (!preset) throw new Error("配置必须是 N 或 L");
+    return normalizePid(preset);
+  }
+  function pidCsv(input) {
+    const pid = normalizePid(input);
+    return PID_KEYS.map((key) => pid[key].toFixed(2)).join(",");
+  }
+  function profileCode(profile) {
+    if (profile !== "N" && profile !== "L") throw new Error("配置必须是 N 或 L");
+    return profile;
+  }
+  function getPid() { return frame("P3,GET"); }
+  function training(action) { return frame(`P3,TRAIN,${action}`); }
+  function command(action, id) { return frame(`P3,${action},${Math.trunc(id)}`); }
+  function validateMask(mask) {
+    if (!Number.isInteger(mask) || mask < 1 || mask > 7) throw new Error("控制环掩码必须为1..7");
+    return mask;
+  }
+  function mergePid(current, proposed, mask = 7) {
+    validateMask(mask);
+    const merged = normalizePid(current);
+    PID_KEYS.forEach((key, i) => { if (mask & (1 << Math.floor(i / 2))) merged[key] = finiteNumber(proposed[key], key); });
+    return validatePid(merged);
+  }
+  function changedMask(current, proposed) {
+    return PID_KEYS.reduce((mask, key, i) => mask | (Math.abs(current[key] - proposed[key]) > 0.011 ? 1 << Math.floor(i / 2) : 0), 0);
+  }
+  function prepare(id, ttl, profile, pid, mask = 7) {
+    return frame(`P3,PREP,${Math.trunc(id)},${Math.trunc(ttl)},${profileCode(profile)},${pidCsv(validatePid(pid))},M${validateMask(mask)}`);
+  }
+  function manualSet(profile, pid, mask = 7) { return frame(`P3,MSET,${profileCode(profile)},${pidCsv(validatePid(pid))},M${validateMask(mask)}`); }
+  function manualPreset(profile) { return frame(`P3,PRESET,${profileCode(profile)}`); }
+  function preparePreset(id, ttl, profile) { return frame(`P3,PPRESET,${Math.trunc(id)},${Math.trunc(ttl)},${profileCode(profile)}`); }
+  function motorDiag(action) { return frame(`P3,DIAG,${action}`); }
+  function legacyMotion(move, pivot, pid = PRESETS.N) {
+    // All PID-update flags are zero: fixed filler prevents corrupt telemetry from making STOP oversized.
+    const p = presetPid("N");
+    return `$${move},${pivot},0,0,0,0,0,AP${p.AP.toFixed(2)},AD${p.AD.toFixed(2)},VP${p.VP.toFixed(2)},VI${p.VI.toFixed(2)},TP${p.TP.toFixed(2)},TD${p.TD.toFixed(2)}#`;
+  }
+  function bodyParts(raw) {
+    if (!verify(raw)) return null;
+    return raw.slice(1, raw.lastIndexOf(",C")).split(",");
+  }
+  function prefixed(value, prefix) {
+    if (typeof value !== "string" || !value.startsWith(prefix)) throw new Error(`缺少 ${prefix}`);
+    return finiteNumber(value.slice(prefix.length), prefix);
+  }
+  function profileField(value) {
+    if (value === "PN") return "N";
+    if (value === "PL") return "L";
+    throw new Error("配置字段无效");
+  }
+  function parseStatus(raw) {
+    const x = bodyParts(raw);
+    if (!x || x.length < 12 || x[0] !== "P3" || x[1] !== "STATUS") return null;
+    try {
+      return {
+        pid: normalizePid({ AP: x[2], AD: x[3], VP: x[4], VI: x[5], TP: x[6], TD: x[7] }),
+        profile: profileField(x[8]), state: prefixed(x[9], "S"),
+        trainingLocked: prefixed(x[10], "L") === 1, balanceStarted: prefixed(x[11], "B") === 1
+      };
+    } catch (_) { return null; }
+  }
+  function parseFast(raw) {
+    const x = bodyParts(raw);
+    if (!x || x.length < 14 || x[0] !== "T3" || x[1] !== "F") return null;
+    try {
+      return {
+        ms: finiteNumber(x[2], "ms"), angle: prefixed(x[3], "A"), gyro: prefixed(x[4], "G"),
+        osc: prefixed(x[5], "O"), lean: prefixed(x[6], "N"), el: prefixed(x[7], "EL"),
+        er: prefixed(x[8], "ER"), ml: prefixed(x[9], "ML"), mr: prefixed(x[10], "MR"),
+        state: prefixed(x[11], "S"), trainingLocked: prefixed(x[12], "L") === 1,
+        profile: profileField(x[13]), transitionStep: x[14] ? prefixed(x[14], "U") : 0
+      };
+    } catch (_) { return null; }
+  }
+  function parseSlow(raw) {
+    const x = bodyParts(raw);
+    if (!x || x.length < 18 || x[0] !== "T3" || x[1] !== "S") return null;
+    try {
+      return {
+        ms: finiteNumber(x[2], "ms"), battery: prefixed(x[3], "V"),
+        angleSqMean: prefixed(x[4], "A2"), gyroSqMean: prefixed(x[5], "G2"),
+        peak: prefixed(x[6], "PK"), saturation: prefixed(x[7], "X"),
+        pid: normalizePid({ AP: prefixed(x[8], "AP"), AD: prefixed(x[9], "AD"), VP: prefixed(x[10], "VP"), VI: prefixed(x[11], "VI"), TP: prefixed(x[12], "TP"), TD: prefixed(x[13], "TD") }),
+        profile: profileField(x[14]), dropped: prefixed(x[15], "D"),
+        balanceStarted: prefixed(x[16], "B") === 1, firmware: x[17],
+        stackFree: x[18] ? prefixed(x[18], "SF") : null,
+        controlGapUs: x[19] ? prefixed(x[19], "DT") : null,
+        controlExecUs: x[20] ? prefixed(x[20], "CT") : null
+      };
+    } catch (_) { return null; }
+  }
+  function mean(values) { return values.reduce((sum, value) => sum + value, 0) / values.length; }
+  function metrics(fastSamples, slowSamples = []) {
+    if (!Array.isArray(fastSamples) || fastSamples.length < 3) throw new Error("有效快速遥测样本不足");
+    const slow = Array.isArray(slowSamples) ? slowSamples : [];
+    const rmsAngle = slow.length ? Math.sqrt(Math.max(0, mean(slow.map((x) => x.angleSqMean)))) : Math.sqrt(mean(fastSamples.map((x) => x.angle * x.angle)));
+    const rmsGyro = slow.length ? Math.sqrt(Math.max(0, mean(slow.map((x) => x.gyroSqMean)))) : Math.sqrt(mean(fastSamples.map((x) => x.gyro * x.gyro)));
+    const peakAngle = slow.length ? Math.max(...slow.map((x) => x.peak)) : Math.max(...fastSamples.map((x) => Math.abs(x.angle)));
+    const saturationRate = slow.length ? mean(slow.map((x) => x.saturation)) : fastSamples.filter((x) => Math.abs(x.ml) >= 2595 || Math.abs(x.mr) >= 2595).length / fastSamples.length;
+    const result = {
+      rmsAngle, peakAngle, rmsGyro,
+      meanOsc: mean(fastSamples.map((x) => x.osc)),
+      meanLean: mean(fastSamples.map((x) => x.lean)),
+      absLean: mean(fastSamples.map((x) => Math.abs(x.lean))),
+      saturationRate,
+      motorEffort: mean(fastSamples.map((x) => (Math.abs(x.ml) + Math.abs(x.mr)) / 2)),
+      wheelActivity: mean(fastSamples.map((x) => (Math.abs(x.el) + Math.abs(x.er)) / 2)),
+      battery: slow.length ? mean(slow.map((x) => x.battery)) : null,
+      samples: fastSamples.length,
+      durationMs: Math.max(0, fastSamples[fastSamples.length - 1].ms - fastSamples[0].ms)
+    };
+    result.score = scoreMetrics(result);
+    return result;
+  }
+  function scoreMetrics(m) {
+    return 30 * Math.min(m.rmsAngle / 3, 3) +
+      15 * Math.min(m.peakAngle / 10, 3) +
+      10 * Math.min(m.rmsGyro / 100, 3) +
+      15 * Math.min(m.meanOsc / 2, 3) +
+      15 * Math.min(m.absLean / 3, 3) +
+      10 * Math.min(m.saturationRate, 1) +
+      5 * Math.min(m.motorEffort / 2600, 1);
+  }
+  function metricsDangerous(m) {
+    return m.peakAngle >= 20 || m.saturationRate >= 0.5 || (m.battery != null && m.battery < 9.6);
+  }
+  function validateDecision(raw, currentProfile, currentPid) {
+    const value = typeof raw === "string" ? JSON.parse(raw) : raw;
+    const keys = ["schema_version", "action", "target_profile", "candidate", "reason", "expected_effect", "confidence"];
+    if (!value || Object.keys(value).sort().join() !== keys.slice().sort().join()) throw new Error("LLM JSON 字段不符合schema v3");
+    if (value.schema_version !== 3 || !ACTIONS.includes(value.action)) throw new Error("LLM动作无效");
+    if (!PRESETS[value.target_profile]) throw new Error("target_profile 必须是 N 或 L");
+    if (typeof value.reason !== "string" || !value.reason.trim() || value.reason.length > 500) throw new Error("reason 无效");
+    if (typeof value.expected_effect !== "string" || !value.expected_effect.trim() || value.expected_effect.length > 500) throw new Error("expected_effect 无效");
+    value.confidence = finiteNumber(value.confidence, "confidence");
+    if (value.confidence < 0 || value.confidence > 1) throw new Error("confidence 超出 0..1");
+    if (value.action === "switch_preset") value.candidate = presetPid(value.target_profile);
+    else if (value.action === "propose_pid") value.candidate = validatePid(value.candidate);
+    else value.candidate = normalizePid(currentPid);
+    if (value.action === "propose_pid" && value.target_profile !== currentProfile) throw new Error("普通调参不得切换配置，请使用switch_preset");
+    return value;
+  }
+  function mockDecision(profile, pid, m) {
+    let action = "propose_pid", target = profile, candidate = normalizePid(pid);
+    let reason = "根据窗口指标向较低振荡方向优化。";
+    let effect = "降低角度RMS与osc，同时保持PWM余量。";
+    if (profile === "N" && (m.absLean > 1.4 || m.motorEffort > 1200)) {
+      action = "switch_preset"; target = "L"; candidate = presetPid("L");
+      reason = "持续倾斜或电机负担较高，选择官方负重配置。";
+      effect = "提高负重条件下的平衡与速度环控制能力。";
+    } else {
+      const targetAd = profile === "L" ? 82 : 58;
+      candidate.AD = Number((candidate.AD + (targetAd - candidate.AD) * 0.55).toFixed(2));
+      candidate.AP = Number((candidate.AP + ((profile === "L" ? 100 : 94) - candidate.AP) * 0.35).toFixed(2));
+    }
+    return validateDecision({ schema_version: 3, action, target_profile: target, candidate, reason, expected_effect: effect, confidence: 0.78 }, profile, pid);
+  }
+
+  return {
+    PID_KEYS, RANGES, PRESETS, ACTIONS, crc16, frame, verify, StreamParser,
+    finiteNumber, normalizePid, validatePid, pidMatches, presetPid, pidCsv, getPid,
+    training, command, prepare, manualSet, manualPreset, preparePreset, mergePid, changedMask, validateMask, motorDiag, legacyMotion,
+    parseStatus, parseFast, parseSlow, metrics, scoreMetrics, metricsDangerous,
+    validateDecision, mockDecision
+  };
+});
+
+</script>
+<script>(function () {
+  "use strict";
+  const C = window.RouteACore;
+  const $ = (id) => document.getElementById(id);
+  const state = {
+    device: null, server: null, characteristic: null, connected: false, mock: false,
+    parser: new C.StreamParser(384), sendChain: Promise.resolve(),
+    currentPid: null, profile: "N", balanceStarted: false, trainingLocked: false,
+    firmwareState: 0, firmware: "—", fast: null, slow: null,
+    rxTimes: [], frameOk: 0, frameError: 0, logs: [], telemetry: [], chart: [],
+    manualDirty: false, pendingManual: null, activeMotion: null, hardwareFault: false,
+    heartbeat: null, mockTimer: null, mockClock: 0, mockState: 0,
+    mockPid: C.presetPid("N"), mockProfile: "N", mockChampionPid: C.presetPid("N"),
+    mockChampionProfile: "N", mockCandidatePid: null, mockCandidateProfile: "N",
+    auto: {
+      enabled: false, phase: "IDLE", cycle: 0, timer: null, collecting: false,
+      fastSamples: [], slowSamples: [], baselineMetrics: null, latestMetrics: null,
+      decision: null, candidatePid: null, candidateProfile: "N", trialId: 0,
+      firstTrialMetrics: null, history: [], rollbackReason: "", requestBusy: false
+    }
+  };
+  let toastTimer = null;
+
+  function nowText() { return new Date().toLocaleTimeString("zh-CN", { hour12: false }); }
+  function delay(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
+  function settingNumber(id, fallback) {
+    const value = Number($(id).value);
+    return Number.isFinite(value) ? value : fallback;
+  }
+  function toast(message) {
+    const element = $("toast");
+    element.textContent = message;
+    element.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => element.classList.remove("show"), 2800);
+  }
+  function log(direction, text) {
+    const item = { time: new Date().toISOString(), direction, text };
+    state.logs.push(item);
+    if (state.logs.length > 2000) state.logs.shift();
+    $("log").textContent = state.logs.slice(-140).map((x) => `${x.time.slice(11, 23)} ${x.direction.padEnd(4)} ${x.text}`).join("\n");
+    $("log").scrollTop = $("log").scrollHeight;
+    $("logCount").textContent = String(state.logs.length);
+  }
+  function connectionLabel(kind, text) {
+    const pill = $("connectionPill");
+    pill.className = `pill ${kind}`;
+    pill.querySelector("b").textContent = text;
+  }
+  function profileName(profile) { return profile === "L" ? "Load / 模式4" : "Normal / 模式1"; }
+  function firmwareStateName(value) { return ["IDLE", "PREPARED", "TRIAL"][value] || `UNKNOWN ${value}`; }
+  function pidText(pid) { return pid ? C.PID_KEYS.map((key) => `${key}${pid[key].toFixed(2)}`).join(" · ") : "—"; }
+
+  function loadSettings() {
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem("routea-remote-adaptive-settings") || "{}"); } catch (_) {}
+    const defaults = {
+      serviceUuid: "0000ffe0-0000-1000-8000-00805f9b34fb",
+      charUuid: "0000ffe1-0000-1000-8000-00805f9b34fb",
+      namePrefix: "YahBoom_BL", chunkSize: "20", chunkDelay: "18",
+      llmBase: "https://api.deepseek.com", llmModel: "deepseek-chat",
+      baselineMs: "4000", settleMs: "1500", evalMs: "6000", improvementPct: "3"
+    };
+    for (const [id, fallback] of Object.entries(defaults)) $(id).value = saved[id] ?? fallback;
+  }
+  function saveSettings() {
+    const saved = {};
+    for (const id of ["serviceUuid", "charUuid", "namePrefix", "chunkSize", "chunkDelay", "llmBase", "llmModel", "baselineMs", "settleMs", "evalMs", "improvementPct"]) saved[id] = $(id).value.trim();
+    localStorage.setItem("routea-remote-adaptive-settings", JSON.stringify(saved));
+    toast("设置已保存；API Key未持久化");
+  }
+
+  async function connect() {
+    if (state.mock) stopMock();
+    state.firmware = "—"; state.currentPid = null;
+    if (!navigator.bluetooth) {
+      toast("当前浏览器没有Web Bluetooth，请在Bluefy中打开");
+      switchPage("settings");
+      return;
+    }
+    try {
+      const serviceUuid = $("serviceUuid").value.trim().toLowerCase();
+      const charUuid = $("charUuid").value.trim().toLowerCase();
+      const prefix = $("namePrefix").value.trim();
+      connectionLabel("connecting", "选择设备");
+      state.device = await navigator.bluetooth.requestDevice({
+        filters: prefix ? [{ namePrefix: prefix }, { namePrefix: " Yah" }] : [{ services: [serviceUuid] }],
+        optionalServices: [serviceUuid]
+      });
+      state.device.addEventListener("gattserverdisconnected", onDisconnected);
+      $("deviceName").textContent = state.device.name || "BLE设备";
+      connectionLabel("connecting", "发现服务");
+      state.server = await state.device.gatt.connect();
+      const service = await state.server.getPrimaryService(serviceUuid);
+      state.characteristic = await service.getCharacteristic(charUuid);
+      state.characteristic.addEventListener("characteristicvaluechanged", onNotification);
+      await state.characteristic.startNotifications();
+      state.connected = true;
+      state.parser = new C.StreamParser(384);
+      connectionLabel("online", "BLE已连接");
+      log("SYS", `BLE UART ready: ${state.device.name || "unknown"}`);
+      toast("双向链路已就绪，正在同步固件");
+      updateUi();
+      await send(C.getPid());
+    } catch (error) {
+      log("ERR", `${error.name || "Error"}: ${error.message}`);
+      toast(`连接失败：${error.message}`);
+      await cleanupConnection(false);
+    }
+  }
+  async function cleanupConnection(disconnectGatt) {
+    clearAutoTimer();
+    stopHeartbeat();
+    state.auto.enabled = false;
+    state.auto.collecting = false;
+    state.connected = false;
+    state.pendingManual = null;
+    state.fast = null;
+    state.currentPid = null;
+    state.firmware = "—";
+    state.characteristic = null;
+    state.server = null;
+    if (disconnectGatt && state.device?.gatt?.connected) state.device.gatt.disconnect();
+    connectionLabel("offline", "未连接");
+    updateUi();
+  }
+  function onDisconnected() {
+    log("SYS", "BLE disconnected; firmware heartbeat will roll back an active trial");
+    cleanupConnection(false);
+    toast("蓝牙已断开；活动试验将由固件心跳超时回滚");
+  }
+  async function safeDisconnect() {
+    try {
+      if (state.auto.enabled || state.trainingLocked) await stopAuto(true);
+      await safeStop();
+      await delay(180);
+    } catch (_) {}
+    if (state.mock) stopMock();
+    else await cleanupConnection(true);
+  }
+  function onNotification(event) {
+    const bytes = new Uint8Array(event.target.value.buffer, event.target.value.byteOffset, event.target.value.byteLength);
+    for (const raw of state.parser.feed(bytes)) handleFrame(raw);
+  }
+  async function writeChunks(text) {
+    if (state.mock) return mockReceiveCommand(text);
+    if (!state.connected || !state.characteristic) throw new Error("BLE UART尚未就绪");
+    const bytes = new TextEncoder().encode(text);
+    const size = Math.max(1, Math.min(20, settingNumber("chunkSize", 20)));
+    const pause = Math.max(0, Math.min(100, settingNumber("chunkDelay", 18)));
+    for (let offset = 0; offset < bytes.length; offset += size) {
+      const chunk = bytes.slice(offset, offset + size);
+      const characteristic = state.characteristic;
+      if (typeof characteristic.writeValue === "function") await characteristic.writeValue(chunk);
+      else if (typeof characteristic.writeValueWithResponse === "function") await characteristic.writeValueWithResponse(chunk);
+      else if (typeof characteristic.writeValueWithoutResponse === "function") await characteristic.writeValueWithoutResponse(chunk);
+      else throw new Error("BLE特征不支持写入");
+      if (pause && offset + size < bytes.length) await delay(pause);
+    }
+  }
+  function send(text) {
+    log("TX", text);
+    const task = state.sendChain.then(() => writeChunks(text));
+    state.sendChain = task.catch((error) => {
+      log("ERR", `write: ${error.message}`);
+      toast(`发送失败：${error.message}`);
+    });
+    return task;
+  }
+
+  function handleFrame(raw) {
+    log("RX", raw);
+    state.rxTimes.push(Date.now());
+    state.rxTimes = state.rxTimes.filter((time) => Date.now() - time < 5000);
+    $("lastRx").textContent = nowText();
+    if ((raw.startsWith("$P3,") || raw.startsWith("$T3,")) && !C.verify(raw)) {
+      state.frameError += 1;
+      updateUi();
+      return;
+    }
+    state.frameOk += 1;
+
+    const status = C.parseStatus(raw);
+    if (status) {
+      if (!pidTelemetrySafe(status.pid)) {
+        hardwareFailure("STM32读回PID越界或损坏"); return;
+      }
+      state.currentPid = status.pid;
+      state.profile = status.profile;
+      state.firmwareState = status.state;
+      state.trainingLocked = status.trainingLocked;
+      state.balanceStarted = status.balanceStarted;
+      confirmManual(status);
+      confirmTrial(status);
+      syncManualFields();
+      toast("STM32状态已同步");
+    }
+    const fast = C.parseFast(raw);
+    if (fast) {
+      state.fast = fast;
+      state.profile = fast.profile;
+      state.firmwareState = fast.state;
+      state.trainingLocked = fast.trainingLocked;
+      state.telemetry.push({ at: new Date().toISOString(), ...fast });
+      if (state.telemetry.length > 15000) state.telemetry.shift();
+      state.chart.push({ at: Date.now(), angle: fast.angle, gyro: fast.gyro });
+      state.chart = state.chart.filter((point) => Date.now() - point.at <= 60000);
+      if (state.auto.collecting) {
+        state.auto.fastSamples.push(fast);
+        $("windowSamples").textContent = `${state.auto.fastSamples.length}样本`;
+      }
+      if (state.auto.enabled && state.auto.phase === "APPLYING" && fast.state === 2 && !state.auto.readbackRequested) {
+        state.auto.readbackRequested = true;
+        send(C.getPid());
+      }
+      if (state.auto.enabled && fast.state === 2 && Math.abs(fast.angle) >= 20) requestRollback("倾角达到网页安全阈值");
+      if (state.auto.enabled && state.auto.phase === "ROLLING_BACK" && fast.state === 0) afterRollback();
+    }
+    const slow = C.parseSlow(raw);
+    if (slow) {
+      state.slow = slow;
+      if (!pidTelemetrySafe(slow.pid)) {
+        hardwareFailure("STM32遥测PID越界或损坏"); return;
+      }
+      state.currentPid = slow.pid;
+      state.profile = slow.profile;
+      state.balanceStarted = slow.balanceStarted;
+      state.firmware = slow.firmware;
+      if (state.auto.collecting) state.auto.slowSamples.push(slow);
+      syncManualFields();
+    }
+    if (raw.includes("P3,READY,1")) state.balanceStarted = true;
+    const ack = raw.match(/\$P3,ACK,([^,]+),(\d+),(\d+),(\d+),P([NL]),C/);
+    if (ack) handleAck(ack[1], Number(ack[2]), Number(ack[3]), Number(ack[4]), ack[5]);
+    const error = raw.match(/\$P3,ERR,([^,]+)/);
+    if (error) handleFirmwareError(error[1]);
+    updateUi();
+    drawChart();
+  }
+
+  function handleAck(command, id, fwState, locked, profile) {
+    state.firmwareState = fwState;
+    state.trainingLocked = locked === 1;
+    state.profile = profile;
+    if (command === "PROBE") toast("通信测试已确认，PID和控制状态未修改");
+    if (command === "TRAIN_START" && state.auto.enabled && state.auto.phase === "STARTING") {
+      toast("训练锁已建立，开始自动基线");
+      setTimeout(() => startWindow("BASELINE", settingNumber("baselineMs", 4000)), 400);
+    } else if (command === "TRAIN_STOP") state.trainingLocked = false;
+    else if (command === "PREP" && state.auto.enabled && state.auto.phase === "PREPARING") {
+      if (id !== state.auto.trialId) return;
+      state.auto.phase = "APPLYING";
+      state.auto.readbackRequested = false;
+      clearAutoTimer();
+      state.auto.timer = setTimeout(() => requestRollback("实际PID读回确认超时"), 3500);
+      send(C.command("APPLY", state.auto.trialId));
+      startHeartbeat();
+    } else if (command === "APPLY" && state.auto.enabled && state.auto.phase === "APPLYING") startHeartbeat();
+    else if (command === "ACCEPT" && state.auto.enabled && state.auto.phase === "ACCEPTING") {
+      stopHeartbeat();
+      recordHistory("接受", state.auto.latestMetrics);
+      state.currentPid = { ...state.auto.candidatePid };
+      state.profile = state.auto.candidateProfile;
+      state.auto.phase = "ACCEPTED";
+      state.auto.baselineMetrics = state.auto.latestMetrics;
+      send(C.getPid());
+      scheduleNextBaseline(1200);
+    } else if (command === "ROLLBACK") state.auto.phase = "ROLLING_BACK";
+    else if (command === "ROLLED_BACK" && state.auto.enabled && state.auto.phase === "ROLLING_BACK") afterRollback();
+    else if (command === "MSET_APPLIED") {
+      if (state.pendingManual) state.pendingManual.appliedAck = true;
+      send(C.getPid());
+      toast("控制边界直接赋值完成，正在读回实际PID");
+    }
+    updateUi();
+  }
+  function pidTelemetrySafe(pid) {
+    try { C.validatePid(pid); return true; } catch (_) { return false; }
+  }
+  function hardwareFailure(reason) {
+    if (state.hardwareFault) return;
+    state.hardwareFault = true;
+    clearAutoTimer(); stopHeartbeat();
+    state.auto.enabled = false; state.auto.collecting = false; state.auto.phase = "ERROR";
+    state.pendingManual = null; state.currentPid = null;
+    log("ERR", reason + "; training stopped, physical restart required");
+    toast(reason + "；停止训练，请断电检查并重启");
+    send(C.training("STOP")).catch(() => {});
+    send(C.legacyMotion(0, 0)).catch(() => {});
+    updateUi();
+  }
+  function handleFirmwareError(code) {
+    if (code === "PID_MEMORY" || code === "MEMORY_LATCH") { hardwareFailure(code); return; }
+    state.pendingManual = null;
+    toast(`固件拒绝：${code}`);
+    log("ERR", `firmware rejected command: ${code}`);
+    if (state.auto.enabled) {
+      state.auto.enabled = false;
+      state.auto.phase = "ERROR";
+      clearAutoTimer();
+      stopHeartbeat();
+    }
+  }
+
+  function confirmManual(status) {
+    const pending = state.pendingManual;
+    if (!pending || !pending.appliedAck) return;
+    if (status.profile === pending.profile && C.pidMatches(status.pid, pending.pid)) {
+      state.pendingManual = null;
+      state.manualDirty = false;
+      syncManualFields(true);
+      toast("人工PID已应用，STM32读回确认一致");
+    } else log("ERR", "MSET_APPLIED received but PID readback differs; waiting for matching status");
+  }
+  function syncManualFields(force = false) {
+    if (!state.currentPid) return;
+    for (const key of C.PID_KEYS) {
+      $("live" + key).textContent = `实际 ${state.currentPid[key].toFixed(2)}`;
+      if (!state.manualDirty || force) $("edit" + key).value = state.currentPid[key].toFixed(2);
+    }
+    if (!state.manualDirty || force) $("manualProfile").value = state.profile;
+  }
+  function directFirmwareReady() { return state.mock || state.firmware.startsWith("RA3.3-DIRECT"); }
+  function confirmTrial(status) {
+    if (state.auto.enabled && state.auto.phase === "APPLYING" && status.state === 2 &&
+        status.profile === state.auto.candidateProfile && C.pidMatches(status.pid, state.auto.candidatePid)) beginSettle();
+  }
+  function readManualPid(mask = 7) {
+    const pid = {};
+    for (const key of C.PID_KEYS) pid[key] = $("edit" + key).value;
+    return C.mergePid(state.currentPid, pid, mask);
+  }
+  async function applyManual(profile, pid, mask = 7, preset = false) {
+    if (state.hardwareFault) return toast("固件数据故障锁定，请断电重启并刷新页面");
+    if (!directFirmwareReady()) return toast("请等待并确认固件版本RA3.3-DIRECT");
+    if (state.trainingLocked || state.auto.enabled) return toast("请先停止自动训练");
+    if (!state.currentPid) return toast("请先同步实际PID");
+    if (state.pendingManual) return toast("正在应用，请等待STM32确认");
+    try {
+      if (!preset && profile !== state.profile) throw new Error("切换配置请使用Normal/Load预设按钮");
+      const valid = preset ? C.presetPid(profile) : C.mergePid(state.currentPid, pid, mask);
+      state.pendingManual = { profile, pid: valid, mask: preset ? 7 : mask, appliedAck: false };
+      updateUi();
+      await send(preset ? C.manualPreset(profile) : C.manualSet(profile, valid, mask));
+      toast("参数已排队；等待完成响应和实际PID读回确认");
+    } catch (error) { state.pendingManual = null; updateUi(); toast(error.message); }
+  }
+  function applyPreset(profile) { return applyManual(profile, C.presetPid(profile), 7, true); }
+
+  function clearAutoTimer() {
+    if (state.auto.timer) clearTimeout(state.auto.timer);
+    state.auto.timer = null;
+  }
+  function startHeartbeat() {
+    stopHeartbeat();
+    state.heartbeat = setInterval(() => {
+      if (state.auto.enabled && ["APPLYING", "SETTLING", "TRIAL1", "TRIAL2"].includes(state.auto.phase)) send(C.command("HB", state.auto.trialId));
+    }, 500);
+  }
+  function stopHeartbeat() {
+    if (state.heartbeat) clearInterval(state.heartbeat);
+    state.heartbeat = null;
+  }
+  function startWindow(kind, durationMs) {
+    if (!state.auto.enabled) return;
+    clearAutoTimer();
+    state.auto.phase = kind;
+    state.auto.collecting = true;
+    state.auto.fastSamples = [];
+    state.auto.slowSamples = [];
+    $("windowSamples").textContent = "0样本";
+    updateUi();
+    state.auto.timer = setTimeout(() => finishWindow(kind), Math.max(1000, durationMs));
+  }
+  async function finishWindow(kind) {
+    if (!state.auto.enabled || state.auto.phase !== kind) return;
+    state.auto.collecting = false;
+    try {
+      const metrics = C.metrics(state.auto.fastSamples, state.auto.slowSamples);
+      state.auto.latestMetrics = metrics;
+      renderMetrics(metrics);
+      if (kind === "BASELINE") {
+        if (C.metricsDangerous(metrics)) {
+          pauseAutoOnError("基线已危险：请先恢复平衡，禁止应用LLM候选");
+          await safeStop();
+          return;
+        }
+        state.auto.baselineMetrics = metrics;
+        await decideNext(metrics);
+      } else if (kind === "TRIAL1") {
+        if (!trialImproved(metrics) || C.metricsDangerous(metrics)) await requestRollback("首个评估窗口未改善或触发风险");
+        else {
+          state.auto.firstTrialMetrics = metrics;
+          startWindow("TRIAL2", settingNumber("evalMs", 6000));
+        }
+      } else if (kind === "TRIAL2") {
+        if (!trialImproved(metrics) || C.metricsDangerous(metrics)) await requestRollback("确认窗口未保持改善");
+        else {
+          state.auto.phase = "ACCEPTING";
+          await send(C.command("ACCEPT", state.auto.trialId));
+        }
+      }
+    } catch (error) {
+      log("ERR", `window: ${error.message}`);
+      if (kind.startsWith("TRIAL")) await requestRollback("遥测窗口数据不足");
+      else pauseAutoOnError(error.message);
+    }
+  }
+  function trialImproved(metrics) {
+    const base = state.auto.baselineMetrics;
+    if (!base) return false;
+    const required = Math.max(0, settingNumber("improvementPct", 3)) / 100;
+    return metrics.score <= base.score * (1 - required);
+  }
+  function beginSettle() {
+    if (!state.auto.enabled || state.auto.phase !== "APPLYING") return;
+    clearAutoTimer();
+    state.auto.phase = "SETTLING";
+    updateUi();
+    state.auto.timer = setTimeout(() => startWindow("TRIAL1", settingNumber("evalMs", 6000)), Math.max(500, settingNumber("settleMs", 1500)));
+  }
+  function scheduleNextBaseline(waitMs) {
+    if (!state.auto.enabled) return;
+    clearAutoTimer();
+    state.auto.phase = "HOLD";
+    updateUi();
+    state.auto.timer = setTimeout(() => startWindow("BASELINE", settingNumber("baselineMs", 4000)), waitMs);
+  }
+  function trialId() { return Math.floor(Date.now() / 1000) % 1000000; }
+
+  async function decideNext(metrics) {
+    if (!state.auto.enabled || state.auto.requestBusy) return;
+    state.auto.phase = "LLM";
+    state.auto.requestBusy = true;
+    updateUi();
+    try {
+      const decision = await requestLlmDecision(metrics);
+      if (!state.auto.enabled) return;
+      state.auto.decision = decision;
+      state.auto.candidatePid = { ...decision.candidate };
+      state.auto.candidateProfile = decision.target_profile;
+      renderDecision(decision);
+      if (decision.action === "hold") {
+        recordHistory("保持", metrics);
+        scheduleNextBaseline(1800);
+      } else if (decision.action === "stop") {
+        recordHistory("LLM停止", metrics);
+        await stopAuto(false);
+      } else if (decision.action === "rollback") {
+        recordHistory("建议回滚", metrics);
+        scheduleNextBaseline(1800);
+      } else {
+        state.auto.cycle += 1;
+        state.auto.trialId = trialId();
+        state.auto.phase = "PREPARING";
+        const mask = C.changedMask(state.currentPid, decision.candidate);
+        if (decision.action === "switch_preset") await send(C.preparePreset(state.auto.trialId, 30000, decision.target_profile));
+        else if (mask) await send(C.prepare(state.auto.trialId, 30000, decision.target_profile, decision.candidate, mask));
+        else { recordHistory("无变化", metrics); scheduleNextBaseline(1800); }
+      }
+    } catch (error) {
+      log("ERR", `LLM: ${error.message}`);
+      pauseAutoOnError(`LLM请求失败：${error.message}`);
+    } finally {
+      state.auto.requestBusy = false;
+      updateUi();
+    }
+  }
+
+  async function requestLlmDecision(metrics) {
+    if (state.mock) return C.mockDecision(state.profile, state.currentPid, metrics);
+    const key = $("llmKey").value.trim();
+    if (!key) throw new Error("设置页缺少API Key");
+    const system = [
+      "PROMPT_VERSION: route-a-remote-adaptive-v3.",
+      "You supervise PID adaptation for a two-wheel STM32 balance robot.",
+      "The STM32 runs the 5 ms balance loop. You make one slow decision per telemetry window.",
+      "There are exactly two profiles: N is official mode 1, L is official mode 4.",
+      "L has fixed firmware scales balance 2.0, velocity 1.35, turn 1.0.",
+      "Return exactly one JSON object with exactly these fields:",
+      "schema_version, action, target_profile, candidate, reason, expected_effect, confidence.",
+      "schema_version must be 3.",
+      "action must be switch_preset, propose_pid, hold, rollback, or stop.",
+      "target_profile must be N or L.",
+      "candidate must contain exactly numeric AP,AD,VP,VI,TP,TD.",
+      "For switch_preset, use the exact selected official preset.",
+      "For propose_pid, target_profile MUST equal current_profile. Only switch_preset may change profile or fixed multipliers. There is no relative percentage step limit, but every value must stay inside the supplied absolute ranges. Only changed control loops will be written.",
+      "Prefer AP/AD changes for stationary balance data. Change VP/VI only when speed evidence exists and TP/TD only when turning evidence exists.",
+      "Do not react to a single impulse by switching profiles. Persistent load/effort/lean may justify L.",
+      "Never output Markdown, motor commands, thresholds, or claims that a candidate was accepted."
+    ].join(" ");
+    const recent = state.auto.history.slice(-6).map((item) => ({ action: item.action, profile: item.profile, score: item.score, result: item.result }));
+    const user = {
+      schema_version: 3, current_profile: state.profile, current_pid: state.currentPid,
+      official_presets: { N: C.presetPid("N"), L: C.presetPid("L") },
+      fixed_profile_scales: { N: { balance: 1, velocity: 1, turn: 1 }, L: { balance: 2, velocity: 1.35, turn: 1 } },
+      absolute_pc_protection_ranges: C.RANGES, metrics, recent_history: recent,
+      context: {
+        stationary_balance: Math.abs(state.fast?.el || 0) + Math.abs(state.fast?.er || 0) < 20,
+        automatic_cycle: state.auto.cycle,
+        note: "Lower normalized score is better. A deterministic safety layer evaluates and may roll back your proposal."
+      }
+    };
+    const base = $("llmBase").value.trim().replace(/\/$/, "");
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30000);
+    try {
+      const response = await fetch(`${base}/chat/completions`, {
+        method: "POST", signal: controller.signal,
+        headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ model: $("llmModel").value.trim(), response_format: { type: "json_object" }, messages: [{ role: "system", content: system }, { role: "user", content: JSON.stringify(user) }] })
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}: ${(await response.text()).slice(0, 180)}`);
+      const body = await response.json();
+      const raw = body.choices?.[0]?.message?.content;
+      if (!raw) throw new Error("响应中没有choices[0].message.content");
+      return C.validateDecision(raw, state.profile, state.currentPid);
+    } finally { clearTimeout(timeout); }
+  }
+
+  async function startAuto() {
+    if (!(state.connected || state.mock)) return toast("请先连接小车");
+    if (state.hardwareFault) return toast("固件数据故障锁定，请断电重启并刷新页面");
+    if (!directFirmwareReady()) return toast("请等待并确认固件版本RA3.3-DIRECT");
+    if (!state.balanceStarted) return toast("请先在小车端按键启动平衡");
+    if (!state.currentPid) return toast("尚未同步实际PID");
+    if (state.pendingManual || state.fast?.transitionStep) return toast("请等待人工参数应用完成");
+    if (!state.mock && !$("llmKey").value.trim()) { switchPage("settings"); return toast("请先填写LLM API Key"); }
+    if (state.auto.enabled) return;
+    state.auto.enabled = true;
+    state.auto.phase = "STARTING";
+    state.auto.cycle = 0;
+    state.auto.history = [];
+    state.auto.decision = null;
+    state.auto.baselineMetrics = null;
+    state.auto.latestMetrics = null;
+    state.auto.rollbackReason = "";
+    updateUi();
+    await send(C.training("START"));
+  }
+  async function stopAuto(silent) {
+    clearAutoTimer();
+    state.auto.collecting = false;
+    state.auto.enabled = false;
+    stopHeartbeat();
+    try {
+      if (state.firmwareState !== 0 && state.auto.trialId) {
+        await send(C.command("ROLLBACK", state.auto.trialId));
+        await delay(180);
+      }
+      if (state.trainingLocked) await send(C.training("STOP"));
+    } catch (_) {}
+    state.auto.phase = "IDLE";
+    if (!silent) toast("自动训练已停止；活动候选已请求回滚");
+    updateUi();
+  }
+  function pauseAutoOnError(message) {
+    clearAutoTimer();
+    stopHeartbeat();
+    state.auto.enabled = false;
+    state.auto.collecting = false;
+    state.auto.phase = "ERROR";
+    toast(message);
+    if (state.trainingLocked) send(C.training("STOP"));
+    updateUi();
+  }
+  async function requestRollback(reason) {
+    if (!state.auto.enabled || state.auto.phase === "ROLLING_BACK") return;
+    clearAutoTimer();
+    state.auto.collecting = false;
+    state.auto.rollbackReason = reason;
+    state.auto.phase = "ROLLING_BACK";
+    recordHistory("回滚", state.auto.latestMetrics, reason);
+    updateUi();
+    await send(C.command("ROLLBACK", state.auto.trialId));
+  }
+  function afterRollback() {
+    stopHeartbeat();
+    state.auto.phase = "ROLLED_BACK";
+    state.auto.trialId = 0;
+    send(C.getPid());
+    scheduleNextBaseline(1200);
+  }
+
+  function recordHistory(result, metrics, note = "") {
+    const decision = state.auto.decision;
+    state.auto.history.push({
+      cycle: state.auto.cycle, at: new Date().toISOString(),
+      action: decision?.action || "none", profile: decision?.target_profile || state.profile,
+      pid: decision?.candidate || state.currentPid, score: metrics?.score ?? null, result, note
+    });
+    if (state.auto.history.length > 100) state.auto.history.shift();
+    renderHistory();
+  }
+  function renderMetrics(metrics) {
+    const values = metrics ? {
+      metricScore: metrics.score.toFixed(2), metricRms: `${metrics.rmsAngle.toFixed(3)}°`,
+      metricPeak: `${metrics.peakAngle.toFixed(2)}°`, metricGyro: metrics.rmsGyro.toFixed(2),
+      metricOsc: metrics.meanOsc.toFixed(3), metricLean: `${metrics.meanLean.toFixed(3)}°`,
+      metricSat: `${(metrics.saturationRate * 100).toFixed(1)}%`, metricEffort: metrics.motorEffort.toFixed(0)
+    } : {};
+    for (const id of ["metricScore", "metricRms", "metricPeak", "metricGyro", "metricOsc", "metricLean", "metricSat", "metricEffort"]) $(id).textContent = values[id] || "--";
+  }
+  function renderDecision(decision) {
+    if (!decision) return;
+    $("decisionAction").textContent = decision.action;
+    $("decisionProfile").textContent = profileName(decision.target_profile);
+    $("decisionPid").textContent = pidText(decision.candidate);
+    $("decisionReason").textContent = decision.reason;
+    $("decisionEffect").textContent = decision.expected_effect;
+  }
+  function renderHistory() {
+    const rows = state.auto.history.slice().reverse();
+    $("historyBody").innerHTML = rows.length ? rows.map((item) => `<tr><td>${item.cycle}</td><td>${escapeHtml(item.action)}</td><td>${item.profile}</td><td>${item.score == null ? "—" : item.score.toFixed(2)}</td><td>${escapeHtml(item.result)}</td></tr>`).join("") : '<tr><td colspan="5">尚无记录</td></tr>';
+  }
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+  }
+
+  async function safeStop() {
+    releaseMotion(true);
+    if (state.connected || state.mock) {
+      await send(C.legacyMotion(0, 0, state.currentPid || C.PRESETS.N));
+      if (state.auto.trialId && state.firmwareState !== 0) await send(C.command("STOP", state.auto.trialId));
+    }
+  }
+  function bindMotionButton(button) {
+    const [move, pivot] = button.dataset.motion.split(",").map(Number);
+    const start = async (event) => {
+      event.preventDefault();
+      if (!(state.connected || state.mock)) return;
+      state.activeMotion = button;
+      button.classList.add("pressed");
+      button.setPointerCapture?.(event.pointerId);
+      await send(C.legacyMotion(move, pivot, state.currentPid || C.PRESETS.N));
+    };
+    const stop = (event) => {
+      if (state.activeMotion === button) {
+        event?.preventDefault();
+        releaseMotion(false);
+      }
+    };
+    button.addEventListener("pointerdown", start);
+    button.addEventListener("pointerup", stop);
+    button.addEventListener("pointercancel", stop);
+    button.addEventListener("lostpointercapture", stop);
+  }
+  async function releaseMotion(silent) {
+    const button = state.activeMotion;
+    state.activeMotion = null;
+    if (button) button.classList.remove("pressed");
+    if (!silent && (state.connected || state.mock)) await send(C.legacyMotion(0, 0, state.currentPid || C.PRESETS.N));
+  }
+
+  function updateUi() {
+    const connected = state.connected || state.mock;
+    $("rxHz").textContent = `${(state.rxTimes.length / 5).toFixed(1)} Hz`;
+    $("frameCounts").textContent = `${state.frameOk} / ${state.frameError}`;
+    $("angleHero").textContent = state.fast ? `${state.fast.angle.toFixed(2)}°` : "--.-°";
+    $("gyroHero").textContent = state.fast ? `角速度 ${state.fast.gyro.toFixed(1)} raw` : "角速度 --.- raw";
+    $("profileHero").textContent = profileName(state.profile);
+    $("autoHero").textContent = state.auto.enabled ? "运行中" : "未启动";
+    $("battery").textContent = state.slow ? `${state.slow.battery.toFixed(2)} V` : "-- V";
+    $("encoders").textContent = state.fast ? `${state.fast.el} / ${state.fast.er}` : "-- / --";
+    $("motors").textContent = state.fast ? `${state.fast.ml} / ${state.fast.mr}` : "-- / --";
+    $("oscValue").textContent = state.fast ? state.fast.osc.toFixed(3) : "--";
+    $("leanValue").textContent = state.fast ? `${state.fast.lean.toFixed(3)}°` : "--°";
+    $("rmsValue").textContent = state.auto.latestMetrics ? `${state.auto.latestMetrics.rmsAngle.toFixed(3)}°` : "--°";
+    $("scoreValue").textContent = state.auto.latestMetrics ? state.auto.latestMetrics.score.toFixed(2) : "--";
+    $("firmware").textContent = state.firmware;
+    $("balanceState").textContent = state.balanceStarted ? "已启动" : "未启动";
+    $("trainingLock").textContent = state.trainingLocked ? "已锁定" : "未锁定";
+    $("firmwareState").textContent = firmwareStateName(state.firmwareState);
+    $("dropped").textContent = state.slow ? String(state.slow.dropped) : "—";
+    $("stackFree").textContent = state.slow?.stackFree != null ? `${state.slow.stackFree} B / 4096 B` : "—";
+    $("controlGap").textContent = state.slow?.controlGapUs != null ? `${(state.slow.controlGapUs / 1000).toFixed(3)} ms` : "—";
+    $("controlExec").textContent = state.slow?.controlExecUs != null ? `${(state.slow.controlExecUs / 1000).toFixed(3)} ms` : "—";
+    $("activeProfileTag").textContent = `当前 ${state.profile}`;
+    $("presetNormal").classList.toggle("active", state.profile === "N");
+    $("presetLoad").classList.toggle("active", state.profile === "L");
+    $("manualLockTag").textContent = state.trainingLocked ? "训练锁定" : state.pendingManual ? "等待读回确认" : !directFirmwareReady() ? "等待固件版本同步" : "可编辑";
+    $("applyManual").textContent = state.pendingManual ? "等待STM32确认…" : "更新全部PID";
+    const manualDisabled = state.hardwareFault || !directFirmwareReady() || !connected || !state.currentPid || state.trainingLocked || state.auto.enabled || !!state.pendingManual;
+    for (const id of ["presetNormal", "presetLoad", "applyManual", "applyBalance", "applyVelocity", "applyTurn", ...C.PID_KEYS.map((key) => "edit" + key)]) $(id).disabled = manualDisabled;
+    document.querySelectorAll("[data-motion]").forEach((button) => button.disabled = !connected);
+    $("autoPhaseTag").textContent = state.auto.enabled ? "运行中" : state.auto.phase === "ERROR" ? "错误" : "停止";
+    $("autoPhase").textContent = state.auto.phase;
+    $("autoCycle").textContent = String(state.auto.cycle);
+    $("autoNext").textContent = nextAutoText();
+    $("manualProfile").disabled = true;
+    $("autoStart").disabled = state.hardwareFault || !directFirmwareReady() || !connected || !state.balanceStarted || state.auto.enabled || !state.currentPid || !!state.pendingManual;
+    $("autoPause").disabled = !state.auto.enabled && !state.trainingLocked;
+  }
+  function nextAutoText() {
+    const map = {
+      IDLE: "点击开始自动LLM调参", STARTING: "等待STM32训练锁",
+      BASELINE: "采集当前基线", LLM: "等待LLM决策", PREPARING: "暂存候选",
+      APPLYING: "下个控制边界赋值，等待读回实际PID", SETTLING: "排除切换瞬态", TRIAL1: "首个实车评估窗口",
+      TRIAL2: "确认改善是否保持", ACCEPTING: "接受为新基准", ACCEPTED: "同步新基准",
+      ROLLING_BACK: "恢复上一组确认参数", ROLLED_BACK: "同步回滚结果",
+      HOLD: "保持当前参数后进入下一轮", ERROR: "检查日志与LLM设置"
+    };
+    return map[state.auto.phase] || state.auto.phase;
+  }
+
+  function drawChart() {
+    const canvas = $("chart");
+    const dpr = window.devicePixelRatio || 1;
+    const width = canvas.clientWidth || 320, height = 220;
+    if (canvas.width !== Math.round(width * dpr) || canvas.height !== Math.round(height * dpr)) {
+      canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
+    }
+    const ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, width, height);
+    ctx.strokeStyle = "#1d3a51"; ctx.lineWidth = 1;
+    for (let i = 1; i < 5; i += 1) {
+      const y = i * height / 5;
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
+    }
+    const points = state.chart.filter((point) => Date.now() - point.at <= 30000);
+    function series(key, scale, color) {
+      if (points.length < 2) return;
+      ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.beginPath();
+      points.forEach((point, index) => {
+        const x = width - (Date.now() - point.at) / 30000 * width;
+        const y = height / 2 - point[key] * scale;
+        if (index) ctx.lineTo(x, y); else ctx.moveTo(x, y);
+      });
+      ctx.stroke();
+    }
+    series("angle", height / 30, "#2dd4bf");
+    series("gyro", height / 300, "#fbbf24");
+  }
+
+  function switchPage(name) {
+    document.querySelectorAll(".page").forEach((page) => page.classList.toggle("active", page.dataset.page === name));
+    document.querySelectorAll("nav button").forEach((button) => button.classList.toggle("active", button.dataset.nav === name));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setTimeout(drawChart, 60);
+  }
+  function download(name, mime, content) {
+    const anchor = document.createElement("a");
+    anchor.href = URL.createObjectURL(new Blob([content], { type: mime }));
+    anchor.download = name;
+    document.body.appendChild(anchor);
+    anchor.click();
+    setTimeout(() => { URL.revokeObjectURL(anchor.href); anchor.remove(); }, 1000);
+  }
+  function exportCsv() {
+    const columns = ["at", "ms", "angle", "gyro", "osc", "lean", "el", "er", "ml", "mr", "state", "trainingLocked", "profile"];
+    const rows = state.telemetry.map((item) => columns.map((key) => item[key]).join(","));
+    download(`routea-telemetry-${Date.now()}.csv`, "text/csv;charset=utf-8", "\ufeff" + columns.join(",") + "\n" + rows.join("\n"));
+  }
+  function exportJson() {
+    download(`routea-session-${Date.now()}.json`, "application/json", JSON.stringify({
+      exportedAt: new Date().toISOString(), currentPid: state.currentPid, profile: state.profile,
+      latestMetrics: state.auto.latestMetrics, decisions: state.auto.history,
+      telemetry: state.telemetry, logs: state.logs
+    }, null, 2));
+  }
+
+  function startMock() {
+    if (state.connected) return toast("请先断开真实设备");
+    stopMock();
+    state.mock = true;
+    state.hardwareFault = false;
+    state.balanceStarted = true;
+    state.trainingLocked = false;
+    state.mockState = 0;
+    state.mockClock = 0;
+    state.mockProfile = "N";
+    state.mockPid = C.presetPid("N");
+    state.mockChampionPid = { ...state.mockPid };
+    state.mockChampionProfile = "N";
+    state.currentPid = { ...state.mockPid };
+    state.profile = "N";
+    state.firmware = "RA3.3-DIRECT-MOCK";
+    $("deviceName").textContent = "Mock YahBoom_BL";
+    connectionLabel("online", "模拟设备");
+    state.mockTimer = setInterval(emitMockTelemetry, 200);
+    emitMockTelemetry();
+    syncManualFields(true);
+    updateUi();
+    switchPage("status");
+    toast("模拟设备已启动；自动模式使用本地模拟决策");
+  }
+  function stopMock() {
+    if (state.mockTimer) clearInterval(state.mockTimer);
+    state.mockTimer = null;
+    state.mock = false;
+    if (!state.connected) connectionLabel("offline", "未连接");
+  }
+  function emitMockTelemetry() {
+    if (!state.mock) return;
+    state.mockClock += 200;
+    const target = state.mockProfile === "L" ? { AP: 100, AD: 82 } : { AP: 94, AD: 58 };
+    const error = Math.abs(state.mockPid.AP - target.AP) / 25 + Math.abs(state.mockPid.AD - target.AD) / 35;
+    const amplitude = 0.35 + Math.min(2.4, error);
+    const angle = Math.sin(state.mockClock / 210) * amplitude + Math.sin(state.mockClock / 73) * amplitude * 0.22;
+    const gyro = Math.cos(state.mockClock / 210) * amplitude * 45;
+    const osc = amplitude * 0.65;
+    const lean = state.mockProfile === "L" ? 0.25 : 0.35;
+    const ml = Math.round(-angle * 430), mr = Math.round(-angle * 420);
+    mockEmit(C.frame(`T3,F,${state.mockClock},A${angle.toFixed(2)},G${gyro.toFixed(1)},O${osc.toFixed(3)},N${lean.toFixed(3)},EL${Math.round(gyro / 8)},ER${Math.round(gyro / 8 + 1)},ML${ml},MR${mr},S${state.mockState},L${state.trainingLocked ? 1 : 0},P${state.mockProfile}`));
+    if (state.mockClock % 1000 === 0) {
+      mockEmit(C.frame(`T3,S,${state.mockClock},V11.82,A2${(amplitude * amplitude / 2).toFixed(3)},G2${(amplitude * amplitude * 1012).toFixed(3)},PK${(amplitude * 1.22).toFixed(2)},X0.000,AP${state.mockPid.AP.toFixed(2)},AD${state.mockPid.AD.toFixed(2)},VP${state.mockPid.VP.toFixed(2)},VI${state.mockPid.VI.toFixed(2)},TP${state.mockPid.TP.toFixed(2)},TD${state.mockPid.TD.toFixed(2)},P${state.mockProfile},D0,B1,RA3.3-DIRECT-MOCK`));
+    }
+  }
+  function mockEmit(raw) { handleFrame(raw); }
+  function mockReceiveCommand(raw) {
+    if (!raw.startsWith("$P3,") || !C.verify(raw)) return Promise.resolve();
+    const body = raw.slice(1, raw.lastIndexOf(",C")), parts = body.split(","), command = parts[1];
+    const ack = (name, id = state.auto.trialId) => setTimeout(() => mockEmit(C.frame(`P3,ACK,${name},${id},${state.mockState},${state.trainingLocked ? 1 : 0},P${state.mockProfile}`)), 30);
+    if (command === "GET") setTimeout(() => mockEmit(C.frame(`P3,STATUS,${C.pidCsv(state.mockPid)},P${state.mockProfile},S${state.mockState},L${state.trainingLocked ? 1 : 0},B1`)), 30);
+    else if (command === "PROBE") ack("PROBE", 0);
+    else if (command === "TRAIN" && parts[2] === "START") { state.trainingLocked = true; ack("TRAIN_START", 0); }
+    else if (command === "TRAIN" && parts[2] === "STOP") { state.trainingLocked = false; state.mockState = 0; ack("TRAIN_STOP", 0); }
+    else if (command === "MSET" || command === "PRESET") {
+      if (state.trainingLocked) { mockEmit(C.frame("P3,ERR,LOCKED")); return Promise.resolve(); }
+      const preset = command === "PRESET";
+      const profile = preset ? parts[2] : state.mockProfile;
+      const pid = preset ? C.presetPid(profile) : C.mergePid(state.mockPid,
+        Object.fromEntries(C.PID_KEYS.map((key, index) => [key, parts[3 + index]])), Number((parts[9] || "M7").slice(1)));
+      ack("MSET_QUEUED", 0);
+      setTimeout(() => {
+        state.mockProfile = profile; state.mockPid = pid;
+        state.mockChampionPid = { ...pid }; state.mockChampionProfile = profile;
+        ack("MSET_APPLIED", 0);
+      }, 5);
+    } else if (command === "PREP" || command === "PPRESET") {
+      state.auto.trialId = Number(parts[2]);
+      state.mockCandidateProfile = parts[4];
+      state.mockCandidatePid = command === "PPRESET" ? C.presetPid(parts[4]) : C.mergePid(state.mockPid,
+        Object.fromEntries(C.PID_KEYS.map((key, index) => [key, parts[5 + index]])), Number((parts[11] || "M7").slice(1)));
+      state.mockState = 1; ack("PREP", state.auto.trialId);
+    } else if (command === "APPLY") {
+      ack("APPLY", Number(parts[2]));
+      setTimeout(() => {
+        state.mockPid = { ...state.mockCandidatePid }; state.mockProfile = state.mockCandidateProfile;
+        state.mockState = 2;
+      }, 5);
+    } else if (command === "HB") ack("HB", Number(parts[2]));
+    else if (command === "ACCEPT") {
+      state.mockChampionPid = { ...state.mockPid }; state.mockChampionProfile = state.mockProfile;
+      state.mockState = 0; ack("ACCEPT", Number(parts[2]));
+    } else if (command === "ROLLBACK") {
+      state.mockPid = { ...state.mockChampionPid }; state.mockProfile = state.mockChampionProfile;
+      state.mockState = 0; ack("ROLLBACK", Number(parts[2])); setTimeout(emitMockTelemetry, 70);
+    } else if (command === "STOP") ack("STOP", Number(parts[2]));
+    return Promise.resolve();
+  }
+
+  function bind() {
+    document.querySelectorAll("[data-nav]").forEach((button) => button.addEventListener("click", () => switchPage(button.dataset.nav)));
+    document.querySelectorAll("[data-motion]").forEach(bindMotionButton);
+    $("presetNormal").addEventListener("click", () => applyPreset("N"));
+    $("presetLoad").addEventListener("click", () => applyPreset("L"));
+    for (const key of C.PID_KEYS) $("edit" + key).addEventListener("input", () => { state.manualDirty = true; });
+    $("manualProfile").addEventListener("change", () => { state.manualDirty = true; });
+    const actions = {
+      connect, disconnect: safeDisconnect, "get-pid": () => send(C.getPid()),
+      "manual-apply": () => applyManual(state.profile, readManualPid()),
+      "manual-balance": () => applyManual(state.profile, readManualPid(1), 1),
+      "manual-velocity": () => applyManual(state.profile, readManualPid(2), 2),
+      "manual-turn": () => applyManual(state.profile, readManualPid(4), 4),
+      "auto-start": startAuto, "auto-pause": () => stopAuto(false),
+      probe: () => send(C.frame("P3,PROBE")), stop: safeStop, "save-settings": saveSettings, mock: startMock,
+      "export-csv": exportCsv, "export-json": exportJson,
+      "clear-log": () => { $("log").textContent = ""; }
+    };
+    document.querySelectorAll("[data-action]").forEach((button) => button.addEventListener("click", () => { try { Promise.resolve(actions[button.dataset.action]?.()).catch((error) => toast(error.message)); } catch (error) { toast(error.message); } }));
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden && state.auto.enabled) {
+        log("SYS", "Page hidden: pausing automatic training and requesting rollback");
+        stopAuto(true);
+      }
+      if (document.hidden) releaseMotion(false);
+    });
+    window.addEventListener("pagehide", () => releaseMotion(false));
+    window.addEventListener("resize", drawChart);
+  }
+  function boot() {
+    loadSettings(); bind(); syncManualFields(); renderMetrics(null); renderHistory(); updateUi(); drawChart();
+    setInterval(() => { updateUi(); drawChart(); }, 1000);
+    if (!navigator.bluetooth) {
+      $("secureBanner").classList.remove("hidden");
+      $("secureBanner").textContent = "当前页面没有Web Bluetooth。请使用Bluefy打开；Safari、iOS Chrome和普通文件预览无法连接。";
+    } else if (!window.isSecureContext) {
+      $("secureBanner").classList.remove("hidden");
+      $("secureBanner").textContent = "当前不是标准HTTPS安全上下文；只有Bluefy明确提供Web Bluetooth时才可继续。";
+    }
+    log("SYS", `页面就绪 secure=${window.isSecureContext} bluetooth=${!!navigator.bluetooth}`);
+  }
+  boot();
+})();
+</script>
+</body>
+</html>

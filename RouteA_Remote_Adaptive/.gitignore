@@ -1,0 +1,10 @@
+firmware/OBJ/
+firmware/USER/Listings/
+firmware/USER/DebugConfig/
+*.uvguix.*
+*.uvoptx
+tests/native-bin/
+__pycache__/
+.publication/
+backups/
+leveling/

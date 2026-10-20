@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#06121e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>BalanceBot Remote Adaptive · Bluefy</title>
+  <style>/*__CSS__*/</style>
+</head>
+<body>
+<header class="topbar">
+  <div><span class="eyebrow">BALANCEBOT · MODE 21 · RA3.3-DIRECT</span><h1>远程自适应控制</h1></div>
+  <button id="connectionPill" class="pill offline" data-action="connect"><i></i><b>未连接</b></button>
+</header>
+
+<main>
+  <section class="page active" data-page="status">
+    <div id="secureBanner" class="notice warning hidden"></div>
+    <div class="notice safe">STM32始终执行5 ms实时平衡；Normal/Load选择和PID优化由手机决定。手机未连接时保持最后一组已确认参数。</div>
+
+    <div class="hero card">
+      <div>
+        <span class="label">实时倾角</span>
+        <strong id="angleHero">--.-°</strong>
+        <small id="gyroHero">角速度 --.- raw</small>
+      </div>
+      <div class="hero-side">
+        <span>当前配置</span><b id="profileHero">—</b>
+        <span>自动训练</span><b id="autoHero">未启动</b>
+      </div>
+    </div>
+
+    <div class="grid metrics">
+      <div class="card metric"><span>电池</span><b id="battery">-- V</b></div>
+      <div class="card metric"><span>遥测频率</span><b id="rxHz">0.0 Hz</b></div>
+      <div class="card metric"><span>左 / 右编码器</span><b id="encoders">-- / --</b></div>
+      <div class="card metric"><span>左 / 右PWM</span><b id="motors">-- / --</b></div>
+      <div class="card metric"><span>osc</span><b id="oscValue">--</b></div>
+      <div class="card metric"><span>lean</span><b id="leanValue">--°</b></div>
+      <div class="card metric"><span>角度RMS</span><b id="rmsValue">--°</b></div>
+      <div class="card metric"><span>综合代价</span><b id="scoreValue">--</b></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>最近30秒</span><span class="legend"><i class="angle-line"></i>角度 <i class="gyro-line"></i>角速度/10</span></div>
+      <canvas id="chart" height="220"></canvas>
+    </div>
+
+    <div class="card status-list">
+      <div><span>设备</span><b id="deviceName">—</b></div>
+      <div><span>固件</span><b id="firmware">—</b></div>
+      <div><span>平衡启动</span><b id="balanceState">未确认</b></div>
+      <div><span>训练锁</span><b id="trainingLock">未确认</b></div>
+      <div><span>固件事务</span><b id="firmwareState">未知</b></div>
+      <div><span>最近接收</span><b id="lastRx">—</b></div>
+      <div><span>有效 / 错误帧</span><b id="frameCounts">0 / 0</b></div>
+      <div><span>固件发送丢弃</span><b id="dropped">—</b></div>
+      <div><span>最小剩余栈</span><b id="stackFree">—</b></div>
+      <div><span>最大控制周期间隔</span><b id="controlGap">—</b></div>
+      <div><span>最大控制执行耗时</span><b id="controlExec">—</b></div>
+    </div>
+  </section>
+
+  <section class="page" data-page="manual">
+    <div class="section-head"><div><span class="eyebrow">MANUAL CONTROL</span><h2>人工控制与调参</h2></div><span id="manualLockTag" class="tag">可编辑</span></div>
+    <div class="notice warning">自动训练运行时，人工PID和预设按钮会锁定。先停止自动训练才能人工修改。</div>
+
+    <div class="card">
+      <div class="card-title"><span>两组官方预设</span><span id="activeProfileTag" class="tag">当前 —</span></div>
+      <div class="preset-grid">
+        <button id="presetNormal" class="preset" data-profile="N"><b>Normal</b><small>官方模式1</small><span>96 / 48 / 62 / 31 / 17 / 20</span></button>
+        <button id="presetLoad" class="preset" data-profile="L"><b>Load</b><small>官方模式4</small><span>96 / 75 / 70 / 35 / 14 / 20</span></button>
+      </div>
+      <p class="footnote">Load目标倍率：平衡×2.0、速度×1.35、转向×1.0；仅通过预设按钮显式切换。普通调参不改变配置或倍率。</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>当前与人工候选PID</span><button class="compact" data-action="get-pid">同步</button></div>
+      <label class="field">当前所属配置（使用上方预设按钮切换）
+        <select id="manualProfile" disabled><option value="N">Normal</option><option value="L">Load</option></select>
+      </label>
+      <div class="pid-grid">
+        <label>AP <small id="liveAP">实际 --</small><input id="editAP" inputmode="decimal"></label>
+        <label>AD <small id="liveAD">实际 --</small><input id="editAD" inputmode="decimal"></label>
+        <label>VP <small id="liveVP">实际 --</small><input id="editVP" inputmode="decimal"></label>
+        <label>VI <small id="liveVI">实际 --</small><input id="editVI" inputmode="decimal"></label>
+        <label>TP <small id="liveTP">实际 --</small><input id="editTP" inputmode="decimal"></label>
+        <label>TD <small id="liveTD">实际 --</small><input id="editTD" inputmode="decimal"></label>
+      </div>
+      <button class="btn full" data-action="probe">测试通信（不修改PID）</button>
+      <p class="footnote">先测试通信，再重复应用不变的PID。状态页提供栈余量与控制周期诊断；需固件RA3.3-DIRECT。</p>
+      <div class="two-col"><button id="applyBalance" class="btn" data-action="manual-balance">更新平衡环 AP / AD</button><button id="applyVelocity" class="btn" data-action="manual-velocity">更新速度环 VP / VI</button></div>
+      <button id="applyTurn" class="btn full" data-action="manual-turn">更新转向环 TP / TD</button>
+      <button id="applyManual" class="btn primary full" data-action="manual-apply">更新全部PID</button>
+      <p class="footnote">更新时保留积分与滤波状态，下个5 ms控制边界直接赋值；单环按钮只写对应两项。收到完成响应并读回一致后才确认已应用。没有相对百分比限制。</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>移动控制</span><span class="tag danger-tag">按住移动</span></div>
+      <div class="drive-pad">
+        <button class="drive-btn forward" data-motion="1,0">▲<small>前进</small></button>
+        <button class="drive-btn left" data-motion="3,0">◀<small>左转</small></button>
+        <button class="stop-main" data-action="stop">停止</button>
+        <button class="drive-btn right" data-motion="4,0">▶<small>右转</small></button>
+        <button class="drive-btn back" data-motion="2,0">▼<small>后退</small></button>
+      </div>
+      <div class="two-col">
+        <button class="btn" data-motion="0,1">↶ 原地左转</button>
+        <button class="btn" data-motion="0,2">↷ 原地右转</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" data-page="auto">
+    <div class="section-head"><div><span class="eyebrow">FULL AUTO · LLM SUPERVISOR</span><h2>自动LLM调参</h2></div><span id="autoPhaseTag" class="tag">停止</span></div>
+    <div class="notice danger">启动后会自动把候选直接应用到实车。请扶车、清空周围区域，并保留物理断电手段。</div>
+
+    <div class="auto-controls card">
+      <button id="autoStart" class="btn accent" data-action="auto-start">开始自动LLM调参</button>
+      <button id="autoPause" class="btn danger-btn" data-action="auto-pause">停止并回滚活动试验</button>
+      <div><span>阶段</span><b id="autoPhase">IDLE</b></div>
+      <div><span>循环</span><b id="autoCycle">0</b></div>
+      <div><span>下一步</span><b id="autoNext">连接并同步小车</b></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>本轮窗口指标</span><span id="windowSamples" class="tag">0样本</span></div>
+      <div class="metric-grid">
+        <div><span>综合代价</span><b id="metricScore">--</b></div>
+        <div><span>角度RMS</span><b id="metricRms">--</b></div>
+        <div><span>角度峰值</span><b id="metricPeak">--</b></div>
+        <div><span>角速度RMS</span><b id="metricGyro">--</b></div>
+        <div><span>osc均值</span><b id="metricOsc">--</b></div>
+        <div><span>lean均值</span><b id="metricLean">--</b></div>
+        <div><span>PWM饱和率</span><b id="metricSat">--</b></div>
+        <div><span>电机负担</span><b id="metricEffort">--</b></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>最近LLM决策</span><span id="decisionAction" class="tag">尚无</span></div>
+      <div class="decision">
+        <div><span>目标配置</span><b id="decisionProfile">—</b></div>
+        <div><span>候选PID</span><b id="decisionPid">—</b></div>
+        <div><span>理由</span><b id="decisionReason">等待首个基线窗口</b></div>
+        <div><span>预期</span><b id="decisionEffect">—</b></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>自动优化历史</span><button class="compact" data-action="export-json">导出</button></div>
+      <div class="table-wrap"><table><thead><tr><th>#</th><th>动作</th><th>配置</th><th>分数</th><th>结果</th></tr></thead><tbody id="historyBody"><tr><td colspan="5">尚无记录</td></tr></tbody></table></div>
+    </div>
+  </section>
+
+  <section class="page" data-page="settings">
+    <div class="section-head"><div><span class="eyebrow">CONNECTION · MODEL · LOG</span><h2>设置</h2></div></div>
+
+    <div class="card form-card">
+      <div class="card-title"><span>BLE UART</span><span class="tag">9600 baud</span></div>
+      <label>Service UUID<input id="serviceUuid" value="0000ffe0-0000-1000-8000-00805f9b34fb"></label>
+      <label>Characteristic UUID<input id="charUuid" value="0000ffe1-0000-1000-8000-00805f9b34fb"></label>
+      <label>设备名称前缀<input id="namePrefix" value="YahBoom_BL"></label>
+      <div class="two-col"><label>分片字节<input id="chunkSize" type="number" value="20" min="1" max="20"></label><label>分片间隔ms<input id="chunkDelay" type="number" value="18" min="0" max="100"></label></div>
+    </div>
+
+    <div class="card form-card">
+      <div class="card-title"><span>LLM接口</span><span class="tag">OpenAI-compatible</span></div>
+      <label>Base URL<input id="llmBase" value="https://api.deepseek.com"></label>
+      <label>Model<input id="llmModel" value="deepseek-chat"></label>
+      <label>API Key（不持久化）<input id="llmKey" type="password" autocomplete="off" placeholder="sk-..."></label>
+      <p class="footnote">网页直接请求该接口。若接口禁止CORS，需要使用自己的HTTPS代理；API Key不会写入localStorage或导出文件。</p>
+    </div>
+
+    <div class="card form-card">
+      <div class="card-title"><span>自动循环时间</span><span class="tag">毫秒</span></div>
+      <div class="two-col"><label>基线窗口<input id="baselineMs" type="number" value="4000" min="3000" max="20000"></label><label>切换稳定期<input id="settleMs" type="number" value="1500" min="500" max="5000"></label></div>
+      <div class="two-col"><label>评估窗口<input id="evalMs" type="number" value="6000" min="3000" max="20000"></label><label>最低改善%<input id="improvementPct" type="number" value="3" min="0" max="30" step="0.5"></label></div>
+      <button class="btn primary full" data-action="save-settings">保存设置</button>
+    </div>
+
+    <div class="card">
+      <div class="two-col"><button class="btn primary" data-action="connect">连接小车</button><button class="btn" data-action="disconnect">安全断开</button></div>
+      <button class="btn full" data-action="mock">启动模拟设备</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>原始通信日志</span><span id="logCount" class="tag">0</span></div>
+      <pre id="log"></pre>
+      <div class="two-col"><button class="btn" data-action="export-csv">导出CSV</button><button class="btn" data-action="clear-log">清空显示</button></div>
+    </div>
+  </section>
+</main>
+
+<button id="emergencyStop" class="emergency" data-action="stop">■ 紧急停止</button>
+<nav>
+  <button class="active" data-nav="status"><span>◉</span>状态</button>
+  <button data-nav="manual"><span>✥</span>人工</button>
+  <button data-nav="auto"><span>◇</span>自动</button>
+  <button data-nav="settings"><span>⚙</span>设置</button>
+</nav>
+<div id="toast" role="status"></div>
+<script>/*__CORE__*/</script>
+<script>/*__APP__*/</script>
+</body>
+</html>
