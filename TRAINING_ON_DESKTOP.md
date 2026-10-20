@@ -48,8 +48,16 @@ venv\Scripts\activate
 python train_real_robot.py
 ```
 
-`train_real_robot.py` is currently set up as **run 15 (trained 2026-10-18;
-`models/best_real` is its final checkpoint)**: from scratch, 30M steps, with:
+`train_real_robot.py` is currently set up as **run 16** (not yet trained): run
+15 plus a penalty per motor reversal (`REVERSAL_WEIGHT` 0.5) and gear slack
+0–6°, from scratch, 30M steps. Why: on the car (2026-10-20) runs 13 and 15
+shake at about 7 Hz through the gear slack, reversing 10–17 times a second;
+the PID rarely reverses
+(`session-logs/2026-10-20-car-shake-and-run16.md`). Check it with
+`compare_models.py --slack 2 4` and the reversal counts in that log, §3.
+
+Run 15 (trained 2026-10-18; `models/best_real` is its final checkpoint):
+from scratch, 30M steps, with:
 - the measured motor and stiction;
 - gear slack 0–4° and delay 5–15 ms;
 - pushes up to **3 N** (runs 12–14: 4 N, more than even the stock PID
@@ -123,7 +131,7 @@ Reference, simulated at 2° slack:
 | run 12 | 26–35 | | 14 |
 | run 13 | 24–33 | 26–36 | 18 |
 | run 14 final | 17–28 | | 5 |
-| run 15 final | 20–25 | (expect ~21–27) | 18 |
+| run 15 final | 20–25 | 43–49 (2026-10-20, a worse car: PID 11.7) | 18 |
 
 ## 4. Desktop: export and push
 

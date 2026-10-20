@@ -167,6 +167,17 @@ ARMATURE_RANGE = (1.1e-3, 2.0e-3)
 # if it still buzzes (raise) or goes sluggish (lower).
 ACTION_RATE_WEIGHT = 0.2
 
+# Run 16: a charge per motor REVERSAL (sign change of a wheel's command), on
+# top of the rate term. On the car (2026-10-20) runs 13 and 15 shake at ~7 Hz,
+# reversing 10-17 times a second: each reversal crosses the gear slack, the
+# rotor slams into the far side, the jolt shows on the gyro and the policy
+# reverses again. The stock PID rarely reverses and stays on one side of the
+# gap. The rate term cannot see this: a 0.1 -> -0.1 flip costs almost nothing,
+# but through the 1300-count compensation it is a full 2600-count swing.
+# 0.5 per wheel per reversal: run 15's ~28/s per wheel in sim costs ~0.14/step,
+# the PID's 2-6/s ~0.02.
+REVERSAL_WEIGHT = 0.5
+
 # --- station keeping -----------------------------------------------------
 #
 # Run 5 drifted 0.408 m per 10 s while commanded to hold station (run 3: 0.073 m),
@@ -367,7 +378,9 @@ POS_ERR_CLIP_M = 0.5              # m, the station-keeping integral
 # compensating for the mis-modelled motor.
 ACTION_LATENCY_TICKS = (1, 3)     # 5-15 ms, per training episode
 EVAL_LATENCY_TICKS = 2            # 10 ms; fixed so evals compare
-GEAR_SLACK_DEG = (0.0, 4.0)       # total free play, motor to wheel, per wheel
+# Run 16: up to 6 (runs 12-15: 4). The 2026-10-20 car fits ~4 deg: the stock
+# PID at 11.7 deg/s and run 13 at ~50 match the simulator at 4 deg, 11.8 V.
+GEAR_SLACK_DEG = (0.0, 6.0)       # total free play, motor to wheel, per wheel
 EVAL_GEAR_SLACK_DEG = 2.0         # the measured car value
 # Joint layout of real_robot.xml (rotors after the wheels).
 WHEEL_QVEL = slice(6, 8)
@@ -894,6 +907,10 @@ class PWMCommandWrapper(VelocityCommandWrapper):
             reward -= ACTION_RATE_WEIGHT * float(
                 np.sum(np.square(action - self._prev_action)))
         self._prev_action = action.copy()
+        # A reversal is judged against the last nonzero sign, so passing through 0 still counts.
+        s = np.sign(action)
+        reward -= REVERSAL_WEIGHT * float(np.sum((s != 0) & (s == -self._last_sign)))
+        self._last_sign = np.where(s != 0, s, self._last_sign)
 
         # Station keeping and heading, graded on the TRUE integrals refreshed by
         # _get_conditioned_obs during the super().step() call above.
@@ -911,6 +928,7 @@ class PWMCommandWrapper(VelocityCommandWrapper):
     def reset(self, **kwargs):
         self._hist = None          # refilled on the first observation
         self._prev_action = None   # no rate penalty on the first step
+        self._last_sign = np.zeros(2)   # no reversal charged on the first command
         self._pos_err = None       # re-zeroed by the first observation
         self._yaw_err = None
         self._enc_ring = None      # odom_reset()
@@ -990,7 +1008,12 @@ def make_env(**kwargs):
 #
 # Run 15 is run 14 with pushes capped at 3 N and the wobble penalty paused
 # for 1 s after each push (session-logs/2026-10-14-run14-desktop.md §3-4).
-RUN_NAME = "run15"
+#
+# Run 16 is run 15 plus a charge per motor reversal (REVERSAL_WEIGHT) and
+# gear slack up to 6 deg, from scratch: the 7 Hz shake through the slack is
+# how runs 13-15 balance, and a fine-tune would keep it
+# (session-logs/2026-10-20-car-shake-and-run16.md).
+RUN_NAME = "run16"
 INIT_FROM = "none"
 FINETUNE_STEPS = 10_000_000
 FINETUNE_LR = 1e-4
