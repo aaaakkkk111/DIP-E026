@@ -3,6 +3,10 @@
 For whoever flashes and tests the car. Do Steps 1–9 in order. The Reference
 section at the end explains the why, and covers porting to other firmware.
 
+**Status (2026-10-21):** `models/best_real` is now run 21 (21M), which needs this
+`policy.c` (it computes `osc`/`lean` into obs[5], obs[6]); see
+`TRAINING_ON_DESKTOP.md`, "Now: flash run 21". Earlier status below.
+
 **Status (2026-10-14):** runs 8, 9 and 11 have balanced on the car with these
 steps (11–51 s per run). Their large "wobble" numbers turned out to be the
 final hand push; mid-run they sway about as the simulator predicts

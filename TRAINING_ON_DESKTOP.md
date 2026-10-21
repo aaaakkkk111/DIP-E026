@@ -13,6 +13,39 @@ cable. So the desktop trains and the laptop builds, flashes and tests. GitHub
 you finish. Only the desktop changes training code and models; only the
 laptop adds car logs. Then the two never conflict.
 
+## Now: flash run 21 (2026-10-21)
+
+`models/best_real` and the weight headers are **run 21 at 21M steps**. All its
+results are from the simulator; this is its first time on the car.
+
+**What changed:** the network now reads `osc` and `lean` (a teammate's Mode 26
+`load_adapt.c` filters) in `obs[5]` and `obs[6]`, which used to be 0.
+`firmware/policy.c` computes them inside, so `rl_mode.c` needs no edit. Rebuild
+with the new **`policy.c`**, not just the weight headers. With an old `policy.c`
+the network sees zeros there, and in simulation it then shakes like run 15
+(up to 31 deg/s).
+
+**Simulator results (2° slack):**
+
+| | standing wobble (deg/s) | pushes survived |
+|---|---|---|
+| Empty | 6.6–8.3 (run 15: 18–25; PID 6.6–6.9) | **2 N: 1/18** (PID 18/18) |
+| With 2 kg | 4.6–5.2 | 3 N and 4 N: 18/18 |
+
+It drives at 0–2 kg at full speed. **Empty, it barely survives a push, so keep a
+hand ready.** Details: `session-logs/2026-10-21-run21-desktop.md`.
+
+**Steps:**
+1. `git pull`, then rebuild the Keil project with `firmware/policy.c`,
+   `policy.h`, `policy_weights.h` and `policy_weights_q.h`
+   (`assemble_mode28_project.py` copies them).
+2. Watch the flash use. The filters add a little code and 24 B of RAM, and
+   `sqrtf` is already linked. If it no longer fits, say so and I'll trim.
+3. Flash, then `cal` as usual.
+4. Test standing empty, then with about 2 kg.
+5. Log the 200 Hz stream mid-run, as for run 15, and push the logs. Gentle
+   pushes only when empty.
+
 Background for the current run (run 13: the measured motor with stiction,
 pushes in training, and a mild wobble penalty; run 12 before it):
 `session-logs/2026-10-08-run12-measured-motor-and-pushes.md`. The motor

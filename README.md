@@ -4,6 +4,11 @@ A PPO policy trained in MuJoCo to balance and drive the Yahboom two-wheeled
 car (STM32F103, MPU6050, AT8236 driver, JGB37-520 motors), plus the C code that
 runs it on the car.
 
+**Status (2026-10-21):** run 21 (21M) is exported for its first car test: in
+simulation it stands at PID level empty and loaded (2 kg), but barely survives
+a push when empty. See `TRAINING_ON_DESKTOP.md` ("Now: flash run 21") and
+`PROJECT_OVERVIEW.md`.
+
 **Status (2026-10-19):** runs 8, 9, 11 and 13 have balanced on the car, 11–58 s
 per run, ended by hand. The simulator now uses the motor measured on the car,
 with stiction, and about 2° of gear slack. The stock PID and run 11's real

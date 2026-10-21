@@ -42,12 +42,12 @@ from gymnasium.spaces import Box
 from gymnasium.wrappers import TimeLimit
 from scipy.spatial.transform import Rotation as R
 from stable_baselines3 import PPO
-from stable_baselines3.common.callbacks import BaseCallback, CallbackList, EvalCallback
+from stable_baselines3.common.callbacks import BaseCallback, CallbackList, CheckpointCallback, EvalCallback
 from stable_baselines3.common.logger import configure
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import SubprocVecEnv
 
-from motor_model import NOMINAL_MOTOR, action_to_torque, sample_motor
+from motor_model import NOMINAL_MOTOR, action_to_pwm, action_to_torque, sample_motor
 
 
 def _opt_out_of_power_throttling():
@@ -105,7 +105,15 @@ RESET_VEL_NOISE = 0.10
 #
 # 1.0 kg still spans 0-106% of the robot's mass, which is a realistic operating
 # range, while leaving the unloaded case well represented.
-MAX_PAYLOAD_KG = 1.0
+# Run 18: 0, not 1.0. Diagnostics (2026-10-21, 10M each): only the run without
+# payload stood calm (4.6-10.2 deg/s at 2 deg, 5-13 reversals/s, against
+# 19.5-30.1 and 20-29 for the control). Training for a loaded car taught a
+# stiff controller that shakes through the slack when empty. The no-payload
+# policy still stood 10 s with 0-4 kg on board in sim, calmer with more load.
+# Run 19: 2.0. Run 18 (no payload, 30M) shook anyway (14.6-17.8 deg/s) and could
+# not drive with 1 kg; the car has to carry about 2 kg, so the load range is back
+# and run 19 changes the calm terms instead.
+MAX_PAYLOAD_KG = 2.0
 MAX_V_FORWARD = 0.3
 MAX_V_TURN = 0.5
 
@@ -130,6 +138,50 @@ HISTORY_TAPS = (2, 5, 11, 23, 47)
 HISTORY_LEN = max(HISTORY_TAPS) + 1
 # Signals worth remembering: attitude, its rate, and forward speed.
 N_HISTORY_SIGNALS = 3
+
+# Run 20: load awareness. Run 19 stood calm with 2 kg (5-7 deg/s, 3 N 18/18)
+# but shook empty (20-30) - one fixed policy cannot be soft empty and firm
+# loaded without knowing which it is. osc and lean are Mode 26 load_adapt.c's
+# filters, exactly (one-pole, alpha = dt/(RC+dt) at 200 Hz):
+#   osc  = RMS of the pitch gyro in ~8-16 Hz, deg/s (shake: gains too high)
+#   lean = RMS of the pitch angle in ~0.3-2 Hz, deg  (sway: too soft)
+# They replace the two dropped wheel-angle slots (obs[5], obs[6]), so the
+# network keeps 34 inputs and the firmware needs no new weights.
+LA_A_8HZ, LA_A_16HZ, LA_A_03HZ, LA_A_2HZ, LA_A_E = 0.200849, 0.334511, 0.009337, 0.059120, 0.016393
+OSC_OBS_SCALE = 1.0 / 25.0        # load_adapt's "too high" threshold -> 1.0
+LEAN_OBS_SCALE = 1.0 / 2.0
+LA_OBS_CLIP = 4.0
+
+# Run 21: a reward charge on the SHAKE band only - osc of the TRUE pitch gyro.
+# Runs 18-20 all shook empty once payload and full shoves arrived (15M): a
+# 20 deg/s shake cost ~0.18/step against +2 alive and -10 per fall, so the
+# policy bought margin with stiffness. Raising the broadband pitch-rate charge
+# (run 14) lost pushes, because recovery is large slow motion. osc (~8-16 Hz)
+# barely sees recovery (<3 Hz) but reads the 7-10 Hz limit cycle in full:
+# osc ~10 at run 20's empty 20 deg/s shake costs 1.0/step; calm (~2) 0.04.
+OSC_PENALTY_WEIGHT = 1.0
+OSC_PENALTY_REF_DPS = 10.0
+OSC_PENALTY_MAX = 1.0               # below the +2 alive reward, so falling never pays
+
+
+def _alpha(f_hz, dt=0.005):
+    return dt / (1.0 / (2.0 * np.pi * f_hz) + dt)
+
+
+assert all(abs(a - b) < 5e-6 for a, b in ((LA_A_8HZ, _alpha(8)), (LA_A_16HZ, _alpha(16)),
+                                          (LA_A_03HZ, _alpha(0.3)), (LA_A_2HZ, _alpha(2)),
+                                          (LA_A_E, 0.005 / 0.305)))
+
+
+def load_adapt_step(st, gyro_dps, angle_deg):
+    """One 5 ms tick of load_adapt.c. st = [m, b, E, q, l, EL], updated in place."""
+    st[0] += LA_A_8HZ * (gyro_dps - st[0])
+    st[1] += LA_A_16HZ * ((gyro_dps - st[0]) - st[1])
+    st[2] += LA_A_E * (st[1] * st[1] - st[2])
+    st[3] += LA_A_03HZ * (angle_deg - st[3])
+    st[4] += LA_A_2HZ * ((angle_deg - st[3]) - st[4])
+    st[5] += LA_A_E * (st[4] * st[4] - st[5])
+    return float(np.sqrt(st[2])), float(np.sqrt(st[5]))
 
 # Deterministic payload per eval episode, paired with EVAL_COMMANDS.
 #
@@ -179,7 +231,24 @@ ACTION_RATE_WEIGHT = 0.2
 # Run 17: 0.3. At 0.5 (run 16) the policy stood calm at 10M (2.6-5 deg/s,
 # 1-4 reversals/s) but lost it once full pushes and turns came in, ending at
 # run 15's wobble and surviving no 3 N push (session-logs/2026-10-21-run16-desktop.md).
-REVERSAL_WEIGHT = 0.3
+# Run 19: 0, replaced by PWM_STEP_WEIGHT below.
+REVERSAL_WEIGHT = 0.0
+
+# Run 19: charge the change in the PWM the motors actually get (after the
+# 1300-count compensation, so a small flip costs what it does to the gears),
+# scaled by upright_gate so it applies only near upright. Knocked over, the
+# policy may move as hard as it needs. A full small-amplitude flip
+# (2600 counts, ~0.86 squared) costs ~0.26, like run 17's reversal charge;
+# the PID's ~13 counts/tick costs nothing.
+PWM_STEP_WEIGHT = 0.3
+UPRIGHT_GATE_RAD = 0.15           # ~8.6 deg: full charge at 0, none beyond
+
+
+def upright_gate(pitch):
+    return max(0.0, 1.0 - abs(pitch) / UPRIGHT_GATE_RAD)
+
+
+assert upright_gate(0.0) == 1.0 and upright_gate(0.075) == 0.5 and upright_gate(-0.2) == 0.0
 
 # --- station keeping -----------------------------------------------------
 #
@@ -652,8 +721,12 @@ class CurriculumCallback(BaseCallback):
     """
 
     def __init__(self, total_timesteps, max_payload_kg, max_v_forward, max_v_turn,
-                 stand_phase_end=0.15, velocity_phase_end=0.5, verbose=0):
+                 stand_phase_end=0.15, velocity_phase_end=0.5,
+                 cmd_cap=1.0, push_cap=1.0, payload_cap=1.0, verbose=0):
         super().__init__(verbose)
+        # Diagnostic caps (default 1 = off): hold one part of the curriculum at
+        # a fraction of full strength to see which part brings the shake back.
+        self.cmd_cap, self.push_cap, self.payload_cap = cmd_cap, push_cap, payload_cap
         self.total_timesteps = total_timesteps
         self.max_payload_kg = max_payload_kg
         self.max_v_forward = max_v_forward
@@ -676,12 +749,12 @@ class CurriculumCallback(BaseCallback):
 
         self.training_env.env_method(
             "set_curriculum",
-            self.max_payload_kg * payload_frac,
-            self.max_v_forward * forward_frac,
-            self.max_v_turn * turn_frac,
+            self.max_payload_kg * min(payload_frac, self.payload_cap),
+            self.max_v_forward * min(forward_frac, self.cmd_cap),
+            self.max_v_turn * min(turn_frac, self.cmd_cap),
         )
         # Pushes ramp in with the commands: none while learning to stand.
-        self.training_env.env_method("set_push_curriculum", forward_frac)
+        self.training_env.env_method("set_push_curriculum", min(forward_frac, self.push_cap))
 
     def _on_step(self) -> bool:
         return True
@@ -744,6 +817,8 @@ class PWMCommandWrapper(VelocityCommandWrapper):
                                            dtype=np.float32)
         self._hist = None
         self._prev_action = None
+        self._prev_pwm = None
+        self._la_true = [0.0] * 6
         self._pos_err = None
         self._yaw_err = None
         self._motor = NOMINAL_MOTOR
@@ -831,6 +906,10 @@ class PWMCommandWrapper(VelocityCommandWrapper):
                 yd * self._yaw_err_true + (true_yaw_rate - self.target_v_turn) * dt,
                 -YAW_CLIP_RAD, YAW_CLIP_RAD))
 
+        if self._hist is None:
+            self._la = [0.0] * 6      # load_adapt.c filter state, zeroed at arm
+        osc, lean = load_adapt_step(self._la, np.degrees(gyro[1]), np.degrees(pitch))
+
         sample = np.array([pitch, gyro[1], v_fwd], dtype=np.float32)
         if self._hist is None:
             # First frame of an episode: no real history exists yet, so repeat
@@ -845,7 +924,8 @@ class PWMCommandWrapper(VelocityCommandWrapper):
         cr, sr = np.cos(roll * 0.5), np.sin(roll * 0.5)
         cp, sp = np.cos(pitch * 0.5), np.sin(pitch * 0.5)
         base = [SENSOR_HEIGHT, cp * cr, cp * sr, sp * cr, -sp * sr,
-                0.0, 0.0,                       # wheel angles: dropped, see above
+                min(osc * OSC_OBS_SCALE, LA_OBS_CLIP),    # run 20: in the dropped
+                min(lean * LEAN_OBS_SCALE, LA_OBS_CLIP),  # wheel-angle slots
                 v_fwd, 0.0, 0.0,                # lateral/vertical: not sensed
                 gyro[0], gyro[1], gyro[2],
                 wheel_vel[0], wheel_vel[1],
@@ -914,6 +994,13 @@ class PWMCommandWrapper(VelocityCommandWrapper):
         s = np.sign(action)
         reward -= REVERSAL_WEIGHT * float(np.sum((s != 0) & (s == -self._last_sign)))
         self._last_sign = np.where(s != 0, s, self._last_sign)
+        qw, qx, qy, qz = self.unwrapped.data.qpos[3:7]
+        true_pitch = float(np.arcsin(np.clip(2 * (qw * qy - qz * qx), -1.0, 1.0)))
+        gate = upright_gate(true_pitch)
+        pwm = action_to_pwm(action)
+        if self._prev_pwm is not None:
+            reward -= gate * PWM_STEP_WEIGHT * float(np.sum(np.square((pwm - self._prev_pwm) / 2800.0)))
+        self._prev_pwm = pwm
 
         # Station keeping and heading, graded on the TRUE integrals refreshed by
         # _get_conditioned_obs during the super().step() call above.
@@ -925,12 +1012,16 @@ class PWMCommandWrapper(VelocityCommandWrapper):
         if self._calm_pause > 0:
             self._calm_pause -= 1
         else:
-            reward -= min(PITCH_RATE_WEIGHT * q * q, PITCH_RATE_PENALTY_MAX)
+            reward -= gate * min(PITCH_RATE_WEIGHT * q * q, PITCH_RATE_PENALTY_MAX)
+        osc_true, _ = load_adapt_step(self._la_true, np.degrees(q), np.degrees(true_pitch))
+        reward -= min(OSC_PENALTY_WEIGHT * (osc_true / OSC_PENALTY_REF_DPS) ** 2, OSC_PENALTY_MAX)
         return obs, reward, terminated, truncated, info
 
     def reset(self, **kwargs):
         self._hist = None          # refilled on the first observation
         self._prev_action = None   # no rate penalty on the first step
+        self._prev_pwm = None
+        self._la_true = [0.0] * 6  # run 21: osc of the true gyro, for the reward
         self._last_sign = np.zeros(2)   # no reversal charged on the first command
         self._pos_err = None       # re-zeroed by the first observation
         self._yaw_err = None
@@ -1019,7 +1110,13 @@ def make_env(**kwargs):
 #
 # Run 17 is run 16 with REVERSAL_WEIGHT 0.5 -> 0.3 (the laptop's fallback for
 # a run that stops surviving pushes).
-RUN_NAME = "run17"
+#
+# Run 18 is run 17 with no payload in training (MAX_PAYLOAD_KG = 0).
+# Run 19: payload 0-2 kg; reversal charge replaced by a PWM-change charge, and it
+# and the wobble penalty apply only near upright (upright_gate). Checkpoints every 1M.
+# Run 20: run 19 plus osc and lean (load_adapt.c) in obs[5], obs[6].
+# Run 21: run 20 plus a reward charge on osc of the true gyro (OSC_PENALTY_*).
+RUN_NAME = "run21"
 INIT_FROM = "none"
 FINETUNE_STEPS = 10_000_000
 FINETUNE_LR = 1e-4
@@ -1040,6 +1137,9 @@ def main():
                     help="where the best checkpoint is saved")
     ap.add_argument("--envs", type=int, default=max(1, (os.cpu_count() or 2) - 1),
                     help="parallel environments (default: CPU threads - 1)")
+    for cap in ("cmd", "push", "payload"):
+        ap.add_argument(f"--{cap}-cap", type=float, default=1.0,
+                        help=f"diagnostic: hold the {cap} curriculum at this fraction of full (default 1)")
     args = ap.parse_args()
     from_scratch = args.init.lower() == "none"
 
@@ -1094,9 +1194,13 @@ def main():
         CurriculumCallback(total_timesteps=total_timesteps,
                            max_payload_kg=MAX_PAYLOAD_KG,
                            max_v_forward=MAX_V_FORWARD, max_v_turn=MAX_V_TURN,
-                           **curriculum),
+                           cmd_cap=args.cmd_cap, push_cap=args.push_cap,
+                           payload_cap=args.payload_cap, **curriculum),
         EvalCallback(eval_env, best_model_save_path=str(best_dir),
                      eval_freq=max(1, EVAL_EVERY_STEPS // num_cpu), n_eval_episodes=20),
+        # Every 1M steps: runs 15-16 were calm at 10-11M and shook by 30M.
+        CheckpointCallback(save_freq=max(1, 1_000_000 // num_cpu),
+                           save_path=f"models/ckpt_{args.run}"),
     ])
 
     print(f"\nTraining on real_robot.xml at 200Hz, PWM actions "

@@ -123,6 +123,22 @@ static int   g_hist_head = 0;
 static float g_pos_err = 0.0f;
 static float g_yaw_err = 0.0f;
 
+/* Run 20: Mode 26 load_adapt.c filters, state [m, b, E, q, l, EL] - see
+ * load_adapt_step() in train_real_robot.py. osc = 8-16 Hz RMS of the pitch
+ * gyro (deg/s), lean = 0.3-2 Hz RMS of pitch (deg); they fill obs[5], obs[6]. */
+static float g_la[6];
+
+static void la_step(float pitch_rate, float pitch)
+{
+    const float g_dps = pitch_rate * 57.2957795f, a_deg = pitch * 57.2957795f;
+    g_la[0] += 0.200849f * (g_dps - g_la[0]);
+    g_la[1] += 0.334511f * ((g_dps - g_la[0]) - g_la[1]);
+    g_la[2] += 0.016393f * (g_la[1] * g_la[1] - g_la[2]);
+    g_la[3] += 0.009337f * (a_deg - g_la[3]);
+    g_la[4] += 0.059120f * ((a_deg - g_la[3]) - g_la[4]);
+    g_la[5] += 0.016393f * (g_la[4] * g_la[4] - g_la[5]);
+}
+
 /* Cumulative counts at the last POLICY_ENC_VEL_WINDOW + 1 ticks, newest at
  * g_odom_head. g_odom_filled caps the window right after a reset, when fewer
  * samples exist - training's _sense() does the same. */
@@ -154,6 +170,8 @@ void policy_reset_state(float pitch, float pitch_rate, float v_forward)
     g_hist_head = 0;
     g_pos_err = 0.0f;
     g_yaw_err = 0.0f;
+    for (int i = 0; i < 6; ++i) g_la[i] = 0.0f;
+    la_step(pitch_rate, pitch);   /* training's reset observation is one filter tick */
 
     /* odom_reset(): counts zeroed, and the reset itself counts as one
      * zero-count sample, exactly as training's reset observation does. */
@@ -225,16 +243,22 @@ static void finish_obs(float obs[POLICY_N_OBS],
     wheel_vel_l = clampf(wheel_vel_l, POLICY_WHEEL_VEL_CLIP);
     wheel_vel_r = clampf(wheel_vel_r, POLICY_WHEEL_VEL_CLIP);
 
-    /* Index 0, 5, 6, 8 and 9 are constants the car cannot measure, fed
-     * identically in training: chassis height, the dropped wheel angles, and
-     * lateral/vertical body velocity. */
+    /* load_adapt.c, once per tick: osc and lean (run 20 on). */
+    la_step(gyro_xyz[1], pitch);
+    float osc_o  = sqrtf(g_la[2]) * (1.0f / 25.0f);   /* OSC_OBS_SCALE  */
+    float lean_o = sqrtf(g_la[5]) * (1.0f / 2.0f);    /* LEAN_OBS_SCALE */
+    if (osc_o  > 4.0f) osc_o  = 4.0f;                 /* LA_OBS_CLIP    */
+    if (lean_o > 4.0f) lean_o = 4.0f;
+
+    /* Index 0, 8 and 9 are constants the car cannot measure, fed identically
+     * in training: chassis height and lateral/vertical body velocity. */
     obs[0]  = POLICY_NOMINAL_HEIGHT;
     obs[1]  = quat_wxyz[0];
     obs[2]  = quat_wxyz[1];
     obs[3]  = quat_wxyz[2];
     obs[4]  = quat_wxyz[3];
-    obs[5]  = 0.0f;               /* wheel angle L, dropped in run 8 */
-    obs[6]  = 0.0f;               /* wheel angle R, dropped in run 8 */
+    obs[5]  = osc_o;              /* was wheel angle L, 0 for runs 8-19 */
+    obs[6]  = lean_o;             /* was wheel angle R, 0 for runs 8-19 */
     obs[7]  = v_forward;
     obs[8]  = 0.0f;               /* lateral velocity, not sensed */
     obs[9]  = 0.0f;               /* vertical velocity, not sensed */

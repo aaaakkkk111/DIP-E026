@@ -168,7 +168,8 @@ void policy_infer(const float obs[POLICY_N_OBS], float action[POLICY_N_ACT]);
  *
  * Not passed in, because the car cannot measure them and training feeds the
  * same constants: chassis height (POLICY_NOMINAL_HEIGHT), lateral and vertical
- * velocity (0), and - since run 8 - the wheel angles (0). Absolute wheel angle
+ * velocity (0). The wheel-angle slots (obs[5], obs[6]) were 0 for runs 8-19 and
+ * carry osc and lean (load_adapt.c, computed inside) from run 20. Absolute wheel angle
  * is physically meaningless, yet run 7 learned to depend on it; long drives
  * fell once it left the range a 10 s training episode reaches. */
 void policy_build_obs(float obs[POLICY_N_OBS],
