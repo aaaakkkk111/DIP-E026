@@ -13,7 +13,39 @@ cable. So the desktop trains and the laptop builds, flashes and tests. GitHub
 you finish. Only the desktop changes training code and models; only the
 laptop adds car logs. Then the two never conflict.
 
-## Now: train run 22 (2026-10-22)
+## Now: flash run 22 (2026-10-22)
+
+`models/best_real` and the weight headers are **run 22 at 24M steps**. All its
+results are from the simulator. Full log: `session-logs/2026-10-22-run22-desktop.md`.
+
+**Rebuild with the new `firmware/policy.c` *and* `policy.h`.** Run 22's position
+memory is 8 s (`POLICY_POS_DECAY`), and it restarts when the forward command
+changes (`g_last_cmd_f` in `policy.c`). Run 21's headers with run 22's weights,
+or the reverse, don't match.
+
+**Flash:** this adds a float compare and a store, and run 21 left 48 B free.
+Check the build size. If it no longer fits, trim a console message as before.
+
+**Simulator results (2° slack):**
+
+| | run 22, 24M | run 21 (car now) | PID |
+|---|---|---|---|
+| Standing empty (deg/s) | 4.0–5.4 | 6.6–8.3 | 6.6–6.9 |
+| Empty pushes, 2 N / 3 N | 17/18 / 0/18 | 1/18 / 0/18 | 18 / 17 |
+| Creep on a ±2° floor (cm/s) | about 1 or less | 2.5–4.8 | — |
+| After a 2 N push | back within about 5 cm | falls | — |
+| 2 kg: standing, pushes at 4 N | 5.0–6.7 deg/s, 18/18 | 18/18 | — |
+| Drives with 4 kg | yes | no | — |
+
+At 4° slack (a worse-geared car) it can be shakier than run 21 (up to 23.5 against
+13). Empty 3 N pushes still fail, so push gently.
+
+**Steps:**
+1. Build with the four files. Keep the trim at about 2.5° if it's not built in yet.
+2. Test standing empty and with 2 kg, with gentle pushes, then creep over a minute.
+3. Log the 200 Hz stream and push the logs.
+
+## Before: train run 22 (2026-10-22)
 
 **Run 21 on the car (laptop, 2026-10-21):**
 - It **does not shake**: 2.8–4.3 deg/s standing, against the stock PID's 7.6–11.7 and run 15's

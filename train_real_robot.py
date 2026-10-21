@@ -278,8 +278,20 @@ assert upright_gate(0.0) == 1.0 and upright_gate(0.075) == 0.5 and upright_gate(
 # tau = 2.0 s, so a 0.039 m/s creep settles at 0.078 m and costs 0.195 reward
 # per step against run 5's ~1.74/step average - about 11%, deliberately the same
 # order as the effort and action-rate terms rather than dominating them.
-POSITION_TAU_S = 2.0
+# Run 22: 8 s, not 2. On the car (2026-10-21) run 21 crept 1-2 cm/s with the floor
+# and wandered off after pushes: 2 s forgets the spot within seconds. The
+# integral now also restarts from 0 whenever the forward command changes, so the
+# longer memory never asks it to "catch up" distance lost under an old command.
+POSITION_TAU_S = 8.0
 POSITION_WEIGHT = 2.5
+STAND_CMD_PROB = 0.3              # run 22, see _sample_command()
+# Run 22: a random floor slope per training episode, by tilting gravity as
+# enjoy_drive.apply_slope() does (positive = uphill along +x). The car's IMU
+# measures pitch against gravity, so _sense() subtracts the slope from the
+# world-frame pitch. Small on purpose: on the car the creep follows a slight
+# floor slope (session-logs/2026-10-21-run21-on-car-trim-slope.md); climbing
+# real ramps is a later step.
+FLOOR_SLOPE_DEG = 2.0
 # Scale for the observation only, to land the input in the same O(1) range as
 # the rest of the vector. Does not affect the reward.
 POSITION_OBS_SCALE = 10.0
@@ -578,6 +590,15 @@ class VelocityCommandWrapper(gym.Wrapper):
     def set_push_curriculum(self, frac):
         """Pushes are PWMCommandWrapper's; nothing to do here."""
 
+    def _sample_command(self):
+        # Run 22: STAND_CMD_PROB of commands are exactly "stand still"; a uniform
+        # draw almost never gives 0, so standing (and creep) was barely practised.
+        if random.random() < STAND_CMD_PROB:
+            self.target_v_forward = self.target_v_turn = 0.0
+        else:
+            self.target_v_forward = random.uniform(-self.curriculum_v_forward, self.curriculum_v_forward)
+            self.target_v_turn = random.uniform(-self.curriculum_v_turn, self.curriculum_v_turn)
+
     def _sample_command_timer(self):
         # Mostly short segments (reactive command changes), but sometimes a
         # long steady-state hold up to a full episode, so the policy practises
@@ -655,8 +676,7 @@ class VelocityCommandWrapper(gym.Wrapper):
             self.target_v_forward = f_frac * self.max_v_forward
             self.target_v_turn = t_frac * self.max_v_turn
         else:
-            self.target_v_forward = random.uniform(-self.curriculum_v_forward, self.curriculum_v_forward)
-            self.target_v_turn = random.uniform(-self.curriculum_v_turn, self.curriculum_v_turn)
+            self._sample_command()
         self.command_timer = self._sample_command_timer()
         self.steps_since_reset = 0
 
@@ -672,8 +692,7 @@ class VelocityCommandWrapper(gym.Wrapper):
         if not self.is_eval:
             self.command_timer -= 1
             if self.command_timer <= 0:
-                self.target_v_forward = random.uniform(-self.curriculum_v_forward, self.curriculum_v_forward)
-                self.target_v_turn = random.uniform(-self.curriculum_v_turn, self.curriculum_v_turn)
+                self._sample_command()
                 self.command_timer = self._sample_command_timer()
 
         raw_obs, _, _, _, info = self.env.step(action)
@@ -826,6 +845,7 @@ class PWMCommandWrapper(VelocityCommandWrapper):
         self._enc_ring = None
         self._enc_filled = 0
         self._pitch_off = self._roll_off = 0.0
+        self._slope = 0.0
         self._gyro_bias = np.zeros(3)
         self._noisy = False
         # Pushes (PUSH_*): off until the curriculum sets a scale above 0.
@@ -849,7 +869,7 @@ class PWMCommandWrapper(VelocityCommandWrapper):
         pitch = np.arcsin(np.clip(2 * (qw * qy - qz * qx), -1.0, 1.0))
         gyro = np.array(raw_obs[12:15], dtype=np.float64) + self._gyro_bias
         roll += self._roll_off
-        pitch += self._pitch_off
+        pitch += self._pitch_off - self._slope   # IMU pitch is against gravity
         if self._noisy:
             roll += rng.normal(0.0, ATT_NOISE_RAD)
             pitch += rng.normal(0.0, ATT_NOISE_RAD)
@@ -890,7 +910,11 @@ class PWMCommandWrapper(VelocityCommandWrapper):
         if self._pos_err is None:
             self._pos_err = self._pos_err_true = 0.0
             self._yaw_err = self._yaw_err_true = 0.0
+            self._last_cmd_f = self.target_v_forward
         else:
+            if self.target_v_forward != self._last_cmd_f:   # run 22, policy.c does the same
+                self._pos_err = self._pos_err_true = 0.0
+                self._last_cmd_f = self.target_v_forward
             pd = float(np.exp(-dt / POSITION_TAU_S))
             yd = float(np.exp(-dt / YAW_TAU_S))
             self._pos_err = float(np.clip(
@@ -998,7 +1022,11 @@ class PWMCommandWrapper(VelocityCommandWrapper):
         true_pitch = float(np.arcsin(np.clip(2 * (qw * qy - qz * qx), -1.0, 1.0)))
         gate = upright_gate(true_pitch)
         pwm = action_to_pwm(action)
-        if self._prev_pwm is not None:
+        # Run 22: all three calm charges (PWM step, wobble, osc) pause during a
+        # push and PENALTY_PAUSE_S after; run 21 paused only the wobble charge
+        # and eased off when shoved empty (2 N: 1/18).
+        calm = self._calm_pause == 0
+        if self._prev_pwm is not None and calm:
             reward -= gate * PWM_STEP_WEIGHT * float(np.sum(np.square((pwm - self._prev_pwm) / 2800.0)))
         self._prev_pwm = pwm
 
@@ -1014,7 +1042,8 @@ class PWMCommandWrapper(VelocityCommandWrapper):
         else:
             reward -= gate * min(PITCH_RATE_WEIGHT * q * q, PITCH_RATE_PENALTY_MAX)
         osc_true, _ = load_adapt_step(self._la_true, np.degrees(q), np.degrees(true_pitch))
-        reward -= min(OSC_PENALTY_WEIGHT * (osc_true / OSC_PENALTY_REF_DPS) ** 2, OSC_PENALTY_MAX)
+        if calm:
+            reward -= min(OSC_PENALTY_WEIGHT * (osc_true / OSC_PENALTY_REF_DPS) ** 2, OSC_PENALTY_MAX)
         return obs, reward, terminated, truncated, info
 
     def reset(self, **kwargs):
@@ -1038,6 +1067,7 @@ class PWMCommandWrapper(VelocityCommandWrapper):
             self._pitch_off = self._roll_off = 0.0
             self._gyro_bias = np.zeros(3)
             self._noisy = False
+            self._slope = 0.0
         else:
             self._motor = sample_motor(rng)
             latency = int(rng.integers(ACTION_LATENCY_TICKS[0], ACTION_LATENCY_TICKS[1] + 1))
@@ -1045,6 +1075,9 @@ class PWMCommandWrapper(VelocityCommandWrapper):
             self._roll_off = rng.uniform(-ROLL_OFFSET_RAD, ROLL_OFFSET_RAD)
             self._gyro_bias = rng.uniform(-GYRO_BIAS_RADS, GYRO_BIAS_RADS, size=3)
             self._noisy = True
+            self._slope = float(np.radians(rng.uniform(-FLOOR_SLOPE_DEG, FLOOR_SLOPE_DEG)))
+        g = float(np.linalg.norm(self.unwrapped.model.opt.gravity))
+        self.unwrapped.model.opt.gravity[:] = [-g * np.sin(self._slope), 0.0, -g * np.cos(self._slope)]
         # Motors are off until the policy is armed, so the in-flight actions
         # at the start of an episode are zero.
         self._act_queue = collections.deque([np.zeros(2)] * latency)
@@ -1116,7 +1149,10 @@ def make_env(**kwargs):
 # and the wobble penalty apply only near upright (upright_gate). Checkpoints every 1M.
 # Run 20: run 19 plus osc and lean (load_adapt.c) in obs[5], obs[6].
 # Run 21: run 20 plus a reward charge on osc of the true gyro (OSC_PENALTY_*).
-RUN_NAME = "run21"
+# Run 22: stability and creep first - calm charges paused around pushes, 30 %
+# stand-still commands, position memory 8 s reset on command change, floor slope
+# +/-2 deg with gravity-relative pitch. Payload 0-2 kg as before.
+RUN_NAME = "run22"
 INIT_FROM = "none"
 FINETUNE_STEPS = 10_000_000
 FINETUNE_LR = 1e-4

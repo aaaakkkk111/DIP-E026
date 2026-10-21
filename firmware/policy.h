@@ -93,7 +93,7 @@ extern const int policy_history_taps[POLICY_N_HISTORY_TAPS];
  * magnetometer, so this only ever integrates the last few tau of gyro-z.
  * Training now gives the gyro a random bias, so the policy has learned that a
  * heading integral sitting at a small offset is not necessarily a real turn. */
-#define POLICY_POS_DECAY      0.99750312f  /* exp(-dt / 2.0s) */
+#define POLICY_POS_DECAY      0.99937520f  /* exp(-dt / 8.0s), run 22 (2.0 s before) */
 #define POLICY_POS_OBS_SCALE  10.0f
 #define POLICY_POS_ERR_CLIP   0.5f         /* m */
 #define POLICY_YAW_DECAY      0.99983335f  /* exp(-dt / 30.0s) */

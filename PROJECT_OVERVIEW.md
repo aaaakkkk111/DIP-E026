@@ -1,6 +1,6 @@
 # DIP-E026 — RL self-balancing robot: project overview
 
-*Status as of 2026-10-21, after run 21. The details behind each claim are in the
+*Status as of 2026-10-22, after run 22. The details behind each claim are in the
 `session-logs/` file named in each section.*
 
 ## 1. Goal and set-up
@@ -165,7 +165,11 @@ back:
 
 ## 9. Current state and next steps
 
-- **On the car:** run 15. **Exported for its first car test: run 21 at 21M** (`models/best_real`).
+- **On the car (2026-10-21):** run 21 at 21M stood at 2.8–4.3 deg/s, calmer than the stock PID
+  (7.6–11.7). It crept 1–2 cm/s with the room's floor slope and wandered after pushes.
+- **Exported next: run 22 at 24M** (`models/best_real`). In simulation: 4.0–5.4 deg/s empty,
+  empty 2 N pushes 17/18, creep about 1 cm/s or less on ±2°, back to its spot after a push,
+  0–4 kg. Empty 3 N pushes still fail. Log: `session-logs/2026-10-22-run22-desktop.md`.
 - **Runs 19–21 (2026-10-21, payload 0–2 kg; simulator results, 2° slack):**
 
   | run | change | empty wobble at about 20M (deg/s) | 2 kg | empty 2 N pushes |

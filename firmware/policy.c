@@ -122,6 +122,7 @@ static float g_hist[POLICY_HISTORY_LEN][POLICY_N_HISTORY_SIGNALS];
 static int   g_hist_head = 0;
 static float g_pos_err = 0.0f;
 static float g_yaw_err = 0.0f;
+static float g_last_cmd_f = 0.0f;   /* run 22: g_pos_err restarts when it changes */
 
 /* Run 20: Mode 26 load_adapt.c filters, state [m, b, E, q, l, EL] - see
  * load_adapt_step() in train_real_robot.py. osc = 8-16 Hz RMS of the pitch
@@ -272,6 +273,7 @@ static void finish_obs(float obs[POLICY_N_OBS],
 
     /* Leaky integrals, both "decay * accumulator + error * dt", both clipped.
      * gyro_xyz[2] is yaw rate. */
+    if (cmd_forward != g_last_cmd_f) { g_pos_err = 0.0f; g_last_cmd_f = cmd_forward; }
     g_pos_err = POLICY_POS_DECAY * g_pos_err
               + (v_forward - cmd_forward) * POLICY_DT;
     if (g_pos_err >  POLICY_POS_ERR_CLIP) g_pos_err =  POLICY_POS_ERR_CLIP;
