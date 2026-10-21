@@ -13,7 +13,29 @@ cable. So the desktop trains and the laptop builds, flashes and tests. GitHub
 you finish. Only the desktop changes training code and models; only the
 laptop adds car logs. Then the two never conflict.
 
-## Now: flash run 21 (2026-10-21)
+## Now: train run 22 (2026-10-22)
+
+**Run 21 on the car (laptop, 2026-10-21):**
+- It **does not shake**: 2.8–4.3 deg/s standing, against the stock PID's 7.6–11.7 and run 15's
+  44–49. It reverses the motors only 0.5–1 times a second.
+- It creeps 1–2 cm/s, and the creep follows the **room** (a floor slope or the cable), not the
+  car. The car's own trim is about 2.5°.
+- After pushes it wanders and never returns to its spot.
+- Push recovery when empty, and the 2 kg load, are not tested on the car yet.
+
+Full write-up: `session-logs/2026-10-21-run21-on-car-trim-slope.md`.
+
+**Run 22 = run 21 plus** (the session log, §4, has the details and the pass criteria):
+1. Longer position memory while standing still: τ 5–10 s, reset on a new command. Change
+   `POLICY_POS_DECAY` and `policy.c` to match.
+2. Random floor slope of ±2° in training. The pitch input must stay relative to gravity, as the
+   car's IMU is.
+3. Pushes scaled to the car's mass, for empty-car push recovery.
+
+**Firmware space:** the run 21 image has **48 B** left under the board's 64 KB limit. A
+`policy.c` change that adds code must remove some too, or say so for the laptop to trim.
+
+## Before: flash run 21 (2026-10-21)
 
 `models/best_real` and the weight headers are **run 21 at 21M steps**. All its
 results are from the simulator; this is its first time on the car.
