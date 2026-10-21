@@ -1,19 +1,38 @@
 {
-  "version": "RA3.3-DIRECT",
-  "flash_first": "0x8000000",
-  "flash_last": "0x800e33f",
+  "version": "RA3.0-SEQ1",
+  "baseline": "user-confirmed RA3.0-REMOTE",
+  "date": "2026-10-21",
+  "publication": "Pages target: codex/routea-mobile-v1.5; deployment verification in PUBLICATION.json",
+  "menu": {
+    "1": "Standard (logical0)",
+    "2": "Load (logical3)",
+    "3": "TEST (logical20)"
+  },
+  "abandoned_version_backup": "D:\\DIP\\RouteA_Remote_Adaptive_Workspace\\backups\\20261021_rejected_three_modes_before_ra30_seq",
   "files": {
-    "index.html": {
-      "bytes": 80532,
-      "sha256": "80b05fcf10e56db65bc41f61f9678f4fb10aaa80d5a1c961a5a3c48ac75afd81"
-    },
-    "routea_remote_adaptive_bluefy.html": {
-      "bytes": 80532,
-      "sha256": "80b05fcf10e56db65bc41f61f9678f4fb10aaa80d5a1c961a5a3c48ac75afd81"
+    "stm32_Balance_Car_RA3.0_SEQ1.hex": {
+      "bytes": 129762,
+      "sha256": "7e056ef3c4766dcace25ff3ac2624b4c3a0788dcd1a4802121fc4ccc95e96ccd"
     },
     "stm32_Balance_Car_L.hex": {
-      "bytes": 163671,
-      "sha256": "7fb8e8960fb38d50cbc70cec4134393257d894070a7f999e4da356ccac730e77"
+      "bytes": 129762,
+      "sha256": "7e056ef3c4766dcace25ff3ac2624b4c3a0788dcd1a4802121fc4ccc95e96ccd"
+    },
+    "baseline_RA3.0_REMOTE_UNMODIFIED.hex": {
+      "bytes": 159486,
+      "sha256": "ab8b3d514d165241772a9a019911f26259abd1094a8277fd98c05bf91c21fe33"
+    },
+    "index.html": {
+      "bytes": 87429,
+      "sha256": "88a4f1b0ffa1be3703e9376f678e130972f6f4ab0782c7624a0e5c8eba7663c6"
+    },
+    "routea_remote_adaptive_bluefy.html": {
+      "bytes": 87429,
+      "sha256": "88a4f1b0ffa1be3703e9376f678e130972f6f4ab0782c7624a0e5c8eba7663c6"
+    },
+    "RouteA_RA3.0_SEQ1_source.zip": {
+      "bytes": 522441,
+      "sha256": "3914cfb52f96296ea8d0d9dc02c44ac1bf17d4266f80047424c67ba1564a2360"
     }
   }
 }

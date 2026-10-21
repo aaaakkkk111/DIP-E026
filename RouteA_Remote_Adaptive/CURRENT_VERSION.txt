@@ -1,0 +1,6 @@
+RA3.0-SEQ1
+工程: firmware/USER/stm32_Balance_Car.uvprojx
+新固件: releases/stm32_Balance_Car_RA3.0_SEQ1.hex
+原始RA3.0对照: releases/baseline_RA3.0_REMOTE_UNMODIFIED.hex
+配套网页: releases/index.html
+验收: ACCEPTANCE.md

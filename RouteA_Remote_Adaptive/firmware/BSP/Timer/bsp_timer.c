@@ -80,7 +80,7 @@ void TIM6_IRQHandler(void)
 			stop_time --;
 		}
 		
-		if(mode == Normal  ||mode == U_Follow|| mode == U_Avoid || mode == Weight_M || mode == Test_Mode) //正常模式不需要跟随了Normal  Normal mode does not need to follow Normal
+		if(mode == Normal || mode == Weight_M || mode == Test_Mode) //正常模式不需要跟随了Normal  Normal mode does not need to follow Normal
 			Get_Distane();//获取距离  Get distance
 		
 		if(mode == Normal || mode == Weight_M || mode == Test_Mode)
@@ -89,11 +89,6 @@ void TIM6_IRQHandler(void)
 
 //				//放在中断这里会影响平衡  Putting it here will affect the balance.
 //				SendAutoUp();//蓝牙自动上报数据 Bluetooth automatically reports data 
-		}
-		
-		if(mode == U_Follow)
-		{
-			App_Change_Car();//超声波跟随 Ultrasonic Follow
 		}
 		
 			

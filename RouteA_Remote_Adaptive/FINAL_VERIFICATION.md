@@ -1,16 +1,12 @@
-# RA3.3-DIRECT verification, 2026-10-20
+# RA3.0-SEQ1 本地验证 — 2026-10-21
 
-- ARMCC5.06u7 build960, O1, full rebuild 0 errors / 2 existing filter.c warnings.
-- Code=51788, RO=6184, RW=1056, ZI=16600 bytes.
-- Map uncompressed load size=0xE694; compressed actual HEX range=0x08000000..0x0800E33F (58176 bytes), 7360 bytes below64KB. RW load starts0x0800E274, compressed size204 bytes.
-- RAM execution region=0x44F8; stack=4096, conservative enabled-path estimate1660 bytes (estimate is not hardware measurement).
-- Actual HEX checksum, unique data addresses, load range checked.
-- Real-C native continuity, partial rings, presets, LLM transactions, rollback, parser and memory guards PASS.
-- All3 JS test files PASS, including2 accepted Mock full cycles and old fall-log replay.
-- Actual hardware, Bluefy/iOS layout and external LLM service unverified in this revision.
-
-## Release SHA256
-
-- index.html: `80b05fcf10e56db65bc41f61f9678f4fb10aaa80d5a1c961a5a3c48ac75afd81`
-- routea_remote_adaptive_bluefy.html: `80b05fcf10e56db65bc41f61f9678f4fb10aaa80d5a1c961a5a3c48ac75afd81`
-- stm32_Balance_Car_L.hex: `7fb8e8960fb38d50cbc70cec4134393257d894070a7f999e4da356ccac730e77`
+- 回滚基线：用户明确确认RA3.0；原始HEX SHA256 ab8b3d514d165241772a9a019911f26259abd1094a8277fd98c05bf91c21fe33。
+- 新Keil全量重建：ARMCC5.06u7 b960、O1，0错误，2个官方filter.c原有警告。
+- Code39804、RO6192、RW788、ZI6908字节。实际HEX末地址0x0800b423，低于64KB；未压缩load范围0xb6c0；RAM执行区0x1e10含4096字节栈。
+- 原始RA3.0与新控制，Standard/Load/TEST七种运动指令共4200周期逐项输出完全一致，验证的是未更新PID时的计算行为，不是实车计时。
+- 三档菜单双向循环、内部模式ID0/3/20、启动PID及显示标签通过原生C测试。
+- 真C源码：20000次空闲控制入口不改Stop_Flag或调用关PWM；AP95/TP18缩放正确，六项顺序写入、保留积分和滤波、部分序列拒绝接受、配置切换、完整回滚、心跳超时及坏数字拒绝通过。
+- 真网页app.js：人工及LLM均只发ONE，六项全改仍六帧，每项完成ACK+关联读回+1000ms等待；错误ACK、旧读回、超时和取消中止余项通过。Mock两轮完整接受闭环通过。
+- 截图同类巨大负值/越界PID被前端拦截，不进入当前有效参数或再发送。
+- HEX逐记录校验和、地址唯一性与Flash边界已核对；完整源码包检查Keil引用文件齐全。
+- 未进行本轮实车平衡、真实BLE、5ms实机计时、iPhone触控或真实LLM API验收。网页部署状态及线上文件校验另记于releases/PUBLICATION.json。

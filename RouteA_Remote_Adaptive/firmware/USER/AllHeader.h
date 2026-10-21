@@ -44,28 +44,10 @@
 #include "bsp_bluetooth.h"
 #include "app_bluetooth.h"
 
-//K210
-#include "bsp_usart2.h"
-#include "app_k210.h"
-#include "app_k210_ai.h"
-#include "app_line.h"
-#include "app_follow.h"
-
-
-//LIDAR
-#include "bsp_lidar.h"
-#include "app_lidar.h"
-#include "app_lidar_car.h"
-
 //OLED
 #include "bsp_oled.h"
 #include "bsp_oled_i2c.h"
 #include "oled_show.h"
-
-//ps2
-#include "bsp_ps2.h"
-#include "app_ps2.h"
-
 
 //Mpu6050
 #include "IOI2C.h"
@@ -85,17 +67,8 @@
 //超声波 ultrasonic
 #include "bsp_ultrasonic.h"
 
-//4路循迹 infrared sensor 
-#include "bsp_irtracking.h"
-#include "app_tracking.h"
 
-//电磁循迹 Electromagnetic sensor
-#include "bsp_ele_track.h"
-#include "app_ele_tracking.h"
 
-//CCD
-#include "bsp_ccd.h"
-#include "app_ccd_tracking.h"
 
 //平衡车整体控制 Balance car overall control
 #include "app_control.h"
@@ -109,9 +82,6 @@
 
 
 
-//CCD显示画面指针 CCD display screen pointer
-extern u8 CCD_Zhongzhi,CCD_Yuzhi;
-extern u8* CCDShowBuf;
 
 
 //引出的通用变量 General variables introduced

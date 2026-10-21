@@ -12,8 +12,8 @@
     TP: Object.freeze([1, 100]), TD: Object.freeze([1, 100])
   });
   const PRESETS = Object.freeze({
-    N: Object.freeze({ name: "Normal / 官方模式1", AP: 96, AD: 48, VP: 62, VI: 31, TP: 17, TD: 20, balanceScale: 1, velocityScale: 1, turnScale: 1 }),
-    L: Object.freeze({ name: "Load / 官方模式4", AP: 96, AD: 75, VP: 70, VI: 35, TP: 14, TD: 20, balanceScale: 2, velocityScale: 1.35, turnScale: 1 })
+    N: Object.freeze({ name: "Standard / 1档（原官方模式1）", AP: 96, AD: 48, VP: 62, VI: 31, TP: 17, TD: 20, balanceScale: 1, velocityScale: 1, turnScale: 1 }),
+    L: Object.freeze({ name: "Load / 2档（原官方模式4）", AP: 96, AD: 75, VP: 70, VI: 35, TP: 14, TD: 20, balanceScale: 2, velocityScale: 1.35, turnScale: 1 })
   });
   const ACTIONS = Object.freeze(["switch_preset", "propose_pid", "hold", "rollback", "stop"]);
 
@@ -31,6 +31,7 @@
     if (typeof raw !== "string" || raw[0] !== "$" || !raw.endsWith("#")) return false;
     const pos = raw.lastIndexOf(",C");
     if (pos < 0 || raw.length - pos !== 7) return false;
+    if (!/^[0-9A-Fa-f]{4}$/.test(raw.slice(pos + 2,pos + 6))) return false;
     const expected = Number.parseInt(raw.slice(pos + 2, pos + 6), 16);
     return Number.isFinite(expected) && expected === crc16(raw.slice(1, pos));
   }
@@ -71,7 +72,7 @@
   function pidMatches(actual, expected) {
     if (!actual || !expected) return false;
     return PID_KEYS.every((key) => Number.isFinite(Number(actual[key])) &&
-      Math.abs(Number(actual[key]) - Number(expected[key])) <= 0.011);
+      Math.abs(Number(actual[key]) - Number(expected[key])) <= 0.0049);
   }
   function presetPid(profile) {
     const preset = PRESETS[profile];
@@ -134,7 +135,8 @@
       return {
         pid: normalizePid({ AP: x[2], AD: x[3], VP: x[4], VI: x[5], TP: x[6], TD: x[7] }),
         profile: profileField(x[8]), state: prefixed(x[9], "S"),
-        trainingLocked: prefixed(x[10], "L") === 1, balanceStarted: prefixed(x[11], "B") === 1
+        trainingLocked: prefixed(x[10], "L") === 1, balanceStarted: prefixed(x[11], "B") === 1,
+        queryId: x[12] ? prefixed(x[12], "Q") : null, queryStep: x[13] ? prefixed(x[13], "I") : null
       };
     } catch (_) { return null; }
   }

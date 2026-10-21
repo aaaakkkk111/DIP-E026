@@ -15,9 +15,9 @@
 
 void TIM2_Cap_Init(u16 arr,u16 psc);	
 void Get_Distane(void);
-void App_Change_Car(void);
 
-void APP_avoid(void);
+
+
 
 #endif
 

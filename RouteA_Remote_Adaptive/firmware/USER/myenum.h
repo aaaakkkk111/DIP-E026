@@ -76,52 +76,14 @@ typedef enum enCarState_t{
   enTLEFT,
   enTRIGHT,
 	
-	//ps2模拟值生效 ps2 simulation value takes effect
-	enps2Fleft, //前左旋  Front left turn
-	enps2Fright,//前右旋  Front right turn
-	enps2Bleft, //后左旋  Back left turn
-	enps2Bright,//后右旋  Back right turn
-	
-	enAvoid, //超声波躲避  Ultrasonic avoidance
-	enFollow, //超声波跟随  Ultrasonic Follow
-	enError
+  enError
 }enCarState;
 
 
-typedef enum Car_mode_t{
-	
-	
-	Normal, //正常模式,包含蓝牙控制 //Normal mode, including Bluetooth controlled 
-	U_Follow,//超声波跟随   //Ultrasonic Follow
-	U_Avoid, //超声波避障   //Ultrasonic obstacle avoidance
-	Weight_M,//负重模式     //Load bearing mode
-	PS2_Control,//ps2控制  //PS2 control
-	
-	Line_Track,//4路巡线   //4-way patrol line
-	Diff_Line_track, //高难度4路巡线  High-difficulty 4-way patrol
-  	
-	K210_QR,//k210识别二维码  //K210 recognition QR code
-	K210_Line,//k210巡线      //K210 patrol line
-	K210_Follow,//k210跟随    //K210 Follow
-	K210_SelfLearn,//k210自主学习  需要KPU模型  //K210 autonomous learning requires KPU model
-	K210_mnist,//k210识别数字  需要KPU模型      //K210 requires KPU model to recognize numbers
-	
-	LiDar_avoid,//雷达避障   //Radar obstacle avoidance
-	LiDar_Follow,//雷达跟随  //Radar Follow
-	LiDar_aralm,//雷达警卫   //Radar Guard
-	LiDar_Patrol,//雷达巡逻  //Radar patrol
-	LiDar_Line, //雷达巡墙边做直线  //Make a straight line around the radar wall
-	LiDar_wall_Line, //雷达沿着墙边走  //The radar is walking along the wall
-	
-	CCD_Mode,//ccd巡线     //CCD patrol line
-	ElE_Mode,//电磁巡线    //Electromagnetic patrol line
-	Test_Mode,//Route A neural-assisted PID test mode (mode 21)
-	
-	Mode_Max //最后模式的界限 如果要增加模式，在雷达避障前添加新模式  //If the boundary of the final mode needs to be increased, add a new mode before radar obstacle avoidance
-	
-	
-}Car_Mode;
-
-
+typedef enum Car_mode_t {
+    Normal = 0,
+    Weight_M = 3,
+    Test_Mode = 20
+} Car_Mode;
+#define SUPPORTED_MODE_COUNT 3
 #endif
-

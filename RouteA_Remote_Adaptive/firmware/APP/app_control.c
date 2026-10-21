@@ -1,184 +1,41 @@
 #include "app_control.h"
 
-
-static u16 intstop_time =0 ;
-float battery = 12;//初始状态处于满电 12v The initial state is fully charged 12v
-u8 ccd_conut = 0;
-u8 ps2_conut = 0;
-
-
-//外部中断做延迟 至少10ms的延迟 此方法比delay准确
-//External interrupt delay at least 10ms This method is more accurate than delay
-void delay_time_int(u16 time)
-{
-	intstop_time = time*2; //要*5就是最终时间 //*5 is the final time
-//	while(intstop_time); 
-}
-
-
-void set_time_int(u16 time)
-{
-	intstop_time = time; 
-}
-
-//返回时间 Return time
-u16 get_time_int(void)
-{
-	return intstop_time;
-}
-
-
+float battery = 12;
 
 void EXTI15_10_IRQHandler(void)
 {
-	int Encoder_Left,Encoder_Right;             					//左右编码器的脉冲计数 Pulse counting of left and right encoders
-	int Balance_Pwm,Velocity_Pwm,Turn_Pwm;		  					//平衡环PWM变量，速度环PWM变量，转向环PWM变 Balance loop PWM variable, speed loop PWM variable, steering loop PWM variable
-	
-  // 检查是否发生中断事件  Check if any interruption events have occurred
-  if(MPU6050_INT==0)		
-	{   
-		if(mode == Test_Mode) RouteA_ControlEnter();
-		EXTI->PR=1<<12;                           					//清除中断标志位 Clear interrupt flag bit
-
-		if(intstop_time>0)
-		{
-				intstop_time --;
-		}
-			
-		if(mode == PS2_Control)
-		{
-				ps2_conut++;
-			if(ps2_conut>20)//100ms
-			{
-				ps2_conut =0;
-				PS2_Contorl_Car();
-				
-			}
-		}
-		else if(mode == Line_Track)
-		{
-			Set_IRtrack_speed(); //红外巡线速度 Infrared patrol speed
-		}
-		else if(mode == Diff_Line_track)
-		{
-			Set_IRtrack_speed(); //高难度巡线速度 High-difficulty line patrol speed
-		}
-		else if(mode == CCD_Mode)
-		{
-			ccd_conut++;
-			if(ccd_conut >4)//25ms
-			{
-				ccd_conut=0;
-				Set_CCDtrack_speed(); //CCD巡线速度 CCD patrol speed
-				CCDShowBuf = CCD_Get_ADC_128X32(); //显示图像  Display image
-				deal_data_ccd();//获取中值 Get median
-			}
-		}
-		else if (mode == ElE_Mode)
-		{
-			getEleData();
-			Set_eletrack_speed(); //电磁巡线速度 Electromagnetic patrol speed
-		}
-		
-		else if (mode == K210_Line)//k210巡线 K210 patrol line
-		{
-			Set_K210track_speed();
-		}
-		else if(mode == K210_Follow)
-		{
-			APP_K210X_Y_Follow_PID();//k210颜色跟随 K210 Color Follow
-		}
-		else if(mode == LiDar_Line)
-		{
-			LiDar_Straight(); //雷达巡墙边 Radar patrol wall
-		}
-		else if(mode == LiDar_wall_Line)
-		{
-			LiDar_Straight_wall(); //雷达沿着墙边走 The radar is walking along the wall
-		}
-		else if(mode == LiDar_aralm) //雷达警卫 Radar Guard
-		{
-			Get_DIS_Group();
-		}
-		
-		
-		
-		
-		Get_Angle(GET_Angle_Way);                     			//更新姿态，5ms一次，更高的采样频率可以改善卡尔曼滤波和互补滤波的效果  //Updating the posture once every 5ms, a higher sampling frequency can improve the effectiveness of Kalman filtering and complementary filtering
-		Encoder_Left=Read_Encoder(MOTOR_ID_ML);            					//读取左轮编码器的值，前进为正，后退为负   //Read the value of the left wheel encoder, forward is positive, backward is negative
-		Encoder_Right=-Read_Encoder(MOTOR_ID_MR);           					//读取右轮编码器的值，前进为正，后退为负   //Read the value of the right wheel encoder, forward is positive, backward is negative
-		Get_Velocity_Form_Encoder(Encoder_Left,Encoder_Right); //获取速度 Obtain speed
-				
-		if(mode == Test_Mode) RouteA_ControlBegin();
-		Balance_Pwm=Balance_PD(Angle_Balance,Gyro_Balance);    //平衡PID控制 Gyro_Balance平衡角速度极性：前倾为正，后倾为负   //Balance PID control gyro balance angular velocity polarity: forward tilt is positive, backward tilt is negative
-		Velocity_Pwm=Velocity_PI(Encoder_Left,Encoder_Right);  //速度环PID控制	记住，速度反馈是正反馈   //Speed loop PID control. Remember, speed feedback is positive feedback
-			
-
-		//转向环PID控制  Steering loop PID control
-		if(mode == Line_Track || mode == Diff_Line_track)//四路巡线 Four Route Patrol 高难度巡线 High-difficulty line patrol
-		{
-			Turn_Pwm=Turn_IRTrack_PD(Gyro_Turn); 
-		}
-		else if(mode == CCD_Mode) //CCD巡线 CCD patrol line
-		{
-			Turn_Pwm=Turn_CCD_PD(Gyro_Turn);
-		}
-		else if(mode == ElE_Mode) //电磁巡线 Electromagnetic patrol line
-		{
-			Turn_Pwm=Turn_ELE_PD(Gyro_Turn);
-		}
-		else if (mode == K210_Line)
-		{
-			Turn_Pwm=Turn_K210_PD(Gyro_Turn);		
-		}
-		else
-		{
-			Turn_Pwm=Turn_PD(Gyro_Turn);
-		} 
-		
-																
-	
-		
-		
-		Motor_Left=Balance_Pwm+Velocity_Pwm+Turn_Pwm;       //计算左轮电机最终PWM Calculate the final PWM of the left wheel motor
-		Motor_Right=Balance_Pwm+Velocity_Pwm-Turn_Pwm;      //计算右轮电机最终PWM Calculate the final PWM of the right wheel motor
-																												//PWM值正数使小车前进，负数使小车后退  Positive PWM values cause the car to move forward, negative values cause the car to move backward
-																												
-		//滤掉死区 Filter out dead zones
-		Motor_Left = PWM_Ignore(Motor_Left);
-		Motor_Right = PWM_Ignore(Motor_Right);
-		
-		//PWM限幅 PWM limiting
-		Motor_Left=PWM_Limit(Motor_Left,2600,-2600); //25khz->2592 
-		Motor_Right=PWM_Limit(Motor_Right,2600,-2600);
-		if(mode == Test_Mode) RouteA_ControlCapture(Encoder_Left, Encoder_Right, Balance_Pwm, Velocity_Pwm, Turn_Pwm, Motor_Left, Motor_Right);		
-
-		
-		//只有正常模式下检测小车的拿去和放下(姿态检测) Only in normal mode can the detection of the taking and lowering of the car be carried out (posture detection)
-		if(mode == Normal || mode == Test_Mode)
-		{
-			if(Pick_Up(Acceleration_Z,Angle_Balance,Encoder_Left,Encoder_Right))//检查是否小车被拿起 Check if the car has been picked up
-				Stop_Flag=1;	                           					//如果被拿起就关闭电机 If picked up, turn off the motor
-			if(Put_Down(Angle_Balance,Encoder_Left,Encoder_Right))//检查是否小车被放下 Check if the car has been lowered
-				Stop_Flag=0;	                           					//如果被放下就启动电机 If it is put down, start the motor
-		}
-		
-		if(Turn_Off(Angle_Balance,battery)==0)     					//如果不存在异常 		If there are no abnormalities
-			Set_Pwm(Motor_Left,Motor_Right);         					//赋值给PWM寄存器 	Assign to PWM register
-		if(mode == Test_Mode) RouteA_ControlEnd();
-   }
-	
+    int Encoder_Left, Encoder_Right;
+    int Balance_Pwm, Velocity_Pwm, Turn_Pwm;
+    if(MPU6050_INT == 0)
+    {
+        if(mode == Test_Mode) RouteA_ControlEnter();
+        EXTI->PR = 1 << 12;
+        Get_Angle(GET_Angle_Way);
+        Encoder_Left = Read_Encoder(MOTOR_ID_ML);
+        Encoder_Right = -Read_Encoder(MOTOR_ID_MR);
+        Get_Velocity_Form_Encoder(Encoder_Left, Encoder_Right);
+        if(mode == Test_Mode) RouteA_ControlBegin();
+        Balance_Pwm = Balance_PD(Angle_Balance, Gyro_Balance);
+        Velocity_Pwm = Velocity_PI(Encoder_Left, Encoder_Right);
+        Turn_Pwm = Turn_PD(Gyro_Turn);
+        Motor_Left = Balance_Pwm + Velocity_Pwm + Turn_Pwm;
+        Motor_Right = Balance_Pwm + Velocity_Pwm - Turn_Pwm;
+        Motor_Left = PWM_Ignore(Motor_Left);
+        Motor_Right = PWM_Ignore(Motor_Right);
+        Motor_Left = PWM_Limit(Motor_Left, 2600, -2600);
+        Motor_Right = PWM_Limit(Motor_Right, 2600, -2600);
+        if(mode == Test_Mode)
+            RouteA_ControlCapture(Encoder_Left, Encoder_Right, Balance_Pwm, Velocity_Pwm, Turn_Pwm, Motor_Left, Motor_Right);
+        if(mode == Normal || mode == Test_Mode)
+        {
+            if(Pick_Up(Acceleration_Z, Angle_Balance, Encoder_Left, Encoder_Right)) Stop_Flag = 1;
+            if(Put_Down(Angle_Balance, Encoder_Left, Encoder_Right)) Stop_Flag = 0;
+        }
+        if(Turn_Off(Angle_Balance, battery) == 0) Set_Pwm(Motor_Left, Motor_Right);
+        if(mode == Test_Mode) RouteA_ControlEnd();
+    }
 }
 
-
-/**************************************************************************
-Function: Get angle
-Input   : way：The algorithm of getting angle 1：DMP  2：kalman  3：Complementary filtering
-Output  : none
-函数功能：获取角度	
-入口参数：way：获取角度的算法 1：DMP  2：卡尔曼 3：互补滤波
-返回  值：无
-**************************************************************************/	
 void Get_Angle(u8 way)
 { 
 	float gyro_x,gyro_y,accel_x,accel_y,accel_z;

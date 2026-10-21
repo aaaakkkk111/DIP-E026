@@ -83,8 +83,7 @@ int Balance_PD(float Angle,float Gyro)
 	 Gyro_bias=0-Gyro; 
 	 balance=-Balance_Kp/100*Angle_bias-Gyro_bias*Balance_Kd/100; //计算平衡控制的电机PWM  PD控制   kp是P系数 kd是D系数  Calculate the motor PWM PD control for balance control kp is the P coefficient kd is the D coefficient
 	
-	if(mode == Test_Mode) balance = balance*RouteA_GetBalanceScale();
-	else if(mode == Weight_M)
+	if(mode == Weight_M || (mode == Test_Mode && RouteA_ProfileIsLoad()))
 		balance = balance*Balance_K;//负重 Load bearing
 	
 	 return balance;
@@ -105,11 +104,9 @@ int Velocity_PI(int encoder_left,int encoder_right)
 {
 	  //================遥控前进后退部分 Remote control forward and backward part====================// 
 									       	
-		if(g_newcarstate==enRUN || g_newcarstate==enps2Fleft || g_newcarstate==enps2Fright)    	PID_Movement=Car_Target_Velocity;	  //遥控前进信号 Remote control forward signal
-		else if(g_newcarstate==enBACK || g_newcarstate==enps2Bleft || g_newcarstate==enps2Bright)	PID_Movement=-Car_Target_Velocity;  //遥控后退信号 Remote control reverse signal
+		if(g_newcarstate==enRUN)    	PID_Movement=Car_Target_Velocity;	  //遥控前进信号 Remote control forward signal
+		else if(g_newcarstate==enBACK)	PID_Movement=-Car_Target_Velocity;  //遥控后退信号 Remote control reverse signal
 	
-		else if(g_newcarstate==enAvoid)  PID_Movement=-10; //超声波躲避信号 使用固定速度运行 Ultrasonic evasion signal operates at a fixed speed
-		else if(g_newcarstate==enFollow)  PID_Movement=10; //超声波跟随信号 Ultrasonic wave follows the signal
 	   
 		else  
 				PID_Movement=Move_X;
@@ -127,8 +124,7 @@ int Velocity_PI(int encoder_left,int encoder_right)
 		
 		if(Turn_Off(Angle_Balance,battery)==1) PID_Encoder_Integral=0;//电机关闭后清除积分 //Clear points after motor shutdown
 
-		if(mode == Test_Mode) PID_Velocity = PID_Velocity*RouteA_GetVelocityScale();
-		else if(mode == Weight_M)
+		if(mode == Weight_M || (mode == Test_Mode && RouteA_ProfileIsLoad()))
 			PID_Velocity = PID_Velocity*Velocity_K;//负重 Load bearing
 		
 	  return PID_Velocity;
@@ -149,8 +145,8 @@ int Turn_PD(float gyro)
 { 
 	 float Kp=Turn_Kp,Kd;			//修改转向速度，请修改Turn_Amplitude即可 To modify the steering speed, please modify Turn_Smplitude
 	//===================遥控左右旋转部分 Remote control left and right rotation part=================//
-	if(g_newcarstate==enLEFT || g_newcarstate==enps2Fleft || g_newcarstate==enps2Bleft)	        PID_Turn_Target=-Car_Turn_Amplitude_speed;
-	else if(g_newcarstate==enRIGHT || g_newcarstate==enps2Fright || g_newcarstate==enps2Bright)	  PID_Turn_Target=Car_Turn_Amplitude_speed; 
+	if(g_newcarstate==enLEFT)	        PID_Turn_Target=-Car_Turn_Amplitude_speed;
+	else if(g_newcarstate==enRIGHT)	  PID_Turn_Target=Car_Turn_Amplitude_speed; 
 	
 	//左旋右旋固定速度跑 Left turn, right turn, fixed speed running
 	else if(g_newcarstate == enTLEFT) PID_Turn_Target=-50;
@@ -171,7 +167,7 @@ int Turn_PD(float gyro)
   //===================转向PD控制器 Turn to PD controller=================//
 	 PID_Turn_PWM=PID_Turn_Target*Kp/100+gyro*Kd/100+Move_Z; //结合Z轴陀螺仪进行PD控制  Combining Z-axis gyroscope for PD control
 	
-	if(mode == Weight_M)
+	if(mode == Weight_M || (mode == Test_Mode && RouteA_ProfileIsLoad()))
 		PID_Turn_PWM = PID_Turn_PWM*Turn_K;//负重参数 Load bearing parameters
 	
 	 return PID_Turn_PWM;								 				 //转向环PWM右转为正，左转为负 Steering ring PWM: Right turn is positive, left turn is negative

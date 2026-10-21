@@ -3,67 +3,6 @@
 u32 g_distance = 0;//超声波距离  Ultrasonic distance
 
 
-void APP_avoid(void)
-{
-	if(g_distance<250) 
-	{
-			Move_X = -10;
-			my_delay(1); 
-		
-			Move_X = 0;
-			Move_Z = 450;
-			my_delay(1);
-			Move_Z = 0;
-	}
-	else
-	{
-			Move_X = 15;
-			Move_Z = 0;
-	}
-
-
-}
-
-//超声波距离控制小车 放到定时器6服务里
-//这是避障和跟随相结合
-//Ultrasonic distance control car placed in timer 6 service
-//This is a combination of obstacle avoidance and following
-void App_Change_Car(void)
-{
-	
-	//小车的状态不处于静止状态或者超声波状态
-	//The state of the car is not in a stationary state or ultrasonic state
-	if(g_newcarstate != enSTOP && g_newcarstate != enAvoid && g_newcarstate != enFollow)
-	{
-		return;
-	}
-	
-	
-	//如果超声波没插或者异常
-	//If the ultrasound is not inserted or abnormal
-	if(g_distance == 0)
-	{
-		return;
-	}
-	
-	if(g_distance >20 && g_distance<100)
-	{
-		g_newcarstate = enAvoid;//避障  Obstacle avoidance
-	}
-	else if(g_distance >240 && g_distance<300)
-	{
-		g_newcarstate = enFollow;//跟随  follow
-	}
-	else
-	{
-		g_newcarstate = enSTOP;//停止状态  stop
-	} 
-	
-	
-
-}
-
-
 static void ultrasonic_init(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;

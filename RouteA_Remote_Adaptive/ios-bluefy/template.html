@@ -11,7 +11,7 @@
 </head>
 <body>
 <header class="topbar">
-  <div><span class="eyebrow">BALANCEBOT · MODE 21 · RA3.3-DIRECT</span><h1>远程自适应控制</h1></div>
+  <div><span class="eyebrow">BALANCEBOT · MODE 3 · RA3.0-SEQ1</span><h1>远程自适应控制</h1></div>
   <button id="connectionPill" class="pill offline" data-action="connect"><i></i><b>未连接</b></button>
 </header>
 
@@ -65,15 +65,16 @@
 
   <section class="page" data-page="manual">
     <div class="section-head"><div><span class="eyebrow">MANUAL CONTROL</span><h2>人工控制与调参</h2></div><span id="manualLockTag" class="tag">可编辑</span></div>
+    <div id="pidFault" class="notice danger hidden"></div>
     <div class="notice warning">自动训练运行时，人工PID和预设按钮会锁定。先停止自动训练才能人工修改。</div>
 
     <div class="card">
       <div class="card-title"><span>两组官方预设</span><span id="activeProfileTag" class="tag">当前 —</span></div>
       <div class="preset-grid">
-        <button id="presetNormal" class="preset" data-profile="N"><b>Normal</b><small>官方模式1</small><span>96 / 48 / 62 / 31 / 17 / 20</span></button>
-        <button id="presetLoad" class="preset" data-profile="L"><b>Load</b><small>官方模式4</small><span>96 / 75 / 70 / 35 / 14 / 20</span></button>
+        <button id="presetNormal" class="preset" data-profile="N"><b>Normal</b><small>1档 Standard</small><span>96 / 48 / 62 / 31 / 17 / 20</span></button>
+        <button id="presetLoad" class="preset" data-profile="L"><b>Load</b><small>原官方模式4 · 现2档</small><span>96 / 75 / 70 / 35 / 14 / 20</span></button>
       </div>
-      <p class="footnote">Load目标倍率：平衡×2.0、速度×1.35、转向×1.0；仅通过预设按钮显式切换。普通调参不改变配置或倍率。</p>
+      <p class="footnote">Load目标倍率：平衡×2.0、速度×1.35、转向×1.0；这里只切换TEST中的参数配置，不改变启动菜单模式；仅通过预设按钮显式切换。普通调参不改变配置或倍率。</p>
     </div>
 
     <div class="card">
@@ -90,11 +91,12 @@
         <label>TD <small id="liveTD">实际 --</small><input id="editTD" inputmode="decimal"></label>
       </div>
       <button class="btn full" data-action="probe">测试通信（不修改PID）</button>
-      <p class="footnote">先测试通信，再重复应用不变的PID。状态页提供栈余量与控制周期诊断；需固件RA3.3-DIRECT。</p>
+      <p class="footnote">先测试通信，再重复应用不变的PID。状态页提供栈余量与控制周期诊断；需固件RA3.0-SEQ1。旧P1/T1和旧整包写入网页不能替代配套页面。</p>
       <div class="two-col"><button id="applyBalance" class="btn" data-action="manual-balance">更新平衡环 AP / AD</button><button id="applyVelocity" class="btn" data-action="manual-velocity">更新速度环 VP / VI</button></div>
       <button id="applyTurn" class="btn full" data-action="manual-turn">更新转向环 TP / TD</button>
+      <p id="sequenceProgress" class="notice safe">每次只写一个已修改参数；确认读回后等待1000 ms，再写下一项。</p>
       <button id="applyManual" class="btn primary full" data-action="manual-apply">更新全部PID</button>
-      <p class="footnote">更新时保留积分与滤波状态，下个5 ms控制边界直接赋值；单环按钮只写对应两项。收到完成响应并读回一致后才确认已应用。没有相对百分比限制。</p>
+      <p class="footnote">基于RA3.0控制，每个短帧只带一个参数；收到对应完成响应、相关联的PID读回并等待1000 ms后继续。积分与滤波状态保留，未改参数不发送。收到完成响应并读回一致后才确认已应用。没有相对百分比限制。</p>
     </div>
 
     <div class="card">

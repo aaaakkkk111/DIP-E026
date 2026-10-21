@@ -1,42 +1,34 @@
-# RA3.3-DIRECT：P3/T3
+# RA3.0-SEQ1 逐项更新协议
 
-ASCII：`$BODY,Cxxxx#`，CRC-16/CCITT-FALSE（0xFFFF，0x1021）。UART5 9600、8N1，接收帧含首尾字符必须小于80字节。
+UART5保持9600 8N1。ASCII完整帧 `$BODY,Cxxxx#`，CRC-16/CCITT-FALSE覆盖BODY。接收含首尾字符小于80字节；ONE短帧通常约30~35字节。
 
-## 命令体（省略$和CRC尾）
+## 顺序
 
-- `P3,PROBE`：只确认链路，不改参数、状态或运动。
-- `P3,GET`：STATUS实际PID、profile、事务S、训练锁L和平衡启动B。
-- `P3,MSET,N,AP,AD,VP,VI,TP,TD,M1`：普通人工更新，N必须等于实际配置；六项为数字位置字段，无AP文字前缀。M1平衡、M2速度、M4转向，组合为按位或，M7全部。
-- `P3,PRESET,N` / `P3,PRESET,L`：显式人工预设，使用固件内的官方六项和固定倍率。
-- `P3,TRAIN,START` / `P3,TRAIN,STOP`：建立/解除人工参数锁；STOP时如有活动候选，先在控制边界回滚。
-- `P3,PREP,id,ttl,N,AP,AD,VP,VI,TP,TD,M1`：LLM普通候选，配置必须不变。
-- `P3,PPRESET,id,ttl,L`：LLM官方预设候选，固件生成六项；只有APPLY后才切换参数及倍率。
-- `P3,APPLY,id` / `P3,HB,id` / `P3,ACCEPT,id` / `P3,ROLLBACK,id` / `P3,STOP,id`。
-- `P3,DIAG,L+|L-|R+|R-|STOP`：只允许尚未启动平衡且未训练时的原有电机诊断。
+1. `P3,BSEQ,id,30000,M|T,N|L`：人工M/训练T，目标配置N/L；建立事务并保存当前完整确认PID。返回标准ACK SEQ_BEGIN。
+2. `P3,ONE,id,step,AP|AD|VP|VI|TP|TD,value`：每帧仅一键一值。step从1连续递增，最多6项。只接受有限、范围内、最多两位小数的十进制数字；未知键、跳步、空值、指数和超长报文拒绝。未选系数不改。
+3. ONE_QUEUED仅表示排队；下一次控制边界只写目标全局变量，主循环返回 `P3,SEQACK,ONE_APPLIED,id,step,key,value`。
+4. 网页发 `P3,SGET,id,step`，返回 `P3,STATUS,AP,AD,VP,VI,TP,TD,PN|PL,S...,L...,B...,Qid,Istep`。必须对应同一id/step，并且六项实际值、当前profile和状态匹配预期，才能确认本项。
+5. 确认后等待1000ms，再发下一项。所有数值只发送已改变的项，六项全变也必须六个独立ONE。
+6. `P3,FSEQ,id`：全部项结束后提交目标N/L配置。返回SEQ_FINISH_QUEUED；控制边界切换profile，再返回标准ACK SEQ_DONE。网页以SGET,id,7核对全部最终实际值。
+7. 人工事务结束即保存完整新确认参数并回S0；训练事务保留S2，等待窗口评价后ACCEPT或ROLLBACK。部分序列不允许ACCEPT。
 
-旧MSET/PREP未带M字段时默认M7；不得用旧网页跨配置调参，新网页要求固件版本RA3.3-DIRECT。普通更新中未选环的数字是填充项，不写入对应系数；最终合并值必须合法。数字仅限无符号整数或最多两位小数，禁止指数、NaN、Infinity、空值和尾随文本。
+示例ONE：
 
-## 赋值与确认
+`$P3,ONE,12345,1,AP,95.00,C571E#`
 
-主循环解析校验和预缩放；AP/VP/TP乘100存入候选。下一次5 ms控制入口调用同一ra_store_raw，只对选中的两项直接赋值。无插值、无积分重置或Ki重算，不改运动命令、机械中值。回滚直接写回完整的上组确认原始内部参数和profile。配置倍率仅随PRESET/PPRESET和相应回滚改变。
+## 其他命令
 
-人工先返回ACK MSET_QUEUED；控制边界完成后，主循环发送ACK MSET_APPLIED。网页必须再GET并核对实际profile/六项，方可确认成功。排队ACK不是生效确认。事务期间重复人工写入返回BUSY，训练中返回LOCKED。
-
-LLM PREP/PPRESET只暂存S1，ACK PREP；APPLY ACK只代表请求，下一次控制边界进入S2并赋值。网页看到S2后GET，只有STATUS也为S2、profile和候选六项一致才开始稳定期与评价。ROLLBACK先排队，完成返回ROLLED_BACK。状态S0空闲、S1暂存、S2实际试验。
-
-活动事务心跳超过2秒、TTL到期、连续3次倾角绝对值>25度/电压<9.6V、连续40次PWM饱和，会请求回滚。网页另有危险基线否决与试验倾角20度回滚。内存/栈损坏PID_MEMORY或MEMORY_LATCH锁停，本次上电不允许继续调参。
+- GET查询（无关联Q0/I0）、PROBE通信测试、DIAG电机诊断（仅尚未启动平衡）。
+- TRAIN START/STOP建立/解除人工参数锁。
+- HB,id每500ms；固件活动状态超过2秒没心跳或30秒TTL到期，恢复整组序列前的确认参数；FSEQ后为评价重新计30秒TTL。
+- ACCEPT,id：只能完整序列结束后接受；ROLLBACK,id：恢复整组PID与原N/L，保留积分、滤波；STOP,id停止运动目标。
+- 旧MSET/PREP/APPLY整包更新返回SEQ_REQUIRED，不再走六参数浮点解析。
+- 同一步已完成的完全相同ONE可重发完成ACK，不重复赋值；网页本版不盲目自动重试。序列传输期间的HB只刷新时间，不额外回ACK，降低9600baud占用；评价阶段保留ACK。
 
 ## 遥测
 
-- 约5Hz：`T3,F,ms,A...,G...,O...,N...,EL...,ER...,ML...,MR...,S...,L...,P...,U0`。
-- 约1Hz：`T3,S,ms,V...,A2...,G2...,PK...,X...,AP...,AD...,VP...,VI...,TP...,TD...,P...,D...,B...,RA3.3-DIRECT,SF...,DT...,CT...`。
+沿用RA3.0 T3,F约5Hz、T3,S约1Hz，以及osc/lean计算和统计。P3 STATUS、GET和T3慢帧仍显示完整六项，这些是设备读回数据，不是网页批量写入。
 
-A倾角度、G陀螺仪raw、O=osc、N=lean。每5ms：lean +=0.0025*(angle-lean)，osc +=0.025*(abs(angle-lean)-osc)，使用更新后的lean。特征只上报不选PID。EL/ER编码器，ML/MR PWM；A2/G2为200点均方，PK绝对倾角峰值，X为|PWM|≥2595的样本比例。SF启动以来最小剩余栈字节，DT最大控制IRQ入口间隔微秒，CT最大控制IRQ执行微秒。U固定为0，保留字段兼容解析。D发送队列丢弃次数。
+AP/VP/TP由固件在主循环预乘100一次，AD/VI/TD保持协议值；控制ISR只做一项赋值。N/L固定倍率与原RA3.0一致，仅在FSEQ末尾显式切换，切换倍率不是LLM随意写入的参数。
 
-## 官方格式兼容路径（模式21）
-
-完整13字段：`$运动,原地转向,PID操作,自动上报,更新平衡,更新速度,更新转向,AP96.00,AD48.00,VP62.00,VI31.00,TP17.00,TD20.00#`。
-
-使用独立有界解析器，不进入原Protocol()。控制环更新仍走同一直接赋值函数，每个实际更新环返回一个$OK#。训练中拒绝参数修改。查询返回$AP...,AD...,VP...,VI...,TP...,TD...#一次；不像原APP配合的旧实现重复两次。PID操作2显式恢复本工具Normal。自动上报1切换到约5Hz旧遥测LV/RV/AC/GY/CSB/VT，2关闭旧上报并恢复T3；任意有效P3命令也恢复T3。此处AC/GY仍为raw，未验证LV/RV物理单位，不能用本路径宣称完整官方APP兼容。
-
-移动/停止帧更新标志均0，始终使用固定合法填充值，避免故障PID把停止帧撑破80字节缓冲；它不改实际PID。
+不增加实时启动锁停。异常PID读回返回PID_DATA，网页不显示该值为有效PID，并取消后续写入。部分更新试验期间仍采用原RA3.0的倾角/电压/PWM风险回滚。回滚是安全恢复动作，由STM32本地恢复完整确认向量，不等待手机逐项发回。

@@ -36,63 +36,10 @@ void bsp_init(void)
 //根据模式选择进行模块的初始化  Initialize modules based on mode selection
 void bsp_mode_init(void)
 {
-	if(mode == Normal || mode == Weight_M)
-	{
-		bluetooth_init();								//蓝牙初始化   Bluetooth initialization
-		TIM2_Cap_Init(0XFFFF,72-1);    //超声波初始化  Ultrasonic initialization
-	}
-	else if(mode == Test_Mode)
-	{
-		bluetooth_init();
-		TIM2_Cap_Init(0XFFFF,72-1);
-	}
-	else if(mode == U_Avoid || mode == U_Follow)
-	{
-		TIM2_Cap_Init(0XFFFF,72-1);    //超声波初始化  Ultrasonic initialization
-	}
-	else if(mode == PS2_Control)
-	{
-		PS2_Init();//手柄初始化  Controller initialization
-		PS2_SetInit();
-	}
-	else if(mode == Line_Track || mode == Diff_Line_track)
-	{
-		irtracking_init(); //红外巡线  Infrared patrol line
-	}
-	else if(mode == CCD_Mode)
-	{
-		ccd_Init();//CCD巡线  CCD patrol line
-	}
-	else if(mode == ElE_Mode)
-	{
-		ele_Init(); //电磁巡线  Electromagnetic patrol line
-	}
-	else if((mode == K210_QR) || (mode == K210_Line) || (mode == K210_Follow)|| (mode == K210_SelfLearn)|| (mode == K210_mnist))
-	{
-		USART2_init(115200);						//k210接口  K210 interface
-	}
-	else if((mode == LiDar_avoid) || (mode == LiDar_Follow) || (mode == LiDar_aralm)|| (mode == LiDar_Patrol)|| (mode == LiDar_Line)||(mode == LiDar_wall_Line))
-	{
-		USART3_init(230400);						//雷达初始化  Radar initialization
-	}
-
-	
-	if(mode < LiDar_avoid || mode > LiDar_wall_Line )//只要模式不是雷达模式，以下都可以启动  As long as the mode is not radar mode, the following can be activated
-	{
-		TIM6_Init();									//LED闪烁、电压检测服务函数  LED flashing, voltage detection service function
-	}
-	else
-	{
-		LED = 1; //有关雷达模式蓝灯常亮  Regarding the radar mode, the blue light is always on
-		Stop_Lidar();
-		delay_ms(200);
-		Start_Lidar();
-	}
-	
-	
-
+    bluetooth_init();
+    TIM2_Cap_Init(0XFFFF, 72-1);
+    TIM6_Init();
 }
-
 
 void JTAG_Set(u8 mode)
 {

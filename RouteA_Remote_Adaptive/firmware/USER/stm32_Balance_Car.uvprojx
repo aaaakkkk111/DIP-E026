@@ -1,10 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<?xml version='1.0' encoding='utf-8'?>
 <Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="project_projx.xsd">
-
   <SchemaVersion>2.1</SchemaVersion>
-
   <Header>### uVision Project, (C) Keil Software</Header>
-
   <Targets>
     <Target>
       <TargetName>stm32RCT6_Balance_Car</TargetName>
@@ -19,28 +16,28 @@
           <PackID>Keil.STM32F1xx_DFP.2.4.1</PackID>
           <PackURL>https://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0xC000) IROM(0x08000000,0x40000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
-          <FlashUtilSpec></FlashUtilSpec>
-          <StartupFile></StartupFile>
+          <FlashUtilSpec />
+          <StartupFile />
           <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0STM32F10x_512 -FS08000000 -FL080000 -FP0($$Device:STM32F103RC$Flash\STM32F10x_512.FLM))</FlashDriverDll>
           <DeviceId>0</DeviceId>
           <RegisterFile>$$Device:STM32F103RC$Device\Include\stm32f10x.h</RegisterFile>
-          <MemoryEnv></MemoryEnv>
-          <Cmp></Cmp>
-          <Asm></Asm>
-          <Linker></Linker>
-          <OHString></OHString>
-          <InfinionOptionDll></InfinionOptionDll>
-          <SLE66CMisc></SLE66CMisc>
-          <SLE66AMisc></SLE66AMisc>
-          <SLE66LinkerMisc></SLE66LinkerMisc>
+          <MemoryEnv />
+          <Cmp />
+          <Asm />
+          <Linker />
+          <OHString />
+          <InfinionOptionDll />
+          <SLE66CMisc />
+          <SLE66AMisc />
+          <SLE66LinkerMisc />
           <SFDFile>$$Device:STM32F103RC$SVD\STM32F103xx.svd</SFDFile>
           <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
-          <BinPath></BinPath>
-          <IncludePath></IncludePath>
-          <LibPath></LibPath>
-          <RegisterFilePath></RegisterFilePath>
-          <DBRegisterFilePath></DBRegisterFilePath>
+          <BinPath />
+          <IncludePath />
+          <LibPath />
+          <RegisterFilePath />
+          <DBRegisterFilePath />
           <TargetStatus>
             <Error>0</Error>
             <ExitCodeStop>0</ExitCodeStop>
@@ -62,8 +59,8 @@
           <BeforeCompile>
             <RunUserProg1>0</RunUserProg1>
             <RunUserProg2>0</RunUserProg2>
-            <UserProg1Name></UserProg1Name>
-            <UserProg2Name></UserProg2Name>
+            <UserProg1Name />
+            <UserProg2Name />
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
             <nStopU1X>0</nStopU1X>
@@ -72,8 +69,8 @@
           <BeforeMake>
             <RunUserProg1>0</RunUserProg1>
             <RunUserProg2>0</RunUserProg2>
-            <UserProg1Name></UserProg1Name>
-            <UserProg2Name></UserProg2Name>
+            <UserProg1Name />
+            <UserProg2Name />
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
             <nStopB1X>0</nStopB1X>
@@ -82,15 +79,15 @@
           <AfterMake>
             <RunUserProg1>0</RunUserProg1>
             <RunUserProg2>0</RunUserProg2>
-            <UserProg1Name></UserProg1Name>
-            <UserProg2Name></UserProg2Name>
+            <UserProg1Name />
+            <UserProg2Name />
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
             <nStopA1X>0</nStopA1X>
             <nStopA2X>0</nStopA2X>
           </AfterMake>
           <SelectedForBatchBuild>0</SelectedForBatchBuild>
-          <SVCSIdString></SVCSIdString>
+          <SVCSIdString />
         </TargetCommonOption>
         <CommonProperty>
           <UseCPPCompiler>0</UseCPPCompiler>
@@ -104,8 +101,8 @@
           <AssembleAssemblyFile>0</AssembleAssemblyFile>
           <PublicsOnly>0</PublicsOnly>
           <StopOnExitCode>3</StopOnExitCode>
-          <CustomArgument></CustomArgument>
-          <IncludeLibraryModules></IncludeLibraryModules>
+          <CustomArgument />
+          <IncludeLibraryModules />
           <ComprImg>1</ComprImg>
         </CommonProperty>
         <DllOption>
@@ -114,7 +111,7 @@
           <SimDlgDll>DCM.DLL</SimDlgDll>
           <SimDlgDllArguments>-pCM3</SimDlgDllArguments>
           <TargetDllName>SARMCM3.DLL</TargetDllName>
-          <TargetDllArguments></TargetDllArguments>
+          <TargetDllArguments />
           <TargetDlgDll>TCM.DLL</TargetDlgDll>
           <TargetDlgDllArguments>-pCM3</TargetDlgDllArguments>
         </DllOption>
@@ -139,10 +136,10 @@
           <bUseTDR>1</bUseTDR>
           <Flash2>BIN\UL2CM3.DLL</Flash2>
           <Flash3>"" ()</Flash3>
-          <Flash4></Flash4>
-          <pFcarmOut></pFcarmOut>
-          <pFcarmGrp></pFcarmGrp>
-          <pFcArmRoot></pFcArmRoot>
+          <Flash4 />
+          <pFcarmOut />
+          <pFcarmGrp />
+          <pFcArmRoot />
           <FcArmLst>0</FcArmLst>
         </Utilities>
         <TargetArmAds>
@@ -175,7 +172,7 @@
             <RvctClst>0</RvctClst>
             <GenPPlst>0</GenPPlst>
             <AdsCpuType>"Cortex-M3"</AdsCpuType>
-            <RvctDeviceName></RvctDeviceName>
+            <RvctDeviceName />
             <mOS>0</mOS>
             <uocRom>0</uocRom>
             <uocRam>0</uocRam>
@@ -310,7 +307,7 @@
                 <Size>0x0</Size>
               </OCR_RVCT10>
             </OnChipMemories>
-            <RvctStartVector></RvctStartVector>
+            <RvctStartVector />
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
@@ -337,10 +334,10 @@
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
-              <MiscControls></MiscControls>
+              <MiscControls />
               <Define>STM32F10X_HD,USE_STDPERIPH_DRIVER</Define>
-              <Undefine></Undefine>
-              <IncludePath>..\USER;..\CMSIS;..\FWLib\inc;..\BSP;..\BSP\Delay;..\BSP\Enconder;..\BSP\IIC_Software;..\BSP\Motor;..\BSP\MPU6050;..\BSP\MPU6050\DMP;..\BSP\Usart1;..\BSP\INT_Sever;..\BSP\Battery;..\APP;..\APP\filter;..\APP\KF;..\APP\PID;..\BSP\OLED;..\BSP\Key;..\BSP\Beep;..\BSP\LED;..\BSP\Timer;..\BSP\Ultrasonic;..\BSP\IRtracking;..\BSP\ElE_Track;..\BSP\CCD;..\BSP\Bluetooth;..\BSP\Lidar;..\BSP\PS2;..\APP\OLED_Show;..\APP\mode;..\APP\K210;..\APP\Lidar;..\APP\RouteA</IncludePath>
+              <Undefine />
+              <IncludePath>..\USER;..\CMSIS;..\FWLib\inc;..\BSP;..\BSP\Delay;..\BSP\Enconder;..\BSP\IIC_Software;..\BSP\Motor;..\BSP\MPU6050;..\BSP\MPU6050\DMP;..\BSP\Usart1;..\BSP\INT_Sever;..\BSP\Battery;..\APP;..\APP\filter;..\APP\KF;..\APP\PID;..\BSP\OLED;..\BSP\Key;..\BSP\Beep;..\BSP\LED;..\BSP\Timer;..\BSP\Ultrasonic;..\BSP\Bluetooth;..\APP\OLED_Show;..\APP\mode;..\APP\RouteA</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -355,10 +352,10 @@
             <useXO>0</useXO>
             <ClangAsOpt>1</ClangAsOpt>
             <VariousControls>
-              <MiscControls></MiscControls>
-              <Define></Define>
-              <Undefine></Undefine>
-              <IncludePath></IncludePath>
+              <MiscControls />
+              <Define />
+              <Undefine />
+              <IncludePath />
             </VariousControls>
           </Aads>
           <LDads>
@@ -370,13 +367,13 @@
             <useFile>0</useFile>
             <TextAddressRange>0x08000000</TextAddressRange>
             <DataAddressRange>0x20000000</DataAddressRange>
-            <pXoBase></pXoBase>
-            <ScatterFile></ScatterFile>
-            <IncludeLibs></IncludeLibs>
-            <IncludeLibsPath></IncludeLibsPath>
-            <Misc></Misc>
-            <LinkerInputFile></LinkerInputFile>
-            <DisabledWarnings></DisabledWarnings>
+            <pXoBase />
+            <ScatterFile />
+            <IncludeLibs />
+            <IncludeLibsPath />
+            <Misc />
+            <LinkerInputFile />
+            <DisabledWarnings />
           </LDads>
         </TargetArmAds>
       </TargetOption>
@@ -440,29 +437,9 @@
               <FilePath>..\FWLib\src\stm32f10x_adc.c</FilePath>
             </File>
             <File>
-              <FileName>stm32f10x_crc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\FWLib\src\stm32f10x_crc.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f10x_dac.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\FWLib\src\stm32f10x_dac.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f10x_dma.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\FWLib\src\stm32f10x_dma.c</FilePath>
-            </File>
-            <File>
               <FileName>stm32f10x_exti.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\FWLib\src\stm32f10x_exti.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f10x_flash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\FWLib\src\stm32f10x_flash.c</FilePath>
             </File>
             <File>
               <FileName>stm32f10x_gpio.c</FileName>
@@ -470,29 +447,9 @@
               <FilePath>..\FWLib\src\stm32f10x_gpio.c</FilePath>
             </File>
             <File>
-              <FileName>stm32f10x_i2c.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\FWLib\src\stm32f10x_i2c.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f10x_pwr.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\FWLib\src\stm32f10x_pwr.c</FilePath>
-            </File>
-            <File>
               <FileName>stm32f10x_rcc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\FWLib\src\stm32f10x_rcc.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f10x_sdio.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\FWLib\src\stm32f10x_sdio.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f10x_spi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\FWLib\src\stm32f10x_spi.c</FilePath>
             </File>
             <File>
               <FileName>stm32f10x_tim.c</FileName>
@@ -595,39 +552,9 @@
               <FilePath>..\BSP\Ultrasonic\bsp_ultrasonic.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_irtracking.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\BSP\IRtracking\bsp_irtracking.c</FilePath>
-            </File>
-            <File>
-              <FileName>bsp_ele_track.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\BSP\ElE_Track\bsp_ele_track.c</FilePath>
-            </File>
-            <File>
-              <FileName>bsp_ccd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\BSP\CCD\bsp_ccd.c</FilePath>
-            </File>
-            <File>
               <FileName>bsp_bluetooth.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\BSP\Bluetooth\bsp_bluetooth.c</FilePath>
-            </File>
-            <File>
-              <FileName>bsp_usart2.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\BSP\Usart1\bsp_usart2.c</FilePath>
-            </File>
-            <File>
-              <FileName>bsp_lidar.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\BSP\Lidar\bsp_lidar.c</FilePath>
-            </File>
-            <File>
-              <FileName>bsp_ps2.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\BSP\PS2\bsp_ps2.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -655,11 +582,6 @@
               <FilePath>..\BSP\Bluetooth\app_bluetooth.c</FilePath>
             </File>
             <File>
-              <FileName>app_ps2.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\BSP\PS2\app_ps2.c</FilePath>
-            </File>
-            <File>
               <FileName>app_mode.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\APP\mode\app_mode.c</FilePath>
@@ -668,21 +590,6 @@
               <FileName>oled_show.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\APP\OLED_Show\oled_show.c</FilePath>
-            </File>
-            <File>
-              <FileName>app_tracking.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\APP\app_tracking.c</FilePath>
-            </File>
-            <File>
-              <FileName>app_ccd_tracking.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\APP\app_ccd_tracking.c</FilePath>
-            </File>
-            <File>
-              <FileName>app_ele_tracking.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\APP\app_ele_tracking.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -717,43 +624,8 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>K210</GroupName>
+          <GroupName>RouteA</GroupName>
           <Files>
-            <File>
-              <FileName>app_k210.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\APP\K210\app_k210.c</FilePath>
-            </File>
-            <File>
-              <FileName>app_k210_AI.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\APP\K210\app_k210_AI.c</FilePath>
-            </File>
-            <File>
-              <FileName>app_line.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\APP\K210\app_line.c</FilePath>
-            </File>
-            <File>
-              <FileName>app_follow.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\APP\K210\app_follow.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>LiDar</GroupName>
-          <Files>
-            <File>
-              <FileName>app_lidar.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\APP\Lidar\app_lidar.c</FilePath>
-            </File>
-            <File>
-              <FileName>app_lidar_car.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\APP\Lidar\app_lidar_car.c</FilePath>
-            </File>
             <File>
               <FileName>route_a.c</FileName>
               <FileType>1</FileType>
@@ -764,13 +636,11 @@
       </Groups>
     </Target>
   </Targets>
-
   <RTE>
-    <apis/>
-    <components/>
-    <files/>
+    <apis />
+    <components />
+    <files />
   </RTE>
-
   <LayerInfo>
     <Layers>
       <Layer>
@@ -779,5 +649,4 @@
       </Layer>
     </Layers>
   </LayerInfo>
-
 </Project>

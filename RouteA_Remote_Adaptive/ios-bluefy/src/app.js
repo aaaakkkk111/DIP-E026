@@ -20,6 +20,9 @@
     }
   };
   let toastTimer = null;
+  const writer = new window.RouteASequence.Writer({send, onProgress: (text) => {
+    $("sequenceProgress").textContent = text; updateUi();
+  }});
 
   function nowText() { return new Date().toLocaleTimeString("zh-CN", { hour12: false }); }
   function delay(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
@@ -47,7 +50,7 @@
     pill.className = `pill ${kind}`;
     pill.querySelector("b").textContent = text;
   }
-  function profileName(profile) { return profile === "L" ? "Load / 模式4" : "Normal / 模式1"; }
+  function profileName(profile) { return profile === "L" ? "Load / 2档" : "Standard / 1档"; }
   function firmwareStateName(value) { return ["IDLE", "PREPARED", "TRIAL"][value] || `UNKNOWN ${value}`; }
   function pidText(pid) { return pid ? C.PID_KEYS.map((key) => `${key}${pid[key].toFixed(2)}`).join(" · ") : "—"; }
 
@@ -109,6 +112,7 @@
     }
   }
   async function cleanupConnection(disconnectGatt) {
+    writer.cancel("连接已关闭");
     clearAutoTimer();
     stopHeartbeat();
     state.auto.enabled = false;
@@ -178,7 +182,11 @@
       updateUi();
       return;
     }
+    if(raw.startsWith("$P1,") || raw.startsWith("$T1,")) {
+      state.frameError += 1; toast("检测到旧P1/T1协议，请核对固件与配套网页版本"); return;
+    }
     state.frameOk += 1;
+    writer.feed(raw);
 
     const status = C.parseStatus(raw);
     if (status) {
@@ -209,7 +217,7 @@
         state.auto.fastSamples.push(fast);
         $("windowSamples").textContent = `${state.auto.fastSamples.length}样本`;
       }
-      if (state.auto.enabled && state.auto.phase === "APPLYING" && fast.state === 2 && !state.auto.readbackRequested) {
+      if (state.auto.enabled && state.auto.phase === "APPLYING" && !writer.busy && fast.state === 2 && !state.auto.readbackRequested) {
         state.auto.readbackRequested = true;
         send(C.getPid());
       }
@@ -279,10 +287,14 @@
   }
   function hardwareFailure(reason) {
     if (state.hardwareFault) return;
+    writer.cancel(reason);
     state.hardwareFault = true;
     clearAutoTimer(); stopHeartbeat();
     state.auto.enabled = false; state.auto.collecting = false; state.auto.phase = "ERROR";
     state.pendingManual = null; state.currentPid = null;
+    for(const key of C.PID_KEYS) $("live"+key).textContent="实际无效";
+    $("pidFault").textContent=reason+"；已取消后续参数写入，请保存日志并核对配套固件。";
+    $("pidFault").classList.remove("hidden");
     log("ERR", reason + "; training stopped, physical restart required");
     toast(reason + "；停止训练，请断电检查并重启");
     send(C.training("STOP")).catch(() => {});
@@ -290,7 +302,8 @@
     updateUi();
   }
   function handleFirmwareError(code) {
-    if (code === "PID_MEMORY" || code === "MEMORY_LATCH") { hardwareFailure(code); return; }
+    if (code === "PID_DATA" || code === "PID_MEMORY" || code === "MEMORY_LATCH") { hardwareFailure(code); return; }
+    writer.cancel(`固件拒绝：${code}`);
     state.pendingManual = null;
     toast(`固件拒绝：${code}`);
     log("ERR", `firmware rejected command: ${code}`);
@@ -320,9 +333,9 @@
     }
     if (!state.manualDirty || force) $("manualProfile").value = state.profile;
   }
-  function directFirmwareReady() { return state.mock || state.firmware.startsWith("RA3.3-DIRECT"); }
+  function directFirmwareReady() { return state.mock || state.firmware.startsWith("RA3.0-SEQ1"); }
   function confirmTrial(status) {
-    if (state.auto.enabled && state.auto.phase === "APPLYING" && status.state === 2 &&
+    if (!writer.busy && state.auto.enabled && state.auto.phase === "APPLYING" && status.state === 2 &&
         status.profile === state.auto.candidateProfile && C.pidMatches(status.pid, state.auto.candidatePid)) beginSettle();
   }
   function readManualPid(mask = 7) {
@@ -331,21 +344,23 @@
     return C.mergePid(state.currentPid, pid, mask);
   }
   async function applyManual(profile, pid, mask = 7, preset = false) {
-    if (state.hardwareFault) return toast("固件数据故障锁定，请断电重启并刷新页面");
-    if (!directFirmwareReady()) return toast("请等待并确认固件版本RA3.3-DIRECT");
+    if (state.hardwareFault) return toast("PID数据异常，请停止试验并核对固件");
+    if (!directFirmwareReady()) return toast("需要配套固件RA3.0-SEQ1");
     if (state.trainingLocked || state.auto.enabled) return toast("请先停止自动训练");
     if (!state.currentPid) return toast("请先同步实际PID");
-    if (state.pendingManual) return toast("正在应用，请等待STM32确认");
+    if (state.pendingManual || writer.busy) return toast("请等待当前逐项更新完成");
     try {
-      if (!preset && profile !== state.profile) throw new Error("切换配置请使用Normal/Load预设按钮");
+      if (!preset && profile !== state.profile) throw new Error("切换配置请使用预设按钮");
       const valid = preset ? C.presetPid(profile) : C.mergePid(state.currentPid, pid, mask);
-      state.pendingManual = { profile, pid: valid, mask: preset ? 7 : mask, appliedAck: false };
+      state.pendingManual = { profile, pid:valid, appliedAck:false };
       updateUi();
-      await send(preset ? C.manualPreset(profile) : C.manualSet(profile, valid, mask));
-      toast("参数已排队；等待完成响应和实际PID读回确认");
-    } catch (error) { state.pendingManual = null; updateUi(); toast(error.message); }
+      const result=await writer.run({id:trialId(),mode:"M",profile,initialProfile:state.profile,initialPid:state.currentPid,targetPid:valid,mask:preset?7:mask});
+      state.currentPid=result.pid;state.profile=result.profile;state.pendingManual=null;state.manualDirty=false;
+      syncManualFields(true);toast("逐项写入及实际PID读回全部完成");
+    } catch(error) { state.pendingManual=null;log("ERR",error.message);toast(error.message); }
+    finally { updateUi(); }
   }
-  function applyPreset(profile) { return applyManual(profile, C.presetPid(profile), 7, true); }
+  function applyPreset(profile) { return applyManual(profile,C.presetPid(profile),7,true); }
 
   function clearAutoTimer() {
     if (state.auto.timer) clearTimeout(state.auto.timer);
@@ -426,7 +441,7 @@
     updateUi();
     state.auto.timer = setTimeout(() => startWindow("BASELINE", settingNumber("baselineMs", 4000)), waitMs);
   }
-  function trialId() { return Math.floor(Date.now() / 1000) % 1000000; }
+  function trialId() { state.nextTransactionId = ((state.nextTransactionId ?? Date.now()) % 999999) + 1; return state.nextTransactionId; }
 
   async function decideNext(metrics) {
     if (!state.auto.enabled || state.auto.requestBusy) return;
@@ -452,11 +467,12 @@
       } else {
         state.auto.cycle += 1;
         state.auto.trialId = trialId();
-        state.auto.phase = "PREPARING";
-        const mask = C.changedMask(state.currentPid, decision.candidate);
-        if (decision.action === "switch_preset") await send(C.preparePreset(state.auto.trialId, 30000, decision.target_profile));
-        else if (mask) await send(C.prepare(state.auto.trialId, 30000, decision.target_profile, decision.candidate, mask));
-        else { recordHistory("无变化", metrics); scheduleNextBaseline(1800); }
+        state.auto.phase = "APPLYING";
+        const result=await writer.run({id:state.auto.trialId,mode:"T",profile:decision.target_profile,
+          initialProfile:state.profile,initialPid:state.currentPid,targetPid:decision.candidate});
+        if(!state.auto.enabled)return;
+        state.auto.candidatePid=result.pid;state.auto.candidateProfile=result.profile;
+        startHeartbeat();beginSettle();
       }
     } catch (error) {
       log("ERR", `LLM: ${error.message}`);
@@ -521,10 +537,10 @@
   async function startAuto() {
     if (!(state.connected || state.mock)) return toast("请先连接小车");
     if (state.hardwareFault) return toast("固件数据故障锁定，请断电重启并刷新页面");
-    if (!directFirmwareReady()) return toast("请等待并确认固件版本RA3.3-DIRECT");
+    if (!directFirmwareReady()) return toast("请等待并确认固件版本RA3.0-SEQ1");
     if (!state.balanceStarted) return toast("请先在小车端按键启动平衡");
     if (!state.currentPid) return toast("尚未同步实际PID");
-    if (state.pendingManual || state.fast?.transitionStep) return toast("请等待人工参数应用完成");
+    if (writer.busy || state.pendingManual || state.fast?.transitionStep) return toast("请等待人工参数应用完成");
     if (!state.mock && !$("llmKey").value.trim()) { switchPage("settings"); return toast("请先填写LLM API Key"); }
     if (state.auto.enabled) return;
     state.auto.enabled = true;
@@ -539,6 +555,7 @@
     await send(C.training("START"));
   }
   async function stopAuto(silent) {
+    writer.cancel("自动训练已停止");
     clearAutoTimer();
     state.auto.collecting = false;
     state.auto.enabled = false;
@@ -565,6 +582,7 @@
     updateUi();
   }
   async function requestRollback(reason) {
+    writer.cancel(reason);
     if (!state.auto.enabled || state.auto.phase === "ROLLING_BACK") return;
     clearAutoTimer();
     state.auto.collecting = false;
@@ -618,6 +636,7 @@
   }
 
   async function safeStop() {
+    if(writer.busy)writer.cancel("已按停止按钮，取消后续参数");
     releaseMotion(true);
     if (state.connected || state.mock) {
       await send(C.legacyMotion(0, 0, state.currentPid || C.PRESETS.N));
@@ -680,7 +699,7 @@
     $("presetLoad").classList.toggle("active", state.profile === "L");
     $("manualLockTag").textContent = state.trainingLocked ? "训练锁定" : state.pendingManual ? "等待读回确认" : !directFirmwareReady() ? "等待固件版本同步" : "可编辑";
     $("applyManual").textContent = state.pendingManual ? "等待STM32确认…" : "更新全部PID";
-    const manualDisabled = state.hardwareFault || !directFirmwareReady() || !connected || !state.currentPid || state.trainingLocked || state.auto.enabled || !!state.pendingManual;
+    const manualDisabled = writer.busy || state.hardwareFault || !directFirmwareReady() || !connected || !state.currentPid || state.trainingLocked || state.auto.enabled || !!state.pendingManual;
     for (const id of ["presetNormal", "presetLoad", "applyManual", "applyBalance", "applyVelocity", "applyTurn", ...C.PID_KEYS.map((key) => "edit" + key)]) $(id).disabled = manualDisabled;
     document.querySelectorAll("[data-motion]").forEach((button) => button.disabled = !connected);
     $("autoPhaseTag").textContent = state.auto.enabled ? "运行中" : state.auto.phase === "ERROR" ? "错误" : "停止";
@@ -688,10 +707,11 @@
     $("autoCycle").textContent = String(state.auto.cycle);
     $("autoNext").textContent = nextAutoText();
     $("manualProfile").disabled = true;
-    $("autoStart").disabled = state.hardwareFault || !directFirmwareReady() || !connected || !state.balanceStarted || state.auto.enabled || !state.currentPid || !!state.pendingManual;
+    $("autoStart").disabled = writer.busy || state.hardwareFault || !directFirmwareReady() || !connected || !state.balanceStarted || state.auto.enabled || !state.currentPid || !!state.pendingManual;
     $("autoPause").disabled = !state.auto.enabled && !state.trainingLocked;
   }
   function nextAutoText() {
+    if(writer.busy)return writer.message;
     const map = {
       IDLE: "点击开始自动LLM调参", STARTING: "等待STM32训练锁",
       BASELINE: "采集当前基线", LLM: "等待LLM决策", PREPARING: "暂存候选",
@@ -765,6 +785,7 @@
     stopMock();
     state.mock = true;
     state.hardwareFault = false;
+    $("pidFault").classList.add("hidden");
     state.balanceStarted = true;
     state.trainingLocked = false;
     state.mockState = 0;
@@ -775,7 +796,7 @@
     state.mockChampionProfile = "N";
     state.currentPid = { ...state.mockPid };
     state.profile = "N";
-    state.firmware = "RA3.3-DIRECT-MOCK";
+    state.firmware = "RA3.0-SEQ1-MOCK";
     $("deviceName").textContent = "Mock YahBoom_BL";
     connectionLabel("online", "模拟设备");
     state.mockTimer = setInterval(emitMockTelemetry, 200);
@@ -804,7 +825,7 @@
     const ml = Math.round(-angle * 430), mr = Math.round(-angle * 420);
     mockEmit(C.frame(`T3,F,${state.mockClock},A${angle.toFixed(2)},G${gyro.toFixed(1)},O${osc.toFixed(3)},N${lean.toFixed(3)},EL${Math.round(gyro / 8)},ER${Math.round(gyro / 8 + 1)},ML${ml},MR${mr},S${state.mockState},L${state.trainingLocked ? 1 : 0},P${state.mockProfile}`));
     if (state.mockClock % 1000 === 0) {
-      mockEmit(C.frame(`T3,S,${state.mockClock},V11.82,A2${(amplitude * amplitude / 2).toFixed(3)},G2${(amplitude * amplitude * 1012).toFixed(3)},PK${(amplitude * 1.22).toFixed(2)},X0.000,AP${state.mockPid.AP.toFixed(2)},AD${state.mockPid.AD.toFixed(2)},VP${state.mockPid.VP.toFixed(2)},VI${state.mockPid.VI.toFixed(2)},TP${state.mockPid.TP.toFixed(2)},TD${state.mockPid.TD.toFixed(2)},P${state.mockProfile},D0,B1,RA3.3-DIRECT-MOCK`));
+      mockEmit(C.frame(`T3,S,${state.mockClock},V11.82,A2${(amplitude * amplitude / 2).toFixed(3)},G2${(amplitude * amplitude * 1012).toFixed(3)},PK${(amplitude * 1.22).toFixed(2)},X0.000,AP${state.mockPid.AP.toFixed(2)},AD${state.mockPid.AD.toFixed(2)},VP${state.mockPid.VP.toFixed(2)},VI${state.mockPid.VI.toFixed(2)},TP${state.mockPid.TP.toFixed(2)},TD${state.mockPid.TD.toFixed(2)},P${state.mockProfile},D0,B1,RA3.0-SEQ1-MOCK`));
     }
   }
   function mockEmit(raw) { handleFrame(raw); }
@@ -816,37 +837,31 @@
     else if (command === "PROBE") ack("PROBE", 0);
     else if (command === "TRAIN" && parts[2] === "START") { state.trainingLocked = true; ack("TRAIN_START", 0); }
     else if (command === "TRAIN" && parts[2] === "STOP") { state.trainingLocked = false; state.mockState = 0; ack("TRAIN_STOP", 0); }
-    else if (command === "MSET" || command === "PRESET") {
-      if (state.trainingLocked) { mockEmit(C.frame("P3,ERR,LOCKED")); return Promise.resolve(); }
-      const preset = command === "PRESET";
-      const profile = preset ? parts[2] : state.mockProfile;
-      const pid = preset ? C.presetPid(profile) : C.mergePid(state.mockPid,
-        Object.fromEntries(C.PID_KEYS.map((key, index) => [key, parts[3 + index]])), Number((parts[9] || "M7").slice(1)));
-      ack("MSET_QUEUED", 0);
-      setTimeout(() => {
-        state.mockProfile = profile; state.mockPid = pid;
-        state.mockChampionPid = { ...pid }; state.mockChampionProfile = profile;
-        ack("MSET_APPLIED", 0);
-      }, 5);
-    } else if (command === "PREP" || command === "PPRESET") {
-      state.auto.trialId = Number(parts[2]);
-      state.mockCandidateProfile = parts[4];
-      state.mockCandidatePid = command === "PPRESET" ? C.presetPid(parts[4]) : C.mergePid(state.mockPid,
-        Object.fromEntries(C.PID_KEYS.map((key, index) => [key, parts[5 + index]])), Number((parts[11] || "M7").slice(1)));
-      state.mockState = 1; ack("PREP", state.auto.trialId);
-    } else if (command === "APPLY") {
-      ack("APPLY", Number(parts[2]));
-      setTimeout(() => {
-        state.mockPid = { ...state.mockCandidatePid }; state.mockProfile = state.mockCandidateProfile;
-        state.mockState = 2;
-      }, 5);
+    else if(command === "BSEQ") {
+      state.mockSeqId=Number(parts[2]);state.mockSeqManual=parts[4]==="M";state.mockSeqProfile=parts[5];
+      state.mockChampionPid={...state.mockPid};state.mockChampionProfile=state.mockProfile;
+      state.mockState=1;ack("SEQ_BEGIN",state.mockSeqId);
+    } else if(command === "ONE") {
+      const id=Number(parts[2]),step=Number(parts[3]),key=parts[4],value=Number(parts[5]);
+      setTimeout(()=>{
+        state.mockPid={...state.mockPid,[key]:value};state.mockState=2;
+        mockEmit(C.frame(`P3,SEQACK,ONE_APPLIED,${id},${step},${key},${value.toFixed(2)}`));
+      },5);
+    } else if(command === "SGET") {
+      setTimeout(()=>mockEmit(C.frame(`P3,STATUS,${C.pidCsv(state.mockPid)},P${state.mockProfile},S${state.mockState},L${state.trainingLocked?1:0},B1,Q${parts[2]},I${parts[3]}`)),30);
+    } else if(command === "FSEQ") {
+      setTimeout(()=>{
+        state.mockProfile=state.mockSeqProfile;state.mockState=state.mockSeqManual?0:2;
+        if(state.mockSeqManual){state.mockChampionPid={...state.mockPid};state.mockChampionProfile=state.mockProfile;}
+        ack("SEQ_DONE",Number(parts[2]));
+      },5);
     } else if (command === "HB") ack("HB", Number(parts[2]));
     else if (command === "ACCEPT") {
       state.mockChampionPid = { ...state.mockPid }; state.mockChampionProfile = state.mockProfile;
       state.mockState = 0; ack("ACCEPT", Number(parts[2]));
     } else if (command === "ROLLBACK") {
       state.mockPid = { ...state.mockChampionPid }; state.mockProfile = state.mockChampionProfile;
-      state.mockState = 0; ack("ROLLBACK", Number(parts[2])); setTimeout(emitMockTelemetry, 70);
+      state.mockState = 0; ack("ROLLED_BACK", Number(parts[2])); setTimeout(emitMockTelemetry, 70);
     } else if (command === "STOP") ack("STOP", Number(parts[2]));
     return Promise.resolve();
   }

@@ -1,0 +1,17 @@
+{
+  "selected_source": "RA3.0-REMOTE",
+  "hardware_confirmation": "User explicitly identified RA3.0 as stable before tuning",
+  "source_backup": "D:\\DIP\\RouteA_Remote_Adaptive_Workspace\\backups\\20261014_before_pid_continuity_fix",
+  "original_hex_sha256": "ab8b3d514d165241772a9a019911f26259abd1094a8277fd98c05bf91c21fe33",
+  "new_version": "RA3.0-SEQ1",
+  "abandoned": [
+    "RA3.3-DIRECT",
+    "RA3.3-DIRECT-3M",
+    "provisional RA3.2 candidate"
+  ],
+  "menu": {
+    "1": 0,
+    "2": 3,
+    "3": 20
+  }
+}
