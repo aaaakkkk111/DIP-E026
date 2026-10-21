@@ -176,7 +176,10 @@ ACTION_RATE_WEIGHT = 0.2
 # but through the 1300-count compensation it is a full 2600-count swing.
 # 0.5 per wheel per reversal: run 15's ~28/s per wheel in sim costs ~0.14/step,
 # the PID's 2-6/s ~0.02.
-REVERSAL_WEIGHT = 0.5
+# Run 17: 0.3. At 0.5 (run 16) the policy stood calm at 10M (2.6-5 deg/s,
+# 1-4 reversals/s) but lost it once full pushes and turns came in, ending at
+# run 15's wobble and surviving no 3 N push (session-logs/2026-10-21-run16-desktop.md).
+REVERSAL_WEIGHT = 0.3
 
 # --- station keeping -----------------------------------------------------
 #
@@ -1013,7 +1016,10 @@ def make_env(**kwargs):
 # gear slack up to 6 deg, from scratch: the 7 Hz shake through the slack is
 # how runs 13-15 balance, and a fine-tune would keep it
 # (session-logs/2026-10-20-car-shake-and-run16.md).
-RUN_NAME = "run16"
+#
+# Run 17 is run 16 with REVERSAL_WEIGHT 0.5 -> 0.3 (the laptop's fallback for
+# a run that stops surviving pushes).
+RUN_NAME = "run17"
 INIT_FROM = "none"
 FINETUNE_STEPS = 10_000_000
 FINETUNE_LR = 1e-4
