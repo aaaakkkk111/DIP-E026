@@ -13,6 +13,44 @@ cable. So the desktop trains and the laptop builds, flashes and tests. GitHub
 you finish. Only the desktop changes training code and models; only the
 laptop adds car logs. Then the two never conflict.
 
+## Next: run 23, full position memory vs run 22 (2026-10-22)
+
+**Goal:** remove the creep and the load-dependent trim (1.7° empty, about 2.5° with 2 kg) the
+way the stock PID does. Its speed loop (`APP/PID/pid_control.c`, `Velocity_PI`) integrates the
+encoders **without forgetting**, clamped at ±8000, and clears only when the motors cut out.
+Any balance-point offset builds up in that integral until it is cancelled: an automatic trim.
+
+**Run 23 = run 22 with:**
+1. **A full position memory:** `POSITION_TAU_S = inf` (decay 1.0). Keep the ±0.5 m clip
+   (`POS_ERR_CLIP_M`) and keep the reset on command change.
+2. **Each episode starts with a random position integral, uniform over ±clip.** Episodes are
+   10 s, but car runs last minutes. A full integral can reach values a 10 s episode never
+   shows, and the policy would see inputs it was never trained on (as run 7's wheel angle
+   did). The random start covers the whole range.
+3. Keep the random pitch offset (±4°, `PITCH_OFFSET_RAD`). With a full memory, the policy
+   can learn to cancel it, which is the self-trim.
+
+**Compare against run 22 (24M), same seeds, in simulation:**
+
+| check | run 23 must |
+|---|---|
+| creep, standing, ±2° pitch offset and ±2° slope, 0 and 2 kg | be smaller than run 22's (about 1 cm/s): near 0 after it settles |
+| 60 s standing, not 10 s (the integral's long-run behaviour) | not grow a slow sway: tilt sd ≤ run 22's, position within about ±10 cm |
+| wobble, 2° and 4° slack | be no worse than run 22 (4.0–5.4 / 7.1–23.5) |
+| pushes: 2 N empty, 4 N with 2 kg; return to the spot | be no worse (17/18, 18/18) |
+| starting with the integral at ±clip | recover without falling or running away |
+
+The risk is integral windup: a bigger, slower sway, and an overshoot after pushes. If it
+fails, try a long leak (τ 30–60 s) between the two.
+
+**Hardware limit (keep the policy within it):**
+- The firmware image must end at or below **0x08010000 (64 KB)**; past that the board loads
+  garbage. Run 22's image has **40 B** spare.
+- Run 23 must **not** change the network (34→64→64→2 int16) or add inputs or filters.
+- Its firmware change is constants only, 0 B: `POLICY_POS_DECAY 1.0f` in `policy.h`. Then
+  `g_pos_err = 1.0f * g_pos_err + …`, and the clip and reset rule stay as they are.
+- Anything that adds code must remove the same, or say so for the laptop to trim.
+
 ## Now: run 22 is on the car (laptop, 2026-10-22)
 
 It is the best on the car so far.
