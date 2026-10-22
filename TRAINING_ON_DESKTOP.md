@@ -13,7 +13,25 @@ cable. So the desktop trains and the laptop builds, flashes and tests. GitHub
 you finish. Only the desktop changes training code and models; only the
 laptop adds car logs. Then the two never conflict.
 
-## Now: flash run 22 (2026-10-22)
+## Now: run 22 is on the car (laptop, 2026-10-22)
+
+It is the best on the car so far.
+- **Empty, trim 1.7°:** 4.0–4.3 deg/s standing, as simulated, and it hovers around its spot
+  (creep +0.1 to +0.5 cm/s).
+- **With 2 kg:** 2.7 deg/s, calmer than simulated, with a best trim of about 2.5°.
+- It survived every hand push, empty and loaded.
+
+The trim is built into the firmware (1.7°, `rl_mode.c`, Keil folder `car_firmware_run22`). It
+depends on the load.
+
+Open, in order:
+1. Empty 3 N pushes (0/18 in simulation).
+2. Load-dependent trim.
+3. Slope climbing with a load.
+
+Details: `session-logs/2026-10-22-run22-on-car.md`. Flash space: **40 B** left.
+
+## Before: flash run 22 (2026-10-22)
 
 `models/best_real` and the weight headers are **run 22 at 24M steps**. All its
 results are from the simulator. Full log: `session-logs/2026-10-22-run22-desktop.md`.
