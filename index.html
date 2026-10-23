@@ -3,109 +3,51 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#06121e">
+  <meta name="theme-color" content="#07111f">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>BalanceBot Remote Adaptive · Bluefy</title>
-  <style>:root{--bg:#06121e;--panel:#0c1d2b;--card:#102638;--line:#234158;--text:#eef8ff;--muted:#8faabd;--cyan:#2dd4bf;--blue:#3b82f6;--amber:#fbbf24;--red:#fb4b5c;--green:#4ade80;--nav:66px;color-scheme:dark}
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:radial-gradient(circle at 90% 0,#123554 0,transparent 35%),var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC",sans-serif}body{padding:calc(env(safe-area-inset-top) + 10px) 14px calc(var(--nav) + env(safe-area-inset-bottom) + 82px)}button,input,select{font:inherit}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:900px;margin:auto;padding:8px 2px 14px}.eyebrow{font-size:11px;letter-spacing:.13em;color:var(--cyan);font-weight:800}.topbar h1,.section-head h2{margin:3px 0 0;font-size:24px}.pill,.tag{border:1px solid var(--line);background:#0b2030;color:var(--muted);border-radius:999px;padding:8px 11px;font-size:12px}.pill{display:flex;gap:7px;align-items:center}.pill i{width:8px;height:8px;border-radius:50%;background:#60788a}.pill.online i{background:var(--green);box-shadow:0 0 10px var(--green)}.pill.connecting i{background:var(--amber)}main{max-width:900px;margin:auto}.page{display:none}.page.active{display:block}.card{background:linear-gradient(145deg,rgba(18,43,62,.98),rgba(10,29,43,.98));border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:12px;box-shadow:0 10px 30px rgba(0,0,0,.15)}.notice{border-radius:15px;padding:12px 14px;margin-bottom:12px;font-size:13px;line-height:1.55}.notice.safe{background:#0d332a;border:1px solid #22634e;color:#c5fae0}.notice.warning{background:#362b12;border:1px solid #725a20;color:#ffe8a4}.notice.danger{background:#3a1820;border:1px solid #7b2937;color:#ffd1d7}.hidden{display:none!important}.hero{display:flex;justify-content:space-between;align-items:center;min-height:150px}.hero .label,.hero-side span{display:block;color:var(--muted);font-size:12px}.hero strong{display:block;font-size:52px;line-height:1.1;margin:6px 0}.hero small{color:var(--muted)}.hero-side{min-width:138px;display:grid;gap:5px;text-align:right}.hero-side b{font-size:17px;margin-bottom:9px}.grid{display:grid;gap:10px}.metrics{grid-template-columns:1fr 1fr}.metric{margin:0;min-height:86px}.metric span,.status-list span,.decision span,.auto-controls span{display:block;color:var(--muted);font-size:12px}.metric b{display:block;font-size:20px;margin-top:9px}.card-title,.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.card-title{font-weight:800;margin-bottom:12px}.section-head{margin:8px 2px 14px}.legend{font-size:11px;color:var(--muted);font-weight:400}.legend i{display:inline-block;width:16px;height:3px;border-radius:2px;margin:0 4px}.angle-line{background:var(--cyan)}.gyro-line{background:var(--amber)}canvas{display:block;width:100%}.status-list{display:grid;grid-template-columns:1fr 1fr;gap:14px}.status-list b{display:block;margin-top:4px;font-size:13px;word-break:break-word}.preset-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.preset{border:1px solid var(--line);background:#0a1a28;color:var(--text);border-radius:16px;padding:14px;text-align:left;min-height:118px}.preset b,.preset small,.preset span{display:block}.preset b{font-size:19px}.preset small{color:var(--cyan);margin:4px 0 12px}.preset span{color:var(--muted);font-size:11px;line-height:1.45}.preset.active{border-color:var(--cyan);box-shadow:0 0 0 2px rgba(45,212,191,.13)}button:disabled,input:disabled,select:disabled{opacity:.42}.field,.form-card label,.pid-grid label{display:block;color:var(--muted);font-size:12px}.pid-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}.pid-grid label{background:#0a1b29;border:1px solid var(--line);border-radius:15px;padding:11px}.pid-grid small{float:right;color:var(--cyan)}input,select{width:100%;margin-top:8px;border:1px solid #31526a;background:#071622;color:var(--text);border-radius:11px;padding:11px;outline:none}input:focus,select:focus{border-color:var(--cyan)}.btn,.compact,.drive-btn,.stop-main,.diag-grid button{border:1px solid var(--line);background:#173148;color:var(--text);border-radius:14px;padding:13px;font-weight:750}.btn.primary{background:#126d67;border-color:#2dd4bf}.btn.accent{background:linear-gradient(135deg,#2563eb,#7c3aed);border-color:#7790ff}.btn.danger-btn{background:#742435;border-color:#fb7185}.full{width:100%;margin-top:10px}.compact{padding:7px 11px;font-size:12px}.footnote{color:var(--muted);font-size:12px;line-height:1.55}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}.drive-pad{display:grid;grid-template:repeat(3,82px)/repeat(3,1fr);gap:8px;max-width:470px;margin:0 auto 12px}.drive-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:24px;touch-action:none}.drive-btn small{font-size:12px;margin-top:4px}.forward{grid-column:2}.left{grid-row:2;grid-column:1}.right{grid-row:2;grid-column:3}.back{grid-row:3;grid-column:2}.stop-main{grid-row:2;grid-column:2;border-radius:50%;margin:5px;background:#c5223c;border-color:#ff7185}.danger-tag{color:#ffd1d7}.auto-controls{display:grid;grid-template-columns:1fr 1fr;gap:10px}.auto-controls>div{background:#0a1b29;border-radius:13px;padding:12px}.auto-controls b{display:block;margin-top:6px}.auto-controls>div:last-child{grid-column:1/-1}.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.metric-grid>div,.decision>div{background:#0a1b29;border-radius:13px;padding:11px}.metric-grid span{display:block;color:var(--muted);font-size:11px}.metric-grid b{display:block;margin-top:6px;font-size:16px}.decision{display:grid;gap:9px}.decision b{display:block;margin-top:5px;font-size:13px;line-height:1.5}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:9px 7px;border-bottom:1px solid var(--line);white-space:nowrap;text-align:right}th:first-child,td:first-child{text-align:left}.form-card label{margin-bottom:12px}pre{height:250px;overflow:auto;background:#04101a;border-radius:12px;padding:10px;color:#a9c7d9;font:11px/1.55 "SF Mono",monospace;white-space:pre-wrap;word-break:break-all}.emergency{position:fixed;z-index:30;right:14px;bottom:calc(var(--nav) + env(safe-area-inset-bottom) + 12px);border:2px solid #ff7185;border-radius:17px;background:#d5213b;color:#fff;padding:15px 18px;font-weight:900;box-shadow:0 8px 28px rgba(213,33,59,.45)}nav{position:fixed;z-index:25;left:0;right:0;bottom:0;height:calc(var(--nav) + env(safe-area-inset-bottom));padding:5px 8px env(safe-area-inset-bottom);display:grid;grid-template-columns:repeat(4,1fr);background:rgba(4,14,24,.95);border-top:1px solid var(--line);backdrop-filter:blur(18px)}nav button{border:0;background:transparent;color:#7892a7;font-size:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}nav button span{font-size:20px}nav button.active{color:var(--cyan)}#toast{position:fixed;z-index:50;left:50%;bottom:calc(var(--nav) + env(safe-area-inset-bottom) + 80px);transform:translate(-50%,18px);width:min(88%,540px);background:#effaff;color:#07111f;border-radius:13px;padding:12px 15px;text-align:center;font-weight:750;opacity:0;pointer-events:none;transition:.2s}#toast.show{opacity:1;transform:translate(-50%,0)}@media(min-width:700px){.metrics{grid-template-columns:repeat(4,1fr)}.pid-grid{grid-template-columns:repeat(3,1fr)}.metric-grid{grid-template-columns:repeat(4,1fr)}}@media(max-width:380px){.hero strong{font-size:44px}.preset-grid{grid-template-columns:1fr}.topbar h1{font-size:20px}}
-
-.pid-grid>*{min-width:0}.pid-grid small{max-width:100%;overflow-wrap:anywhere}.pid-grid input{min-width:0}#sequenceProgress{overflow-wrap:anywhere}
+  <title>Route A · Web v3.0 · AUTO6</title>
+  <style>:root{color-scheme:dark;--bg:#07111f;--card:#101e2f;--card2:#13263b;--line:#203a52;--text:#eff7ff;--muted:#8fa7ba;--cyan:#2dd4bf;--blue:#38bdf8;--amber:#fbbf24;--red:#fb4b5c;--green:#4ade80;--nav:80px;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC",system-ui,sans-serif}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;background:radial-gradient(circle at 80% -10%,#12375a 0,transparent 38%),var(--bg);color:var(--text)}body{padding:calc(env(safe-area-inset-top) + 12px) 14px calc(var(--nav) + env(safe-area-inset-bottom) + 82px);overscroll-behavior:none}button,input,textarea{font:inherit}button{touch-action:manipulation}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:760px;margin:auto;padding:4px 2px 16px}.eyebrow{font-size:11px;letter-spacing:.13em;color:var(--cyan);font-weight:800}.topbar h1,.section-head h2{font-size:24px;line-height:1.1;margin:4px 0 0}.pill{border:1px solid #3a5167;background:#132337;color:var(--text);border-radius:999px;padding:10px 13px;min-height:44px;display:flex;align-items:center;gap:8px}.pill span{width:10px;height:10px;border-radius:50%;background:var(--red);box-shadow:0 0 10px var(--red)}.pill.online span{background:var(--green);box-shadow:0 0 10px var(--green)}.pill.connecting span{background:var(--amber);box-shadow:0 0 10px var(--amber)}main{max-width:760px;margin:auto}.page{display:none;animation:fade .18s ease}.page.active{display:block}@keyframes fade{from{opacity:.5;transform:translateY(4px)}}.card{border:1px solid var(--line);background:linear-gradient(150deg,rgba(20,39,59,.96),rgba(12,28,44,.96));border-radius:20px;padding:16px;margin-bottom:12px;box-shadow:0 10px 30px rgba(0,0,0,.16)}.banner,.notice{border-radius:15px;padding:12px 14px;margin-bottom:12px;line-height:1.45}.banner:empty{display:none}.warning{background:#3a2d0f;border:1px solid #765c19;color:#ffe59c}.danger{background:#3d1821;border:1px solid #7f2c3c;color:#ffc7cf}.hero{display:flex;justify-content:space-between;align-items:center;min-height:176px;background:linear-gradient(135deg,#102a42,#0c1b2b)}.hero .label,.metric span{display:block;color:var(--muted);font-size:13px}.hero strong{display:block;font-size:52px;letter-spacing:-.05em;margin:5px 0}.hero small{color:var(--blue)}.ring{width:145px;height:145px}.ring canvas{width:100%;height:100%}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metrics .card{margin:0 0 2px}.metric b{display:block;font-size:19px;margin-top:8px}.card-title,.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.card-title{font-weight:800;margin-bottom:12px}.legend{font-size:11px;color:var(--muted)}.legend i{display:inline-block;width:16px;height:3px;border-radius:2px;background:var(--cyan);margin:0 4px}.legend i+ i{background:var(--amber);margin-left:10px}#chart{display:block;width:100%;height:210px}.status-list{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}.status-list div{padding:10px 0;border-bottom:1px solid var(--line)}.status-list span{display:block;color:var(--muted);font-size:12px}.status-list b{display:block;margin-top:4px;overflow-wrap:anywhere}.section-head{margin:4px 2px 15px}.tag{display:inline-flex;border:1px solid #36516a;border-radius:999px;padding:6px 9px;color:#b9d2e5;font-size:12px}.tag.amber{border-color:#6b561c;color:#ffe08b}.btn,.diag-grid button{min-height:50px;border:1px solid #31516c;border-radius:14px;background:#172c42;color:var(--text);font-weight:750;padding:10px}.btn:active,.diag-grid button:active,.drive-btn:active{transform:scale(.97)}.btn.primary{background:linear-gradient(135deg,#047d78,#0d9b96);border-color:#2dd4bf}.btn.accent{background:#15385c;border-color:#2b78a8}.btn.success{background:#164d35;border-color:#2c8c5f}.btn.danger-btn{background:#511e2b;border-color:#a63a52}.btn.warning-btn{background:#593e13;border-color:#a67825}.btn.full{width:100%;margin-top:10px}.btn.compact{min-height:42px;padding:8px 16px}.btn:disabled,.drive-btn:disabled{opacity:.38;filter:saturate(.35)}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}.drive-pad{display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:96px 96px 96px;gap:8px;padding:12px}.drive-btn{border:1px solid #31516c;background:#172c42;color:white;border-radius:18px;font-size:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;touch-action:none;user-select:none}.drive-btn small{font-size:13px;margin-top:4px}.forward{grid-column:2}.left{grid-row:2;grid-column:1}.right{grid-row:2;grid-column:3}.back{grid-row:3;grid-column:2}.stop-main{grid-row:2;grid-column:2;border-radius:50%;margin:7px;border:2px solid #ff6879;background:radial-gradient(circle,#e92f48,#9b1730);color:white;font-size:17px;font-weight:900;box-shadow:0 0 24px rgba(251,75,92,.35)}.diag-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.diag-grid .span2{grid-column:1/-1}.muted,.footnote{color:var(--muted)}.footnote{font-size:12px;line-height:1.5}.pid-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pid-item{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:13px}.pid-item label{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px}.pid-item label b{color:var(--cyan);font-size:15px}.pid-item input,.form-card input,textarea{width:100%;border:1px solid #2c4861;background:#091827;color:var(--text);border-radius:12px;padding:12px;margin-top:9px;outline:none}.pid-item input:focus,.form-card input:focus,textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 2px rgba(45,212,191,.12)}.delta{font-size:13px;line-height:1.55}.training-flow{display:grid;grid-template-columns:1fr 1fr;gap:9px}.training-flow div{display:flex;align-items:center;gap:9px;color:var(--muted);font-size:13px}.training-flow b{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#1d354a;color:#b9cad9}.training-flow .done{color:var(--text)}.training-flow .done b{background:var(--cyan);color:#052b28}.metric-lines{line-height:1.65;font-size:13px;margin-top:12px}.candidate{line-height:1.6;font-size:13px;margin-top:12px}.form-card label{display:block;color:var(--muted);font-size:13px;margin-bottom:12px}textarea{resize:vertical;line-height:1.4;font-family:"SF Mono",ui-monospace,monospace;font-size:12px}pre{height:250px;overflow:auto;background:#06111c;border-radius:12px;padding:10px;color:#a9c5d8;font:11px/1.55 "SF Mono",ui-monospace,monospace;white-space:pre-wrap;word-break:break-all}.about{font-size:13px;line-height:1.5}.emergency{position:fixed;z-index:20;right:14px;bottom:calc(var(--nav) + env(safe-area-inset-bottom) + 11px);min-height:54px;border:2px solid #ff7180;border-radius:18px;background:#d5213b;color:white;padding:0 18px;font-weight:900;box-shadow:0 8px 28px rgba(213,33,59,.45)}nav{position:fixed;z-index:19;left:0;right:0;bottom:0;height:calc(var(--nav) + env(safe-area-inset-bottom));padding:6px 8px env(safe-area-inset-bottom);display:grid;grid-template-columns:repeat(5,1fr);background:rgba(6,16,27,.94);border-top:1px solid #1e3447;backdrop-filter:blur(18px)}nav button{border:0;background:transparent;color:#7790a5;font-size:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}nav button span{font-size:20px}nav button.active{color:var(--cyan)}#toast{position:fixed;z-index:50;left:50%;bottom:calc(var(--nav) + env(safe-area-inset-bottom) + 78px);transform:translate(-50%,18px);width:min(88%,540px);background:#eaf8ff;color:#07111f;border-radius:13px;padding:12px 15px;text-align:center;font-weight:750;opacity:0;pointer-events:none;transition:.2s}#toast.show{opacity:1;transform:translate(-50%,0)}@media(max-width:380px){.hero strong{font-size:42px}.ring{width:120px;height:120px}.status-list{grid-template-columns:1fr}.topbar h1{font-size:21px}.drive-pad{grid-template-rows:82px 82px 82px}}@media(orientation:landscape) and (max-height:520px){body{padding-top:8px}.topbar{padding-bottom:8px}.hero{min-height:130px}.ring{width:110px;height:110px}.drive-pad{grid-template-rows:72px 72px 72px;max-width:520px;margin:auto}.emergency{right:92px}}
+b[id$="Value"]{display:block;font-size:1.3rem;overflow-wrap:anywhere}#continuousState{white-space:pre-wrap;overflow-wrap:anywhere}button{touch-action:manipulation}select{width:100%;margin-top:9px;border:1px solid #2c4861;background:#091827;color:var(--text);border-radius:12px;padding:12px;font:inherit}.check{line-height:1.6}.check input{width:auto;margin-right:8px}details{margin-top:12px}summary{cursor:pointer;color:var(--blue)}.pressed{background:#047d78!important}.notice{background:#122b40;border:1px solid #31516c}button:disabled{cursor:not-allowed;opacity:.38}#candidateBox{white-space:pre-wrap}#operationStatus{overflow-wrap:anywhere}
 </style>
 </head>
 <body>
-<header class="topbar">
-  <div><span class="eyebrow">BALANCEBOT · MODE 3 · RA3.0-SEQ1</span><h1>远程自适应控制</h1></div>
-  <button id="connectionPill" class="pill offline" data-action="connect"><i></i><b>未连接</b></button>
-</header>
-
-<main>
-  <section class="page active" data-page="status">
-    <div id="secureBanner" class="notice warning hidden"></div>
-    <div class="notice safe">STM32始终执行5 ms实时平衡；Normal/Load选择和PID优化由手机决定。手机未连接时保持最后一组已确认参数。</div>
-
-    <div class="hero card">
-      <div>
-        <span class="label">实时倾角</span>
-        <strong id="angleHero">--.-°</strong>
-        <small id="gyroHero">角速度 --.- raw</small>
+  <header class="topbar">
+    <div><div class="eyebrow">BALANCEBOT · TEST MODE · WEB 3.0</div><h1>Route A 控制台</h1></div>
+    <button id="connectionPill" class="pill offline" data-action="connect"><span></span><b>未连接</b></button>
+  </header>
+  <main>
+    <section class="page active" data-page="status">
+      <div id="secureBanner" class="banner warning"></div>
+      <div id="dataBanner" class="banner warning">未连接：显示值尚未由小车确认</div>
+      <div id="operationStatus" class="notice" role="status" aria-live="polite">等待连接</div>
+      <div class="hero card">
+        <div><span class="label">实时倾角</span><strong id="angleHero">--.-°</strong><small id="gyroHero">角速度 --.-</small></div>
+        <div class="ring"><canvas id="angleGauge" width="160" height="160"></canvas></div>
       </div>
-      <div class="hero-side">
-        <span>当前配置</span><b id="profileHero">—</b>
-        <span>自动训练</span><b id="autoHero">未启动</b>
+      <div class="grid metrics">
+        <div class="card metric"><span>电池</span><b id="battery">-- V</b></div>
+        <div class="card metric"><span>遥测频率</span><b id="rxHz">0.0 Hz</b></div>
+        <div class="card metric"><span>左 / 右编码器</span><b id="encoders">-- / --</b></div>
+        <div class="card metric"><span>左 / 右电机</span><b id="motors">-- / --</b></div>
       </div>
-    </div>
-
-    <div class="grid metrics">
-      <div class="card metric"><span>电池</span><b id="battery">-- V</b></div>
-      <div class="card metric"><span>遥测频率</span><b id="rxHz">0.0 Hz</b></div>
-      <div class="card metric"><span>左 / 右编码器</span><b id="encoders">-- / --</b></div>
-      <div class="card metric"><span>左 / 右PWM</span><b id="motors">-- / --</b></div>
-      <div class="card metric"><span>osc</span><b id="oscValue">--</b></div>
-      <div class="card metric"><span>lean</span><b id="leanValue">--°</b></div>
-      <div class="card metric"><span>角度RMS</span><b id="rmsValue">--°</b></div>
-      <div class="card metric"><span>综合代价</span><b id="scoreValue">--</b></div>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><span>最近30秒</span><span class="legend"><i class="angle-line"></i>角度 <i class="gyro-line"></i>角速度/10</span></div>
-      <canvas id="chart" height="220"></canvas>
-    </div>
-
-    <div class="card status-list">
-      <div><span>设备</span><b id="deviceName">—</b></div>
-      <div><span>固件</span><b id="firmware">—</b></div>
-      <div><span>平衡启动</span><b id="balanceState">未确认</b></div>
-      <div><span>训练锁</span><b id="trainingLock">未确认</b></div>
-      <div><span>固件事务</span><b id="firmwareState">未知</b></div>
-      <div><span>最近接收</span><b id="lastRx">—</b></div>
-      <div><span>有效 / 错误帧</span><b id="frameCounts">0 / 0</b></div>
-      <div><span>固件发送丢弃</span><b id="dropped">—</b></div>
-      <div><span>最小剩余栈</span><b id="stackFree">—</b></div>
-      <div><span>最大控制周期间隔</span><b id="controlGap">—</b></div>
-      <div><span>最大控制执行耗时</span><b id="controlExec">—</b></div>
-    </div>
-  </section>
-
-  <section class="page" data-page="manual">
-    <div class="section-head"><div><span class="eyebrow">MANUAL CONTROL</span><h2>人工控制与调参</h2></div><span id="manualLockTag" class="tag">可编辑</span></div>
-    <div id="pidFault" class="notice danger hidden"></div>
-    <div class="notice warning">自动训练运行时，人工PID和预设按钮会锁定。先停止自动训练才能人工修改。</div>
-
-    <div class="card">
-      <div class="card-title"><span>两组官方预设</span><span id="activeProfileTag" class="tag">当前 —</span></div>
-      <div class="preset-grid">
-        <button id="presetNormal" class="preset" data-profile="N"><b>Normal</b><small>1档 Standard</small><span>96 / 48 / 62 / 31 / 17 / 20</span></button>
-        <button id="presetLoad" class="preset" data-profile="L"><b>Load</b><small>原官方模式4 · 现2档</small><span>96 / 75 / 70 / 35 / 14 / 20</span></button>
+      <div class="card"><div class="card-title"><span>最近 30 秒</span><span class="legend"><i></i>角度 <i></i>角速度/10</span></div><canvas id="chart" height="210"></canvas></div>
+      <div class="card status-list">
+        <div><span>设备</span><b id="deviceName">—</b></div><div><span>固件</span><b id="firmware">—</b></div>
+        <div><span>平衡</span><b id="balanceState">未确认</b></div><div><span>训练锁</span><b id="lockState">未确认</b></div>
+        <div><span>固件状态</span><b id="fwState">未知</b></div><div><span>最近接收</span><b id="lastRx">—</b></div>
+        <div><span>有效 / 错误帧</span><b id="frameCounts">0 / 0</b></div><div><span>固件丢包</span><b id="dropped">—</b></div>
+        <div><span>TIM8 CCR1 / CCR2</span><b id="ccrLeft">—</b></div><div><span>TIM8 CCR3 / CCR4</span><b id="ccrRight">—</b></div>
+        <div><span>平衡 / 速度 / 转向输出</span><b id="loopOutputs">—</b></div><div><span>双向通信 / PID 读回</span><b id="linkReady">尚未确认</b></div>
       </div>
-      <p class="footnote">Load目标倍率：平衡×2.0、速度×1.35、转向×1.0；这里只切换TEST中的参数配置，不改变启动菜单模式；仅通过预设按钮显式切换。普通调参不改变配置或倍率。</p>
-    </div>
+    <div class="card"><div class="card-title"><span>STM32 振荡指标</span><span id="featureState" class="tag">等待指标</span></div>
+<div class="two-col"><div>osc · 8–16 Hz RMS<b id="oscValue">—</b></div><div>lean · 0.3–2 Hz RMS<b id="leanValue">—</b></div></div><p>有符号 lean_band：<span id="leanBandValue">—</span></p><p class="footnote">200 Hz计算，2.5 Hz指标上报。仅测量；不在STM32自动切档。</p><canvas id="featureChart" style="width:100%;height:150px" aria-label="osc和lean最近30秒曲线"></canvas></div></section>
 
-    <div class="card">
-      <div class="card-title"><span>当前与人工候选PID</span><button class="compact" data-action="get-pid">同步</button></div>
-      <label class="field">当前所属配置（使用上方预设按钮切换）
-        <select id="manualProfile" disabled><option value="N">Normal</option><option value="L">Load</option></select>
-      </label>
-      <div class="pid-grid">
-        <label>AP <small id="liveAP">实际 --</small><input id="editAP" inputmode="decimal"></label>
-        <label>AD <small id="liveAD">实际 --</small><input id="editAD" inputmode="decimal"></label>
-        <label>VP <small id="liveVP">实际 --</small><input id="editVP" inputmode="decimal"></label>
-        <label>VI <small id="liveVI">实际 --</small><input id="editVI" inputmode="decimal"></label>
-        <label>TP <small id="liveTP">实际 --</small><input id="editTP" inputmode="decimal"></label>
-        <label>TD <small id="liveTD">实际 --</small><input id="editTD" inputmode="decimal"></label>
-      </div>
-      <button class="btn full" data-action="probe">测试通信（不修改PID）</button>
-      <p class="footnote">先测试通信，再重复应用不变的PID。状态页提供栈余量与控制周期诊断；需固件RA3.0-SEQ1。旧P1/T1和旧整包写入网页不能替代配套页面。</p>
-      <div class="two-col"><button id="applyBalance" class="btn" data-action="manual-balance">更新平衡环 AP / AD</button><button id="applyVelocity" class="btn" data-action="manual-velocity">更新速度环 VP / VI</button></div>
-      <button id="applyTurn" class="btn full" data-action="manual-turn">更新转向环 TP / TD</button>
-      <p id="sequenceProgress" class="notice safe">每次只写一个已修改参数；确认读回后等待1000 ms，再写下一项。</p>
-      <button id="applyManual" class="btn primary full" data-action="manual-apply">更新全部PID</button>
-      <p class="footnote">基于RA3.0控制，每个短帧只带一个参数；收到对应完成响应、相关联的PID读回并等待1000 ms后继续。积分与滤波状态保留，未改参数不发送。收到完成响应并读回一致后才确认已应用。没有相对百分比限制。</p>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><span>移动控制</span><span class="tag danger-tag">按住移动</span></div>
-      <div class="drive-pad">
+    <section class="page" data-page="drive">
+      <div class="section-head"><div><span class="eyebrow">按住移动 · 松开即停</span><h2>人工控制</h2></div><span id="driveReady" class="tag">等待连接</span></div>
+      <div class="notice danger">蓝牙断开不一定让小车立刻停止。移动时保持手指按住按钮，异常时按红色停止。</div>
+      <div class="drive-pad card">
         <button class="drive-btn forward" data-motion="1,0">▲<small>前进</small></button>
         <button class="drive-btn left" data-motion="3,0">◀<small>左转</small></button>
         <button class="stop-main" data-action="stop">停止</button>
@@ -113,140 +55,160 @@
         <button class="drive-btn back" data-motion="2,0">▼<small>后退</small></button>
       </div>
       <div class="two-col">
-        <button class="btn" data-motion="0,1">↶ 原地左转</button>
-        <button class="btn" data-motion="0,2">↷ 原地右转</button>
+        <button class="btn secondary hold" data-motion="0,1">↶ 原地左转</button>
+        <button class="btn secondary hold" data-motion="0,2">↷ 原地右转</button>
       </div>
-    </div>
-  </section>
-
-  <section class="page" data-page="auto">
-    <div class="section-head"><div><span class="eyebrow">FULL AUTO · LLM SUPERVISOR</span><h2>自动LLM调参</h2></div><span id="autoPhaseTag" class="tag">停止</span></div>
-    <div class="notice danger">启动后会自动把候选直接应用到实车。请扶车、清空周围区域，并保留物理断电手段。</div>
-
-    <div class="auto-controls card">
-      <button id="autoStart" class="btn accent" data-action="auto-start">开始自动LLM调参</button>
-      <button id="autoPause" class="btn danger-btn" data-action="auto-pause">停止并回滚活动试验</button>
-      <div><span>阶段</span><b id="autoPhase">IDLE</b></div>
-      <div><span>循环</span><b id="autoCycle">0</b></div>
-      <div><span>下一步</span><b id="autoNext">连接并同步小车</b></div>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><span>本轮窗口指标</span><span id="windowSamples" class="tag">0样本</span></div>
-      <div class="metric-grid">
-        <div><span>综合代价</span><b id="metricScore">--</b></div>
-        <div><span>角度RMS</span><b id="metricRms">--</b></div>
-        <div><span>角度峰值</span><b id="metricPeak">--</b></div>
-        <div><span>角速度RMS</span><b id="metricGyro">--</b></div>
-        <div><span>osc均值</span><b id="metricOsc">--</b></div>
-        <div><span>lean均值</span><b id="metricLean">--</b></div>
-        <div><span>PWM饱和率</span><b id="metricSat">--</b></div>
-        <div><span>电机负担</span><b id="metricEffort">--</b></div>
+      <div class="card">
+        <div class="card-title"><span>架空电机诊断</span><span class="tag amber">仅平衡启动前</span></div>
+        <p class="muted">将两轮架空后点按。每次脉冲约 0.6 秒；平衡启动或训练锁定后固件会拒绝。</p>
+        <div class="diag-grid"><button data-diag="L+">左轮 +</button><button data-diag="L-">左轮 −</button><button data-diag="R+">右轮 +</button><button data-diag="R-">右轮 −</button><button class="span2" data-diag="STOP">诊断停止</button></div>
       </div>
-    </div>
+    </section>
 
-    <div class="card">
-      <div class="card-title"><span>最近LLM决策</span><span id="decisionAction" class="tag">尚无</span></div>
-      <div class="decision">
-        <div><span>目标配置</span><b id="decisionProfile">—</b></div>
-        <div><span>候选PID</span><b id="decisionPid">—</b></div>
-        <div><span>理由</span><b id="decisionReason">等待首个基线窗口</b></div>
-        <div><span>预期</span><b id="decisionEffect">—</b></div>
+    <section class="page" data-page="pid">
+      <div class="section-head"><div><span class="eyebrow">LIVE + EDITABLE</span><h2>PID 参数</h2></div><button class="btn compact" data-action="get-pid">读取</button></div>
+      <div id="pidIntegrity" class="notice" role="status">等待小车六参数读回</div>
+      <div id="pidGrid" class="pid-grid"></div>
+      <div id="pidDelta" class="card delta">先读取当前 PID，才允许人工写入。</div>
+      <button class="btn full" data-action="copy-pid">复制当前 PID 到编辑框</button>
+      <button id="manualPidButton" class="btn primary full" data-action="manual-pid" disabled>应用人工 PID</button>
+      <p class="footnote">显示值按固件协议发送，网页不会再次乘以内部倍率。训练开始后，网页和 STM32 都会锁定人工调参。</p>
+    </section>
+
+    <section class="page" data-page="training">
+      <div class="section-head"><div><span class="eyebrow">GUARDED EXPERIMENT</span><h2>LLM 辅助调参</h2></div><span id="trialState" class="tag">IDLE</span></div>
+      <div id="workflowHint" class="notice" role="status">连接小车并确认 PID 回包后开始</div>
+      <div class="card form-card"><div class="card-title"><span>连续自动调参</span><span class="tag">六参数 · 自动闭环</span></div>
+<p id="continuousState" role="status" aria-live="polite">未启动</p>
+<div class="two-col"><label>基线秒数<input id="baselineSeconds" type="number" min="5" max="20" value="8"></label><label>轮间等待秒数<input id="loopCooldown" type="number" min="2" max="60" value="5"></label></div>
+<label>建议来源<select id="loopSource"><option value="llm">真实LLM接口</option><option value="demo">模拟演示（仅模拟设备）</option></select></label><label>连续模式审核<select id="loopReview"><option value="rules-auto">本地规则</option><option value="llm-auto">独立LLM审核</option></select></label>
+<label class="check"><input id="continuousConsent" type="checkbox">授权本次前台会话连续采集、请求LLM、应用六参数候选并自动接受或回滚，直到停止或保护中止</label>
+<div class="two-col"><button id="continuousStart" class="btn primary" data-action="continuous-start">启动连续自动调参</button><button id="continuousStop" class="btn danger-btn" data-action="continuous-stop">停止并解锁</button></div>
+<p class="footnote">人工单轮流程仍保留。连续模式每轮重新采基线；指标未改善则恢复基线，连续三轮无改善或审核拒绝时停止。保持Bluefy前台。静止数据不能保证识别全部六参数的效果。</p></div>
+<div class="training-flow card">
+        <div data-step="lock"><b>1</b><span>锁定人工调参</span></div><div data-step="baseline"><b>2</b><span>采集基线</span></div><div data-step="review"><b>3</b><span>生成并审核</span></div><div data-step="trial"><b>4</b><span>试验与决策</span></div>
       </div>
-    </div>
+      <div class="two-col"><button id="trainStart" class="btn primary" data-action="train-start">开始训练并锁定</button><button id="trainStop" class="btn" data-action="train-stop">停止训练并解锁</button></div>
+      <div class="card">
+        <div class="card-title"><span>基线采集</span><span id="sampleCount" class="tag">0 样本</span></div>
+        <div class="two-col"><button id="baselineStart" class="btn" data-action="baseline-start">开始采集</button><button id="baselineFinish" class="btn" data-action="baseline-finish">结束并计算</button></div>
+        <div id="metricsBox" class="metric-lines muted">尚未计算；连续采集 5..60 秒</div>
+        <p class="footnote">允许记录当前抖动；采样倾角和 PWM 饱和率不设准入门槛，真实指标会发送给 LLM。APPLY 时仍检查即时倾角和输出，固件保护仍会执行。</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span>候选建议</span><span id="proposalSource" class="tag">无</span></div>
+        <div class="two-col"><button class="btn" data-action="harness">本地 Harness</button><button class="btn accent" data-action="llm">调用 LLM</button></div>
+        <textarea id="proposalJson" rows="9" spellcheck="false" placeholder="严格 JSON 会显示在这里，也可粘贴后点“验证 JSON”"></textarea>
+        <button class="btn full" data-action="validate-json">验证 JSON</button>
+        <div id="candidateBox" class="candidate muted">尚无合格候选</div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span>固件事务</span><span class="tag amber">每步需 ACK</span></div>
+        <div class="two-col"><button id="prepareButton" class="btn" data-action="prepare">审核并 PREPARE</button><button id="applyButton" class="btn warning-btn" data-action="apply">确认并 APPLY 候选</button></div>
+        <div class="two-col"><button id="acceptButton" class="btn success" data-action="accept">确认并 ACCEPT</button><button id="rollbackButton" class="btn danger-btn" data-action="rollback">ROLLBACK</button></div>
+        <div id="transactionStatus" class="metric-lines" role="status" aria-live="polite">尚无事务</div>
+        <div id="trialMetrics" class="metric-lines muted">试验数据将在 APPLY 读回确认后采集</div>
+      </div>
+      <div class="card form-card">
+        <div class="card-title"><span>审核与本轮自动试验</span><span class="tag">单轮授权</span></div>
+        <label>审核方式<select id="reviewMode"><option value="manual">人工审核与应用</option><option value="rules-report">本地规则审核，仅报告</option><option value="rules-auto">本地规则审核 + 自动试验</option><option value="llm-auto">第二个 LLM 审核 + 自动试验</option></select></label>
+        <div class="two-col"><label>试验时长（5..20 秒）<input id="trialSeconds" type="number" min="5" max="20" value="10"></label><label>浏览器低电压阈值 V<input id="minBattery" type="number" min="6" max="14" step="0.1" value="10"></label></div>
+        <p class="footnote">自动审核检查：基线至少 5 秒 / 20 样本、连续遥测、训练锁、当前 PID、一致的六参数、六参数均在绝对保护范围内。自动试验仅允许 quiet_balance；倾角超过 25°、低电压、数据中断或指标恶化时请求回滚。固件本地保护仍负责最终执行。</p>
+        <label class="check"><input id="autoConsent" type="checkbox">我授权当前候选这一轮自动 PREP / APPLY，并按试验结果 ACCEPT / ROLLBACK</label>
+        <button id="reviewButton" class="btn accent full" data-action="review">执行所选审核</button>
+        <button id="cancelAutoButton" class="btn danger-btn full" data-action="cancel-auto">取消自动流程并回滚</button>
+        <div id="reviewResult" class="metric-lines" role="status">尚未审核</div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span>发送给 LLM 的数据 / 返回结果</span></div>
+        <details><summary>查看本轮数据请求</summary><pre id="llmPayload">尚未发送</pre></details>
+        <details><summary>查看 LLM 原始返回</summary><pre id="llmResponse">尚未返回</pre></details>
+      </div>
+    </section>
 
-    <div class="card">
-      <div class="card-title"><span>自动优化历史</span><button class="compact" data-action="export-json">导出</button></div>
-      <div class="table-wrap"><table><thead><tr><th>#</th><th>动作</th><th>配置</th><th>分数</th><th>结果</th></tr></thead><tbody id="historyBody"><tr><td colspan="5">尚无记录</td></tr></tbody></table></div>
-    </div>
-  </section>
-
-  <section class="page" data-page="settings">
-    <div class="section-head"><div><span class="eyebrow">CONNECTION · MODEL · LOG</span><h2>设置</h2></div></div>
-
-    <div class="card form-card">
-      <div class="card-title"><span>BLE UART</span><span class="tag">9600 baud</span></div>
-      <label>Service UUID<input id="serviceUuid" value="0000ffe0-0000-1000-8000-00805f9b34fb"></label>
-      <label>Characteristic UUID<input id="charUuid" value="0000ffe1-0000-1000-8000-00805f9b34fb"></label>
-      <label>设备名称前缀<input id="namePrefix" value="YahBoom_BL"></label>
-      <div class="two-col"><label>分片字节<input id="chunkSize" type="number" value="20" min="1" max="20"></label><label>分片间隔ms<input id="chunkDelay" type="number" value="18" min="0" max="100"></label></div>
-    </div>
-
-    <div class="card form-card">
-      <div class="card-title"><span>LLM接口</span><span class="tag">OpenAI-compatible</span></div>
-      <label>Base URL<input id="llmBase" value="https://api.deepseek.com"></label>
-      <label>Model<input id="llmModel" value="deepseek-chat"></label>
-      <label>API Key（不持久化）<input id="llmKey" type="password" autocomplete="off" placeholder="sk-..."></label>
-      <p class="footnote">网页直接请求该接口。若接口禁止CORS，需要使用自己的HTTPS代理；API Key不会写入localStorage或导出文件。</p>
-    </div>
-
-    <div class="card form-card">
-      <div class="card-title"><span>自动循环时间</span><span class="tag">毫秒</span></div>
-      <div class="two-col"><label>基线窗口<input id="baselineMs" type="number" value="4000" min="3000" max="20000"></label><label>切换稳定期<input id="settleMs" type="number" value="1500" min="500" max="5000"></label></div>
-      <div class="two-col"><label>评估窗口<input id="evalMs" type="number" value="6000" min="3000" max="20000"></label><label>最低改善%<input id="improvementPct" type="number" value="3" min="0" max="30" step="0.5"></label></div>
-      <button class="btn primary full" data-action="save-settings">保存设置</button>
-    </div>
-
-    <div class="card">
-      <div class="two-col"><button class="btn primary" data-action="connect">连接小车</button><button class="btn" data-action="disconnect">安全断开</button></div>
-      <button class="btn full" data-action="mock">启动模拟设备</button>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><span>原始通信日志</span><span id="logCount" class="tag">0</span></div>
-      <pre id="log"></pre>
-      <div class="two-col"><button class="btn" data-action="export-csv">导出CSV</button><button class="btn" data-action="clear-log">清空显示</button></div>
-    </div>
-  </section>
-</main>
-
-<button id="emergencyStop" class="emergency" data-action="stop">■ 紧急停止</button>
-<nav>
-  <button class="active" data-nav="status"><span>◉</span>状态</button>
-  <button data-nav="manual"><span>✥</span>人工</button>
-  <button data-nav="auto"><span>◇</span>自动</button>
-  <button data-nav="settings"><span>⚙</span>设置</button>
-</nav>
-<div id="toast" role="status"></div>
-<script>(function (root, factory) {
+    <section class="page" data-page="settings">
+      <div class="section-head"><div><span class="eyebrow">CONNECTION + RECORDS</span><h2>设置与日志</h2></div></div>
+      <div class="card form-card">
+        <label>BLE Service UUID<input id="serviceUuid" value="0000ffe0-0000-1000-8000-00805f9b34fb"></label>
+        <label>BLE Characteristic UUID<input id="charUuid" value="0000ffe1-0000-1000-8000-00805f9b34fb"></label>
+        <label>名称前缀<input id="namePrefix" value="YahBoom_BL"></label>
+        <div class="two-col"><label>分片字节<input id="chunkSize" type="number" min="1" max="20" value="20"></label><label>分片间隔 ms<input id="chunkDelay" type="number" min="0" max="100" value="18"></label></div>
+        <button class="btn full" data-action="save-settings">保存通信设置</button>
+      </div>
+      <div class="card form-card">
+        <div class="card-title"><span>LLM 接口</span><span class="tag">OpenAI-compatible</span></div>
+        <label>Base URL<input id="llmBase" value="https://api.deepseek.com"></label>
+        <label>Model<input id="llmModel" value="deepseek-chat"></label>
+        <label>API Key（仅本次页面会话）<input id="llmKey" type="password" autocomplete="off" placeholder="sk-..."></label>
+        <p class="footnote">六参数调整不设百分比上限，仍需满足绝对参数范围及本轮审核。</p>
+        <label>审核 LLM 的 Base URL（留空复用建议接口）<input id="reviewBase" placeholder="https://api.deepseek.com"></label>
+        <label>审核 Model（留空复用建议模型）<input id="reviewModel" placeholder="填写当前账号可用的模型 ID"></label>
+        <label>审核 API Key（留空复用；仅当前会话）<input id="reviewKey" type="password" autocomplete="off"></label>
+        <div class="two-col"><button class="btn" data-action="test-llm">测试 LLM 接口</button><button class="btn" data-action="cancel-llm">取消 LLM 请求</button></div>
+        <button class="btn full" data-action="use-proxy">使用本页面的同源代理</button>
+        <div id="llmStatus" class="metric-lines">尚未请求接口</div>
+        <p class="footnote">浏览器会直接请求所填接口。若服务端不允许 CORS，请使用你自己的 HTTPS 代理地址；密钥不会写入 localStorage 或导出日志。</p>
+      </div>
+      <div class="card">
+        <div class="two-col"><button class="btn primary" data-action="connect">连接小车</button><button class="btn" data-action="disconnect">安全断开</button></div>
+        <button class="btn full" data-action="mock">启动演示模式</button>
+      </div>
+      <div class="card">
+        <label>关键事务日志（请长按复制这里，保留最近 500 条）<textarea id="transactionLog" rows="10" readonly spellcheck="false"></textarea></label>
+        <div class="card-title"><span>原始通信日志</span><span id="logCount" class="tag">0</span></div><pre id="log"></pre>
+        <div class="two-col"><button class="btn" data-action="export-csv">导出 CSV</button><button class="btn" data-action="export-json">导出完整日志 JSON</button></div>
+        <button class="btn full" data-action="clear-log">清空显示</button>
+      </div>
+      <div class="card about"><b>运行要求</b><p>iPhone：用 Bluefy 打开 HTTPS 页面。小车在 3.TEST MODE，JDY-23 使用 FFE0 / FFE1。先验证 PID 回包再操作；平衡启动沿用小车现有硬件流程，网页没有虚构启动指令。网页打开期间保持前台。</p><p>独立 HTML 可直接使用允许 CORS 的接口；若请求因 CORS 失败，请使用随附服务的 HTTPS 同源代理。模型 ID 按你的 API 账号实际可用值填写。</p></div>
+    </section>
+  </main>
+  <button id="emergencyStop" class="emergency" data-action="stop">■ 紧急停止</button>
+  <nav>
+    <button class="active" data-nav="status"><span>◉</span>状态</button><button data-nav="drive"><span>✥</span>遥控</button><button data-nav="pid"><span>⌁</span>PID</button><button data-nav="training"><span>◇</span>训练</button><button data-nav="settings"><span>⚙</span>设置</button>
+  </nav>
+  <div id="toast" role="status"></div>
+  
+  
+<script>
+(function (root, factory) {
   const api = factory();
   if (typeof module === "object" && module.exports) module.exports = api;
   root.RouteACore = api;
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
 
+  const DEFAULT_PID = Object.freeze({ AP: 96, AD: 48, VP: 62, VI: 31, TP: 17, TD: 20 });
   const PID_KEYS = Object.freeze(["AP", "AD", "VP", "VI", "TP", "TD"]);
-  const RANGES = Object.freeze({
-    AP: Object.freeze([20, 288]), AD: Object.freeze([5, 200]),
-    VP: Object.freeze([10, 72]), VI: Object.freeze([1, 100]),
-    TP: Object.freeze([1, 100]), TD: Object.freeze([1, 100])
-  });
-  const PRESETS = Object.freeze({
-    N: Object.freeze({ name: "Standard / 1档（原官方模式1）", AP: 96, AD: 48, VP: 62, VI: 31, TP: 17, TD: 20, balanceScale: 1, velocityScale: 1, turnScale: 1 }),
-    L: Object.freeze({ name: "Load / 2档（原官方模式4）", AP: 96, AD: 75, VP: 70, VI: 35, TP: 14, TD: 20, balanceScale: 2, velocityScale: 1.35, turnScale: 1 })
-  });
-  const ACTIONS = Object.freeze(["switch_preset", "propose_pid", "hold", "rollback", "stop"]);
+  const RANGES = Object.freeze({ AP: [20,288], AD: [5,200], VP: [10,72], VI: [1,100], TP: [1,100], TD: [1,100] });
 
   function crc16(text) {
     const bytes = new TextEncoder().encode(text);
     let crc = 0xffff;
     for (const byte of bytes) {
       crc ^= byte << 8;
-      for (let i = 0; i < 8; i += 1) crc = crc & 0x8000 ? ((crc << 1) ^ 0x1021) & 0xffff : (crc << 1) & 0xffff;
+      for (let i = 0; i < 8; i += 1) {
+        crc = crc & 0x8000 ? ((crc << 1) ^ 0x1021) & 0xffff : (crc << 1) & 0xffff;
+      }
     }
     return crc;
   }
-  function frame(body) { return `$${body},C${crc16(body).toString(16).toUpperCase().padStart(4, "0")}#`; }
+
+  function frame(body) {
+    if (typeof body !== "string" || /[$#\r\n]/.test(body)) throw new Error("报文正文无效");
+    return `$${body},C${crc16(body).toString(16).toUpperCase().padStart(4, "0")}#`;
+  }
+
   function verify(raw) {
     if (typeof raw !== "string" || raw[0] !== "$" || !raw.endsWith("#")) return false;
-    const pos = raw.lastIndexOf(",C");
-    if (pos < 0 || raw.length - pos !== 7) return false;
-    if (!/^[0-9A-Fa-f]{4}$/.test(raw.slice(pos + 2,pos + 6))) return false;
-    const expected = Number.parseInt(raw.slice(pos + 2, pos + 6), 16);
-    return Number.isFinite(expected) && expected === crc16(raw.slice(1, pos));
+    const p = raw.lastIndexOf(",C");
+    if (p < 0 || raw.length - p !== 7) return false;
+    if (!/^[0-9a-f]{4}$/i.test(raw.slice(p + 2, p + 6))) return false;
+    const expected = Number.parseInt(raw.slice(p + 2, p + 6), 16);
+    return Number.isFinite(expected) && expected === crc16(raw.slice(1, p));
   }
+
   class StreamParser {
-    constructor(max = 384) { this.max = max; this.buffer = ""; }
+    constructor(max = 256) { this.max = max; this.buffer = ""; }
     feed(input) {
       const text = typeof input === "string" ? input : new TextDecoder("ascii").decode(input);
       const out = [];
@@ -261,1201 +223,503 @@
       return out;
     }
   }
+
   function finiteNumber(value, name) {
+    if (value === null || value === undefined || typeof value === "boolean" || (typeof value === "string" && !value.trim())) throw new Error(`${name} 不能为空`);
     const n = Number(value);
-    if (value === null || value === undefined || String(value).trim() === "" || !Number.isFinite(n)) throw new Error(`${name} 必须是有限数字`);
+    if (!Number.isFinite(n)) throw new Error(`${name} 必须是有限数字`);
     return n;
   }
+
   function normalizePid(input) {
-    const pid = {};
-    for (const key of PID_KEYS) pid[key] = finiteNumber(input[key], key);
-    return pid;
+    if (!input || typeof input !== "object") throw new Error("PID 必须是对象");
+    const p = {};
+    for (const key of PID_KEYS) p[key] = finiteNumber(input[key], key);
+    return p;
   }
-  function validatePid(input) {
-    const pid = normalizePid(input);
-    for (const key of PID_KEYS) {
-      const [min, max] = RANGES[key];
-      if (pid[key] < min || pid[key] > max) throw new Error(`${key} 超出PC保护范围 ${min}..${max}`);
+
+  function pidCsv(pid) {
+    const p = normalizePid(pid);
+    return PID_KEYS.map((key) => p[key].toFixed(2)).join(",");
+  }
+
+  function boundedPid(input) {
+    const p = normalizePid(input);
+    for (const k of PID_KEYS) {
+      p[k] = Math.round(p[k] * 100) / 100;
+      if (p[k] < RANGES[k][0] || p[k] > RANGES[k][1]) throw new Error(`${k} 超出保护范围 ${RANGES[k].join("..")}`);
     }
-    return pid;
+    return p;
   }
-  function pidMatches(actual, expected) {
-    if (!actual || !expected) return false;
-    return PID_KEYS.every((key) => Number.isFinite(Number(actual[key])) &&
-      Math.abs(Number(actual[key]) - Number(expected[key])) <= 0.0049);
+  function samePid(a,b) { return !!a && !!b && PID_KEYS.every(k => Math.abs(a[k]-b[k]) < .005); }
+  function parseAck(raw) {
+    const x = bodyParts(raw);
+    if (!x || x[0] !== "P1") return null;
+    if (x[1] === "ERR") return { type: "ERR", code: x.slice(2).join(",") };
+    if (x[1] !== "ACK" || x.length < 4 || !/^\d+$/.test(x[3])) return null;
+    return { type: "ACK", name: x[2], id: Number(x[3]), fields: x.slice(4) };
   }
-  function presetPid(profile) {
-    const preset = PRESETS[profile];
-    if (!preset) throw new Error("配置必须是 N 或 L");
-    return normalizePid(preset);
+  function endpoint(base) {
+    const url = new URL(base, typeof location !== "undefined" ? location.href : "http://localhost");
+    if (url.protocol !== "https:" && !(url.protocol === "http:" && ["localhost","127.0.0.1","[::1]"].includes(url.hostname))) throw new Error("LLM 地址必须使用 HTTPS（本机 localhost 除外）");
+    if (url.username || url.password || url.search || url.hash) throw new Error("接口地址不能包含账号、查询参数或片段");
+    const path = url.pathname.replace(/\/+$/, "");
+    url.pathname = path.endsWith("/chat/completions") ? path : path + "/chat/completions";
+    return url.href;
   }
-  function pidCsv(input) {
-    const pid = normalizePid(input);
-    return PID_KEYS.map((key) => pid[key].toFixed(2)).join(",");
+
+  function command(name, id) { return frame(`P1,${name},${Math.trunc(id)}`); }
+  function getPid() { return frame("P1,GET"); }
+  function training(action) { return frame(`P1,TRAIN,${action}`); }
+  function manualSet(pid) { return frame(`P1,MSET,${pidCsv(pid)}`); }
+  function prepare(id, ttl, pid) { return frame(`P1,PREP,${Math.trunc(id)},${Math.trunc(ttl)},${pidCsv(pid)}`); }
+  function motorDiag(action) { return frame(`P1,DIAG,${action}`); }
+
+  function legacyMotion(move, pivot) {
+    if (!Number.isInteger(move) || move < 0 || move > 4 || !Number.isInteger(pivot) || pivot < 0 || pivot > 2) throw new Error("移动字段无效");
+    // Official 21-byte movement-only frame: PID-operation and all update flags remain zero.
+    return `$${move},${pivot},0,0,0,0,0,0,0,0#`;
   }
-  function profileCode(profile) {
-    if (profile !== "N" && profile !== "L") throw new Error("配置必须是 N 或 L");
-    return profile;
-  }
-  function getPid() { return frame("P3,GET"); }
-  function training(action) { return frame(`P3,TRAIN,${action}`); }
-  function command(action, id) { return frame(`P3,${action},${Math.trunc(id)}`); }
-  function validateMask(mask) {
-    if (!Number.isInteger(mask) || mask < 1 || mask > 7) throw new Error("控制环掩码必须为1..7");
-    return mask;
-  }
-  function mergePid(current, proposed, mask = 7) {
-    validateMask(mask);
-    const merged = normalizePid(current);
-    PID_KEYS.forEach((key, i) => { if (mask & (1 << Math.floor(i / 2))) merged[key] = finiteNumber(proposed[key], key); });
-    return validatePid(merged);
-  }
-  function changedMask(current, proposed) {
-    return PID_KEYS.reduce((mask, key, i) => mask | (Math.abs(current[key] - proposed[key]) > 0.011 ? 1 << Math.floor(i / 2) : 0), 0);
-  }
-  function prepare(id, ttl, profile, pid, mask = 7) {
-    return frame(`P3,PREP,${Math.trunc(id)},${Math.trunc(ttl)},${profileCode(profile)},${pidCsv(validatePid(pid))},M${validateMask(mask)}`);
-  }
-  function manualSet(profile, pid, mask = 7) { return frame(`P3,MSET,${profileCode(profile)},${pidCsv(validatePid(pid))},M${validateMask(mask)}`); }
-  function manualPreset(profile) { return frame(`P3,PRESET,${profileCode(profile)}`); }
-  function preparePreset(id, ttl, profile) { return frame(`P3,PPRESET,${Math.trunc(id)},${Math.trunc(ttl)},${profileCode(profile)}`); }
-  function motorDiag(action) { return frame(`P3,DIAG,${action}`); }
-  function legacyMotion(move, pivot, pid = PRESETS.N) {
-    // All PID-update flags are zero: fixed filler prevents corrupt telemetry from making STOP oversized.
-    const p = presetPid("N");
-    return `$${move},${pivot},0,0,0,0,0,AP${p.AP.toFixed(2)},AD${p.AD.toFixed(2)},VP${p.VP.toFixed(2)},VI${p.VI.toFixed(2)},TP${p.TP.toFixed(2)},TD${p.TD.toFixed(2)}#`;
-  }
+
   function bodyParts(raw) {
     if (!verify(raw)) return null;
     return raw.slice(1, raw.lastIndexOf(",C")).split(",");
   }
-  function prefixed(value, prefix) {
-    if (typeof value !== "string" || !value.startsWith(prefix)) throw new Error(`缺少 ${prefix}`);
-    return finiteNumber(value.slice(prefix.length), prefix);
-  }
-  function profileField(value) {
-    if (value === "PN") return "N";
-    if (value === "PL") return "L";
-    throw new Error("配置字段无效");
-  }
-  function parseStatus(raw) {
+
+  function parsePidStatus(raw) {
     const x = bodyParts(raw);
-    if (!x || x.length < 12 || x[0] !== "P3" || x[1] !== "STATUS") return null;
+    if (!x || x.length !== 11 || x[0] !== "P1" || x[1] !== "PID" || !/^[012]$/.test(x[8]) || !/^[01]$/.test(x[9]) || !/^[01]$/.test(x[10])) return null;
     try {
       return {
         pid: normalizePid({ AP: x[2], AD: x[3], VP: x[4], VI: x[5], TP: x[6], TD: x[7] }),
-        profile: profileField(x[8]), state: prefixed(x[9], "S"),
-        trainingLocked: prefixed(x[10], "L") === 1, balanceStarted: prefixed(x[11], "B") === 1,
-        queryId: x[12] ? prefixed(x[12], "Q") : null, queryStep: x[13] ? prefixed(x[13], "I") : null
+        state: Number.parseInt(x[8], 10), trainingLocked: x[9] === "1", balanceStarted: x[10] === "1"
       };
     } catch (_) { return null; }
   }
+
   function parseFast(raw) {
     const x = bodyParts(raw);
-    if (!x || x.length < 14 || x[0] !== "T3" || x[1] !== "F") return null;
+    if (!x || x.length !== 16 || x[0] !== "T1" || x[1] !== "F" || !/^S[012]$/.test(x[9]) || !/^L[01]$/.test(x[10]) || !/^R[01]$/.test(x[11])) return null;
+    const n = (i, prefix) => { if (!x[i].startsWith(prefix)) throw new Error("字段前缀错误"); return finiteNumber(x[i].slice(prefix.length), prefix); };
     try {
       return {
-        ms: finiteNumber(x[2], "ms"), angle: prefixed(x[3], "A"), gyro: prefixed(x[4], "G"),
-        osc: prefixed(x[5], "O"), lean: prefixed(x[6], "N"), el: prefixed(x[7], "EL"),
-        er: prefixed(x[8], "ER"), ml: prefixed(x[9], "ML"), mr: prefixed(x[10], "MR"),
-        state: prefixed(x[11], "S"), trainingLocked: prefixed(x[12], "L") === 1,
-        profile: profileField(x[13]), transitionStep: x[14] ? prefixed(x[14], "U") : 0
+        ms: n(2, ""), angle: n(3, "A"), gyro: n(4, "G"), el: n(5, "EL"), er: n(6, "ER"),
+        ml: n(7, "ML"), mr: n(8, "MR"), state: n(9, "S"),
+        trainingLocked: x[10]?.slice(1) === "1", balanceStarted: x[11]?.slice(1) === "1",
+        c1: x[12] ? n(12, "C1") : 0, c2: x[13] ? n(13, "C2") : 0,
+        c3: x[14] ? n(14, "C3") : 0, c4: x[15] ? n(15, "C4") : 0
       };
     } catch (_) { return null; }
   }
+
   function parseSlow(raw) {
     const x = bodyParts(raw);
-    if (!x || x.length < 18 || x[0] !== "T3" || x[1] !== "S") return null;
+    if (!x || x.length !== 17 || x[0] !== "T1" || x[1] !== "S" || !/^L[01]$/.test(x[14]) || !/^R[01]$/.test(x[15])) return null;
+    const n = (i, prefix) => { if (!x[i].startsWith(prefix)) throw new Error("字段前缀错误"); return finiteNumber(x[i].slice(prefix.length), prefix); };
     try {
       return {
-        ms: finiteNumber(x[2], "ms"), battery: prefixed(x[3], "V"),
-        angleSqMean: prefixed(x[4], "A2"), gyroSqMean: prefixed(x[5], "G2"),
-        peak: prefixed(x[6], "PK"), saturation: prefixed(x[7], "X"),
-        pid: normalizePid({ AP: prefixed(x[8], "AP"), AD: prefixed(x[9], "AD"), VP: prefixed(x[10], "VP"), VI: prefixed(x[11], "VI"), TP: prefixed(x[12], "TP"), TD: prefixed(x[13], "TD") }),
-        profile: profileField(x[14]), dropped: prefixed(x[15], "D"),
-        balanceStarted: prefixed(x[16], "B") === 1, firmware: x[17],
-        stackFree: x[18] ? prefixed(x[18], "SF") : null,
-        controlGapUs: x[19] ? prefixed(x[19], "DT") : null,
-        controlExecUs: x[20] ? prefixed(x[20], "CT") : null
+        ms: n(2, ""), battery: n(3, "V"), balancePwm: n(4, "B"), velocityPwm: n(5, "V"), turnPwm: n(6, "T"),
+        pid: normalizePid({ AP: n(7, "AP"), AD: n(8, "AD"), VP: n(9, "VP"), VI: n(10, "VI"), TP: n(11, "TP"), TD: n(12, "TD") }),
+        dropped: n(13, "D"), trainingLocked: x[14].slice(1) === "1", balanceStarted: x[15].slice(1) === "1", firmware: x[16]
       };
     } catch (_) { return null; }
   }
-  function mean(values) { return values.reduce((sum, value) => sum + value, 0) / values.length; }
-  function metrics(fastSamples, slowSamples = []) {
-    if (!Array.isArray(fastSamples) || fastSamples.length < 3) throw new Error("有效快速遥测样本不足");
-    const slow = Array.isArray(slowSamples) ? slowSamples : [];
-    const rmsAngle = slow.length ? Math.sqrt(Math.max(0, mean(slow.map((x) => x.angleSqMean)))) : Math.sqrt(mean(fastSamples.map((x) => x.angle * x.angle)));
-    const rmsGyro = slow.length ? Math.sqrt(Math.max(0, mean(slow.map((x) => x.gyroSqMean)))) : Math.sqrt(mean(fastSamples.map((x) => x.gyro * x.gyro)));
-    const peakAngle = slow.length ? Math.max(...slow.map((x) => x.peak)) : Math.max(...fastSamples.map((x) => Math.abs(x.angle)));
-    const saturationRate = slow.length ? mean(slow.map((x) => x.saturation)) : fastSamples.filter((x) => Math.abs(x.ml) >= 2595 || Math.abs(x.mr) >= 2595).length / fastSamples.length;
-    const result = {
-      rmsAngle, peakAngle, rmsGyro,
-      meanOsc: mean(fastSamples.map((x) => x.osc)),
-      meanLean: mean(fastSamples.map((x) => x.lean)),
-      absLean: mean(fastSamples.map((x) => Math.abs(x.lean))),
-      saturationRate,
-      motorEffort: mean(fastSamples.map((x) => (Math.abs(x.ml) + Math.abs(x.mr)) / 2)),
-      wheelActivity: mean(fastSamples.map((x) => (Math.abs(x.el) + Math.abs(x.er)) / 2)),
-      battery: slow.length ? mean(slow.map((x) => x.battery)) : null,
-      samples: fastSamples.length,
-      durationMs: Math.max(0, fastSamples[fastSamples.length - 1].ms - fastSamples[0].ms)
+
+  function parseFeatures(raw) {
+    const x=bodyParts(raw);
+    if(!x||x.length!==7||x[0]!=="T1"||x[1]!=="E"||!/^W[01]$/.test(x[6]))return null;
+    try { const read=(i,p)=>{if(!x[i].startsWith(p))throw Error("prefix");return finiteNumber(x[i].slice(p.length),p);};
+      const f={ms:read(2,""),osc:read(3,"O"),lean:read(4,"L"),leanBand:read(5,"B"),warm:x[6]==="W1"};
+      if(f.osc<0||f.lean<0)return null;return f;
+    }catch(e){return null;}
+  }
+  function metrics(samples) {
+    if (!Array.isArray(samples) || samples.length === 0) throw new Error("没有可用遥测样本");
+    const sumAngle = samples.reduce((s, x) => s + x.angle * x.angle, 0);
+    const sumGyro = samples.reduce((s, x) => s + x.gyro * x.gyro, 0);
+    const stamps = samples.map(x=>x.at).filter(Number.isFinite);
+    const gaps = stamps.slice(1).map((t,i)=>t-stamps[i]);
+    return {
+      featureSamples: samples.filter(x=>x.featuresFresh&&x.warm).length,
+      meanOsc: samples.reduce((v,x)=>v+(x.featuresFresh&&x.warm?x.osc:0),0)/Math.max(1,samples.filter(x=>x.featuresFresh&&x.warm).length),
+      peakOsc: Math.max(0,...samples.filter(x=>x.featuresFresh&&x.warm).map(x=>x.osc)),
+      meanLean: samples.reduce((v,x)=>v+(x.featuresFresh&&x.warm?x.lean:0),0)/Math.max(1,samples.filter(x=>x.featuresFresh&&x.warm).length),
+      peakLean: Math.max(0,...samples.filter(x=>x.featuresFresh&&x.warm).map(x=>x.lean)),
+      peakLeanBand: Math.max(0,...samples.filter(x=>x.featuresFresh&&x.warm).map(x=>Math.abs(x.leanBand))),
+      rmsAngle: Math.sqrt(sumAngle / samples.length),
+      peakAngle: Math.max(...samples.map((x) => Math.abs(x.angle))),
+      rmsGyro: Math.sqrt(sumGyro / samples.length),
+      saturationRate: samples.filter((x) => Math.abs(x.ml) >= 2595 || Math.abs(x.mr) >= 2595).length / samples.length,
+      samples: samples.length,
+      durationMs: stamps.length > 1 ? stamps[stamps.length-1]-stamps[0] : 0,
+      maxGapMs: gaps.length ? Math.max(...gaps) : 0
     };
-    result.score = scoreMetrics(result);
-    return result;
-  }
-  function scoreMetrics(m) {
-    return 30 * Math.min(m.rmsAngle / 3, 3) +
-      15 * Math.min(m.peakAngle / 10, 3) +
-      10 * Math.min(m.rmsGyro / 100, 3) +
-      15 * Math.min(m.meanOsc / 2, 3) +
-      15 * Math.min(m.absLean / 3, 3) +
-      10 * Math.min(m.saturationRate, 1) +
-      5 * Math.min(m.motorEffort / 2600, 1);
-  }
-  function metricsDangerous(m) {
-    return m.peakAngle >= 20 || m.saturationRate >= 0.5 || (m.battery != null && m.battery < 9.6);
-  }
-  function validateDecision(raw, currentProfile, currentPid) {
-    const value = typeof raw === "string" ? JSON.parse(raw) : raw;
-    const keys = ["schema_version", "action", "target_profile", "candidate", "reason", "expected_effect", "confidence"];
-    if (!value || Object.keys(value).sort().join() !== keys.slice().sort().join()) throw new Error("LLM JSON 字段不符合schema v3");
-    if (value.schema_version !== 3 || !ACTIONS.includes(value.action)) throw new Error("LLM动作无效");
-    if (!PRESETS[value.target_profile]) throw new Error("target_profile 必须是 N 或 L");
-    if (typeof value.reason !== "string" || !value.reason.trim() || value.reason.length > 500) throw new Error("reason 无效");
-    if (typeof value.expected_effect !== "string" || !value.expected_effect.trim() || value.expected_effect.length > 500) throw new Error("expected_effect 无效");
-    value.confidence = finiteNumber(value.confidence, "confidence");
-    if (value.confidence < 0 || value.confidence > 1) throw new Error("confidence 超出 0..1");
-    if (value.action === "switch_preset") value.candidate = presetPid(value.target_profile);
-    else if (value.action === "propose_pid") value.candidate = validatePid(value.candidate);
-    else value.candidate = normalizePid(currentPid);
-    if (value.action === "propose_pid" && value.target_profile !== currentProfile) throw new Error("普通调参不得切换配置，请使用switch_preset");
-    return value;
-  }
-  function mockDecision(profile, pid, m) {
-    let action = "propose_pid", target = profile, candidate = normalizePid(pid);
-    let reason = "根据窗口指标向较低振荡方向优化。";
-    let effect = "降低角度RMS与osc，同时保持PWM余量。";
-    if (profile === "N" && (m.absLean > 1.4 || m.motorEffort > 1200)) {
-      action = "switch_preset"; target = "L"; candidate = presetPid("L");
-      reason = "持续倾斜或电机负担较高，选择官方负重配置。";
-      effect = "提高负重条件下的平衡与速度环控制能力。";
-    } else {
-      const targetAd = profile === "L" ? 82 : 58;
-      candidate.AD = Number((candidate.AD + (targetAd - candidate.AD) * 0.55).toFixed(2));
-      candidate.AP = Number((candidate.AP + ((profile === "L" ? 100 : 94) - candidate.AP) * 0.35).toFixed(2));
-    }
-    return validateDecision({ schema_version: 3, action, target_profile: target, candidate, reason, expected_effect: effect, confidence: 0.78 }, profile, pid);
   }
 
-  return {
-    PID_KEYS, RANGES, PRESETS, ACTIONS, crc16, frame, verify, StreamParser,
-    finiteNumber, normalizePid, validatePid, pidMatches, presetPid, pidCsv, getPid,
-    training, command, prepare, manualSet, manualPreset, preparePreset, mergePid, changedMask, validateMask, motorDiag, legacyMotion,
-    parseStatus, parseFast, parseSlow, metrics, scoreMetrics, metricsDangerous,
-    validateDecision, mockDecision
-  };
+  function harness(base, m) {
+    const p = normalizePid(base);
+    if (m.peakAngle > 8) p.AP *= 1.04;
+    if (m.rmsGyro > 20) p.AD *= 1.04;
+    return { schema_version: 1, decision: samePid(p,base) ? "hold" : "propose", stage: "balance", candidate: p, expected_effect: "本地确定性规则建议；仅作流程测试，不代表参数已优化。", requested_test: "quiet_balance", confidence: 0.7 };
+  }
+
+  function validateProposal(raw, base) {
+    const p = typeof raw === "string" ? JSON.parse(raw) : raw;
+    if (!p || typeof p !== "object" || Array.isArray(p)) throw new Error("LLM JSON 必须是对象");
+    p.candidate = p.candidate && { ...p.candidate };
+    const exact = ["schema_version", "decision", "stage", "candidate", "expected_effect", "requested_test", "confidence"];
+    if (Object.keys(p).sort().join() !== exact.sort().join()) throw new Error("LLM JSON 字段不符合固定 schema");
+    if (p.schema_version !== 1 || !["propose", "hold", "rollback"].includes(p.decision) || p.stage !== "balance") throw new Error("LLM 决策或阶段无效");
+    if (!["balance_recovery", "quiet_balance"].includes(p.requested_test)) throw new Error("requested_test 无效");
+    if (typeof p.expected_effect !== "string" || !p.expected_effect.trim() || p.expected_effect.length > 500) throw new Error("expected_effect 无效");
+    if (typeof p.confidence !== "number") throw new Error("confidence 必须是数字");
+    if (p.confidence < 0 || p.confidence > 1) throw new Error("confidence 超出 0..1");
+    const b = boundedPid(base);
+    if (!p.candidate || PID_KEYS.some(k=>typeof p.candidate[k] !== "number")) throw new Error("candidate 六个 PID 必须是数字");
+    const c = boundedPid(p.candidate);
+    if (Object.keys(p.candidate).sort().join() !== PID_KEYS.slice().sort().join()) throw new Error("candidate 必须恰好包含六个 PID");
+    
+    if (p.decision !== "propose" && !samePid(c,b)) throw new Error("hold / rollback 必须返回当前 PID");
+    p.candidate = c;
+    return p;
+  }
+
+  return { DEFAULT_PID, PID_KEYS, RANGES, crc16, frame, verify, StreamParser, normalizePid, boundedPid, samePid, parseAck, endpoint, pidCsv, command, getPid, training, manualSet, prepare, motorDiag, legacyMotion, parsePidStatus, parseFast, parseSlow, parseFeatures, metrics, harness, validateProposal };
 });
 
 
-(function(root,factory){
-  if(typeof module === "object" && module.exports) module.exports=factory(require("./core.js"));
-  else root.RouteASequence=factory(root.RouteACore);
-})(typeof globalThis!=="undefined"?globalThis:this,function(C){
-  "use strict";
-  class Writer {
-    constructor({send,onProgress=()=>{},gapMs=1000,timeoutMs=5000}){
-      this.send=send;this.onProgress=onProgress;this.gapMs=Math.max(500,gapMs);this.timeoutMs=timeoutMs;this.context=null;
-    }
-    get busy(){return !!this.context;}
-    progress(text){this.message=text;this.onProgress(text);}
-    check(ctx){if(ctx!==this.context||ctx.cancelled)throw new Error(ctx.reason||"顺序更新已取消");}
-    cancel(reason="顺序更新已取消"){
-      const ctx=this.context;if(!ctx)return;
-      ctx.cancelled=true;ctx.reason=reason;
-      if(ctx.waiter)ctx.waiter.reject(new Error(reason));
-    }
-    feed(raw){
-      const ctx=this.context;if(!ctx||!C.verify(raw))return;
-      const parts=raw.slice(1,raw.lastIndexOf(",C")).split(",");
-      if(parts[0]!=="P3")return;
-      if(parts[1]==="ERR" && (Number(parts[3])===ctx.id||Number(parts[3])===0)){
-        if(ctx.waiter)ctx.waiter.reject(new Error(`固件拒绝：${parts[2]}`));return;
-      }
-      if(parts[1]==="ACK"&&parts[2]==="ROLLED_BACK"){
-        if(ctx.waiter)ctx.waiter.reject(new Error("固件已回滚，序列终止"));return;
-      }
-      if(!ctx.waiter)return;
-      try{if(ctx.waiter.test(parts,raw))ctx.waiter.resolve(raw);}catch(error){ctx.waiter.reject(error);}
-    }
-    async exchange(ctx,body,test){
-      this.check(ctx);
-      let resolve,reject;const response=new Promise((ok,bad)=>{resolve=ok;reject=bad;});
-      response.catch(()=>{});
-      const waiter={test,resolve,reject};ctx.waiter=waiter;
-      const timer=setTimeout(()=>reject(new Error("等待固件确认超时，停止后续参数")),this.timeoutMs);
-      try{await this.send(C.frame(body));return await response;}
-      finally{clearTimeout(timer);if(ctx.waiter===waiter)ctx.waiter=null;}
-    }
-    async readback(ctx,step,pid,profile,state){
-      await this.exchange(ctx,`P3,SGET,${ctx.id},${step}`,(parts,raw)=>{
-        if(parts[1]!=="STATUS")return false;
-        const status=C.parseStatus(raw);
-        if(!status||status.queryId!==ctx.id||status.queryStep!==step)return false;
-        C.validatePid(status.pid);
-        if(status.profile!==profile||status.state!==state||!C.pidMatches(status.pid,pid))throw new Error("实际PID读回不一致，停止并请求回滚");
-        return true;
-      });
-    }
-    async run({id,mode,profile,initialProfile,initialPid,targetPid,mask=7}){
-      if(this.busy)throw new Error("已有参数更新序列");
-      if(!Number.isInteger(id)||id<1||id>999999||!["M","T"].includes(mode)||!["N","L"].includes(profile))throw new Error("顺序事务参数无效");
-      let actual=C.validatePid(initialPid);
-      const target=C.mergePid(actual,targetPid,mask);
-      for(const key of C.PID_KEYS)target[key]=Number(target[key].toFixed(2));
-      const keys=C.PID_KEYS.filter(key=>Math.round(actual[key]*100)!==Math.round(target[key]*100));
-      const ctx={id,mode,cancelled:false,waiter:null};this.context=ctx;let hb=null;
-      try{
-        this.progress(`建立逐项更新：${keys.length}项待写入`);
-        await this.exchange(ctx,`P3,BSEQ,${id},30000,${mode},${profile}`,p=>p[1]==="ACK"&&p[2]==="SEQ_BEGIN"&&Number(p[3])===id);
-        hb=setInterval(()=>{if(!ctx.cancelled)this.send(C.command("HB",id)).catch(error=>this.cancel(error.message));},500);
-        for(let i=0;i<keys.length;i++){
-          this.check(ctx);const key=keys[i],step=i+1,value=target[key];
-          this.progress(`${step}/${keys.length} 写入 ${key}=${value.toFixed(2)}，等待完成确认`);
-          await this.exchange(ctx,`P3,ONE,${id},${step},${key},${value.toFixed(2)}`,p=>
-            p[1]==="SEQACK"&&p[2]==="ONE_APPLIED"&&Number(p[3])===id&&Number(p[4])===step&&p[5]===key&&Math.abs(Number(p[6])-value)<0.0049);
-          actual={...actual,[key]:value};
-          await this.readback(ctx,step,actual,initialProfile,2);
-          this.progress(`${step}/${keys.length} ${key}读回一致；等待${this.gapMs} ms`);
-          await new Promise(resolve=>setTimeout(resolve,this.gapMs));this.check(ctx);
-        }
-        this.progress("参数逐项完成；确认最终配置");
-        await this.exchange(ctx,`P3,FSEQ,${id}`,p=>p[1]==="ACK"&&p[2]==="SEQ_DONE"&&Number(p[3])===id);
-        clearInterval(hb);hb=null;
-        await this.readback(ctx,7,target,profile,mode==="M"?0:2);
-        this.check(ctx);this.progress("逐项更新完成，全部实际PID已确认");
-        return {pid:target,profile,changed:keys};
-      }catch(error){
-        this.progress(`更新中止：${error.message}`);
-        // The STM32 holds the pre-sequence champion; aborting a partial vector restores it.
-        try{await this.send(C.command("ROLLBACK",id));}catch(_){}
-        throw error;
-      }finally{if(hb)clearInterval(hb);this.context=null;}
-    }
-  }
-  return {Writer};
-});
 </script>
-<script>(function () {
-  "use strict";
-  const C = window.RouteACore;
-  const $ = (id) => document.getElementById(id);
-  const state = {
-    device: null, server: null, characteristic: null, connected: false, mock: false,
-    parser: new C.StreamParser(384), sendChain: Promise.resolve(),
-    currentPid: null, profile: "N", balanceStarted: false, trainingLocked: false,
-    firmwareState: 0, firmware: "—", fast: null, slow: null,
-    rxTimes: [], frameOk: 0, frameError: 0, logs: [], telemetry: [], chart: [],
-    manualDirty: false, pendingManual: null, activeMotion: null, hardwareFault: false,
-    heartbeat: null, mockTimer: null, mockClock: 0, mockState: 0,
-    mockPid: C.presetPid("N"), mockProfile: "N", mockChampionPid: C.presetPid("N"),
-    mockChampionProfile: "N", mockCandidatePid: null, mockCandidateProfile: "N",
-    auto: {
-      enabled: false, phase: "IDLE", cycle: 0, timer: null, collecting: false,
-      fastSamples: [], slowSamples: [], baselineMetrics: null, latestMetrics: null,
-      decision: null, candidatePid: null, candidateProfile: "N", trialId: 0,
-      firstTrialMetrics: null, history: [], rollbackReason: "", requestBusy: false
+<script>
+(function(root,factory){
+  const C = root.RouteACore || (typeof require === 'function' ? require('./core.js') : null);
+  const api = factory(C);
+  if(typeof module === 'object' && module.exports) module.exports = api;
+  root.RouteASimulator = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this, function(C){
+  'use strict';
+  // Independent firmware model: the browser's candidate/state are never consulted.
+  class Simulator {
+    constructor(emit, options={}) {
+      this.emit=emit; this.pid={...C.DEFAULT_PID}; this.champion={...this.pid}; this.candidate=null;
+      this.state=0; this.lock=false; this.balance=options.balance ?? true; this.ms=0; this.id=0;
+      this.ttl=30000; this.lastHb=0; this.appliedAt=0; this.preparedAt=0; this.motion=[0,0]; this.options=options;
     }
-  };
-  let toastTimer = null;
-  const writer = new window.RouteASequence.Writer({send, onProgress: (text) => {
-    $("sequenceProgress").textContent = text; updateUi();
-  }});
-
-  function nowText() { return new Date().toLocaleTimeString("zh-CN", { hour12: false }); }
-  function delay(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
-  function settingNumber(id, fallback) {
-    const value = Number($(id).value);
-    return Number.isFinite(value) ? value : fallback;
-  }
-  function toast(message) {
-    const element = $("toast");
-    element.textContent = message;
-    element.classList.add("show");
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => element.classList.remove("show"), 2800);
-  }
-  function log(direction, text) {
-    const item = { time: new Date().toISOString(), direction, text };
-    state.logs.push(item);
-    if (state.logs.length > 2000) state.logs.shift();
-    $("log").textContent = state.logs.slice(-140).map((x) => `${x.time.slice(11, 23)} ${x.direction.padEnd(4)} ${x.text}`).join("\n");
-    $("log").scrollTop = $("log").scrollHeight;
-    $("logCount").textContent = String(state.logs.length);
-  }
-  function connectionLabel(kind, text) {
-    const pill = $("connectionPill");
-    pill.className = `pill ${kind}`;
-    pill.querySelector("b").textContent = text;
-  }
-  function profileName(profile) { return profile === "L" ? "Load / 2档" : "Standard / 1档"; }
-  function firmwareStateName(value) { return ["IDLE", "PREPARED", "TRIAL"][value] || `UNKNOWN ${value}`; }
-  function pidText(pid) { return pid ? C.PID_KEYS.map((key) => `${key}${pid[key].toFixed(2)}`).join(" · ") : "—"; }
-
-  function loadSettings() {
-    let saved = {};
-    try { saved = JSON.parse(localStorage.getItem("routea-remote-adaptive-settings") || "{}"); } catch (_) {}
-    const defaults = {
-      serviceUuid: "0000ffe0-0000-1000-8000-00805f9b34fb",
-      charUuid: "0000ffe1-0000-1000-8000-00805f9b34fb",
-      namePrefix: "YahBoom_BL", chunkSize: "20", chunkDelay: "18",
-      llmBase: "https://api.deepseek.com", llmModel: "deepseek-chat",
-      baselineMs: "4000", settleMs: "1500", evalMs: "6000", improvementPct: "3"
-    };
-    for (const [id, fallback] of Object.entries(defaults)) $(id).value = saved[id] ?? fallback;
-  }
-  function saveSettings() {
-    const saved = {};
-    for (const id of ["serviceUuid", "charUuid", "namePrefix", "chunkSize", "chunkDelay", "llmBase", "llmModel", "baselineMs", "settleMs", "evalMs", "improvementPct"]) saved[id] = $(id).value.trim();
-    localStorage.setItem("routea-remote-adaptive-settings", JSON.stringify(saved));
-    toast("设置已保存；API Key未持久化");
-  }
-
-  async function connect() {
-    if (state.mock) stopMock();
-    state.firmware = "—"; state.currentPid = null;
-    if (!navigator.bluetooth) {
-      toast("当前浏览器没有Web Bluetooth，请在Bluefy中打开");
-      switchPage("settings");
-      return;
-    }
-    try {
-      const serviceUuid = $("serviceUuid").value.trim().toLowerCase();
-      const charUuid = $("charUuid").value.trim().toLowerCase();
-      const prefix = $("namePrefix").value.trim();
-      connectionLabel("connecting", "选择设备");
-      state.device = await navigator.bluetooth.requestDevice({
-        filters: prefix ? [{ namePrefix: prefix }, { namePrefix: " Yah" }] : [{ services: [serviceUuid] }],
-        optionalServices: [serviceUuid]
-      });
-      state.device.addEventListener("gattserverdisconnected", onDisconnected);
-      $("deviceName").textContent = state.device.name || "BLE设备";
-      connectionLabel("connecting", "发现服务");
-      state.server = await state.device.gatt.connect();
-      const service = await state.server.getPrimaryService(serviceUuid);
-      state.characteristic = await service.getCharacteristic(charUuid);
-      state.characteristic.addEventListener("characteristicvaluechanged", onNotification);
-      await state.characteristic.startNotifications();
-      state.connected = true;
-      state.parser = new C.StreamParser(384);
-      connectionLabel("online", "BLE已连接");
-      log("SYS", `BLE UART ready: ${state.device.name || "unknown"}`);
-      toast("双向链路已就绪，正在同步固件");
-      updateUi();
-      await send(C.getPid());
-    } catch (error) {
-      log("ERR", `${error.name || "Error"}: ${error.message}`);
-      toast(`连接失败：${error.message}`);
-      await cleanupConnection(false);
-    }
-  }
-  async function cleanupConnection(disconnectGatt) {
-    writer.cancel("连接已关闭");
-    clearAutoTimer();
-    stopHeartbeat();
-    state.auto.enabled = false;
-    state.auto.collecting = false;
-    state.connected = false;
-    state.pendingManual = null;
-    state.fast = null;
-    state.currentPid = null;
-    state.firmware = "—";
-    state.characteristic = null;
-    state.server = null;
-    if (disconnectGatt && state.device?.gatt?.connected) state.device.gatt.disconnect();
-    connectionLabel("offline", "未连接");
-    updateUi();
-  }
-  function onDisconnected() {
-    log("SYS", "BLE disconnected; firmware heartbeat will roll back an active trial");
-    cleanupConnection(false);
-    toast("蓝牙已断开；活动试验将由固件心跳超时回滚");
-  }
-  async function safeDisconnect() {
-    try {
-      if (state.auto.enabled || state.trainingLocked) await stopAuto(true);
-      await safeStop();
-      await delay(180);
-    } catch (_) {}
-    if (state.mock) stopMock();
-    else await cleanupConnection(true);
-  }
-  function onNotification(event) {
-    const bytes = new Uint8Array(event.target.value.buffer, event.target.value.byteOffset, event.target.value.byteLength);
-    for (const raw of state.parser.feed(bytes)) handleFrame(raw);
-  }
-  async function writeChunks(text) {
-    if (state.mock) return mockReceiveCommand(text);
-    if (!state.connected || !state.characteristic) throw new Error("BLE UART尚未就绪");
-    const bytes = new TextEncoder().encode(text);
-    const size = Math.max(1, Math.min(20, settingNumber("chunkSize", 20)));
-    const pause = Math.max(0, Math.min(100, settingNumber("chunkDelay", 18)));
-    for (let offset = 0; offset < bytes.length; offset += size) {
-      const chunk = bytes.slice(offset, offset + size);
-      const characteristic = state.characteristic;
-      if (typeof characteristic.writeValue === "function") await characteristic.writeValue(chunk);
-      else if (typeof characteristic.writeValueWithResponse === "function") await characteristic.writeValueWithResponse(chunk);
-      else if (typeof characteristic.writeValueWithoutResponse === "function") await characteristic.writeValueWithoutResponse(chunk);
-      else throw new Error("BLE特征不支持写入");
-      if (pause && offset + size < bytes.length) await delay(pause);
-    }
-  }
-  function send(text) {
-    log("TX", text);
-    const task = state.sendChain.then(() => writeChunks(text));
-    state.sendChain = task.catch((error) => {
-      log("ERR", `write: ${error.message}`);
-      toast(`发送失败：${error.message}`);
-    });
-    return task;
-  }
-
-  function handleFrame(raw) {
-    log("RX", raw);
-    state.rxTimes.push(Date.now());
-    state.rxTimes = state.rxTimes.filter((time) => Date.now() - time < 5000);
-    $("lastRx").textContent = nowText();
-    if ((raw.startsWith("$P3,") || raw.startsWith("$T3,")) && !C.verify(raw)) {
-      state.frameError += 1;
-      updateUi();
-      return;
-    }
-    if(raw.startsWith("$P1,") || raw.startsWith("$T1,")) {
-      state.frameError += 1; toast("检测到旧P1/T1协议，请核对固件与配套网页版本"); return;
-    }
-    state.frameOk += 1;
-    writer.feed(raw);
-
-    const status = C.parseStatus(raw);
-    if (status) {
-      if (!pidTelemetrySafe(status.pid)) {
-        hardwareFailure("STM32读回PID越界或损坏"); return;
+    reply(body) { if(!this.options.silent) this.emit(C.frame(body)); }
+    ack(name,id=0) { if(this.options.dropAck===name) return; this.reply(`P1,ACK,${name},${id},${this.state},${this.lock?1:0}`); }
+    error(code) { this.reply(`P1,ERR,${code}`); }
+    rollback() { this.pid={...this.champion}; this.candidate=null; this.state=0; this.id=0; this.motion=[0,0]; }
+    receive(raw) {
+      if(!raw.startsWith('$P1,')) {
+        if(/^\$[0-4],[0-2],0,0,0,0,0,0,0,0#$/.test(raw)) this.motion=raw.slice(1,-1).split(',').slice(0,2).map(Number);
+        return;
       }
-      state.currentPid = status.pid;
-      state.profile = status.profile;
-      state.firmwareState = status.state;
-      state.trainingLocked = status.trainingLocked;
-      state.balanceStarted = status.balanceStarted;
-      confirmManual(status);
-      confirmTrial(status);
-      syncManualFields();
-      toast("STM32状态已同步");
-    }
-    const fast = C.parseFast(raw);
-    if (fast) {
-      state.fast = fast;
-      state.profile = fast.profile;
-      state.firmwareState = fast.state;
-      state.trainingLocked = fast.trainingLocked;
-      state.telemetry.push({ at: new Date().toISOString(), ...fast });
-      if (state.telemetry.length > 15000) state.telemetry.shift();
-      state.chart.push({ at: Date.now(), angle: fast.angle, gyro: fast.gyro });
-      state.chart = state.chart.filter((point) => Date.now() - point.at <= 60000);
-      if (state.auto.collecting) {
-        state.auto.fastSamples.push(fast);
-        $("windowSamples").textContent = `${state.auto.fastSamples.length}样本`;
+      if(!C.verify(raw)) return this.error('CRC');
+      const x=raw.slice(1,raw.lastIndexOf(',C')).split(',');
+      if(x[0]!=='P1') return this.error('PROTOCOL');
+      const op=x[1];
+      if(op==='GET') { if(!this.options.dropPid) this.reply(`P1,PID,${C.pidCsv(this.pid)},${this.state},${this.lock?1:0},${this.balance?1:0}`); return; }
+      if(op==='MSET') {
+        if(this.lock || this.state!==0) return this.error('LOCKED');
+        try { this.pid=C.boundedPid(Object.fromEntries(C.PID_KEYS.map((k,i)=>[k,x[i+2]]))); this.champion={...this.pid}; this.ack('MSET'); }
+        catch(e) { this.error('RANGE'); } return;
       }
-      if (state.auto.enabled && state.auto.phase === "APPLYING" && !writer.busy && fast.state === 2 && !state.auto.readbackRequested) {
-        state.auto.readbackRequested = true;
-        send(C.getPid());
+      if(op==='TRAIN') {
+        if(x[2]==='START') { if(!this.balance || this.state!==0) return this.error('NOT_READY'); this.lock=true; this.champion={...this.pid}; this.ack('TRAIN_START'); }
+        else if(x[2]==='STOP') { const id=this.id;this.ack('TRAIN_STOP',id);this.rollback();this.lock=false; }
+        else this.error('COMMAND'); return;
       }
-      if (state.auto.enabled && fast.state === 2 && Math.abs(fast.angle) >= 20) requestRollback("倾角达到网页安全阈值");
-      if (state.auto.enabled && state.auto.phase === "ROLLING_BACK" && fast.state === 0) afterRollback();
-    }
-    const slow = C.parseSlow(raw);
-    if (slow) {
-      state.slow = slow;
-      if (!pidTelemetrySafe(slow.pid)) {
-        hardwareFailure("STM32遥测PID越界或损坏"); return;
+      if(op==='DIAG') {
+        if(this.balance || this.lock || this.state!==0) return this.error('DIAG_STATE');
+        if(!['L+','L-','R+','R-','STOP'].includes(x[2])) return this.error('DIAG_ACTION');
+        this.ack(x[2]); return;
       }
-      state.currentPid = slow.pid;
-      state.profile = slow.profile;
-      state.balanceStarted = slow.balanceStarted;
-      state.firmware = slow.firmware;
-      if (state.auto.collecting) state.auto.slowSamples.push(slow);
-      syncManualFields();
-    }
-    if (raw.includes("P3,READY,1")) state.balanceStarted = true;
-    const ack = raw.match(/\$P3,ACK,([^,]+),(\d+),(\d+),(\d+),P([NL]),C/);
-    if (ack) handleAck(ack[1], Number(ack[2]), Number(ack[3]), Number(ack[4]), ack[5]);
-    const error = raw.match(/\$P3,ERR,([^,]+)/);
-    if (error) handleFirmwareError(error[1]);
-    updateUi();
-    drawChart();
-  }
-
-  function handleAck(command, id, fwState, locked, profile) {
-    state.firmwareState = fwState;
-    state.trainingLocked = locked === 1;
-    state.profile = profile;
-    if (command === "PROBE") toast("通信测试已确认，PID和控制状态未修改");
-    if (command === "TRAIN_START" && state.auto.enabled && state.auto.phase === "STARTING") {
-      toast("训练锁已建立，开始自动基线");
-      setTimeout(() => startWindow("BASELINE", settingNumber("baselineMs", 4000)), 400);
-    } else if (command === "TRAIN_STOP") state.trainingLocked = false;
-    else if (command === "PREP" && state.auto.enabled && state.auto.phase === "PREPARING") {
-      if (id !== state.auto.trialId) return;
-      state.auto.phase = "APPLYING";
-      state.auto.readbackRequested = false;
-      clearAutoTimer();
-      state.auto.timer = setTimeout(() => requestRollback("实际PID读回确认超时"), 3500);
-      send(C.command("APPLY", state.auto.trialId));
-      startHeartbeat();
-    } else if (command === "APPLY" && state.auto.enabled && state.auto.phase === "APPLYING") startHeartbeat();
-    else if (command === "ACCEPT" && state.auto.enabled && state.auto.phase === "ACCEPTING") {
-      stopHeartbeat();
-      recordHistory("接受", state.auto.latestMetrics);
-      state.currentPid = { ...state.auto.candidatePid };
-      state.profile = state.auto.candidateProfile;
-      state.auto.phase = "ACCEPTED";
-      state.auto.baselineMetrics = state.auto.latestMetrics;
-      send(C.getPid());
-      scheduleNextBaseline(1200);
-    } else if (command === "ROLLBACK") state.auto.phase = "ROLLING_BACK";
-    else if (command === "ROLLED_BACK" && state.auto.enabled && state.auto.phase === "ROLLING_BACK") afterRollback();
-    else if (command === "MSET_APPLIED") {
-      if (state.pendingManual) state.pendingManual.appliedAck = true;
-      send(C.getPid());
-      toast("控制边界直接赋值完成，正在读回实际PID");
-    }
-    updateUi();
-  }
-  function pidTelemetrySafe(pid) {
-    try { C.validatePid(pid); return true; } catch (_) { return false; }
-  }
-  function hardwareFailure(reason) {
-    if (state.hardwareFault) return;
-    writer.cancel(reason);
-    state.hardwareFault = true;
-    clearAutoTimer(); stopHeartbeat();
-    state.auto.enabled = false; state.auto.collecting = false; state.auto.phase = "ERROR";
-    state.pendingManual = null; state.currentPid = null;
-    for(const key of C.PID_KEYS) $("live"+key).textContent="实际无效";
-    $("pidFault").textContent=reason+"；已取消后续参数写入，请保存日志并核对配套固件。";
-    $("pidFault").classList.remove("hidden");
-    log("ERR", reason + "; training stopped, physical restart required");
-    toast(reason + "；停止训练，请断电检查并重启");
-    send(C.training("STOP")).catch(() => {});
-    send(C.legacyMotion(0, 0)).catch(() => {});
-    updateUi();
-  }
-  function handleFirmwareError(code) {
-    if (code === "PID_DATA" || code === "PID_MEMORY" || code === "MEMORY_LATCH") { hardwareFailure(code); return; }
-    writer.cancel(`固件拒绝：${code}`);
-    state.pendingManual = null;
-    toast(`固件拒绝：${code}`);
-    log("ERR", `firmware rejected command: ${code}`);
-    if (state.auto.enabled) {
-      state.auto.enabled = false;
-      state.auto.phase = "ERROR";
-      clearAutoTimer();
-      stopHeartbeat();
-    }
-  }
-
-  function confirmManual(status) {
-    const pending = state.pendingManual;
-    if (!pending || !pending.appliedAck) return;
-    if (status.profile === pending.profile && C.pidMatches(status.pid, pending.pid)) {
-      state.pendingManual = null;
-      state.manualDirty = false;
-      syncManualFields(true);
-      toast("人工PID已应用，STM32读回确认一致");
-    } else log("ERR", "MSET_APPLIED received but PID readback differs; waiting for matching status");
-  }
-  function syncManualFields(force = false) {
-    if (!state.currentPid) return;
-    for (const key of C.PID_KEYS) {
-      $("live" + key).textContent = `实际 ${state.currentPid[key].toFixed(2)}`;
-      if (!state.manualDirty || force) $("edit" + key).value = state.currentPid[key].toFixed(2);
-    }
-    if (!state.manualDirty || force) $("manualProfile").value = state.profile;
-  }
-  function directFirmwareReady() { return state.mock || state.firmware.startsWith("RA3.0-SEQ1"); }
-  function confirmTrial(status) {
-    if (!writer.busy && state.auto.enabled && state.auto.phase === "APPLYING" && status.state === 2 &&
-        status.profile === state.auto.candidateProfile && C.pidMatches(status.pid, state.auto.candidatePid)) beginSettle();
-  }
-  function readManualPid(mask = 7) {
-    const pid = {};
-    for (const key of C.PID_KEYS) pid[key] = $("edit" + key).value;
-    return C.mergePid(state.currentPid, pid, mask);
-  }
-  async function applyManual(profile, pid, mask = 7, preset = false) {
-    if (state.hardwareFault) return toast("PID数据异常，请停止试验并核对固件");
-    if (!directFirmwareReady()) return toast("需要配套固件RA3.0-SEQ1");
-    if (state.trainingLocked || state.auto.enabled) return toast("请先停止自动训练");
-    if (!state.currentPid) return toast("请先同步实际PID");
-    if (state.pendingManual || writer.busy) return toast("请等待当前逐项更新完成");
-    try {
-      if (!preset && profile !== state.profile) throw new Error("切换配置请使用预设按钮");
-      const valid = preset ? C.presetPid(profile) : C.mergePid(state.currentPid, pid, mask);
-      state.pendingManual = { profile, pid:valid, appliedAck:false };
-      updateUi();
-      const result=await writer.run({id:trialId(),mode:"M",profile,initialProfile:state.profile,initialPid:state.currentPid,targetPid:valid,mask:preset?7:mask});
-      state.currentPid=result.pid;state.profile=result.profile;state.pendingManual=null;state.manualDirty=false;
-      syncManualFields(true);toast("逐项写入及实际PID读回全部完成");
-    } catch(error) { state.pendingManual=null;log("ERR",error.message);toast(error.message); }
-    finally { updateUi(); }
-  }
-  function applyPreset(profile) { return applyManual(profile,C.presetPid(profile),7,true); }
-
-  function clearAutoTimer() {
-    if (state.auto.timer) clearTimeout(state.auto.timer);
-    state.auto.timer = null;
-  }
-  function startHeartbeat() {
-    stopHeartbeat();
-    state.heartbeat = setInterval(() => {
-      if (state.auto.enabled && ["APPLYING", "SETTLING", "TRIAL1", "TRIAL2"].includes(state.auto.phase)) send(C.command("HB", state.auto.trialId));
-    }, 500);
-  }
-  function stopHeartbeat() {
-    if (state.heartbeat) clearInterval(state.heartbeat);
-    state.heartbeat = null;
-  }
-  function startWindow(kind, durationMs) {
-    if (!state.auto.enabled) return;
-    clearAutoTimer();
-    state.auto.phase = kind;
-    state.auto.collecting = true;
-    state.auto.fastSamples = [];
-    state.auto.slowSamples = [];
-    $("windowSamples").textContent = "0样本";
-    updateUi();
-    state.auto.timer = setTimeout(() => finishWindow(kind), Math.max(1000, durationMs));
-  }
-  async function finishWindow(kind) {
-    if (!state.auto.enabled || state.auto.phase !== kind) return;
-    state.auto.collecting = false;
-    try {
-      const metrics = C.metrics(state.auto.fastSamples, state.auto.slowSamples);
-      state.auto.latestMetrics = metrics;
-      renderMetrics(metrics);
-      if (kind === "BASELINE") {
-        if (C.metricsDangerous(metrics)) {
-          pauseAutoOnError("基线已危险：请先恢复平衡，禁止应用LLM候选");
-          await safeStop();
-          return;
-        }
-        state.auto.baselineMetrics = metrics;
-        await decideNext(metrics);
-      } else if (kind === "TRIAL1") {
-        if (!trialImproved(metrics) || C.metricsDangerous(metrics)) await requestRollback("首个评估窗口未改善或触发风险");
-        else {
-          state.auto.firstTrialMetrics = metrics;
-          startWindow("TRIAL2", settingNumber("evalMs", 6000));
-        }
-      } else if (kind === "TRIAL2") {
-        if (!trialImproved(metrics) || C.metricsDangerous(metrics)) await requestRollback("确认窗口未保持改善");
-        else {
-          state.auto.phase = "ACCEPTING";
-          await send(C.command("ACCEPT", state.auto.trialId));
-        }
+      const id=Number(x[2]);
+      if(op==='PREP') {
+        if(!this.lock || !this.balance || this.state!==0) return this.error('NOT_READY');
+        if(!Number.isInteger(id) || id<=0) return this.error('ID');
+        const p=Object.fromEntries(C.PID_KEYS.map((k,i)=>[k,Number(x[i+4])]));
+        try { C.validateProposal({schema_version:1,decision:'propose',stage:'balance',candidate:p,expected_effect:'sim',requested_test:'quiet_balance',confidence:1},this.pid); }
+        catch(e) { return this.error('CANDIDATE'); }
+        this.ttl=Number(x[3]); if(this.ttl<1000 || this.ttl>30000) return this.error('TTL');
+        this.candidate=p; this.id=id; this.state=1;this.preparedAt=this.ms;this.lastHb=this.ms; this.ack('PREP',id); return;
       }
-    } catch (error) {
-      log("ERR", `window: ${error.message}`);
-      if (kind.startsWith("TRIAL")) await requestRollback("遥测窗口数据不足");
-      else pauseAutoOnError(error.message);
+      if(op==='STOP') { this.rollback(); this.ack('STOP',id); return; }
+      if(id!==this.id || !id) return this.error('ID');
+      if(op==='APPLY' && this.state===1) { this.ack('APPLY',id);this.pid={...this.candidate}; this.state=2; this.appliedAt=this.ms; this.lastHb=this.ms; }
+      else if(op==='HB' && (this.state===1||this.state===2)) { this.lastHb=this.ms;this.ack('HB',id); }
+      else if(op==='ACCEPT' && this.state===2) { this.champion={...this.pid}; this.candidate=null; this.state=0; this.id=0; this.ack('ACCEPT',id); }
+      else if(op==='ROLLBACK') { this.rollback(); this.ack('ROLLBACK',id); }
+      else this.error('STATE');
+    }
+    tick(step=200) {
+      this.ms+=step;
+      if(this.state!==0 && (this.ms-this.lastHb>2000 || this.ms-this.preparedAt>=this.ttl || (this.state===2&&this.options.unsafe))) this.rollback();
+      const a=this.options.unsafe ? 30 : Math.sin(this.ms/820)*2.4+Math.sin(this.ms/210)*.35;
+      const g=Math.cos(this.ms/820)*13;
+      const f=`T1,F,${this.ms},A${a.toFixed(2)},G${g.toFixed(1)},EL${Math.round(g)},ER${Math.round(g+1)},ML${Math.round(-a*120)},MR${Math.round(-a*118)},S${this.state},L${this.lock?1:0},R${this.balance?1:0},C1${Math.max(0,Math.round(a*20))},C2${Math.max(0,Math.round(-a*20))},C3${Math.max(0,Math.round(a*19))},C4${Math.max(0,Math.round(-a*19))}`;
+      this.reply(f);
+      if(this.ms%400===0)this.reply(`T1,E,${this.ms},O${(Math.abs(g)*.12).toFixed(3)},L${(Math.abs(a)*.45).toFixed(3)},B${(a*.5).toFixed(3)},W${this.ms>=3000?1:0}`);
+      if(this.ms%1000===0) this.reply(`T1,S,${this.ms},V11.82,B0,V0,T0,AP${this.pid.AP.toFixed(2)},AD${this.pid.AD.toFixed(2)},VP${this.pid.VP.toFixed(2)},VI${this.pid.VI.toFixed(2)},TP${this.pid.TP.toFixed(2)},TD${this.pid.TD.toFixed(2)},D0,L${this.lock?1:0},R${this.balance?1:0},RA1.9-AUTO6-SIM`);
     }
   }
-  function trialImproved(metrics) {
-    const base = state.auto.baselineMetrics;
-    if (!base) return false;
-    const required = Math.max(0, settingNumber("improvementPct", 3)) / 100;
-    return metrics.score <= base.score * (1 - required);
-  }
-  function beginSettle() {
-    if (!state.auto.enabled || state.auto.phase !== "APPLYING") return;
-    clearAutoTimer();
-    state.auto.phase = "SETTLING";
-    updateUi();
-    state.auto.timer = setTimeout(() => startWindow("TRIAL1", settingNumber("evalMs", 6000)), Math.max(500, settingNumber("settleMs", 1500)));
-  }
-  function scheduleNextBaseline(waitMs) {
-    if (!state.auto.enabled) return;
-    clearAutoTimer();
-    state.auto.phase = "HOLD";
-    updateUi();
-    state.auto.timer = setTimeout(() => startWindow("BASELINE", settingNumber("baselineMs", 4000)), waitMs);
-  }
-  function trialId() { state.nextTransactionId = ((state.nextTransactionId ?? Date.now()) % 999999) + 1; return state.nextTransactionId; }
+  return { Simulator };
+});
 
-  async function decideNext(metrics) {
-    if (!state.auto.enabled || state.auto.requestBusy) return;
-    state.auto.phase = "LLM";
-    state.auto.requestBusy = true;
-    updateUi();
-    try {
-      const decision = await requestLlmDecision(metrics);
-      if (!state.auto.enabled) return;
-      state.auto.decision = decision;
-      state.auto.candidatePid = { ...decision.candidate };
-      state.auto.candidateProfile = decision.target_profile;
-      renderDecision(decision);
-      if (decision.action === "hold") {
-        recordHistory("保持", metrics);
-        scheduleNextBaseline(1800);
-      } else if (decision.action === "stop") {
-        recordHistory("LLM停止", metrics);
-        await stopAuto(false);
-      } else if (decision.action === "rollback") {
-        recordHistory("建议回滚", metrics);
-        scheduleNextBaseline(1800);
-      } else {
-        state.auto.cycle += 1;
-        state.auto.trialId = trialId();
-        state.auto.phase = "APPLYING";
-        const result=await writer.run({id:state.auto.trialId,mode:"T",profile:decision.target_profile,
-          initialProfile:state.profile,initialPid:state.currentPid,targetPid:decision.candidate});
-        if(!state.auto.enabled)return;
-        state.auto.candidatePid=result.pid;state.auto.candidateProfile=result.profile;
-        startHeartbeat();beginSettle();
+</script>
+<script>
+(function(){
+  'use strict';
+  const C=window.RouteACore, $=id=>document.getElementById(id);
+  const S={epoch:0,connected:false,connecting:false,mock:false,device:null,ch:null,server:null,sim:null,simTimer:null,
+    parser:new C.StreamParser(512),verified:false,pidFault:null,pid:null,pidAt:0,fast:null,slow:null,fastAt:0,slowAt:0,
+    locked:null,balance:null,fw:null,firmware:'—',phase:'IDLE',id:0,baseline:null,candidate:null,
+    samples:[],trialSamples:[],metrics:null,trialMetrics:null,chart:[],telemetry:[],logs:[],keyLogs:[],history:[],sawTrial:false,
+    rxTimes:[],ok:0,bad:0,seq:0,waiters:[],queue:[],writing:false,writeGeneration:0,transportFault:false,busy:false,heartbeat:null,
+    activeMotion:null,motionToken:0,llm:null,llmBusy:false,auto:false,autoToken:0,trialAt:0,
+    features:null,featureAt:0,trialBase:null,trialPid:null,trialLimits:null,recovery:false,op:'等待连接',review:null};
+  const A={running:false,token:0,round:0,phase:'未启动',failures:0};
+  const active=()=>S.connected||S.mock, fresh=()=>Date.now()-S.fastAt<2500;
+  const firmwareWritable=()=>S.mock||/^RA1\.9-AUTO6/.test(S.firmware);
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+  let toastTimer;
+  function toast(t){ $('toast').textContent=t;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),4000); }
+  function redact(t){let text=String(t);for(const id of ['llmKey','reviewKey']){const key=$(id).value.trim();if(key)text=text.split(key).join('[REDACTED]');}return text.replace(/Bearer\s+\S+/gi,'Bearer [REDACTED]');}
+  function log(direction,text){const entry={time:new Date().toISOString(),source:S.mock?'simulation':'ble',direction,text:redact(text)};S.logs.push(entry);if(S.logs.length>3000)S.logs.shift();if(direction!=='RX'||entry.text.startsWith('$P1,')){S.keyLogs.push(entry);if(S.keyLogs.length>500)S.keyLogs.shift();}renderLog();}
+  function renderLog(){ $('log').textContent=S.logs.slice(-120).map(x=>`${x.time.slice(11,23)} ${x.direction} ${x.text}`).join('\n');$('logCount').textContent=S.logs.length;$('transactionLog').value=S.keyLogs.map(x=>`${x.time.slice(11,23)} ${x.direction} ${x.text}`).join('\n');$('log').scrollTop=$('log').scrollHeight; }
+  function status(t){S.op=redact(t);$('operationStatus').textContent=S.op;$('transactionStatus').textContent=S.op;log('SYS',t);update();}
+  function fail(e){const t=redact(e?.message||e);status('操作失败：'+t);toast(t);}
+  function requireLink(){if(!active()||!S.verified)throw Error('需要连接并收到有效 PID 回包；请确认小车处于 3.TEST MODE');if(S.transportFault)throw Error('BLE 写入接口未完成，请断开后重连');if(!firmwareWritable())throw Error('命令功能需要 RA1.9-AUTO6 六参数固件；当前仅显示真实反馈，固件版本 '+S.firmware);}
+  function requireTraining(){requireLink();if(!S.locked||!S.balance||S.fw!==0||!fresh()||Date.now()-S.slowAt>5000)throw Error('需要训练锁定、平衡运行、实时快慢遥测和固件 IDLE');}
+  function limits(){const battery=Number($('minBattery').value),seconds=Number($('trialSeconds').value);if(!Number.isFinite(battery)||battery<6||battery>14)throw Error('低电压阈值必须在 6..14V');if(!Number.isFinite(seconds)||seconds<5||seconds>20)throw Error('试验时长必须在 5..20 秒');return {battery,seconds};}
+  function quality(m){if(!m||m.samples<20||m.durationMs<5000||m.maxGapMs>1500)throw Error('数据不足：至少连续 5 秒、20 个样本，帧间隔不超过 1.5 秒');}
+  function initPid(){ $('pidGrid').innerHTML=C.PID_KEYS.map(k=>`<div class="pid-item"><label>${k}<b id="live${k}">--</b></label><input aria-label="${k} 参数" id="edit${k}" inputmode="decimal" type="number" step="0.01" min="${C.RANGES[k][0]}" max="${C.RANGES[k][1]}"></div>`).join('');C.PID_KEYS.forEach(k=>$('edit'+k).addEventListener('input',pidDelta)); }
+  function inputPid(){return C.boundedPid(Object.fromEntries(C.PID_KEYS.map(k=>[k,$('edit'+k).value])));}
+  function setPid(p,copy=false){S.pid={...p};S.pidAt=Date.now();C.PID_KEYS.forEach(k=>{$('live'+k).textContent=p[k].toFixed(2);if(copy)$('edit'+k).value=p[k].toFixed(2);});pidDelta();}
+  function pidDelta(){if(!S.pid){$('pidDelta').textContent='先读取当前 PID，才允许人工写入。';return;}try{const p=inputPid();$('pidDelta').textContent=C.PID_KEYS.map(k=>`${k} ${((p[k]-S.pid[k])*100/Math.abs(S.pid[k])).toFixed(2)}%`).join('　');}catch(e){$('pidDelta').textContent=e.message;}}
+  const settingIds=['serviceUuid','charUuid','namePrefix','chunkSize','chunkDelay','llmBase','llmModel','reviewBase','reviewModel','trialSeconds','minBattery'];
+  function loadSettings(){try{const s=JSON.parse(localStorage.getItem('routea-bluefy-v2')||'{}');for(const id of settingIds)if(typeof s[id]==='string')$(id).value=s[id];}catch(e){log('SYS','无法读取本地设置');}}
+  function communicationSettings(){const svc=$('serviceUuid').value.trim().toLowerCase(),ch=$('charUuid').value.trim().toLowerCase();if(!/^[\da-f]{8}(-[\da-f]{4}){3}-[\da-f]{12}$/.test(svc)||!/^[\da-f]{8}(-[\da-f]{4}){3}-[\da-f]{12}$/.test(ch))throw Error('BLE UUID 格式错误');const size=Number($('chunkSize').value),pause=Number($('chunkDelay').value);if(!Number.isInteger(size)||size<1||size>20||!Number.isFinite(pause)||pause<0||pause>100)throw Error('分片字节必须为 1..20 整数，间隔 0..100ms');return {svc,ch,size,pause};}
+  function saveSettings(){communicationSettings();limits();C.endpoint($('llmBase').value.trim());if($('reviewBase').value.trim())C.endpoint($('reviewBase').value.trim());localStorage.setItem('routea-bluefy-v2',JSON.stringify(Object.fromEntries(settingIds.map(id=>[id,$(id).value.trim()]))));status('通信、LLM 与审核设置已保存；密钥仅保留在本页面会话');}
+  function clearCandidate(){S.candidate=null;S.review=null;$('proposalJson').value='';$('candidateBox').textContent='尚无合格候选';$('proposalSource').textContent='无';$('reviewResult').textContent='尚未审核';$('autoConsent').checked=false;}
+  function cancelWaiters(reason){for(const w of [...S.waiters])w.reject(Error(reason));}
+  function reset(){cancelContinuous();S.features=null;S.featureAt=0;S.epoch++;cancelWaiters('会话已结束');cancelQueue('会话已结束');cancelLlm();stopHeartbeat();cancelAuto();clearMotion();S.parser=new C.StreamParser(512);S.transportFault=false;S.pidFault=null;S.verified=false;S.busy=false;S.pid=null;S.pidAt=0;S.fast=null;S.slow=null;S.fastAt=0;S.slowAt=0;S.locked=null;S.balance=null;S.fw=null;S.phase='IDLE';S.id=0;S.baseline=null;S.samples=[];S.trialSamples=[];S.metrics=null;S.trialMetrics=null;S.chart=[];S.trialAt=0;S.trialBase=null;S.trialPid=null;S.trialLimits=null;S.sawTrial=false;S.rxTimes=[];S.recovery=false;S.firmware='—';clearCandidate();C.PID_KEYS.forEach(k=>{$('live'+k).textContent='--';$('edit'+k).value='';});$('metricsBox').textContent='尚未计算';$('sampleCount').textContent='0 样本';$('trialMetrics').textContent='尚无试验数据';pidDelta();}
+  function detach(){S.ch?.removeEventListener('characteristicvaluechanged',notification);S.device?.removeEventListener('gattserverdisconnected',disconnected);}
+  function cleanup(disconnect=true){detach();const d=S.device;if(S.simTimer)clearInterval(S.simTimer);S.simTimer=null;S.sim=null;S.mock=false;S.connected=false;S.connecting=false;S.ch=null;S.server=null;S.device=null;reset();if(disconnect&&d?.gatt?.connected)d.gatt.disconnect();update();}
+  async function connect(){
+    if(S.connecting||S.connected)return;
+    if(!navigator.bluetooth)throw Error('当前浏览器没有 Web Bluetooth；iPhone 请在 Bluefy 打开 HTTPS 页面');
+    if(!window.isSecureContext)throw Error('BLE 需要 HTTPS 安全上下文');
+    if(S.mock)cleanup();
+    const cfg=communicationSettings();reset();S.connecting=true;update();const epoch=S.epoch;
+    let device;
+    const current=()=>epoch===S.epoch;
+    try{
+      const prefix=$('namePrefix').value.trim();
+      device=await navigator.bluetooth.requestDevice({...(prefix?{filters:[{namePrefix:prefix},{namePrefix:' Yah'}]}:{acceptAllDevices:true}),optionalServices:[cfg.svc]});
+      if(!current()){if(device.gatt.connected)device.gatt.disconnect();return;}
+      S.device=device;device.addEventListener('gattserverdisconnected',disconnected);
+      $('deviceName').textContent=device.name||'BLE 设备';
+      const server=await device.gatt.connect();
+      if(!current()){device.gatt.disconnect();return;}S.server=server;
+      const svc=await server.getPrimaryService(cfg.svc);
+      if(!current())return;
+      const ch=await svc.getCharacteristic(cfg.ch);
+      if(!current())return;
+      S.ch=ch;ch.addEventListener('characteristicvaluechanged',notification);
+      await ch.startNotifications();
+      if(!current()){ch.removeEventListener('characteristicvaluechanged',notification);return;}
+      S.connected=true;S.connecting=false;
+      status('GATT 已连接；正在验证 GET → PID 双向通信');await readPid();
+      if(current())status('双向通信已确认，PID 来自固件读回');
+    }catch(e){if(current()){if(S.connected){S.connecting=false;S.verified=false;update();throw Error('GET 握手未确认：'+e.message+'；BLE 和遥测已保留，命令功能仍锁定。');}cleanup();throw Error('连接/握手失败：'+e.message+'。检查 Test_Mode、UART5 和 FFE1 通知。');}}
+  }
+  function disconnected(){cleanup(false);status('BLE 已断开，旧 PID / 候选已清除；请确认小车停止');toast(S.op);}
+  function notification(e){const v=e.target.value;receive(new Uint8Array(v.buffer,v.byteOffset,v.byteLength));}
+  function receive(bytes){for(const raw of S.parser.feed(bytes))handleFrame(raw);}
+  function waiter(predicate,label,timeout=4000){const epoch=S.epoch;let timer,w;const promise=new Promise((resolve,reject)=>{const remove=()=>{clearTimeout(timer);S.waiters=S.waiters.filter(v=>v!==w);};w={epoch,predicate,resolve:v=>{remove();resolve(v);},reject:e=>{remove();reject(e);}};S.waiters.push(w);timer=setTimeout(()=>w.reject(Error(label+'：等待固件响应超时')),timeout);});promise.catch(()=>{});return {promise,cancel:e=>w.reject(e)};}
+  async function exchange(text,predicate,label,timeout=4000,priority=false){const w=waiter(predicate,label,timeout);try{const [,reply]=await Promise.all([send(text,priority),w.promise]);return reply;}catch(e){w.cancel(e);cancelQueue('固件操作未确认，取消后续发送');throw e;}}
+  async function readPid(expected){if(!active())throw Error('请先连接小车');const p=await exchange(C.getPid(),e=>e.type==='PID','GET/PID');if(expected){if(expected.pid&&!C.samePid(p.pid,expected.pid))throw Error('PID 读回不一致，不能判定写入已生效');if(expected.fw!==undefined&&p.state!==expected.fw)throw Error('固件状态读回不一致');if(expected.lock!==undefined&&p.trainingLocked!==expected.lock)throw Error('训练锁读回不一致');}S.verified=true;update();return p;}
+  async function settledPid(expected){const deadline=Date.now()+1500;do{const p=await readPid();if((!expected.pid||C.samePid(p.pid,expected.pid))&&(expected.fw===undefined||p.state===expected.fw)&&(expected.lock===undefined||p.trainingLocked===expected.lock))return p;await sleep(60);}while(Date.now()<deadline);throw Error('控制周期后 PID / 状态读回不一致，操作未确认');}
+  async function ack(text,name,id=0,priority=false){requireLink();status(`等待 ${name} ACK（事务 ${id}）`);return exchange(text,e=>e.type==='ACK'&&e.name===name&&e.id===id,`${name} / ${id}`,4000,priority);}
+  function cancelQueue(reason){S.writeGeneration++;for(const q of S.queue.splice(0))q.reject(Error(reason));}
+  function send(text,priority=false,kind='command'){if(!active())return Promise.reject(Error('BLE 未连接'));const epoch=S.epoch;return new Promise((resolve,reject)=>{const q={text,epoch,kind,resolve,reject};if(priority)S.queue.unshift(q);else S.queue.push(q);pump();});}
+  async function pump(){if(S.writing)return;S.writing=true;try{while(S.queue.length){const q=S.queue.shift();try{if(q.epoch!==S.epoch)throw Error('过期会话命令已取消');await write(q.text,q.epoch,S.writeGeneration);q.resolve();}catch(e){q.reject(e);}}}finally{S.writing=false;}}
+  async function write(text,epoch,generation){if(S.transportFault)throw Error('BLE 写入接口未完成，请断开后重连');if(epoch!==S.epoch||!active())throw Error('会话已断开');log('TX',text);if(S.mock){S.sim.receive(text);return;}const {size,pause}=communicationSettings(),ch=S.ch,bytes=new TextEncoder().encode(text);for(let i=0;i<bytes.length;i+=size){if(epoch!==S.epoch||generation!==S.writeGeneration||ch!==S.ch||!S.connected)throw Error('发送已取消或连接断开');const chunk=bytes.slice(i,i+size);await nativeWrite(ch,chunk,epoch);if(pause&&i+size<bytes.length)await sleep(pause);}}
+  async function nativeWrite(ch,chunk,epoch){const p=ch.properties||{};let timer,expired=false;try{let pending;if(p.write&&typeof ch.writeValueWithResponse==='function')pending=ch.writeValueWithResponse(chunk);else if(p.writeWithoutResponse&&typeof ch.writeValueWithoutResponse==='function')pending=ch.writeValueWithoutResponse(chunk);else if(typeof ch.writeValue==='function')pending=ch.writeValue(chunk);else if(typeof ch.writeValueWithResponse==='function')pending=ch.writeValueWithResponse(chunk);else throw Error('FFE1 没有可用写入方法');await Promise.race([pending,new Promise((_,reject)=>{timer=setTimeout(()=>{expired=true;reject(Error('BLE 写入接口超过 5 秒未完成；请断开后重连'));},5000);})]);}catch(e){if(expired&&epoch===S.epoch){S.transportFault=true;S.verified=false;stopHeartbeat();cancelQueue('BLE 写入超时');status(e.message);}throw e;}finally{clearTimeout(timer);}}
+  function invalidatePid(reason,raw){cancelContinuous();const message='PID 回读异常：'+reason+'；已锁定控制，请通过硬件停止并检查固件并重新读取 PID';const changed=S.pidFault!==message;S.pidFault=message;S.verified=false;S.pid=null;S.pidAt=0;S.slowAt=0;S.baseline=null;S.metrics=null;S.samples=[];S.phase=S.id?'UNCERTAIN':'IDLE';cancelAuto();stopHeartbeat();clearMotion();cancelLlm();clearCandidate();cancelWaiters(message);cancelQueue('PID 异常');C.PID_KEYS.forEach(k=>$('live'+k).textContent='异常');pidDelta();if(changed){log('PID_FAULT',raw);status(message);toast(message);}update();}
+  function handleFrame(raw){if(!active())return;log('RX',raw);if(raw==='$ReceivePackError#'){log('LEGACY_ERR','固件未识别 Route A 包头，请使用 RA1.9-AUTO6 六参数固件');cancelWaiters('固件返回 ReceivePackError：接收包未识别为 Route A');return;}if(!C.verify(raw)){S.bad++;update();return;}let event=C.parseAck(raw),pid=C.parsePidStatus(raw),fast=C.parseFast(raw),slow=C.parseSlow(raw);if(pid)event={type:'PID',...pid};else if(fast)event={type:'FAST',...fast};else if(slow)event={type:'SLOW',...slow};else if(C.parseFeatures(raw)){const f=C.parseFeatures(raw);S.features=f;S.featureAt=Date.now();S.telemetry.push({at:S.featureAt,source:S.mock?'simulation':'ble',kind:'features',...f});update();return;}else if(!event&&raw.startsWith('$P1,READY,'))event={type:'READY'};if(event?.type==='ERR'&&event.code==='TRIAL,0'){if(!S.id&&S.history.length){log('SYS','已结束事务的迟到 TRIAL,0 回包；保留已核对的事务结果');return;}stopHeartbeat();cancelAuto();event={...event,code:'事务已失效（TRIAL,0）；固件当前无活动事务，需读回确认结果'};}if(event?.type==='ERR'&&event.code.startsWith('PID_LIVE_RANGE')){invalidatePid('固件实时参数越界',raw);return;}if(!event){if(raw.startsWith('$P1,PID,')||raw.startsWith('$T1,S,'))invalidatePid('字段非法',raw);else{S.bad++;update();}return;}if((raw.startsWith('$P1,PID,')&&!pid)||(raw.startsWith('$T1,S,')&&!slow)){invalidatePid('字段非法',raw);return;}if(pid||slow){try{C.boundedPid((pid||slow).pid);}catch(e){if(slow)S.firmware=slow.firmware;invalidatePid(e.message,raw);return;}}S.seq++;S.ok++;const at=Date.now();if(fast)S.rxTimes.push(at);S.rxTimes=S.rxTimes.filter(t=>at-t<5000);$('lastRx').textContent=new Date(at).toLocaleTimeString('zh-CN',{hour12:false});
+    if(pid){if(pid.state===2&&S.id)S.sawTrial=true;S.pidFault=null;const first=!S.pid;setPid(pid.pid,first);S.fw=pid.state;S.locked=pid.trainingLocked;S.balance=pid.balanceStarted;}
+    if(fast){Object.assign(fast,S.features||{osc:null,lean:null,leanBand:null,warm:false});fast.ms=C.parseFast(raw).ms;fast.featuresFresh=!!S.features&&at-S.featureAt<=600;if(fast.state===2&&S.id)S.sawTrial=true;if(S.fw!==fast.state)log('STATE',JSON.stringify({state:fast.state,angle:fast.angle,ml:fast.ml,mr:fast.mr,lock:fast.trainingLocked}));const sample={at,source:S.mock?'simulation':'ble',...fast};S.fast=fast;S.fastAt=at;S.fw=fast.state;S.locked=fast.trainingLocked;S.balance=fast.balanceStarted;S.telemetry.push({...sample,at:new Date(at).toISOString(),kind:'fast'});if(S.telemetry.length>15000)S.telemetry.shift();S.chart.push(sample);S.chart=S.chart.filter(p=>at-p.at<60000);if(S.phase==='BASELINE'){
+        if(!S.locked||!S.balance||fast.state!==0){S.phase='IDLE';S.samples=[];S.baseline=null;status('基线已中止：平衡/训练锁/固件状态不符合条件');}
+        else S.samples.push(sample);
       }
-    } catch (error) {
-      log("ERR", `LLM: ${error.message}`);
-      pauseAutoOnError(`LLM请求失败：${error.message}`);
-    } finally {
-      state.auto.requestBusy = false;
-      updateUi();
+      if(S.phase==='TRIAL'&&fast.state===2&&(!A.running||Date.now()-S.trialAt>=1000))S.trialSamples.push(sample);
+      if((S.phase==='TRIAL'&&(fast.state!==2||!fast.trainingLocked||!fast.balanceStarted))||(['PREPARED','UNCERTAIN'].includes(S.phase)&&fast.state===0&&S.trialBase)){
+        S.phase='UNCERTAIN';stopHeartbeat();cancelAuto();status('固件已结束试验或发生保护；正在读取回滚结果');verifyLocalRollback().catch(fail);
+      }else if(S.phase==='TRIAL'&&Math.abs(fast.angle)>25)recover('倾角超过 25°');
+    }
+    if(slow){if(S.phase==='BASELINE'&&S.baseline&&!C.samePid(slow.pid,S.baseline.pid)){S.phase='IDLE';S.samples=[];status('基线已中止：PID 在采集中变化');}setPid(slow.pid,!S.pid);S.slow=slow;S.slowAt=at;S.firmware=slow.firmware;S.locked=slow.trainingLocked;S.balance=slow.balanceStarted;S.telemetry.push({at,source:S.mock?'simulation':'ble',kind:'slow',...slow});if(S.phase==='TRIAL'&&slow.battery<S.trialLimits.battery)recover('电压低于本轮阈值');}
+    for(const w of [...S.waiters]){if(w.epoch!==S.epoch)continue;if(event.type==='ERR')w.reject(Error('固件拒绝：'+event.code));else if(w.predicate(event))w.resolve(event);}
+    if(event.type==='ERR'){status('固件拒绝：'+event.code);toast(S.op);}update();draw();
+  }
+  async function exclusive(fn){if(S.busy)throw Error('另一项固件操作正在等待确认');const epoch=S.epoch;S.busy=true;update();try{return await fn();}finally{if(epoch===S.epoch)S.busy=false;update();}}
+  async function manualPid(){return exclusive(async()=>{requireLink();if(S.locked||S.fw!==0)throw Error('训练锁定或活动事务期间不能人工调参');const p=inputPid();await readPid({fw:0,lock:false});if(!confirm('确认将六个 PID 写入小车？完成后将核对 ACK 和 PID 读回。'))return;await ack(C.manualSet(p),'MSET');await settledPid({pid:p,fw:0,lock:false});clearCandidate();S.metrics=null;status('人工 PID 已获 ACK，且六个参数读回一致');toast('参数已确认生效');});}
+  async function trainStart(){return exclusive(async()=>{requireLink();if(!S.balance||S.locked||S.fw!==0||S.phase!=='IDLE')throw Error('需要平衡已启动、固件空闲且训练未锁定');await ack(C.training('START'),'TRAIN_START');await readPid({fw:0,lock:true});clearCandidate();status('训练锁已由固件确认；可以采集基线');});}
+  async function trainStop(){cancelContinuous();cancelAuto();cancelLlm();clearMotion();cancelQueue('停止训练，已取消待发命令');cancelWaiters('停止训练');return exclusive(async()=>{requireLink();await exchange(C.training('STOP'),e=>e.type==='ACK'&&e.name==='TRAIN_STOP','TRAIN_STOP',4000,true);await settledPid({fw:0,lock:false});stopHeartbeat();S.phase='IDLE';S.id=0;S.metrics=null;S.baseline=null;clearCandidate();status('训练已停止、事务已结束、人工 PID 已解锁（固件读回确认）');});}
+  async function baselineStart(){return exclusive(async()=>{requireTraining();if(!['IDLE','REVIEW'].includes(S.phase))throw Error('存在活动试验');await send(C.legacyMotion(0,0,S.pid),true);await readPid({fw:0,lock:true});S.baseline={pid:{...S.pid},epoch:S.epoch,source:S.mock?'simulation':'ble',startedAt:Date.now(),dropped:S.slow.dropped,battery:S.slow.battery,limits:limits()};S.samples=[];S.metrics=null;clearCandidate();S.phase='BASELINE';$('metricsBox').textContent='采集中；不发送移动指令，记录当前抖动至少 5 秒；倾角和饱和率不拦截采集';status('开始采集当前 PID 下的基线数据（来源见顶部标识）');});}
+  function metricText(m){return `osc均值 ${m.meanOsc.toFixed(3)} °/s / lean均值 ${m.meanLean.toFixed(3)}° / 指标样本 ${m.featureSamples}
+倾角 RMS ${m.rmsAngle.toFixed(3)}° / 峰值 ${m.peakAngle.toFixed(3)}°\n角速度 RMS ${m.rmsGyro.toFixed(3)} raw / PWM 饱和率 ${(m.saturationRate*100).toFixed(2)}%\n${m.samples} 样本 / ${(m.durationMs/1000).toFixed(1)} 秒 / 最大间隔 ${m.maxGapMs} ms`;}
+  function baselineFinish(){requireTraining();if(S.phase!=='BASELINE')throw Error('当前没有基线采集');const m=C.metrics(S.samples);quality(m);if(!C.samePid(S.pid,S.baseline.pid))throw Error('当前 PID 与采集基线不同');S.metrics=m;S.baseline.finishedAt=Date.now();S.phase='REVIEW';$('metricsBox').textContent=metricText(m);status('基线采集完成；可以调用 LLM 或粘贴候选');update();}
+  function readyReview(){requireTraining();if(S.phase!=='REVIEW'||!S.metrics||!S.baseline)throw Error('请先完成基线采集');quality(S.metrics);if(S.baseline.epoch!==S.epoch||!C.samePid(S.pid,S.baseline.pid))throw Error('PID 或会话已变化，请重新采集基线');if(Date.now()-S.baseline.finishedAt>180000)throw Error('基线超过 3 分钟，请重新采集');if(S.slow.battery<limits().battery)throw Error('当前电压低于试验阈值');}
+  function proposal(p,source){readyReview();S.candidate=C.validateProposal(p,S.baseline.pid);S.review=null;$('autoConsent').checked=false;$('proposalJson').value=JSON.stringify(S.candidate,null,2);$('proposalSource').textContent=source;$('candidateBox').textContent=`${S.candidate.decision.toUpperCase()} / 置信度 ${(S.candidate.confidence*100).toFixed(0)}%\n${C.PID_KEYS.map(k=>`${k} ${S.candidate.candidate[k].toFixed(2)}`).join('　')}\n${S.candidate.expected_effect}`;$('reviewResult').textContent='候选校验通过，尚未审核或发送小车';log('PROPOSAL',JSON.stringify({source,proposal:S.candidate}));update();}
+  function validateJson(){try{proposal($('proposalJson').value,'手动 JSON');status('JSON 校验通过，尚未改变小车 PID');}catch(e){clearCandidate();throw e;}}
+  function harness(){readyReview();proposal(C.harness(S.baseline.pid,S.metrics),'本地 Harness');status('本地规则建议已生成；无需 API，结果用于流程验证');}
+  function payload(){readyReview();const down=S.samples.filter((_,i)=>i%Math.max(1,Math.ceil(S.samples.length/60))===0);return {schema_version:1,prompt_version:'route-a-bluefy-v3.0-active-tuning',source:S.baseline.source,firmware:S.firmware,stage:'balance',current_pid:S.baseline.pid,trial_scenario:{name:'quiet_balance',completed:true,motion_command:'stop'},data_quality:{complete:true,duration_ms:S.metrics.durationMs,max_gap_ms:S.metrics.maxGapMs,dropped_tx_delta:S.slow.dropped-S.baseline.dropped},metrics:S.metrics,battery:{start:S.baseline.battery,current:S.slow.battery},telemetry_samples:down,recent_history:S.history.slice(-5),harness_limits:{relative_change_limit:null,parameter_ranges:C.RANGES,allowed_parameters:C.PID_KEYS,feature_definition:{sample_hz:200,osc:'8-16 Hz gyro band RMS /16.4, deg/s',lean:'0.3-2 Hz angle band RMS, deg',leanBand:'signed low-frequency angle, deg',warmup_ms:3000},feature_status:{warm:S.features?.warm===true,fresh:Date.now()-S.featureAt<=600}}};}
+  function cancelLlm(){if(S.llm){S.llm.abort();S.llm=null;}S.llmBusy=false;update();}
+  async function completion(system,data,review=false){if(S.llmBusy)throw Error('LLM 请求进行中，请等待或取消');const base=(review&&$('reviewBase').value.trim())||$('llmBase').value.trim(),model=(review&&$('reviewModel').value.trim())||$('llmModel').value.trim(),key=(review&&$('reviewKey').value.trim())||$('llmKey').value.trim();if(!model)throw Error('请填写模型 ID');const url=C.endpoint(base),sameOrigin=new URL(url).origin===location.origin;if(!key&&!sameOrigin)throw Error('请在设置页填写 API Key');const controller=new AbortController(),epoch=S.epoch;S.llm=controller;S.llmBusy=true;update();const timer=setTimeout(()=>controller.abort('timeout'),45000);$('llmStatus').textContent='正在请求 '+(review?'审核':'建议')+' LLM…';$('llmPayload').textContent=JSON.stringify(data,null,2);log('LLM','请求 '+(review?'审核':'建议')+'，模型 '+model);
+    try{const response=await fetch(url,{method:'POST',signal:controller.signal,headers:{'Content-Type':'application/json',...(key?{Authorization:'Bearer '+key}:{})},body:JSON.stringify({model,stream:false,response_format:{type:'json_object'},messages:[{role:'system',content:system},{role:'user',content:JSON.stringify(data)}]})});if(!response.ok)throw Error(`HTTP ${response.status}：${redact((await response.text()).slice(0,300))}`);const result=await response.json();const raw=result.choices?.[0]?.message?.content;if(typeof raw!=='string'||!raw.trim())throw Error('接口未返回 choices[0].message.content');if(epoch!==S.epoch||controller.signal.aborted)throw Error('过期 LLM 响应已丢弃');$('llmResponse').textContent=redact(raw);$('llmStatus').textContent='接口响应成功；正在校验 JSON';log('LLM',raw);return raw;}
+    catch(e){const msg=controller.signal.aborted?'LLM 请求已取消或超过 45 秒':e instanceof TypeError?'网络/CORS 请求失败；请检查 HTTPS、接口地址或使用随附同源代理':e.message;$('llmStatus').textContent=redact(msg);throw Error(msg);}
+    finally{clearTimeout(timer);if(S.llm===controller){S.llm=null;S.llmBusy=false;}update();}
+  }
+  async function requestLlm(){const data=payload(),fingerprint=JSON.stringify(S.baseline);const raw=await completion("You tune a Yahboom Route A two-wheel balance car using measured telemetry. Be moderately assertive and experiment-oriented. Angle is in degrees; gyro telemetry is raw sensor counts, not degrees per second, so judge gyro together with angle timing and recent runs. Return exactly one JSON object, no Markdown, with exactly schema_version:1, decision:propose|hold|rollback, stage:balance, candidate:{AP,AD,VP,VI,TP,TD}, expected_effect:string (max 500 chars), requested_test:quiet_balance|balance_recovery, confidence:number 0..1. Treat sustained angle oscillation, poor recovery, or repeatedly large gyro activity supported by angle samples as evidence to act. When data_quality is complete and oscillation persists, prefer propose with a concrete justified PID change over hold. A car that has not fallen can still need tuning; do not require a failed protection threshold before proposing improvement. There is no relative percentage-change cap. Size the change to test a specific damping or stiffness hypothesis within harness_limits.parameter_ranges; make it meaningful instead of automatically selecting a tiny step. Do not jump to extreme parameter bounds simply because no percentage cap exists. All six AP/AD/VP/VI/TP/TD may change. Choose the relevant loop for the observed problem: balance stiffness/damping, velocity drift/slow sway, or steering imbalance. Prefer changing a small justified subset per trial; do not change all six without evidence. Stationary telemetry may not identify steering performance: do not invent evidence for TP/TD. Use osc (8-16 Hz gyro RMS, deg/s), lean (0.3-2 Hz angle RMS, deg), signed leanBand and their warmup/freshness, not universal gain thresholds. Gyro raw counts remain raw. Compare recent accepted and rejected trials and do not repeat a failed candidate. Use angle/gyro timing, saturation, battery, and recent_history together; distinguish repeated oscillation from an isolated spike and do not blindly keep increasing gains. Uncertain improvement alone is not a reason to hold: when evidence supports a plausible reversible trial, propose and report honest confidence. Use hold for genuinely insufficient/inconsistent data or stable behavior with no justified change; explain the missing evidence or stability. Use rollback when recent trial evidence supports returning to the accepted baseline; for hold/rollback copy current_pid unchanged. In expected_effect, cite the observed pattern, explain the change direction and intended measurable effect, and give the specific reason for hold/rollback when chosen. Write expected_effect in Simplified Chinese. Prefer quiet_balance so the existing reviewed trial can evaluate the candidate. Never issue motor commands or claim the candidate is already proven safe or accepted. Label simulation evidence as simulation.",data);readyReview();if(fingerprint!==JSON.stringify(S.baseline))throw Error('基线已变化，丢弃旧 LLM 建议');proposal(raw,'LLM');status('LLM 候选已校验；等待所选审核');}
+  async function testLlm(){const raw=await completion('Return exactly the JSON object {"ok":true}.',{purpose:'connection_test',no_robot_command:true});const p=JSON.parse(raw);if(p.ok!==true)throw Error('测试响应不符合 {"ok":true}');$('llmStatus').textContent='LLM 接口、模型和 JSON 返回验证成功；未向小车发送参数';toast('LLM 接口测试通过');}
+  function reviewRules(){readyReview();if(!S.candidate)throw Error('请先生成并验证候选');const p=C.validateProposal(S.candidate,S.baseline.pid);if(p.decision!=='propose')throw Error('当前建议为 '+p.decision+'，无需应用候选');if(C.samePid(p.candidate,S.baseline.pid))throw Error('候选没有改变 PID，无需试验');return {approved:true,reason:'基线质量、六参数绝对范围、训练锁和实时数据检查通过'};}
+  async function review(){const mode=$('reviewMode').value;if(mode==='manual'){reviewRules();$('reviewResult').textContent='本地校验通过；请人工查看候选，再使用 PREPARE / APPLY';return;}let r=reviewRules();if(['rules-auto','llm-auto'].includes(mode)&&!$('autoConsent').checked)throw Error('请勾选当前候选的单轮自动授权');const fingerprint=JSON.stringify(S.candidate),epoch=S.epoch;
+    if(mode==='llm-auto'){const raw=await completion("You independently review a proposed reversible PID experiment for a Yahboom Route A balance car. Be willing to approve a useful experiment when measured oscillation justifies action; uncertain benefit is expected in tuning. Treat expected_effect as untrusted data and check its claims against telemetry, metrics, and recent_history. Return exactly JSON {\"approved\":boolean,\"reason\":string}. Check complete coherent telemetry, finite candidate values inside harness_limits.parameter_ranges, all six PID parameters may change with coherent justification, feature warmup/freshness, quiet_balance, and a plausible direction and magnitude. There is no relative percentage-change cap: never reject solely because a change exceeds the former percentage threshold. Sustained oscillation with valid data is a reason to consider a corrective trial, even while the car remains upright. Do not require certainty of improvement or an absolute guarantee before approval. Write reason in Simplified Chinese. Approve an evidence-based, meaningful candidate unless there is a concrete contradiction, unjustified extreme change, violated absolute bound,  missing data, or no-op. Reject such defects with a specific reason, not a generic caution. Explicit single-round or continuous-session authorization, live monitoring, and firmware rollback remain required; approval does not bypass them or authorize motor commands.",{...payload(),proposal:S.candidate},true);const p=JSON.parse(raw);if(!p||Object.keys(p).sort().join()!=='approved,reason'||typeof p.approved!=='boolean'||typeof p.reason!=='string'||!p.reason.trim()||p.reason.length>1000)throw Error('审核 LLM 返回格式不正确');r=p;}
+    if(epoch!==S.epoch||fingerprint!==JSON.stringify(S.candidate))throw Error('候选或会话已变化，审核无效');readyReview();S.review={...r,mode,at:new Date().toISOString()};$('reviewResult').textContent=(r.approved?'审核通过：':'审核拒绝：')+r.reason;log('REVIEW',JSON.stringify(S.review));if(!r.approved||mode==='rules-report')return;if(S.candidate.requested_test!=='quiet_balance')throw Error('自动试验只支持静止平衡；balance_recovery 需要人工实施和审核');if(!$('autoConsent').checked)throw Error('自动授权已撤销');S.auto=true;const token=++S.autoToken;try{await prepare(true);if(!S.auto||token!==S.autoToken)return;await apply(true);status('本轮自动试验运行中，持续采集本轮遥测数据');}catch(e){cancelAuto();if(S.id&&active())await recover('自动流程失败：'+e.message);throw e;}
+  }
+  async function prepare(automatic=false){return exclusive(async()=>{reviewRules();if(S.llmBusy)throw Error('请等待 LLM 请求结束');if(!automatic&&!confirm('已审核当前候选，确认 PREPARE 暂存到固件？此步不切换 PID。'))return;S.trialBase={...S.baseline.pid};S.trialPid={...S.candidate.candidate};S.trialLimits=limits();S.id=crypto.getRandomValues(new Uint32Array(1))[0]%2000000000+1;S.phase='PREPARING';S.sawTrial=false;update();try{await ack(C.prepare(S.id,30000,S.trialPid),'PREP',S.id);startHeartbeat();await readPid({pid:S.trialBase,fw:1,lock:true});S.phase='PREPARED';status('PREP ACK 和 IDLE→PREPARED 状态已确认，当前 PID 仍是基线');}catch(e){S.phase='UNCERTAIN';stopHeartbeat();status('PREP 结果未确认，请回滚后重新采集');if(S.fw===0)await verifyLocalRollback().catch(()=>{});throw e;}});}
+  function assertTrialReady(){if(!fresh()||!S.fast)throw Error('快遥测未就绪，不能 APPLY');if(Math.abs(S.fast.angle)>25)throw Error('当前倾角 '+S.fast.angle.toFixed(2)+'° 超过 25°，不能 APPLY；请先恢复直立平衡');if(Math.abs(S.fast.ml)>=2595||Math.abs(S.fast.mr)>=2595)throw Error('当前计算输出已接近饱和，不能 APPLY；请先恢复稳定平衡');}
+  async function apply(automatic=false){return exclusive(async()=>{requireLink();if(S.phase!=='PREPARED'||S.fw!==1||!S.locked)throw Error('PREPARE 尚未确认');assertTrialReady();if(!fresh()||!S.balance||Date.now()-S.slowAt>5000||S.slow.battery<S.trialLimits.battery)throw Error('实时遥测、平衡状态或电压不符合 APPLY 条件');await readPid({pid:S.trialBase,fw:1,lock:true});assertTrialReady();S.phase='APPLYING';S.trialSamples=[];startHeartbeat();try{await ack(C.command('APPLY',S.id),'APPLY',S.id);await settledPid({pid:S.trialPid,fw:2,lock:true});S.phase='TRIAL';S.trialAt=Date.now();status('APPLY ACK、TRIAL 状态和候选六参数读回一致；开始试验采集');}catch(e){S.phase='UNCERTAIN';throw e;}});}
+  function evaluateTrial(){quality(S.trialMetrics);const b=S.metrics,t=S.trialMetrics,reason=[];
+    if(A.running){
+      if(t.featureSamples<t.samples*.9)reason.push('指标未预热或过期');
+      if(t.meanOsc>b.meanOsc*1.15+.5)reason.push('osc恶化');
+      if(t.meanLean>b.meanLean*1.15+.1)reason.push('lean恶化');
+      const improved=(b.rmsAngle>.2&&t.rmsAngle<=b.rmsAngle*.95)||(b.rmsGyro>2&&t.rmsGyro<=b.rmsGyro*.95)||(b.meanOsc>1&&t.meanOsc<=b.meanOsc*.95)||(b.meanLean>.2&&t.meanLean<=b.meanLean*.95);
+      if(!improved)reason.push('未观察到至少一项有效指标改善5%，保留基线');
+    }if(t.rmsAngle>b.rmsAngle*1.1+.1)reason.push('倾角 RMS 恶化');if(t.peakAngle>b.peakAngle*1.1+.5)reason.push('倾角峰值恶化');if(t.rmsGyro>b.rmsGyro*1.15+1)reason.push('角速度 RMS 恶化');if(t.saturationRate>Math.max(b.saturationRate+.02,.05))reason.push('PWM 饱和增加');return {approved:reason.length===0,reason:reason.join('；')||'试验指标在允许范围内'};}
+  async function accept(automatic=false){return exclusive(async()=>{requireLink();if(S.phase!=='TRIAL'||S.fw!==2||!fresh())throw Error('没有已确认的实时 TRIAL');S.trialMetrics=C.metrics(S.trialSamples);quality(S.trialMetrics);const judgment=evaluateTrial();if(!judgment.approved)throw Error('试验审核拒绝：'+judgment.reason);const id=S.id;S.phase='ACCEPTING';await ack(C.command('ACCEPT',id),'ACCEPT',id);await readPid({pid:S.trialPid,fw:0,lock:true});finishTransaction('accepted',judgment.reason);status('ACCEPT ACK 和六参数读回一致；新 PID 已确认，下一轮需重新采集基线');});}
+  function finishTransaction(outcome,reason){S.history.push({time:new Date().toISOString(),source:S.mock?'simulation':'ble',id:S.id,outcome,base:S.trialBase,candidate:S.trialPid,appliedConfirmed:S.sawTrial,baseline_metrics:S.metrics,trial_metrics:S.trialMetrics,review:S.review,reason});stopHeartbeat();cancelAuto();S.phase='IDLE';S.id=0;S.baseline=null;S.metrics=null;clearCandidate();}
+  async function rollback(){cancelContinuous();cancelAuto();return exclusive(async()=>{requireLink();if(!S.id)throw Error('没有当前网页事务 ID；请使用停止训练同步固件');if(S.fw===0&&await verifyLocalRollback())return;S.phase='ROLLING_BACK';const id=S.id;await send(C.legacyMotion(0,0,S.pid),true);await ack(C.command('ROLLBACK',id),'ROLLBACK',id,true);await settledPid({pid:S.trialBase,fw:0});finishTransaction('rolled_back','用户或浏览器保护请求回滚');status('ROLLBACK ACK、固件 IDLE 和基线 PID 读回一致');});}
+  async function verifyLocalRollback(){if(S.recovery)return false;S.recovery=true;try{const p=await readPid();if(p.state===0&&C.samePid(p.pid,S.trialBase)){finishTransaction('firmware_rollback','固件自行结束试验，基线已读回');status(S.sawTrial?'候选曾生效，随后试验结束/保护回滚；基线 PID 已读回确认':'候选事务已结束，基线 PID 已读回；未收到 TRIAL 生效确认');return true;}else{status('事务结束但基线未确认，请停止训练并重新读取 PID');return false;}}finally{S.recovery=false;}}
+  function cancelAuto(){S.auto=false;S.autoToken++;if($('autoConsent'))$('autoConsent').checked=false;}
+  async function recover(reason){cancelContinuous();if(S.recovery)return;S.recovery=true;cancelAuto();cancelLlm();clearMotion();cancelQueue('保护触发，待发命令已取消');cancelWaiters('保护触发：'+reason);S.phase='UNCERTAIN';status('请求停止/回滚：'+reason);try{if(active()){await send(C.legacyMotion(0,0,S.pid||C.DEFAULT_PID),true);const id=S.id;if(id){await ack(C.command('ROLLBACK',id),'ROLLBACK',id,true);await settledPid({pid:S.trialBase,fw:0});finishTransaction('rolled_back',reason);status('保护回滚已获 ACK，基线 PID 已读回：'+reason);}else status('已发送停止移动；无当前网页事务 ID，请读取固件状态');}}catch(e){stopHeartbeat();S.phase='UNCERTAIN';status('停止/回滚未确认：'+e.message+'；请现场确认小车状态');}finally{S.recovery=false;update();}}
+  function startHeartbeat(){stopHeartbeat();S.heartbeat=setInterval(()=>{if(active()&&S.id&&['PREPARING','PREPARED','APPLYING','TRIAL','ACCEPTING','ROLLING_BACK'].includes(S.phase)&&!S.queue.some(q=>q.kind==='heartbeat'))send(C.command('HB',S.id),false,'heartbeat').catch(e=>recover(e.message));},500);}
+  function stopHeartbeat(){clearInterval(S.heartbeat);S.heartbeat=null;S.queue=S.queue.filter(q=>{if(q.kind==='heartbeat'){q.resolve();return false;}return true;});}
+  function clearMotion(){S.motionToken++;S.activeMotion?.classList.remove('pressed');S.activeMotion=null;}
+  async function releaseMotion(){if(!S.activeMotion)return;clearMotion();S.queue=S.queue.filter(q=>{if(q.kind==='motion'){q.reject(Error('移动已释放'));return false;}return true;});if(active())await send(C.legacyMotion(0,0,S.pid||C.DEFAULT_PID),true);}
+  function bindMotion(button){const [move,pivot]=button.dataset.motion.split(',').map(Number);const start=e=>{e.preventDefault();if(S.activeMotion)return;try{requireLink();if(!S.balance||!fresh()||S.locked||S.fw!==0)throw Error('移动需要实时平衡数据、训练未锁定且无事务');S.activeMotion=button;S.motionToken++;button.classList.add('pressed');button.setPointerCapture?.(e.pointerId);send(C.legacyMotion(move,pivot,S.pid),false,'motion').catch(err=>{releaseMotion().catch(fail);fail(err);});}catch(err){fail(err);}};const stop=e=>{if(S.activeMotion===button){e.preventDefault();releaseMotion().catch(fail);}};button.addEventListener('pointerdown',start);for(const type of ['pointerup','pointercancel','lostpointercapture'])button.addEventListener(type,stop);}
+  async function safeStop(){cancelContinuous();cancelAuto();cancelLlm();clearMotion();cancelQueue('紧急停止取消待发命令');cancelWaiters('紧急停止');if(!active()){status('未连接；无法向小车发送停止命令');return;}if(!firmwareWritable())throw Error('当前为只读反馈，停止指令尚不可确认；请通过小车硬件停止');if(S.id){await recover('用户紧急停止');return;}await send(C.legacyMotion(0,0,S.pid||C.DEFAULT_PID),true);if(!S.balance&&!S.locked&&S.fw===0)await send(C.motorDiag('STOP'),true);status(S.balance?'停止移动指令已发送；平衡控制仍在运行，请观察电机反馈':'停止移动与诊断停止已发送；请观察电机反馈确认');}
+  async function safeDisconnect(){if(!S.mock&&!firmwareWritable()){cleanup();status('只读 BLE 连接已关闭；小车平衡状态由硬件控制');return;}try{await safeStop();if(S.locked){await exchange(C.training('STOP'),e=>e.type==='ACK'&&e.name==='TRAIN_STOP','断开前 TRAIN_STOP',3000,true);await settledPid({fw:0,lock:false});}}finally{cleanup();status('连接已关闭，旧数据已清除；请现场确认小车停止');}}
+  async function motorDiag(action){return exclusive(async()=>{requireLink();if(S.balance||S.locked||S.fw!==0)throw Error('诊断仅允许轮子架空、平衡启动前、训练未锁定');if(action!=='STOP'&&!confirm('确认两轮已经架空？电机将进行短脉冲。'))return;await ack(C.motorDiag(action),action);status('诊断命令已获 ACK，请查看电机和 TIM8 CCR 反馈');});}
+  async function startMock(){if(S.connected||S.connecting)throw Error('请先安全断开真实设备');cleanup();S.mock=true;const epoch=S.epoch;S.sim=new window.RouteASimulator.Simulator(raw=>{if(epoch!==S.epoch)return;for(let i=0;i<raw.length;i+=13)receive(raw.slice(i,i+13));});$('deviceName').textContent='模拟 YahBoom_BL（非真车）';S.sim.tick();S.simTimer=setInterval(()=>S.sim.tick(),200);await readPid();status('演示模式：独立固件模拟器，所有数据均为模拟');switchPage('status');}
+  function watchUnsafe(){const age=Date.now()-S.fastAt;if(S.activeMotion&&(!fresh()||document.hidden))releaseMotion().catch(fail);if(S.phase==='BASELINE'&&S.samples.length&&Date.now()-S.baseline.startedAt>=60000){try{baselineFinish();}catch(e){S.phase='IDLE';fail(e);}}if(S.phase==='BASELINE'&&S.samples.length&&age>2500){S.phase='IDLE';S.samples=[];status('基线中止：遥测中断，请重新采集');}if(['APPLYING','TRIAL'].includes(S.phase)&&S.fastAt&&age>2500)recover('实时遥测中断');if(S.phase==='TRIAL'&&S.trialSamples.length){S.trialMetrics=C.metrics(S.trialSamples);$('trialMetrics').textContent=metricText(S.trialMetrics);if(S.auto&&S.trialMetrics.durationMs>=S.trialLimits.seconds*1000&&!S.busy){const result=evaluateTrial();$('reviewResult').textContent='试验自动审核：'+result.reason;if(result.approved)accept(true).catch(e=>recover(e.message));else if(A.running)rollbackRound(result.reason).catch(e=>recover(e.message));else recover(result.reason);}}update();draw();}
+  function watch(){try{watchUnsafe();}catch(e){if(S.id)recover(e.message);else fail(e);}}
+  function update(){const connected=active(),known=connected&&S.verified&&firmwareWritable(),working=S.busy||S.recovery;const pill=$('connectionPill');pill.className='pill '+(S.connecting?'connecting':connected?'online':'offline');pill.querySelector('b').textContent=S.connecting?'连接中':S.mock?'演示模式':S.connected?(S.pidFault?'PID 异常':S.verified?(firmwareWritable()?'真车已确认':'只读反馈'):'等待回包'):'未连接';$('connectionPill').disabled=S.connecting;
+    $('dataBanner').textContent=S.mock?'演示数据：本页未连接真实小车':!connected?'未连接：旧数据已清除':S.pidFault?S.pidFault:!S.verified?'已连接 GATT，尚未验证小车 PID 回包':!firmwareWritable()?'真实反馈只读：命令功能需要 RA1.9-AUTO6 六参数固件':!fresh()?'真车连接；快遥测未收到或已过期，移动和试验已禁用':'真实 BLE 数据 / 最近快遥测 '+((Date.now()-S.fastAt)/1000).toFixed(1)+' 秒前';
+    $('rxHz').textContent=(S.rxTimes.filter(t=>Date.now()-t<5000).length/5).toFixed(1)+' Hz';$('frameCounts').textContent=`${S.ok} / ${S.bad}`;$('angleHero').textContent=S.fast?S.fast.angle.toFixed(2)+'°':'--.-°';$('gyroHero').textContent=S.fast?'角速度 '+S.fast.gyro.toFixed(1)+' raw':'角速度 --.-';$('battery').textContent=S.slow?S.slow.battery.toFixed(2)+' V':'-- V';$('encoders').textContent=S.fast?`${S.fast.el} / ${S.fast.er}`:'-- / --';$('motors').textContent=S.fast?`${S.fast.ml} / ${S.fast.mr}`:'-- / --';$('ccrLeft').textContent=S.fast?`${S.fast.c1} / ${S.fast.c2}`:'—';$('ccrRight').textContent=S.fast?`${S.fast.c3} / ${S.fast.c4}`:'—';$('loopOutputs').textContent=S.slow?`${S.slow.balancePwm} / ${S.slow.velocityPwm} / ${S.slow.turnPwm}`:'—';$('firmware').textContent=S.firmware;$('dropped').textContent=S.slow?S.slow.dropped:'—';$('balanceState').textContent=S.balance===null?'未确认':S.balance?'已启动':'未启动';$('lockState').textContent=S.locked===null?'未确认':S.locked?'已锁定':'未锁定';$('fwState').textContent=['IDLE / 基线','PREPARED','TRIAL'][S.fw]||'未知';$('linkReady').textContent=S.verified?'GET / PID 已确认':'尚未确认';$('trialState').textContent=S.phase;$('sampleCount').textContent=`${S.samples.length} 样本`;$('driveReady').textContent=known&&fresh()&&S.balance?'实时平衡反馈':'等待有效反馈';
+    $('manualPidButton').disabled=!known||working||S.locked!==false||S.fw!==0;$('trainStart').disabled=!known||working||!S.balance||S.locked||S.fw!==0||S.phase!=='IDLE';$('trainStop').disabled=!known||working||!S.locked;$('baselineStart').disabled=!known||working||!S.locked||!fresh()||!['IDLE','REVIEW'].includes(S.phase);$('baselineFinish').disabled=working||S.phase!=='BASELINE'||S.samples.length<20;$('prepareButton').disabled=!known||working||S.llmBusy||!S.candidate||S.candidate.decision!=='propose'||S.phase!=='REVIEW';$('applyButton').disabled=!known||working||S.phase!=='PREPARED'||!fresh()||!S.fast||Math.abs(S.fast.angle)>25||Math.abs(S.fast.ml)>=2595||Math.abs(S.fast.mr)>=2595;$('acceptButton').disabled=!known||working||S.phase!=='TRIAL'||!S.trialMetrics||S.trialMetrics.durationMs<5000;$('rollbackButton').disabled=!known||working||!S.id||S.phase==='IDLE';$('reviewButton').disabled=!known||working||S.llmBusy||!S.candidate||S.phase!=='REVIEW';$('cancelAutoButton').disabled=!connected||(!S.auto&&!S.id);
+    document.querySelectorAll('[data-motion]').forEach(b=>b.disabled=!known||!fresh()||!S.balance||S.locked||S.fw!==0||working);document.querySelectorAll('[data-diag]').forEach(b=>b.disabled=!known||working||(S.balance||S.locked||S.fw!==0));
+    for(const action of ['harness','llm','validate-json'])document.querySelector(`[data-action="${action}"]`).disabled=!known||working||S.llmBusy||S.phase!=='REVIEW';document.querySelector('[data-action="get-pid"]').disabled=!connected||working;document.querySelector('[data-action="copy-pid"]').disabled=!known||working;document.querySelectorAll('[data-action="connect"]').forEach(b=>b.disabled=S.connecting||S.connected);document.querySelector('[data-action="disconnect"]').disabled=!connected&&!S.connecting;
+    $('pidIntegrity').textContent=S.pidFault||(!S.pid?'等待小车六参数读回':'六参数数值范围检查通过；参数是否生效以 ACK 和读回一致为准');
+    updateContinuous();$('workflowHint').textContent=S.pidFault?'下一步：通过硬件停止并烧录 RA1.9-AUTO6 固件，重连读取 PID':active()&&S.verified&&!firmwareWritable()?'下一步：烧录 RA1.9-AUTO6 六参数固件，随后恢复 20 字节 / 18 ms 并重连':!known?'下一步：连接并确认 GET / PID 回包':!S.balance?'下一步：按小车现有硬件流程启动平衡，再检查状态页反馈':!fresh()?'等待实时快遥测；数据过期时禁止移动和试验':!S.locked?'下一步：开始训练并锁定人工调参':S.phase==='BASELINE'?'采集中：至少 5 秒和 20 样本；60 秒自动结束':S.phase==='REVIEW'?'下一步：生成候选，选择人工 / 规则 / LLM 审核':S.phase==='PREPARED'?(S.fast&&(Math.abs(S.fast.angle)>25||Math.abs(S.fast.ml)>=2595||Math.abs(S.fast.mr)>=2595)?'当前倾角过大或输出饱和，APPLY 已禁用；请先恢复直立稳定平衡':'候选已暂存，点“确认并 APPLY”开始本轮试验'):S.phase==='TRIAL'?'试验运行中：保持前台，观察指标，再接受或回滚':S.phase==='UNCERTAIN'?'事务结果未确认：请回滚或停止训练，并重新读取 PID':S.phase==='IDLE'?'下一步：采集当前 PID 下的新基线':'正在等待固件 ACK 和读回';
+    document.querySelectorAll('[data-step]').forEach(el=>{const key=el.dataset.step;el.classList.toggle('done',key==='lock'?!!S.locked:key==='baseline'?!!S.metrics:key==='review'?!!S.candidate:key==='trial'?!!S.id:false);});
+  }
+  function prepCanvas(canvas,height){const dpr=window.devicePixelRatio||1,w=canvas.clientWidth||160,h=height||canvas.clientHeight||160;if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);}const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);return {ctx,w,h};}
+  function draw(){drawFeatures();const {ctx,w,h}=prepCanvas($('angleGauge')),a=S.fast?.angle||0,r=Math.min(w,h)/2-12;ctx.clearRect(0,0,w,h);ctx.lineWidth=10;ctx.lineCap='round';ctx.strokeStyle='#1d3a51';ctx.beginPath();ctx.arc(w/2,h/2,r,.75*Math.PI,2.25*Math.PI);ctx.stroke();ctx.strokeStyle=Math.abs(a)>10?'#fb4b5c':'#2dd4bf';ctx.beginPath();ctx.arc(w/2,h/2,r,.75*Math.PI,.75*Math.PI+Math.max(0,Math.min(1,(a+25)/50))*1.5*Math.PI);ctx.stroke();ctx.fillStyle='#8fa7ba';ctx.font='12px system-ui';ctx.textAlign='center';ctx.fillText('±25°',w/2,h/2+6);const graph=prepCanvas($('chart'),210),g=graph.ctx;g.clearRect(0,0,graph.w,graph.h);g.strokeStyle='#1b354b';g.lineWidth=1;for(let i=1;i<5;i++){g.beginPath();g.moveTo(0,i*42);g.lineTo(graph.w,i*42);g.stroke();}const pts=S.chart.filter(p=>Date.now()-p.at<=30000);for(const [key,scale,color] of [['angle',7,'#2dd4bf'],['gyro',.7,'#fbbf24']]){g.strokeStyle=color;g.lineWidth=2;g.beginPath();pts.forEach((p,i)=>{const x=graph.w-(Date.now()-p.at)/30000*graph.w,y=105-p[key]*scale;i?g.lineTo(x,y):g.moveTo(x,y);});g.stroke();}}
+  function drawFeatures(){
+    const {ctx,w,h}=prepCanvas($('featureChart'),150);ctx.clearRect(0,0,w,h);ctx.font='12px system-ui';
+    const pts=S.chart.filter(p=>p.featuresFresh&&p.warm&&Date.now()-p.at<=30000);
+    for(const [key,color,unit] of [['osc','#fbbf24','°/s'],['lean','#2dd4bf','°']]){
+      const max=Math.max(key==='osc'?1:.1,...pts.map(p=>p[key]));ctx.strokeStyle=color;ctx.lineWidth=2;ctx.beginPath();pts.forEach((p,i)=>{const x=w-(Date.now()-p.at)/30000*w,y=130-p[key]/max*95;i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();ctx.fillStyle=color;ctx.textAlign='left';ctx.fillText(`${key} 满刻度 ${max.toFixed(2)} ${unit}`,6,key==='osc'?14:30);
     }
   }
+  function download(name,type,content){const a=document.createElement('a'),url=URL.createObjectURL(new Blob([content],{type}));a.href=url;a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},1000);}
+  function exportJson(){download(`routea-${Date.now()}.json`,'application/json',redact(JSON.stringify({schema_version:2,exportedAt:new Date().toISOString(),currentSource:S.mock?'simulation':S.connected?'ble':'disconnected',continuous:{running:A.running,round:A.round,phase:A.phase},pid:S.pid,pidFault:S.pidFault,baseline:S.baseline,metrics:S.metrics,proposal:S.candidate,review:S.review,trialMetrics:S.trialMetrics,history:S.history,telemetry:S.telemetry,logs:S.logs,keyLogs:S.keyLogs},null,2)));}
+  function exportCsv(){const cols=['osc','lean','leanBand','warm','featuresFresh','at','source','kind','ms','angle','gyro','el','er','ml','mr','state','trainingLocked','balanceStarted','c1','c2','c3','c4','battery','balancePwm','velocityPwm','turnPwm','dropped','firmware'];const csvCell=v=>'"'+String(v??'').replace(/"/g,'""')+'"';download(`routea-${Date.now()}.csv`,'text/csv;charset=utf-8','\ufeff'+cols.join(',')+'\n'+S.telemetry.map(x=>cols.map(k=>csvCell(x[k])).join(',')).join('\n'));}
+  function switchPage(name){if(S.activeMotion)releaseMotion().catch(fail);document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.dataset.page===name));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.nav===name));window.scrollTo({top:0,behavior:'smooth'});setTimeout(draw,80);}
+  async function run(fn){try{await fn();}catch(e){fail(e);}update();}
 
-  async function requestLlmDecision(metrics) {
-    if (state.mock) return C.mockDecision(state.profile, state.currentPid, metrics);
-    const key = $("llmKey").value.trim();
-    if (!key) throw new Error("设置页缺少API Key");
-    const system = [
-      "PROMPT_VERSION: route-a-remote-adaptive-v3.",
-      "You supervise PID adaptation for a two-wheel STM32 balance robot.",
-      "The STM32 runs the 5 ms balance loop. You make one slow decision per telemetry window.",
-      "There are exactly two profiles: N is official mode 1, L is official mode 4.",
-      "L has fixed firmware scales balance 2.0, velocity 1.35, turn 1.0.",
-      "Return exactly one JSON object with exactly these fields:",
-      "schema_version, action, target_profile, candidate, reason, expected_effect, confidence.",
-      "schema_version must be 3.",
-      "action must be switch_preset, propose_pid, hold, rollback, or stop.",
-      "target_profile must be N or L.",
-      "candidate must contain exactly numeric AP,AD,VP,VI,TP,TD.",
-      "For switch_preset, use the exact selected official preset.",
-      "For propose_pid, target_profile MUST equal current_profile. Only switch_preset may change profile or fixed multipliers. There is no relative percentage step limit, but every value must stay inside the supplied absolute ranges. Only changed control loops will be written.",
-      "Prefer AP/AD changes for stationary balance data. Change VP/VI only when speed evidence exists and TP/TD only when turning evidence exists.",
-      "Do not react to a single impulse by switching profiles. Persistent load/effort/lean may justify L.",
-      "Never output Markdown, motor commands, thresholds, or claims that a candidate was accepted."
-    ].join(" ");
-    const recent = state.auto.history.slice(-6).map((item) => ({ action: item.action, profile: item.profile, score: item.score, result: item.result }));
-    const user = {
-      schema_version: 3, current_profile: state.profile, current_pid: state.currentPid,
-      official_presets: { N: C.presetPid("N"), L: C.presetPid("L") },
-      fixed_profile_scales: { N: { balance: 1, velocity: 1, turn: 1 }, L: { balance: 2, velocity: 1.35, turn: 1 } },
-      absolute_pc_protection_ranges: C.RANGES, metrics, recent_history: recent,
-      context: {
-        stationary_balance: Math.abs(state.fast?.el || 0) + Math.abs(state.fast?.er || 0) < 20,
-        automatic_cycle: state.auto.cycle,
-        note: "Lower normalized score is better. A deterministic safety layer evaluates and may roll back your proposal."
+  function updateContinuous(){
+    $('continuousState').textContent=`${A.running?'运行中':'已停止'} · 第${A.round}轮 · ${A.phase}`;
+    $('continuousStart').disabled=A.running||S.busy||S.llmBusy||!active()||!S.verified||!firmwareWritable()||!S.balance||S.fw!==0||S.id!==0;
+    $('continuousStop').disabled=!A.running&&!S.id;
+    $('oscValue').textContent=S.features?S.features.osc.toFixed(3)+' °/s':'—';
+    $('leanValue').textContent=S.features?S.features.lean.toFixed(3)+' °':'—';
+    $('leanBandValue').textContent=S.features?S.features.leanBand.toFixed(3)+' °':'—';
+    $('featureState').textContent=!S.features?'等待指标':Date.now()-S.featureAt>600?'指标过期':S.features.warm?'已预热 · STM32 200 Hz':'预热中（3秒）';
+    if(A.running){
+      for(const id of ['trainStart','baselineStart','baselineFinish','prepareButton','applyButton','acceptButton','reviewButton'])$(id).disabled=true;
+      for(const action of ['harness','llm','validate-json','test-llm','use-proxy'])document.querySelector(`[data-action="${action}"]`).disabled=true;
+      for(const id of ['reviewMode','loopReview','loopSource','baselineSeconds','loopCooldown','trialSeconds','minBattery','proposalJson','autoConsent'])$(id).disabled=true;
+    }else{
+      for(const action of ['harness','llm','validate-json'])document.querySelector(`[data-action="${action}"]`).disabled=!S.verified||!firmwareWritable()||S.busy||S.llmBusy||S.phase!=='REVIEW';for(const action of ['test-llm','use-proxy'])document.querySelector(`[data-action="${action}"]`).disabled=S.llmBusy||S.busy;
+      for(const id of ['reviewMode','loopReview','loopSource','baselineSeconds','loopCooldown','trialSeconds','minBattery','proposalJson','autoConsent'])$(id).disabled=false;
+    }
+  }
+  function cancelContinuous(){A.running=false;A.token++;if(A.phase==='运行中')A.phase='已取消';}
+  async function loopWait(ms,token){const end=Date.now()+ms;while(Date.now()<end){if(!A.running||token!==A.token)throw Error('连续调参已停止');if(!active()||!fresh()||!S.balance||!S.locked||document.hidden)throw Error('连续调参实时条件失效');await sleep(Math.min(200,end-Date.now()));}}
+  function loopCheck(token){if(!A.running||token!==A.token)throw Error('连续调参已停止');requireTraining();if(!S.features?.warm||Date.now()-S.featureAt>600)throw Error('osc/lean未预热或已过期');}
+  async function rollbackRound(reason){return exclusive(async()=>{
+    const id=S.id;S.phase='ROLLING_BACK';await ack(C.command('ROLLBACK',id),'ROLLBACK',id,true);await settledPid({pid:S.trialBase,fw:0,lock:true});finishTransaction('rolled_back',reason);status('本轮回滚已确认：'+reason);
+  });}
+  async function startContinuous(){
+    requireLink();if(A.running||S.busy||S.id||S.fw!==0||!S.balance||!fresh())throw Error('需要无事务且已启动平衡的实时连接');
+    if(!$('continuousConsent').checked)throw Error('请先勾选连续自动调参授权');
+    if(!S.features?.warm||Date.now()-S.featureAt>600)throw Error('请等待osc/lean预热完成');
+    const baselineSeconds=Number($('baselineSeconds').value),cooldown=Number($('loopCooldown').value);
+    if(!Number.isFinite(baselineSeconds)||baselineSeconds<5||baselineSeconds>20||!Number.isFinite(cooldown)||cooldown<2||cooldown>60)throw Error('基线5..20秒，轮间等待2..60秒');
+    const demo=$('loopSource').value==='demo';if(demo&&!S.mock)throw Error('演示建议源只允许模拟设备');if(!demo){const url=C.endpoint($('llmBase').value.trim());if(!$('llmModel').value.trim()||(!$('llmKey').value.trim()&&new URL(url).origin!==location.origin))throw Error('请先配置LLM模型和会话密钥');}limits();if(!S.locked)await trainStart();
+    A.running=true;A.round=0;A.failures=0;A.phase='运行中';const token=++A.token;update();
+    try{while(A.running&&token===A.token){
+      loopCheck(token);A.round++;A.phase='采集新基线';update();await baselineStart();await loopWait(baselineSeconds*1000+300,token);loopCheck(token);baselineFinish();
+      if(S.metrics.featureSamples<S.metrics.samples*.9)throw Error('基线有效指标不足90%');
+      A.phase=demo?'生成模拟候选':'LLM生成建议';update();if(demo){const p={...S.baseline.pid,AP:Math.min(288,S.baseline.pid.AP+1)};proposal({schema_version:1,decision:'propose',stage:'balance',candidate:p,expected_effect:'模拟候选仅用于展示闭环；不代表物理优化',requested_test:'quiet_balance',confidence:.5},'模拟演示');}else await requestLlm();loopCheck(token);
+      if(S.candidate.decision!=='propose'||C.samePid(S.candidate.candidate,S.baseline.pid)){
+        A.phase='保持参数，等待重新观察';S.phase='IDLE';S.baseline=null;S.metrics=null;clearCandidate();update();await loopWait(cooldown*1000,token);continue;
       }
-    };
-    const base = $("llmBase").value.trim().replace(/\/$/, "");
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 30000);
-    try {
-      const response = await fetch(`${base}/chat/completions`, {
-        method: "POST", signal: controller.signal,
-        headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ model: $("llmModel").value.trim(), response_format: { type: "json_object" }, messages: [{ role: "system", content: system }, { role: "user", content: JSON.stringify(user) }] })
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}: ${(await response.text()).slice(0, 180)}`);
-      const body = await response.json();
-      const raw = body.choices?.[0]?.message?.content;
-      if (!raw) throw new Error("响应中没有choices[0].message.content");
-      return C.validateDecision(raw, state.profile, state.currentPid);
-    } finally { clearTimeout(timeout); }
+      if(S.candidate.requested_test!=='quiet_balance')throw Error('连续模式仅支持静止平衡，不能自动实施恢复扰动');
+      A.phase='审核候选';$('reviewMode').value=$('loopReview').value;$('autoConsent').checked=true;update();await review();
+      if(!A.running||token!==A.token)break;
+      if(S.review&&!S.review.approved){A.failures++;A.phase='审核拒绝，重新观察';S.phase='IDLE';clearCandidate();await loopWait(cooldown*1000,token);if(A.failures>=3)throw Error('连续三次审核拒绝');continue;}
+      if(S.phase!=='TRIAL')throw Error('未确认候选已进入TRIAL');
+      const historyCount=S.history.length;A.phase='试验采集与自动评价';update();
+      while(A.running&&token===A.token&&S.history.length===historyCount){await loopWait(200,token);if(S.phase==='UNCERTAIN')throw Error('事务结果未确认');}
+      if(!A.running||token!==A.token)break;
+      const result=S.history[S.history.length-1];if(result.outcome==='firmware_rollback')throw Error('固件保护已回滚，需检查实车后再启动');A.failures=result.outcome==='accepted'?0:A.failures+1;
+      A.phase=result.outcome==='accepted'?'改善已接受，等待下一轮':'已恢复基线，等待下一轮';update();
+      if(A.failures>=3)throw Error('连续三轮未获改善，自动流程暂停');
+      await loopWait(cooldown*1000,token);
+    }}catch(e){if(A.running&&token===A.token){A.phase=e.message;await stopContinuous(e.message);}}
+    finally{if(token===A.token)A.running=false;update();}
   }
-
-  async function startAuto() {
-    if (!(state.connected || state.mock)) return toast("请先连接小车");
-    if (state.hardwareFault) return toast("固件数据故障锁定，请断电重启并刷新页面");
-    if (!directFirmwareReady()) return toast("请等待并确认固件版本RA3.0-SEQ1");
-    if (!state.balanceStarted) return toast("请先在小车端按键启动平衡");
-    if (!state.currentPid) return toast("尚未同步实际PID");
-    if (writer.busy || state.pendingManual || state.fast?.transitionStep) return toast("请等待人工参数应用完成");
-    if (!state.mock && !$("llmKey").value.trim()) { switchPage("settings"); return toast("请先填写LLM API Key"); }
-    if (state.auto.enabled) return;
-    state.auto.enabled = true;
-    state.auto.phase = "STARTING";
-    state.auto.cycle = 0;
-    state.auto.history = [];
-    state.auto.decision = null;
-    state.auto.baselineMetrics = null;
-    state.auto.latestMetrics = null;
-    state.auto.rollbackReason = "";
-    updateUi();
-    await send(C.training("START"));
+  async function stopContinuous(reason='用户停止连续调参'){
+    cancelContinuous();cancelLlm();A.phase=reason;$('continuousConsent').checked=false;
+    if(!active()){update();return;}
+    if(S.id)await recover(reason);
+    const stopDeadline=Date.now()+5000;while(S.busy&&Date.now()<stopDeadline)await sleep(100);if(S.busy){status('当前操作尚未结束，自动流程已停止；请使用停止训练同步状态');return;}
+    if(S.locked)await trainStop();
+    update();
   }
-  async function stopAuto(silent) {
-    writer.cancel("自动训练已停止");
-    clearAutoTimer();
-    state.auto.collecting = false;
-    state.auto.enabled = false;
-    stopHeartbeat();
-    try {
-      if (state.firmwareState !== 0 && state.auto.trialId) {
-        await send(C.command("ROLLBACK", state.auto.trialId));
-        await delay(180);
-      }
-      if (state.trainingLocked) await send(C.training("STOP"));
-    } catch (_) {}
-    state.auto.phase = "IDLE";
-    if (!silent) toast("自动训练已停止；活动候选已请求回滚");
-    updateUi();
-  }
-  function pauseAutoOnError(message) {
-    clearAutoTimer();
-    stopHeartbeat();
-    state.auto.enabled = false;
-    state.auto.collecting = false;
-    state.auto.phase = "ERROR";
-    toast(message);
-    if (state.trainingLocked) send(C.training("STOP"));
-    updateUi();
-  }
-  async function requestRollback(reason) {
-    writer.cancel(reason);
-    if (!state.auto.enabled || state.auto.phase === "ROLLING_BACK") return;
-    clearAutoTimer();
-    state.auto.collecting = false;
-    state.auto.rollbackReason = reason;
-    state.auto.phase = "ROLLING_BACK";
-    recordHistory("回滚", state.auto.latestMetrics, reason);
-    updateUi();
-    await send(C.command("ROLLBACK", state.auto.trialId));
-  }
-  function afterRollback() {
-    stopHeartbeat();
-    state.auto.phase = "ROLLED_BACK";
-    state.auto.trialId = 0;
-    send(C.getPid());
-    scheduleNextBaseline(1200);
-  }
-
-  function recordHistory(result, metrics, note = "") {
-    const decision = state.auto.decision;
-    state.auto.history.push({
-      cycle: state.auto.cycle, at: new Date().toISOString(),
-      action: decision?.action || "none", profile: decision?.target_profile || state.profile,
-      pid: decision?.candidate || state.currentPid, score: metrics?.score ?? null, result, note
-    });
-    if (state.auto.history.length > 100) state.auto.history.shift();
-    renderHistory();
-  }
-  function renderMetrics(metrics) {
-    const values = metrics ? {
-      metricScore: metrics.score.toFixed(2), metricRms: `${metrics.rmsAngle.toFixed(3)}°`,
-      metricPeak: `${metrics.peakAngle.toFixed(2)}°`, metricGyro: metrics.rmsGyro.toFixed(2),
-      metricOsc: metrics.meanOsc.toFixed(3), metricLean: `${metrics.meanLean.toFixed(3)}°`,
-      metricSat: `${(metrics.saturationRate * 100).toFixed(1)}%`, metricEffort: metrics.motorEffort.toFixed(0)
-    } : {};
-    for (const id of ["metricScore", "metricRms", "metricPeak", "metricGyro", "metricOsc", "metricLean", "metricSat", "metricEffort"]) $(id).textContent = values[id] || "--";
-  }
-  function renderDecision(decision) {
-    if (!decision) return;
-    $("decisionAction").textContent = decision.action;
-    $("decisionProfile").textContent = profileName(decision.target_profile);
-    $("decisionPid").textContent = pidText(decision.candidate);
-    $("decisionReason").textContent = decision.reason;
-    $("decisionEffect").textContent = decision.expected_effect;
-  }
-  function renderHistory() {
-    const rows = state.auto.history.slice().reverse();
-    $("historyBody").innerHTML = rows.length ? rows.map((item) => `<tr><td>${item.cycle}</td><td>${escapeHtml(item.action)}</td><td>${item.profile}</td><td>${item.score == null ? "—" : item.score.toFixed(2)}</td><td>${escapeHtml(item.result)}</td></tr>`).join("") : '<tr><td colspan="5">尚无记录</td></tr>';
-  }
-  function escapeHtml(value) {
-    return String(value).replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
-  }
-
-  async function safeStop() {
-    if(writer.busy)writer.cancel("已按停止按钮，取消后续参数");
-    releaseMotion(true);
-    if (state.connected || state.mock) {
-      await send(C.legacyMotion(0, 0, state.currentPid || C.PRESETS.N));
-      if (state.auto.trialId && state.firmwareState !== 0) await send(C.command("STOP", state.auto.trialId));
-    }
-  }
-  function bindMotionButton(button) {
-    const [move, pivot] = button.dataset.motion.split(",").map(Number);
-    const start = async (event) => {
-      event.preventDefault();
-      if (!(state.connected || state.mock)) return;
-      state.activeMotion = button;
-      button.classList.add("pressed");
-      button.setPointerCapture?.(event.pointerId);
-      await send(C.legacyMotion(move, pivot, state.currentPid || C.PRESETS.N));
-    };
-    const stop = (event) => {
-      if (state.activeMotion === button) {
-        event?.preventDefault();
-        releaseMotion(false);
-      }
-    };
-    button.addEventListener("pointerdown", start);
-    button.addEventListener("pointerup", stop);
-    button.addEventListener("pointercancel", stop);
-    button.addEventListener("lostpointercapture", stop);
-  }
-  async function releaseMotion(silent) {
-    const button = state.activeMotion;
-    state.activeMotion = null;
-    if (button) button.classList.remove("pressed");
-    if (!silent && (state.connected || state.mock)) await send(C.legacyMotion(0, 0, state.currentPid || C.PRESETS.N));
-  }
-
-  function updateUi() {
-    const connected = state.connected || state.mock;
-    $("rxHz").textContent = `${(state.rxTimes.length / 5).toFixed(1)} Hz`;
-    $("frameCounts").textContent = `${state.frameOk} / ${state.frameError}`;
-    $("angleHero").textContent = state.fast ? `${state.fast.angle.toFixed(2)}°` : "--.-°";
-    $("gyroHero").textContent = state.fast ? `角速度 ${state.fast.gyro.toFixed(1)} raw` : "角速度 --.- raw";
-    $("profileHero").textContent = profileName(state.profile);
-    $("autoHero").textContent = state.auto.enabled ? "运行中" : "未启动";
-    $("battery").textContent = state.slow ? `${state.slow.battery.toFixed(2)} V` : "-- V";
-    $("encoders").textContent = state.fast ? `${state.fast.el} / ${state.fast.er}` : "-- / --";
-    $("motors").textContent = state.fast ? `${state.fast.ml} / ${state.fast.mr}` : "-- / --";
-    $("oscValue").textContent = state.fast ? state.fast.osc.toFixed(3) : "--";
-    $("leanValue").textContent = state.fast ? `${state.fast.lean.toFixed(3)}°` : "--°";
-    $("rmsValue").textContent = state.auto.latestMetrics ? `${state.auto.latestMetrics.rmsAngle.toFixed(3)}°` : "--°";
-    $("scoreValue").textContent = state.auto.latestMetrics ? state.auto.latestMetrics.score.toFixed(2) : "--";
-    $("firmware").textContent = state.firmware;
-    $("balanceState").textContent = state.balanceStarted ? "已启动" : "未启动";
-    $("trainingLock").textContent = state.trainingLocked ? "已锁定" : "未锁定";
-    $("firmwareState").textContent = firmwareStateName(state.firmwareState);
-    $("dropped").textContent = state.slow ? String(state.slow.dropped) : "—";
-    $("stackFree").textContent = state.slow?.stackFree != null ? `${state.slow.stackFree} B / 4096 B` : "—";
-    $("controlGap").textContent = state.slow?.controlGapUs != null ? `${(state.slow.controlGapUs / 1000).toFixed(3)} ms` : "—";
-    $("controlExec").textContent = state.slow?.controlExecUs != null ? `${(state.slow.controlExecUs / 1000).toFixed(3)} ms` : "—";
-    $("activeProfileTag").textContent = `当前 ${state.profile}`;
-    $("presetNormal").classList.toggle("active", state.profile === "N");
-    $("presetLoad").classList.toggle("active", state.profile === "L");
-    $("manualLockTag").textContent = state.trainingLocked ? "训练锁定" : state.pendingManual ? "等待读回确认" : !directFirmwareReady() ? "等待固件版本同步" : "可编辑";
-    $("applyManual").textContent = state.pendingManual ? "等待STM32确认…" : "更新全部PID";
-    const manualDisabled = writer.busy || state.hardwareFault || !directFirmwareReady() || !connected || !state.currentPid || state.trainingLocked || state.auto.enabled || !!state.pendingManual;
-    for (const id of ["presetNormal", "presetLoad", "applyManual", "applyBalance", "applyVelocity", "applyTurn", ...C.PID_KEYS.map((key) => "edit" + key)]) $(id).disabled = manualDisabled;
-    document.querySelectorAll("[data-motion]").forEach((button) => button.disabled = !connected);
-    $("autoPhaseTag").textContent = state.auto.enabled ? "运行中" : state.auto.phase === "ERROR" ? "错误" : "停止";
-    $("autoPhase").textContent = state.auto.phase;
-    $("autoCycle").textContent = String(state.auto.cycle);
-    $("autoNext").textContent = nextAutoText();
-    $("manualProfile").disabled = true;
-    $("autoStart").disabled = writer.busy || state.hardwareFault || !directFirmwareReady() || !connected || !state.balanceStarted || state.auto.enabled || !state.currentPid || !!state.pendingManual;
-    $("autoPause").disabled = !state.auto.enabled && !state.trainingLocked;
-  }
-  function nextAutoText() {
-    if(writer.busy)return writer.message;
-    const map = {
-      IDLE: "点击开始自动LLM调参", STARTING: "等待STM32训练锁",
-      BASELINE: "采集当前基线", LLM: "等待LLM决策", PREPARING: "暂存候选",
-      APPLYING: "下个控制边界赋值，等待读回实际PID", SETTLING: "排除切换瞬态", TRIAL1: "首个实车评估窗口",
-      TRIAL2: "确认改善是否保持", ACCEPTING: "接受为新基准", ACCEPTED: "同步新基准",
-      ROLLING_BACK: "恢复上一组确认参数", ROLLED_BACK: "同步回滚结果",
-      HOLD: "保持当前参数后进入下一轮", ERROR: "检查日志与LLM设置"
-    };
-    return map[state.auto.phase] || state.auto.phase;
-  }
-
-  function drawChart() {
-    const canvas = $("chart");
-    const dpr = window.devicePixelRatio || 1;
-    const width = canvas.clientWidth || 320, height = 220;
-    if (canvas.width !== Math.round(width * dpr) || canvas.height !== Math.round(height * dpr)) {
-      canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
-    }
-    const ctx = canvas.getContext("2d");
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, width, height);
-    ctx.strokeStyle = "#1d3a51"; ctx.lineWidth = 1;
-    for (let i = 1; i < 5; i += 1) {
-      const y = i * height / 5;
-      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
-    }
-    const points = state.chart.filter((point) => Date.now() - point.at <= 30000);
-    function series(key, scale, color) {
-      if (points.length < 2) return;
-      ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.beginPath();
-      points.forEach((point, index) => {
-        const x = width - (Date.now() - point.at) / 30000 * width;
-        const y = height / 2 - point[key] * scale;
-        if (index) ctx.lineTo(x, y); else ctx.moveTo(x, y);
-      });
-      ctx.stroke();
-    }
-    series("angle", height / 30, "#2dd4bf");
-    series("gyro", height / 300, "#fbbf24");
-  }
-
-  function switchPage(name) {
-    document.querySelectorAll(".page").forEach((page) => page.classList.toggle("active", page.dataset.page === name));
-    document.querySelectorAll("nav button").forEach((button) => button.classList.toggle("active", button.dataset.nav === name));
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    setTimeout(drawChart, 60);
-  }
-  function download(name, mime, content) {
-    const anchor = document.createElement("a");
-    anchor.href = URL.createObjectURL(new Blob([content], { type: mime }));
-    anchor.download = name;
-    document.body.appendChild(anchor);
-    anchor.click();
-    setTimeout(() => { URL.revokeObjectURL(anchor.href); anchor.remove(); }, 1000);
-  }
-  function exportCsv() {
-    const columns = ["at", "ms", "angle", "gyro", "osc", "lean", "el", "er", "ml", "mr", "state", "trainingLocked", "profile"];
-    const rows = state.telemetry.map((item) => columns.map((key) => item[key]).join(","));
-    download(`routea-telemetry-${Date.now()}.csv`, "text/csv;charset=utf-8", "\ufeff" + columns.join(",") + "\n" + rows.join("\n"));
-  }
-  function exportJson() {
-    download(`routea-session-${Date.now()}.json`, "application/json", JSON.stringify({
-      exportedAt: new Date().toISOString(), currentPid: state.currentPid, profile: state.profile,
-      latestMetrics: state.auto.latestMetrics, decisions: state.auto.history,
-      telemetry: state.telemetry, logs: state.logs
-    }, null, 2));
-  }
-
-  function startMock() {
-    if (state.connected) return toast("请先断开真实设备");
-    stopMock();
-    state.mock = true;
-    state.hardwareFault = false;
-    $("pidFault").classList.add("hidden");
-    state.balanceStarted = true;
-    state.trainingLocked = false;
-    state.mockState = 0;
-    state.mockClock = 0;
-    state.mockProfile = "N";
-    state.mockPid = C.presetPid("N");
-    state.mockChampionPid = { ...state.mockPid };
-    state.mockChampionProfile = "N";
-    state.currentPid = { ...state.mockPid };
-    state.profile = "N";
-    state.firmware = "RA3.0-SEQ1-MOCK";
-    $("deviceName").textContent = "Mock YahBoom_BL";
-    connectionLabel("online", "模拟设备");
-    state.mockTimer = setInterval(emitMockTelemetry, 200);
-    emitMockTelemetry();
-    syncManualFields(true);
-    updateUi();
-    switchPage("status");
-    toast("模拟设备已启动；自动模式使用本地模拟决策");
-  }
-  function stopMock() {
-    if (state.mockTimer) clearInterval(state.mockTimer);
-    state.mockTimer = null;
-    state.mock = false;
-    if (!state.connected) connectionLabel("offline", "未连接");
-  }
-  function emitMockTelemetry() {
-    if (!state.mock) return;
-    state.mockClock += 200;
-    const target = state.mockProfile === "L" ? { AP: 100, AD: 82 } : { AP: 94, AD: 58 };
-    const error = Math.abs(state.mockPid.AP - target.AP) / 25 + Math.abs(state.mockPid.AD - target.AD) / 35;
-    const amplitude = 0.35 + Math.min(2.4, error);
-    const angle = Math.sin(state.mockClock / 210) * amplitude + Math.sin(state.mockClock / 73) * amplitude * 0.22;
-    const gyro = Math.cos(state.mockClock / 210) * amplitude * 45;
-    const osc = amplitude * 0.65;
-    const lean = state.mockProfile === "L" ? 0.25 : 0.35;
-    const ml = Math.round(-angle * 430), mr = Math.round(-angle * 420);
-    mockEmit(C.frame(`T3,F,${state.mockClock},A${angle.toFixed(2)},G${gyro.toFixed(1)},O${osc.toFixed(3)},N${lean.toFixed(3)},EL${Math.round(gyro / 8)},ER${Math.round(gyro / 8 + 1)},ML${ml},MR${mr},S${state.mockState},L${state.trainingLocked ? 1 : 0},P${state.mockProfile}`));
-    if (state.mockClock % 1000 === 0) {
-      mockEmit(C.frame(`T3,S,${state.mockClock},V11.82,A2${(amplitude * amplitude / 2).toFixed(3)},G2${(amplitude * amplitude * 1012).toFixed(3)},PK${(amplitude * 1.22).toFixed(2)},X0.000,AP${state.mockPid.AP.toFixed(2)},AD${state.mockPid.AD.toFixed(2)},VP${state.mockPid.VP.toFixed(2)},VI${state.mockPid.VI.toFixed(2)},TP${state.mockPid.TP.toFixed(2)},TD${state.mockPid.TD.toFixed(2)},P${state.mockProfile},D0,B1,RA3.0-SEQ1-MOCK`));
-    }
-  }
-  function mockEmit(raw) { handleFrame(raw); }
-  function mockReceiveCommand(raw) {
-    if (!raw.startsWith("$P3,") || !C.verify(raw)) return Promise.resolve();
-    const body = raw.slice(1, raw.lastIndexOf(",C")), parts = body.split(","), command = parts[1];
-    const ack = (name, id = state.auto.trialId) => setTimeout(() => mockEmit(C.frame(`P3,ACK,${name},${id},${state.mockState},${state.trainingLocked ? 1 : 0},P${state.mockProfile}`)), 30);
-    if (command === "GET") setTimeout(() => mockEmit(C.frame(`P3,STATUS,${C.pidCsv(state.mockPid)},P${state.mockProfile},S${state.mockState},L${state.trainingLocked ? 1 : 0},B1`)), 30);
-    else if (command === "PROBE") ack("PROBE", 0);
-    else if (command === "TRAIN" && parts[2] === "START") { state.trainingLocked = true; ack("TRAIN_START", 0); }
-    else if (command === "TRAIN" && parts[2] === "STOP") { state.trainingLocked = false; state.mockState = 0; ack("TRAIN_STOP", 0); }
-    else if(command === "BSEQ") {
-      state.mockSeqId=Number(parts[2]);state.mockSeqManual=parts[4]==="M";state.mockSeqProfile=parts[5];
-      state.mockChampionPid={...state.mockPid};state.mockChampionProfile=state.mockProfile;
-      state.mockState=1;ack("SEQ_BEGIN",state.mockSeqId);
-    } else if(command === "ONE") {
-      const id=Number(parts[2]),step=Number(parts[3]),key=parts[4],value=Number(parts[5]);
-      setTimeout(()=>{
-        state.mockPid={...state.mockPid,[key]:value};state.mockState=2;
-        mockEmit(C.frame(`P3,SEQACK,ONE_APPLIED,${id},${step},${key},${value.toFixed(2)}`));
-      },5);
-    } else if(command === "SGET") {
-      setTimeout(()=>mockEmit(C.frame(`P3,STATUS,${C.pidCsv(state.mockPid)},P${state.mockProfile},S${state.mockState},L${state.trainingLocked?1:0},B1,Q${parts[2]},I${parts[3]}`)),30);
-    } else if(command === "FSEQ") {
-      setTimeout(()=>{
-        state.mockProfile=state.mockSeqProfile;state.mockState=state.mockSeqManual?0:2;
-        if(state.mockSeqManual){state.mockChampionPid={...state.mockPid};state.mockChampionProfile=state.mockProfile;}
-        ack("SEQ_DONE",Number(parts[2]));
-      },5);
-    } else if (command === "HB") ack("HB", Number(parts[2]));
-    else if (command === "ACCEPT") {
-      state.mockChampionPid = { ...state.mockPid }; state.mockChampionProfile = state.mockProfile;
-      state.mockState = 0; ack("ACCEPT", Number(parts[2]));
-    } else if (command === "ROLLBACK") {
-      state.mockPid = { ...state.mockChampionPid }; state.mockProfile = state.mockChampionProfile;
-      state.mockState = 0; ack("ROLLED_BACK", Number(parts[2])); setTimeout(emitMockTelemetry, 70);
-    } else if (command === "STOP") ack("STOP", Number(parts[2]));
-    return Promise.resolve();
-  }
-
-  function bind() {
-    document.querySelectorAll("[data-nav]").forEach((button) => button.addEventListener("click", () => switchPage(button.dataset.nav)));
-    document.querySelectorAll("[data-motion]").forEach(bindMotionButton);
-    $("presetNormal").addEventListener("click", () => applyPreset("N"));
-    $("presetLoad").addEventListener("click", () => applyPreset("L"));
-    for (const key of C.PID_KEYS) $("edit" + key).addEventListener("input", () => { state.manualDirty = true; });
-    $("manualProfile").addEventListener("change", () => { state.manualDirty = true; });
-    const actions = {
-      connect, disconnect: safeDisconnect, "get-pid": () => send(C.getPid()),
-      "manual-apply": () => applyManual(state.profile, readManualPid()),
-      "manual-balance": () => applyManual(state.profile, readManualPid(1), 1),
-      "manual-velocity": () => applyManual(state.profile, readManualPid(2), 2),
-      "manual-turn": () => applyManual(state.profile, readManualPid(4), 4),
-      "auto-start": startAuto, "auto-pause": () => stopAuto(false),
-      probe: () => send(C.frame("P3,PROBE")), stop: safeStop, "save-settings": saveSettings, mock: startMock,
-      "export-csv": exportCsv, "export-json": exportJson,
-      "clear-log": () => { $("log").textContent = ""; }
-    };
-    document.querySelectorAll("[data-action]").forEach((button) => button.addEventListener("click", () => { try { Promise.resolve(actions[button.dataset.action]?.()).catch((error) => toast(error.message)); } catch (error) { toast(error.message); } }));
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden && state.auto.enabled) {
-        log("SYS", "Page hidden: pausing automatic training and requesting rollback");
-        stopAuto(true);
-      }
-      if (document.hidden) releaseMotion(false);
-    });
-    window.addEventListener("pagehide", () => releaseMotion(false));
-    window.addEventListener("resize", drawChart);
-  }
-  function boot() {
-    loadSettings(); bind(); syncManualFields(); renderMetrics(null); renderHistory(); updateUi(); drawChart();
-    setInterval(() => { updateUi(); drawChart(); }, 1000);
-    if (!navigator.bluetooth) {
-      $("secureBanner").classList.remove("hidden");
-      $("secureBanner").textContent = "当前页面没有Web Bluetooth。请使用Bluefy打开；Safari、iOS Chrome和普通文件预览无法连接。";
-    } else if (!window.isSecureContext) {
-      $("secureBanner").classList.remove("hidden");
-      $("secureBanner").textContent = "当前不是标准HTTPS安全上下文；只有Bluefy明确提供Web Bluetooth时才可继续。";
-    }
-    log("SYS", `页面就绪 secure=${window.isSecureContext} bluetooth=${!!navigator.bluetooth}`);
-  }
-  boot();
+  function bind(){document.querySelectorAll('[data-nav]').forEach(b=>b.addEventListener('click',()=>switchPage(b.dataset.nav)));document.querySelectorAll('[data-motion]').forEach(bindMotion);document.querySelectorAll('[data-diag]').forEach(b=>b.addEventListener('click',()=>run(()=>motorDiag(b.dataset.diag))));const actions={'continuous-start':startContinuous,'continuous-stop':stopContinuous,connect,disconnect:safeDisconnect,stop:safeStop,'get-pid':()=>exclusive(async()=>{await readPid();status('当前 PID 和固件状态已读取');}),'manual-pid':manualPid,'copy-pid':()=>{requireLink();setPid(S.pid,true);status('当前固件 PID 已复制到编辑框');},'train-start':trainStart,'train-stop':trainStop,'baseline-start':baselineStart,'baseline-finish':baselineFinish,harness,llm:requestLlm,'validate-json':validateJson,prepare:()=>prepare(false),apply:()=>apply(false),accept:()=>accept(false),rollback,review,'cancel-auto':()=>stopContinuous(),'save-settings':saveSettings,mock:startMock,'export-csv':exportCsv,'export-json':exportJson,'clear-log':()=>{S.logs=[];S.keyLogs=[];renderLog();},'test-llm':testLlm,'cancel-llm':()=>{cancelLlm();status('LLM 请求已取消');},'use-proxy':()=>{if(!/^https?:$/.test(location.protocol))throw Error('请通过随附 server.mjs 打开网页后使用同源代理');$('llmBase').value=location.origin+'/api';$('reviewBase').value='';status('已切换同源代理；请确认服务端已经配置 API Key 或在此填入会话密钥');}};document.querySelectorAll('[data-action]').forEach(b=>{if(!actions[b.dataset.action])throw Error('未绑定操作 '+b.dataset.action);b.addEventListener('click',()=>run(actions[b.dataset.action]));});$('proposalJson').addEventListener('input',()=>{if(S.phase==='REVIEW'){S.candidate=null;S.review=null;$('autoConsent').checked=false;$('candidateBox').textContent='JSON 已修改，必须重新验证';update();}});$('continuousConsent').addEventListener('change',()=>{if(!$('continuousConsent').checked&&A.running)stopContinuous().catch(fail);});$('autoConsent').addEventListener('change',()=>{if(!$('autoConsent').checked&&S.auto)recover('自动授权被撤销');});$('reviewMode').addEventListener('change',()=>{if(S.auto||A.running)stopContinuous();S.review=null;$('autoConsent').checked=false;});for(const id of ['trialSeconds','minBattery','baselineSeconds','loopCooldown','loopReview','loopSource'])$(id).addEventListener('input',()=>{if(S.auto||A.running)stopContinuous();});window.addEventListener('blur',()=>{if(S.activeMotion)releaseMotion().catch(fail);});document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelContinuous();if(S.id)recover('页面进入后台');else if(S.activeMotion)releaseMotion().catch(fail);cancelLlm();}});window.addEventListener('pagehide',()=>{safeStop().catch(()=>{});stopHeartbeat();});window.addEventListener('resize',draw);}
+  initPid();loadSettings();bind();update();draw();setInterval(watch,250);
+  $('secureBanner').textContent=!window.isSecureContext?'当前为非 HTTPS 页面，Bluefy 蓝牙连接需要安全上下文':!navigator.bluetooth?'当前浏览器没有 Web Bluetooth；iPhone 请在 Bluefy 中打开 HTTPS 页面':'';log('SYS','Route A 控制台 v3.0 就绪；匹配 RA1.9-AUTO6');
+  // Read-only diagnostics used by automated browser tests. No keys or transport handles are exposed.
+  window.RouteAApp={snapshot:()=>({continuous:{...A},features:S.features&&{...S.features},connected:S.connected,mock:S.mock,verified:S.verified,pidFault:S.pidFault,pid:S.pid&&{...S.pid},locked:S.locked,balance:S.balance,fw:S.fw,phase:S.phase,id:S.id,busy:S.busy,auto:S.auto,ok:S.ok,bad:S.bad,samples:S.samples.length,trialSamples:S.trialSamples.length,history:structuredClone(S.history),op:S.op})};
+  if(new URLSearchParams(location.search).get('mock')==='1')run(startMock);
 })();
+
+
+
+
+
+
+
+
+
 </script>
 </body>
 </html>
+
+
