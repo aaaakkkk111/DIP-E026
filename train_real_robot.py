@@ -283,6 +283,15 @@ assert upright_gate(0.0) == 1.0 and upright_gate(0.075) == 0.5 and upright_gate(
 # integral now also restarts from 0 whenever the forward command changes, so the
 # longer memory never asks it to "catch up" distance lost under an old command.
 POSITION_TAU_S = 8.0
+# Run 23: no leak at all, like the stock PID's speed integral (Velocity_PI,
+# clamped, never forgets): a constant offset - wrong trim, a load's shifted
+# balance point, a floor slope - builds up until it is cancelled. Run 22's 8 s
+# leak left 0.1-0.8 cm/s of creep on the car and a load-dependent trim.
+POSITION_TAU_S = float("inf")
+# Car runs last minutes, so the clipped integral reaches values a 10 s episode
+# never would. Training episodes start it anywhere in +/-POS_ERR_CLIP_M so the
+# policy has seen them. Off for check_obs_builder: the firmware starts at 0.
+POS_ERR_RANDOM_START = True
 POSITION_WEIGHT = 2.5
 STAND_CMD_PROB = 0.3              # run 22, see _sample_command()
 # Run 22: a random floor slope per training episode, by tilting gravity as
@@ -908,7 +917,9 @@ class PWMCommandWrapper(VelocityCommandWrapper):
         # the sensed heading integral drifts while the true heading does not -
         # the policy has to learn not to chase a bias.
         if self._pos_err is None:
-            self._pos_err = self._pos_err_true = 0.0
+            self._pos_err = self._pos_err_true = (
+                float(self.np_random.uniform(-POS_ERR_CLIP_M, POS_ERR_CLIP_M))
+                if POS_ERR_RANDOM_START and not self.is_eval else 0.0)
             self._yaw_err = self._yaw_err_true = 0.0
             self._last_cmd_f = self.target_v_forward
         else:
@@ -1152,7 +1163,8 @@ def make_env(**kwargs):
 # Run 22: stability and creep first - calm charges paused around pushes, 30 %
 # stand-still commands, position memory 8 s reset on command change, floor slope
 # +/-2 deg with gravity-relative pitch. Payload 0-2 kg as before.
-RUN_NAME = "run22"
+# Run 23: run 22 with a full position memory (POSITION_TAU_S inf, random start).
+RUN_NAME = "run23"
 INIT_FROM = "none"
 FINETUNE_STEPS = 10_000_000
 FINETUNE_LR = 1e-4

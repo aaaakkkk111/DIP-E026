@@ -13,7 +13,34 @@ cable. So the desktop trains and the laptop builds, flashes and tests. GitHub
 you finish. Only the desktop changes training code and models; only the
 laptop adds car logs. Then the two never conflict.
 
-## Next: run 23, full position memory vs run 22 (2026-10-22)
+## Now: flash run 23 (2026-10-23)
+
+`models/best_real` and the weight headers are **run 23 at 25.5M steps** (its best).
+All its results are from the simulator. Full log: `session-logs/2026-10-23-run23-desktop.md`.
+
+**Firmware:** `policy.h` now has `POLICY_POS_DECAY 1.0f` (no leak). That is the only
+change from run 22: 0 B. Rebuild with `policy.h`, `policy.c` and the two weight headers.
+Run `check_obs_builder` (rebuild the DLL first). It could not run on the desktop: Windows
+Smart App Control blocked the new DLL.
+
+**Simulator results:**
+
+| | run 23, 25.5M | run 22, 24M (car now) | PID |
+|---|---|---|---|
+| Standing empty, 2° / 4° slack (deg/s) | 3.7–4.2 / **5.6–9.9** | 4.0–5.4 / 7.1–23.5 | 6.6–6.9 |
+| Creep after 30 s (slopes, ±2° trim error, 0 and 2 kg) | **≤ 0.3 cm/s, stops** | 0.3–0.7, keeps going | — |
+| Offset after 60 s | ≤ 17 cm | 19–41 cm | — |
+| Empty 2 N pushes / 2 kg 4 N pushes | 13/18 / 18/18 | 17/18 / 18/18 | 18/18 |
+
+**What to look for on the car:**
+- The trim should matter much less now. Try the built-in 1.7° empty *and* with 2 kg: it
+  should stop creeping within about 30 s in both cases.
+- If it is pushed or carried far by hand while running, it drives back up to 0.5 m to its
+  original spot (like the stock PID). A new drive command clears that memory.
+- Empty pushes are slightly weaker than run 22's in simulation, so push gently.
+- Log long stands (1–2 min) with the P stream off (`p`), so position is accurate.
+
+## Before: run 23 spec, full position memory vs run 22 (2026-10-22)
 
 **Goal:** remove the creep and the load-dependent trim (1.7° empty, about 2.5° with 2 kg) the
 way the stock PID does. Its speed loop (`APP/PID/pid_control.c`, `Velocity_PI`) integrates the

@@ -1,6 +1,6 @@
 # DIP-E026 — RL self-balancing robot: project overview
 
-*Status as of 2026-10-22, after run 22. The details behind each claim are in the
+*Status as of 2026-10-23, after run 23. The details behind each claim are in the
 `session-logs/` file named in each section.*
 
 ## 1. Goal and set-up
@@ -167,9 +167,14 @@ back:
 
 - **On the car (2026-10-21):** run 21 at 21M stood at 2.8–4.3 deg/s, calmer than the stock PID
   (7.6–11.7). It crept 1–2 cm/s with the room's floor slope and wandered after pushes.
-- **Exported next: run 22 at 24M** (`models/best_real`). In simulation: 4.0–5.4 deg/s empty,
-  empty 2 N pushes 17/18, creep about 1 cm/s or less on ±2°, back to its spot after a push,
-  0–4 kg. Empty 3 N pushes still fail. Log: `session-logs/2026-10-22-run22-desktop.md`.
+- **On the car (2026-10-22):** run 22 at 24M: 4.0–4.3 deg/s empty, 2.7 with 2 kg, creep
+  0.1–0.5 cm/s at the right trim (1.7° empty, about 2.5° with 2 kg); every hand push
+  survived. Log: `session-logs/2026-10-22-run22-on-car.md`.
+- **Exported next: run 23 at 25.5M** (`models/best_real`): run 22 with a position memory that
+  never forgets, like the stock PID's speed loop. In simulation the creep stops within about
+  30 s on any slope or trim error, empty or loaded (run 22 keeps creeping). It is the steadiest
+  policy yet on a worse-geared car (5.6–9.9 deg/s at 4° slack). Empty 2 N pushes: 13/18.
+  Log: `session-logs/2026-10-23-run23-desktop.md`.
 - **Runs 19–21 (2026-10-21, payload 0–2 kg; simulator results, 2° slack):**
 
   | run | change | empty wobble at about 20M (deg/s) | 2 kg | empty 2 N pushes |

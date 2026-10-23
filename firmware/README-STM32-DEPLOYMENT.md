@@ -3,10 +3,11 @@
 For whoever flashes and tests the car. Do Steps 1–9 in order. The Reference
 section at the end explains the why, and covers porting to other firmware.
 
-**Status (2026-10-22):** `models/best_real` is run 22 (24M). It needs this `policy.c`
+**Status (2026-10-23):** `models/best_real` is run 23 (25.5M). It needs this `policy.c`
 (`osc`/`lean` in obs[5], obs[6]; position memory restarts on a new command) and this
-`policy.h` (8 s position memory); see `TRAINING_ON_DESKTOP.md`, "Now: flash run 22".
-Run 21 stood at 2.8–4.3 deg/s on the car (2026-10-21). Earlier status below.
+`policy.h` (position memory with no leak, `POLICY_POS_DECAY 1.0f`); see
+`TRAINING_ON_DESKTOP.md`, "Now: flash run 23". Run 22 stood at 4.0–4.3 deg/s on the car
+(2026-10-22). Earlier status below.
 
 **Status (2026-10-14):** runs 8, 9 and 11 have balanced on the car with these
 steps (11–51 s per run). Their large "wobble" numbers turned out to be the

@@ -23,6 +23,8 @@ sys.path.insert(0, os.path.dirname(HERE))
 os.chdir(os.path.dirname(HERE))
 import train_real_robot as trr  # noqa: E402
 
+trr.POS_ERR_RANDOM_START = False   # training-only; the firmware starts the integral at 0
+
 
 def rollout(is_eval, seed, ticks=600):
     env = trr.PWMCommandWrapper(trr.RealRobotEnv(), is_eval=is_eval,
