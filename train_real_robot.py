@@ -114,6 +114,18 @@ RESET_VEL_NOISE = 0.10
 # not drive with 1 kg; the car has to carry about 2 kg, so the load range is back
 # and run 19 changes the calm terms instead.
 MAX_PAYLOAD_KG = 2.0
+# Run 24: where the load sits, drawn per training episode as offsets (m) from the
+# XML's centred spot (0, 0, 0.105 above the axle). Sim sweep of run 22 (2026-10-25,
+# always trained centred): 2 kg 2 cm fore/aft ran away 3-5 m in 30 s, 4 cm or
+# 15 cm high fell, sideways was harmless. Eval keeps the centred spot. The load
+# sits on the top deck, 14 cm off the floor = 10.65 cm above the axle (measured
+# 2026-10-25), so its centre is that plus half its thickness. The car's 2 kg test
+# load (1.5 cm, centre ~11.4) stood calm; run 22 held 2 kg at 12 cm in sim but
+# shook at 40 deg/s at 13.5. Run 24 changes the fore/aft position only; height
+# stays where run 22 already copes (thin loads). Taller loads are a later run.
+PAYLOAD_DX_M = 0.03
+PAYLOAD_DY_M = 0.02
+PAYLOAD_DZ_M = (0.0, 0.015)       # 10.5-12 cm above the axle
 MAX_V_FORWARD = 0.3
 MAX_V_TURN = 0.5
 
@@ -292,6 +304,10 @@ POSITION_TAU_S = float("inf")
 # never would. Training episodes start it anywhere in +/-POS_ERR_CLIP_M so the
 # policy has seen them. Off for check_obs_builder: the firmware starts at 0.
 POS_ERR_RANDOM_START = True
+# Run 24: back to run 22's 8 s leak and zero start - run 22 was the calmer car
+# (2026-10-24); run 23's full memory wandered +/-10-25 cm after pushes.
+POSITION_TAU_S = 8.0
+POS_ERR_RANDOM_START = False
 POSITION_WEIGHT = 2.5
 STAND_CMD_PROB = 0.3              # run 22, see _sample_command()
 # Run 22: a random floor slope per training episode, by tilting gravity as
@@ -573,6 +589,7 @@ class VelocityCommandWrapper(gym.Wrapper):
         self.turn_filt = 0.0
         self.prev_potential = 0.0
         self.payload_body_id = mujoco.mj_name2id(self.unwrapped.model, mujoco.mjtObj.mjOBJ_BODY, "payload_body")
+        self.payload_pos0 = self.unwrapped.model.body_pos[self.payload_body_id].copy()
 
         # Curriculum caps for training envs, ramped up from 0 by CurriculumCallback.
         # Eval always uses the full max_* values so the reported metric reflects the real task.
@@ -678,6 +695,11 @@ class VelocityCommandWrapper(gym.Wrapper):
     def reset(self, seed=None, options=None):
         raw_obs, info = self.env.reset(seed=seed, options=options)
         self.unwrapped.model.body_mass[self.payload_body_id] = random.uniform(0.0, self.curriculum_payload_kg)
+        # body_pos is a MODEL field and persists across resets, like the mass.
+        self.unwrapped.model.body_pos[self.payload_body_id] = self.payload_pos0 + (
+            0.0 if self.is_eval else [random.uniform(-PAYLOAD_DX_M, PAYLOAD_DX_M),
+                                      random.uniform(-PAYLOAD_DY_M, PAYLOAD_DY_M),
+                                      random.uniform(*PAYLOAD_DZ_M)])
 
         if self.is_eval:
             f_frac, t_frac = EVAL_COMMANDS[self.eval_episode % len(EVAL_COMMANDS)]
@@ -1164,7 +1186,10 @@ def make_env(**kwargs):
 # stand-still commands, position memory 8 s reset on command change, floor slope
 # +/-2 deg with gravity-relative pitch. Payload 0-2 kg as before.
 # Run 23: run 22 with a full position memory (POSITION_TAU_S inf, random start).
-RUN_NAME = "run23"
+# Run 24: run 22 (8 s memory) with the load placed randomly: fore/aft +/-3 cm,
+# sideways +/-2 cm, 10.5-12 cm above the axle (PAYLOAD_D*_M). Training only: the
+# firmware and its size do not change.
+RUN_NAME = "run24"
 INIT_FROM = "none"
 FINETUNE_STEPS = 10_000_000
 FINETUNE_LR = 1e-4

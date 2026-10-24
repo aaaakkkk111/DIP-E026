@@ -13,7 +13,46 @@ cable. So the desktop trains and the laptop builds, flashes and tests. GitHub
 you finish. Only the desktop changes training code and models; only the
 laptop adds car logs. Then the two never conflict.
 
-## Now: flash run 23 (2026-10-23)
+## Next: train run 24, the load in random places (2026-10-25)
+
+**Why:** run 22, the calmer car, was only ever trained with the load centred, 10.5 cm above
+the axle. In a simulator sweep (laptop, 2026-10-25, 2 seeds) with 2 kg on board:
+
+| load position | standing 30 s | driving 0.25 m/s |
+|---|---|---|
+| centred, 5 or 10.5 cm up | holds | 92 % of speed |
+| 2 cm fore or aft | leans 9.5°, **runs away 3–5 m** | aft 53 %, fore **falls** |
+| 4 cm fore or aft | falls | falls |
+| 12 cm up | holds | 94 % |
+| 13.5 cm up | stays up but **shakes at 40 deg/s** | shakes |
+| 15 or 20 cm up | falls | falls |
+| 2–4 cm sideways | holds | 94 % |
+
+A real bag is rarely exactly centred, so this has to be trained in.
+
+**Run 24 = run 22 with the load placed randomly** each training episode
+(`PAYLOAD_DX_M`, `PAYLOAD_DY_M`, `PAYLOAD_DZ_M` in `train_real_robot.py`): fore/aft ±3 cm,
+sideways ±2 cm, 10.5–12 cm above the axle. The load sits on the top deck, which is 14 cm off
+the floor, 10.65 cm above the axle (measured). Its centre is half its thickness higher. The
+2 kg load in the car tests was 1.5 cm thick (centre about 11.4 cm), and run 22 already copes
+up to 12 cm. So run 24 changes only the fore/aft position. Taller loads (centre 13–16 cm,
+where run 22 shakes or falls) are a later run, once this one works. Eval episodes keep the load centred, so scores compare
+with run 22. Memory back to run 22's: `POSITION_TAU_S = 8.0`, no random start. Train from
+scratch, the same length as run 22 (`python train_real_robot.py`).
+
+**Check in simulation, against run 22 (24M):**
+- **The same load-position sweep:** 2 kg at ±2 and ±3 cm fore/aft, at 10.5 and 12 cm
+  up, standing 30 s and driving. It should hold and not run away (moved under about 50 cm).
+- **Centred, it must be no worse:** wobble at 2° and 4° slack (4.0–5.4 / 7.1–23.5), pushes
+  (17/18 empty, 18/18 with 2 kg), creep.
+
+If it still runs away at 2 cm, the 8 s memory may be the limit: holding a 9.5° lean in one
+spot needs a long memory, so try the same change on run 23 (full memory).
+
+**Firmware:** network and inputs unchanged, 0 B. `policy.h` must go back to run 22's
+`POLICY_POS_DECAY 0.99937520f`. No script writes it, so set it by hand (it is exp(−0.005/8)).
+
+## Before: flash run 23 (2026-10-23)
 
 `models/best_real` and the weight headers are **run 23 at 25.5M steps** (its best).
 All its results are from the simulator. Full log: `session-logs/2026-10-23-run23-desktop.md`.
