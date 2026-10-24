@@ -240,7 +240,52 @@ def fig_validation():
     save(fig, "fig6_sim_vs_car.png")
 
 
+# Every run since the measured motor: (name, standing wobble sim 2 deg, car mid-run or None,
+# empty 3 N x 0.1 s pushes survived of 18 in sim). From PROJECT_OVERVIEW.md and the session logs;
+# car = the run's best-conditions day (run 15 only ran on the worse 2026-10-20 car).
+ALL_RUNS = [("Stock PID", (6.6, 6.9), (7.6, 11.7), 17),
+            ("Run 11", (11, 16), (12, 22), 0), ("Run 12", (26, 35), None, 14),
+            ("Run 13", (24, 33), (26, 36), 18), ("Run 14", (17, 28), None, 5),
+            ("Run 15", (20, 25), (43, 49), 18), ("Run 16", (15, 30), None, 0),
+            ("Run 17", (15, 28), None, 0), ("Run 18", (14.6, 17.8), None, 0),
+            ("Run 19", (26, 30), None, 0), ("Run 20", (18, 33), None, 0),
+            ("Run 21", (6.6, 8.3), (2.8, 4.3), 0), ("Run 22", (4.0, 5.4), (4.0, 4.3), 0),
+            ("Run 23", (3.7, 4.2), (3.7, 5.5), 0)]
+
+
+def fig_all_runs():
+    fig, axes = plt.subplots(1, 2, figsize=(11, 5.6), sharey=True, gridspec_kw={"width_ratios": [2.2, 1]})
+    rows = ALL_RUNS[::-1]                                      # first run at the top
+    ax = axes[0]
+    pid = ALL_RUNS[0][1]
+    ax.axvspan(*pid, color=GRID, lw=0)
+    ax.text(pid[1] + 0.6, len(rows) - 0.45, "stock PID, sim", color=MUTED, fontsize=8, va="center")
+    for i, (_, sim, car, _) in enumerate(rows):
+        for dy, rng, color, lab in ((0.16, sim, C[0], "simulator, 2° slack"), (-0.16, car, C[1], "car, mid-run")):
+            if rng:
+                ax.plot(rng, [i + dy] * 2, color=color, lw=6, solid_capstyle="round",
+                        label=lab if i == len(rows) - 2 else None)
+    i15 = [r[0] for r in rows].index("Run 15")
+    ax.text(42.5, i15 - 0.5, "car only on the worse 2026-10-20 day", color=MUTED, fontsize=8, va="center")
+    ax.set_yticks(range(len(rows)), [r[0] for r in rows])
+    ax.set_xlabel("standing wobble, pitch-rate sd (deg/s)  ·  lower is calmer")
+    ax.set_xlim(0, 52)
+    ax.set_title("Standing still: runs 21–23 reach the stock PID's calm")
+    ax.grid(axis="y", visible=False)
+    ax.legend(loc="lower right")
+    ax = axes[1]
+    for i, r in enumerate(rows):
+        ax.barh(i, r[3], height=0.55, color=C[0] if r[3] else GRID)
+        ax.text(r[3] + 0.4, i, f"{r[3]}/18", va="center", color=INK2, fontsize=8)
+    ax.set_xlim(0, 22)
+    ax.set_xlabel("empty 3 N pushes survived, sim (of 18)")
+    ax.set_title("…but no calm run survives a 3 N push")
+    ax.grid(axis="y", visible=False)
+    save(fig, "fig7_all_runs.png")
+
+
 if __name__ == "__main__":
     os.makedirs(OUT, exist_ok=True)
-    for f in (fig_training, fig_tradeoff, fig_checkpoints, fig_diagnostics, fig_payload, fig_validation):
+    for f in (fig_training, fig_tradeoff, fig_checkpoints, fig_diagnostics, fig_payload, fig_validation,
+              fig_all_runs):
         f()

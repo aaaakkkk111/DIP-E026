@@ -163,7 +163,39 @@ back:
   Calm when empty and firm when loaded needs either training for the actual
   load range, or the payload given to the network as an input.
 
-## 9. Current state and next steps
+## 9. Results by run (2026-10-24)
+
+![every run](report_figures/fig7_all_runs.png)
+
+- Standing wobble is the pitch-rate sd mid-run. "sim" is at 2° slack and 5–15 ms; "car" is the
+  200 Hz stream.
+- Pushes are empty, 0.1 s, in simulation, out of 18.
+- Runs 8–10 balanced on the car too. Their logged wobble was the final push (the E-line
+  artifact), so it isn't comparable.
+
+| run | main change | sim (deg/s) | car (deg/s) | 3 N / 2 N pushes | verdict |
+|---|---|---|---|---|---|
+| stock PID | — | 6.6–6.9 | 7.6 (11.7 on a worse day) | 17 / 18 | the reference |
+| 11 | wobble penalty, no pushes | 11–16 | 12–22 | 0 / 0 | calm, push-fragile |
+| 12 | measured motor, pushes 0–4 N | 26–35 | — | 14 / — | push-proof, wobbly |
+| 13 | 12 + penalty 0.5 | 24–33 | 26–36 | 18 / 18 | push-proof, wobbly, as predicted |
+| 14 | penalty 1.5, from scratch | 17–28 | — | 5 / — | lost pushes |
+| 15 | pushes ≤ 3 N, penalty paused | 20–25 | 43–49 (worse day) | 18 / 18 | shakes through the gear slack on the car |
+| 16–17 | reversal penalty 0.5 / 0.3 | 15–30 | — | 0 / — | fail |
+| 18 | no payload | 14.6–17.8 | — | 0 / — | fail |
+| 19–20 | PWM-step penalty; `osc`/`lean` inputs | 18–33 | — | 0 / 0–10 | still shaky empty |
+| **21** | shake-band (`osc`) penalty | 6.6–8.3 | **2.8–4.3** | 0 / 1 | first calm on the car; creeps with the floor |
+| **22** | 8 s position memory, slopes | 4.0–5.4 | **4.0–4.3** (2 kg 2.7) | 0 / 17 | calm, quick push return; needs trim 1.7° (2.5° with 2 kg) |
+| **23** | full position memory | 3.7–4.2 | **3.7–5.5** (2 kg 3.6–4.9) | 0 / 13 | no creep, no trim; swings ±10–20 cm, slow after pushes |
+
+Session logs: runs 22 and 23 on the car are in `session-logs/2026-10-22-run22-on-car.md` and
+`2026-10-24-run23-on-car.md`.
+
+## 10. Current state and next steps
+
+- **On the car (2026-10-24):** run 23. It removes the creep and the trim, but swings around its
+  spot and settles slowly after pushes. Run 22 recovers better but needs a trim per load. A 30 s
+  memory (run 24) is the middle option, left for now.
 
 - **On the car (2026-10-21):** run 21 at 21M stood at 2.8–4.3 deg/s, calmer than the stock PID
   (7.6–11.7). It crept 1–2 cm/s with the room's floor slope and wandered after pushes.
@@ -205,7 +237,7 @@ back:
 Figures for all of the above: `report_figures/` (`python
 sim_tools/report_figures.py`).
 
-## 10. Where to look
+## 11. Where to look
 
 | | |
 |---|---|
