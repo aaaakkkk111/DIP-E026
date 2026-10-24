@@ -1,0 +1,12 @@
+fall -> lie -> get up, empty car; 8 runs per row (4 nose-down, 4 tail-down)
+  distances in cm from where the car lay down (true chassis position)
+  now: fwd .20 / coast .15   12.0 V | up+stopped 8/8 | attempts 1.0 | peak  49.3 cm (max  66.1) | final  27.4 cm | t_up 1.89 s
+  now: fwd .20 / coast .15   10.5 V | up+stopped 8/8 | attempts 1.0 | peak  50.1 cm (max  59.3) | final  41.5 cm | t_up 1.83 s
+  fly: rev .20 / no coast    12.0 V | up+stopped 2/8 | attempts 2.5 | peak  52.4 cm (max 113.1) | final  41.3 cm | t_up 1.87 s
+  fly: rev .20 / no coast    10.5 V | up+stopped 3/8 | attempts 2.8 | peak  55.1 cm (max  72.8) | final  49.2 cm | t_up 2.64 s
+  fly: rev .30 / no coast    12.0 V | up+stopped 3/8 | attempts 2.4 | peak  55.6 cm (max  86.7) | final  48.2 cm | t_up 2.74 s
+  fly: rev .30 / no coast    10.5 V | up+stopped 4/8 | attempts 2.2 | peak  53.8 cm (max  74.6) | final  42.6 cm | t_up 3.24 s
+  fly: rev .40 / no coast    12.0 V | up+stopped 1/8 | attempts 2.8 | peak  53.3 cm (max  61.1) | final  48.4 cm | t_up 4.55 s
+  fly: rev .40 / no coast    10.5 V | up+stopped 3/8 | attempts 2.5 | peak  65.9 cm (max  95.4) | final  57.6 cm | t_up 2.08 s
+  fly: rev .30 / coast .05   12.0 V | up+stopped 4/8 | attempts 2.0 | peak  55.4 cm (max  83.3) | final  50.6 cm | t_up 1.97 s
+  fly: rev .30 / coast .05   10.5 V | up+stopped 4/8 | attempts 2.6 | peak  59.3 cm (max  80.4) | final  56.0 cm | t_up 2.58 s

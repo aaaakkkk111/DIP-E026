@@ -1,0 +1,21 @@
+placed at rest, then motors on (fresh v4); cell = upright and stopped at 4 s /4, time to <3 deg
+  12.0 V v4 (cut 45 only)  30 deg 4/4 0.19 s | 35 deg 4/4 0.21 s | 38 deg 4/4 0.23 s | 40 deg 4/4 0.26 s
+  12.0 V v4 + recovery     30 deg 4/4 0.20 s | 35 deg 4/4 0.22 s | 38 deg 4/4 0.24 s | 40 deg 4/4 0.26 s
+  10.5 V v4 (cut 45 only)  30 deg 4/4 0.20 s | 35 deg 4/4 0.24 s | 38 deg 4/4 0.30 s | 40 deg 2/4 0.32 s
+  10.5 V v4 + recovery     30 deg 4/4 0.20 s | 35 deg 4/4 0.24 s | 38 deg 4/4 0.30 s | 40 deg 2/4 0.32 s
+car resting on its chassis, then motors on; 4 runs each (2 nose-down, 2 tail-down)
+  v4 (cut 45 only)  0 kg: rests at 58.2 deg | got up 1/4 | lock fired 3/4 (at 1.04/0.99/0.99 s) | motors driving 1.3 s of 5
+  v4 (cut 45 only)  1 kg: rests at 90.0 deg | got up 0/4 | lock fired 4/4 (at 0.99/0.99/0.99/0.99 s) | motors driving 0.0 s of 5
+  v4 + recovery     0 kg: rests at 55.2 deg | got up 1/4 | lock fired 3/4 (at 1.04/0.99/0.99 s) | motors driving 1.3 s of 5
+  v4 + recovery     1 kg: rests at 90.0 deg | got up 0/4 | lock fired 4/4 (at 0.99/0.99/0.99/0.99 s) | motors driving 0.0 s of 5
+release benchmark (lower is better)
+  release v4 (cut 40)    total  31.83  falls 0  recovery entries 0  locks 0  per case 3.81 5.93 3.54 3.34 3.80
+  cut 45 + recovery      total  31.83  falls 0  recovery entries 0  locks 0  per case 3.81 5.93 3.54 3.34 3.80
+
+=== battery 12.0 V, empty car, released at rest; cell = upright AND stopped at 4 s /4  up s / settle s / travel m
+  v4 (cut 45 only)  30°:4/4 0.19/2.44/520.62  35°:4/4 0.21/2.41/186.00  38°:4/4 0.23/3.22/187.12  40°:3/4 0.24/2.67/787.17  42°:2/4 0.27/ -- /251.75
+  v4 + recovery     30°:4/4 0.19/1.27/1331.00  35°:4/4 0.22/1.29/1784.88  38°:4/4 0.23/1.42/2157.75  40°:4/4 0.25/1.49/2467.88  42°:4/4 0.28/1.63/2950.38
+
+=== battery 10.5 V, empty car, released at rest; cell = upright AND stopped at 4 s /4  up s / settle s / travel m
+  v4 (cut 45 only)  30°:4/4 0.20/2.47/571.75  35°:4/4 0.23/2.62/760.50  38°:4/4 0.28/2.97/879.50  40°:2/4 0.34/2.94/419.75  42°:0/4  -- / -- / --   
+  v4 + recovery     30°:4/4 0.21/1.47/1465.88  35°:4/4 0.23/1.62/2082.62  38°:4/4 0.28/1.58/2698.25  40°:4/4 0.39/1.94/3969.38  42°:0/4  -- / -- / --   

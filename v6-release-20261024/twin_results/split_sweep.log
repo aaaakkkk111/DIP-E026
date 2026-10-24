@@ -1,0 +1,5 @@
+v5 three-level probe, middle split 20; benchmark total (lower better) and extra loads
+  light split 23.0 | benchmark  31.63 | empty 3.81/0  0.5kg 6.70/0  1kg 5.83/0  1.5kg 4.34/0  2kg 3.54/0  4kg 3.34/0  empty+3N 3.80/0
+  light split 25.0 | benchmark  31.60 | empty 3.80/0  0.5kg 6.14/0  1kg 5.83/0  1.5kg 4.34/0  2kg 3.54/0  4kg 3.34/0  empty+3N 3.79/0
+  light split 27.0 | benchmark  31.60 | empty 3.80/0  0.5kg 6.14/0  1kg 5.83/0  1.5kg 4.34/0  2kg 3.54/0  4kg 3.34/0  empty+3N 3.79/0
+  light split 30.0 | benchmark  32.76 | empty 4.18/0  0.5kg 6.14/0  1kg 5.83/0  1.5kg 4.34/0  2kg 3.54/0  4kg 3.34/0  empty+3N 4.18/0

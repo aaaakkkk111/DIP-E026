@@ -1,0 +1,2 @@
+# Keep every file byte-for-byte (GBK sources with mixed line endings, logs, hex).
+* -text

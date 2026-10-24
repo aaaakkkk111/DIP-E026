@@ -1,0 +1,45 @@
+### getup (firmware defaults)
+fall -> lie -> get up; 8 runs per row (4 nose-down, 4 tail-down)
+  get-up ON  push1  40 coast  30 | 0 kg 12.0 V | lay 8/8 | up+stopped 8/8 | t_up 1.89 s | attempts 1.0 | locked 0 | drive on a fallen car 0.57 s (max 0.80)
+  get-up ON  push1  40 coast  30 | 0 kg 10.5 V | lay 8/8 | up+stopped 8/8 | t_up 1.83 s | attempts 1.0 | locked 0 | drive on a fallen car 0.54 s (max 0.74)
+  get-up ON  push1  40 coast  30 | 1 kg 12.0 V | lay 8/8 | up+stopped 0/8 | t_up   -   | attempts 3.0 | locked 0 | drive on a fallen car 2.38 s (max 2.38)
+  get-up OFF push1  40 coast  30 | 0 kg 12.0 V | lay 8/8 | up+stopped 0/8 | t_up   -   | attempts 0.0 | locked 8 | drive on a fallen car 0.00 s (max 0.00)
+### getup timing sweep
+fall -> lie -> get up; 8 runs per row (4 nose-down, 4 tail-down)
+  get-up ON  push1  30 coast  20 | 0 kg 12.0 V | lay 8/8 | up+stopped 8/8 | t_up 1.62 s | attempts 1.0 | locked 0 | drive on a fallen car 0.37 s (max 0.43)
+  get-up ON  push1  30 coast  20 | 0 kg 10.5 V | lay 8/8 | up+stopped 4/8 | t_up 1.61 s | attempts 2.5 | locked 0 | drive on a fallen car 0.99 s (max 1.63)
+  get-up ON  push1  30 coast  30 | 0 kg 12.0 V | lay 8/8 | up+stopped 8/8 | t_up 1.68 s | attempts 1.0 | locked 0 | drive on a fallen car 0.33 s (max 0.38)
+  get-up ON  push1  30 coast  30 | 0 kg 10.5 V | lay 8/8 | up+stopped 3/8 | t_up 3.29 s | attempts 3.0 | locked 0 | drive on a fallen car 1.18 s (max 1.77)
+  get-up ON  push1  30 coast  40 | 0 kg 12.0 V | lay 8/8 | up+stopped 3/8 | t_up 2.50 s | attempts 3.0 | locked 0 | drive on a fallen car 1.15 s (max 1.74)
+  get-up ON  push1  30 coast  40 | 0 kg 10.5 V | lay 8/8 | up+stopped 6/8 | t_up 2.50 s | attempts 1.8 | locked 0 | drive on a fallen car 1.15 s (max 2.25)
+  get-up ON  push1  40 coast  20 | 0 kg 12.0 V | lay 8/8 | up+stopped 4/8 | t_up 1.59 s | attempts 2.0 | locked 4 | drive on a fallen car 1.39 s (max 2.38)
+  get-up ON  push1  40 coast  20 | 0 kg 10.5 V | lay 8/8 | up+stopped 4/8 | t_up 1.59 s | attempts 2.0 | locked 4 | drive on a fallen car 1.38 s (max 2.38)
+  get-up ON  push1  40 coast  30 | 0 kg 12.0 V | lay 8/8 | up+stopped 8/8 | t_up 1.89 s | attempts 1.0 | locked 0 | drive on a fallen car 0.57 s (max 0.80)
+  get-up ON  push1  40 coast  30 | 0 kg 10.5 V | lay 8/8 | up+stopped 8/8 | t_up 1.83 s | attempts 1.0 | locked 0 | drive on a fallen car 0.54 s (max 0.74)
+  get-up ON  push1  40 coast  40 | 0 kg 12.0 V | lay 8/8 | up+stopped 5/8 | t_up 1.80 s | attempts 1.8 | locked 0 | drive on a fallen car 1.17 s (max 2.41)
+  get-up ON  push1  40 coast  40 | 0 kg 10.5 V | lay 8/8 | up+stopped 4/8 | t_up 3.99 s | attempts 2.5 | locked 3 | drive on a fallen car 1.80 s (max 2.38)
+  get-up ON  push1  50 coast  20 | 0 kg 12.0 V | lay 8/8 | up+stopped 8/8 | t_up 1.92 s | attempts 1.0 | locked 0 | drive on a fallen car 0.63 s (max 0.85)
+  get-up ON  push1  50 coast  20 | 0 kg 10.5 V | lay 8/8 | up+stopped 8/8 | t_up 1.84 s | attempts 1.0 | locked 0 | drive on a fallen car 0.61 s (max 0.83)
+  get-up ON  push1  50 coast  30 | 0 kg 12.0 V | lay 8/8 | up+stopped 8/8 | t_up 1.91 s | attempts 1.0 | locked 0 | drive on a fallen car 0.61 s (max 0.85)
+  get-up ON  push1  50 coast  30 | 0 kg 10.5 V | lay 8/8 | up+stopped 4/8 | t_up 3.39 s | attempts 2.4 | locked 0 | drive on a fallen car 1.75 s (max 2.41)
+  get-up ON  push1  50 coast  40 | 0 kg 12.0 V | lay 8/8 | up+stopped 8/8 | t_up 2.48 s | attempts 1.2 | locked 0 | drive on a fallen car 0.69 s (max 0.81)
+  get-up ON  push1  50 coast  40 | 0 kg 10.5 V | lay 8/8 | up+stopped 4/8 | t_up 2.62 s | attempts 2.1 | locked 0 | drive on a fallen car 1.71 s (max 2.53)
+### release benchmark on the STEP model
+release benchmark (lower is better)
+  release v4 (cut 40)    total  31.83  falls 0  recovery entries 0  locks 0  per case 3.81 5.93 3.54 3.34 3.80
+  cut 45 + recovery      total  31.83  falls 0  recovery entries 0  locks 0  per case 3.81 5.93 3.54 3.34 3.80
+### KEY1 start at a tilt
+placed at rest, then motors on (fresh v4); cell = upright and stopped at 4 s /4, time to <3 deg
+  12.0 V v4 (cut 45 only)  30 deg 4/4 0.19 s | 35 deg 4/4 0.21 s | 38 deg 4/4 0.23 s | 40 deg 4/4 0.26 s
+  12.0 V v4 + recovery     30 deg 4/4 0.20 s | 35 deg 4/4 0.22 s | 38 deg 4/4 0.24 s | 40 deg 4/4 0.26 s
+  10.5 V v4 (cut 45 only)  30 deg 4/4 0.20 s | 35 deg 4/4 0.24 s | 38 deg 4/4 0.30 s | 40 deg 2/4 0.32 s
+  10.5 V v4 + recovery     30 deg 4/4 0.20 s | 35 deg 4/4 0.24 s | 38 deg 4/4 0.30 s | 40 deg 2/4 0.32 s
+### released at a tilt
+
+=== battery 12.0 V, empty car, released at rest; cell = upright AND stopped at 4 s /4  up s / settle s / travel m
+  v4 (cut 45 only)  30°:4/4 0.19/2.44/520.62  35°:4/4 0.21/2.41/186.00  38°:4/4 0.23/3.22/187.12  40°:3/4 0.24/2.67/787.17  42°:2/4 0.27/ -- /251.75
+  v4 + recovery     30°:4/4 0.19/1.27/1331.00  35°:4/4 0.22/1.29/1784.88  38°:4/4 0.23/1.42/2157.75  40°:4/4 0.25/1.49/2467.88  42°:4/4 0.28/1.63/2950.38
+
+=== battery 10.5 V, empty car, released at rest; cell = upright AND stopped at 4 s /4  up s / settle s / travel m
+  v4 (cut 45 only)  30°:4/4 0.20/2.47/571.75  35°:4/4 0.23/2.62/760.50  38°:4/4 0.28/2.97/879.50  40°:2/4 0.34/2.94/419.75  42°:0/4  -- / -- / --   
+  v4 + recovery     30°:4/4 0.21/1.47/1465.88  35°:4/4 0.23/1.62/2082.62  38°:4/4 0.28/1.58/2698.25  40°:4/4 0.39/1.94/3969.38  42°:0/4  -- / -- / --   
