@@ -13,7 +13,38 @@ cable. So the desktop trains and the laptop builds, flashes and tests. GitHub
 you finish. Only the desktop changes training code and models; only the
 laptop adds car logs. Then the two never conflict.
 
-## Next: train run 24, the load in random places (2026-10-25)
+## Now: flash run 28 (2026-10-28)
+
+`models/best_real` and the weight headers are **run 28 at 5M steps** (a fine-tune). All its
+results are from the simulator. Full log, runs 24–28: `session-logs/2026-10-25-run24-run25-desktop.md`.
+
+**Run 28 =** run 22's 8 s position memory, the load placed randomly in training (run 24), tilt
+graded against the balance point so an off-centre load is held with the right lean (run 27),
+and 30 % of training episodes with no load so empty standing stays calm (run 28).
+
+**Firmware:** `policy.h` is back to run 22's `POLICY_POS_DECAY 0.99937520f` (8 s leak). Network
+and inputs unchanged, 0 B. Rebuild with `policy.h`, `policy.c` and the two weight headers.
+`test_policy`, `check_obs_builder` and the int16 check all pass on the desktop.
+
+**Simulator results (2° slack unless noted):**
+
+| | run 28, 5M | run 22, 24M (car) |
+|---|---|---|
+| Standing empty, 2° / 4° slack (deg/s) | 6.7–9.3 / 20.8–36.0 | 4.3–11.4 / 7.1–23.5 |
+| 2 kg 2 cm fore/aft, standing 30 s | **moves 36–57 cm** | runs away 1.4–6 m |
+| 2 kg 3 cm fore/aft | stands (74–119 cm); driving with it 3 cm ahead falls 1 in 2 | falls |
+| Empty 3 N pushes | **15/18** | 0/18 |
+| 60 s creep, worst | 61 cm (2 kg, −1° slope) | 37–41 cm |
+| Climb 10° with 2 kg | 95 %, 3/3 | 86 %, 2/3 |
+
+**What to look for on the car:**
+- Put the 2 kg load 2 cm ahead of or behind centre: it should lean and stay within about
+  half a metre, where run 22 ran off.
+- Empty standing should be close to run 22's calm. If it shakes much more than run 22 did,
+  the gears have more than 2° of slack: tell the desktop, run 28 at 3M is calmer there.
+- It still creeps like run 22 (8 s memory), tens of cm per minute on a slope.
+
+## Before: train run 24, the load in random places (2026-10-25)
 
 **Why:** run 22, the calmer car, was only ever trained with the load centred, 10.5 cm above
 the axle. In a simulator sweep (laptop, 2026-10-25, 2 seeds) with 2 kg on board:

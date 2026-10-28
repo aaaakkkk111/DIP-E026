@@ -308,8 +308,19 @@ POS_ERR_RANDOM_START = True
 # (2026-10-24); run 23's full memory wandered +/-10-25 cm after pushes.
 POSITION_TAU_S = 8.0
 POS_ERR_RANDOM_START = False
+# Run 25: run 23's full memory again with run 24's random load placement. Run 24's
+# 8 s leak forgot the lean an off-centre load needs and drifted 1-2 m (sim).
+POSITION_TAU_S = float("inf")
+POS_ERR_RANDOM_START = True
+# Run 27: back to run 22's 8 s memory (calmest on the car); the off-centre load
+# is handled by grading tilt against the balance point instead (_balance_tilt).
+POSITION_TAU_S = 8.0
+POS_ERR_RANDOM_START = False
 POSITION_WEIGHT = 2.5
 STAND_CMD_PROB = 0.3              # run 22, see _sample_command()
+# Run 28: this share of episodes carry no load at all, so empty standing keeps
+# being practised once the load cap is high (uniform(0, 2) left ~15 % < 0.3 kg).
+EMPTY_PAYLOAD_PROB = 0.3
 # Run 22: a random floor slope per training episode, by tilting gravity as
 # enjoy_drive.apply_slope() does (positive = uphill along +x). The car's IMU
 # measures pitch against gravity, so _sense() subtracts the slope from the
@@ -590,6 +601,7 @@ class VelocityCommandWrapper(gym.Wrapper):
         self.prev_potential = 0.0
         self.payload_body_id = mujoco.mj_name2id(self.unwrapped.model, mujoco.mjtObj.mjOBJ_BODY, "payload_body")
         self.payload_pos0 = self.unwrapped.model.body_pos[self.payload_body_id].copy()
+        self._chassis_bid = mujoco.mj_name2id(self.unwrapped.model, mujoco.mjtObj.mjOBJ_BODY, "chassis")
 
         # Curriculum caps for training envs, ramped up from 0 by CurriculumCallback.
         # Eval always uses the full max_* values so the reported metric reflects the real task.
@@ -651,6 +663,19 @@ class VelocityCommandWrapper(gym.Wrapper):
         actual_v_turn = raw_obs[QVEL_START_INDEX + 5]
         return roll, pitch, local_vel, actual_v_turn
 
+    def _balance_tilt(self):
+        """Run 27: forward tilt of the whole robot's centre of mass from 'up'
+        (against gravity), seen from the axle (the chassis origin). Equals pitch
+        when empty on a level floor; zero wherever the robot balances, so an
+        off-centre load or a slope no longer charges the lean it needs."""
+        m, d = self.unwrapped.model, self.unwrapped.data
+        fwd = d.xmat[self._chassis_bid].reshape(3, 3)[:, 0]
+        fwd = fwd - fwd[2] * np.array([0.0, 0.0, 1.0])
+        fwd /= np.linalg.norm(fwd)
+        c = d.subtree_com[self._chassis_bid] - d.xpos[self._chassis_bid]
+        g = m.opt.gravity
+        return float(np.arctan2(c @ fwd, c[2]) - np.arctan2(-(g @ fwd), -g[2]))
+
     def _potential(self, pitch, roll, actual_v_forward, actual_v_lateral, filtered_v_turn):
         """Potential-based shaping (Ng et al. 1999): F(s,s')=gamma*Phi(s')-Phi(s)
         added to the reward is policy-invariant, so it can only make the right
@@ -694,12 +719,14 @@ class VelocityCommandWrapper(gym.Wrapper):
 
     def reset(self, seed=None, options=None):
         raw_obs, info = self.env.reset(seed=seed, options=options)
-        self.unwrapped.model.body_mass[self.payload_body_id] = random.uniform(0.0, self.curriculum_payload_kg)
+        self.unwrapped.model.body_mass[self.payload_body_id] = (
+            0.0 if random.random() < EMPTY_PAYLOAD_PROB else random.uniform(0.0, self.curriculum_payload_kg))
         # body_pos is a MODEL field and persists across resets, like the mass.
         self.unwrapped.model.body_pos[self.payload_body_id] = self.payload_pos0 + (
             0.0 if self.is_eval else [random.uniform(-PAYLOAD_DX_M, PAYLOAD_DX_M),
                                       random.uniform(-PAYLOAD_DY_M, PAYLOAD_DY_M),
                                       random.uniform(*PAYLOAD_DZ_M)])
+        mujoco.mj_forward(self.unwrapped.model, self.unwrapped.data)  # subtree_com for _balance_tilt
 
         if self.is_eval:
             f_frac, t_frac = EVAL_COMMANDS[self.eval_episode % len(EVAL_COMMANDS)]
@@ -715,7 +742,7 @@ class VelocityCommandWrapper(gym.Wrapper):
         # Seed the filter with the actual yaw rate rather than 0, so the first
         # steps of an episode are not graded against a fictitious history.
         self.turn_filt = float(actual_v_turn)
-        self.prev_potential = self._potential(pitch, roll, local_vel[0], local_vel[1], self.turn_filt)
+        self.prev_potential = self._potential(self._balance_tilt(), roll, local_vel[0], local_vel[1], self.turn_filt)
         return self._get_conditioned_obs(raw_obs), info
 
     def step(self, action):
@@ -736,7 +763,8 @@ class VelocityCommandWrapper(gym.Wrapper):
         # is a fraction-of-available-torque cost, capped at 0.2 (10% of the
         # alive bonus) when both motors saturate.
         effort = np.sum(np.square(action / self.tau_max))
-        total_reward = 2.0 - (abs(pitch) * 3.0) - (effort * 0.1)
+        tilt = self._balance_tilt()   # run 27: graded against balance, not vertical
+        total_reward = 2.0 - (abs(tilt) * 3.0) - (effort * 0.1)
         total_reward -= abs(actual_v_forward - self.target_v_forward) * 2.0
 
         # Turn error is graded on a low-passed yaw rate (see TURN_LPF), plus a
@@ -746,7 +774,7 @@ class VelocityCommandWrapper(gym.Wrapper):
         total_reward -= abs(self.turn_filt - self.target_v_turn) * TURN_WEIGHT
         total_reward -= abs(actual_v_turn - self.target_v_turn) * TURN_INSTANT_WEIGHT
 
-        potential = self._potential(pitch, roll, actual_v_forward, local_vel[1], self.turn_filt)
+        potential = self._potential(tilt, roll, actual_v_forward, local_vel[1], self.turn_filt)
         total_reward += SHAPING_GAMMA * potential - self.prev_potential
         self.prev_potential = potential
 
@@ -1053,7 +1081,9 @@ class PWMCommandWrapper(VelocityCommandWrapper):
         self._last_sign = np.where(s != 0, s, self._last_sign)
         qw, qx, qy, qz = self.unwrapped.data.qpos[3:7]
         true_pitch = float(np.arcsin(np.clip(2 * (qw * qy - qz * qx), -1.0, 1.0)))
-        gate = upright_gate(true_pitch)
+        # Run 27: gated on balance tilt - 2 kg 2 cm off-centre balances at 9.5 deg,
+        # past the 8.6 deg gate, so the calm charges used to switch off there.
+        gate = upright_gate(self._balance_tilt())
         pwm = action_to_pwm(action)
         # Run 22: all three calm charges (PWM step, wobble, osc) pause during a
         # push and PENALTY_PAUSE_S after; run 21 paused only the wobble charge
@@ -1189,7 +1219,15 @@ def make_env(**kwargs):
 # Run 24: run 22 (8 s memory) with the load placed randomly: fore/aft +/-3 cm,
 # sideways +/-2 cm, 10.5-12 cm above the axle (PAYLOAD_D*_M). Training only: the
 # firmware and its size do not change.
-RUN_NAME = "run24"
+# Run 25: run 23's memory + run 24's load placement, fine-tuned 10M from run 23
+# (--init models/best_real_RUN23/best_model.zip) instead of 30M from scratch.
+# Run 26: run 25 with stronger shake charges, fine-tuned 5M from run 25 at 10M.
+# Run 27: run 22 + load placement, tilt graded against the balance point (where
+# the whole robot's centre of mass sits over the axle, along gravity), fine-tuned
+# 10M from run 22 at 24M. Training reward only: firmware as run 22.
+# Run 28: run 27 with 30 % of episodes empty (EMPTY_PAYLOAD_PROB), fine-tuned 5M
+# from run 27 at 10M. Training only: firmware as run 22.
+RUN_NAME = "run28"
 INIT_FROM = "none"
 FINETUNE_STEPS = 10_000_000
 FINETUNE_LR = 1e-4

@@ -3,6 +3,10 @@
 For whoever flashes and tests the car. Do Steps 1–9 in order. The Reference
 section at the end explains the why, and covers porting to other firmware.
 
+**Status (2026-10-28):** `models/best_real` is run 28 (5M fine-tune). Same `policy.c`; `policy.h`
+back to run 22's 8 s leak, `POLICY_POS_DECAY 0.99937520f`. See `TRAINING_ON_DESKTOP.md`,
+"Now: flash run 28".
+
 **Status (2026-10-23):** `models/best_real` is run 23 (25.5M). It needs this `policy.c`
 (`osc`/`lean` in obs[5], obs[6]; position memory restarts on a new command) and this
 `policy.h` (position memory with no leak, `POLICY_POS_DECAY 1.0f`); see
