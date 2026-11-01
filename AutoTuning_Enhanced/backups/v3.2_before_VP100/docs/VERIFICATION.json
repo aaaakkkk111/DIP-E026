@@ -1,0 +1,60 @@
+{
+  "web_version": "3.2",
+  "web_tests": 50,
+  "web_failures": 0,
+  "firmware_version": "RA1.9-AUTO6-TXFIX",
+  "firmware_changed": true,
+  "firmware_source_changes": [
+    "firmware\\firmware\\APP\\RouteA\\route_a.c"
+  ],
+  "system_prompts_identical_to_v3_1": true,
+  "acceptance_core_identical_to_v3_1": true,
+  "fast_telemetry_hz": 5,
+  "default_acquisition_seconds": 3,
+  "default_evaluation_seconds": 1,
+  "configurable_window_seconds": [
+    1,
+    20
+  ],
+  "firmware_build": {
+    "compiler": "Product: MDK Plus 5.40\nComponent: ARM Compiler 5.06 update 7 (build 960)\nTool: armcc [4d365d]\nFor support see http://www.arm.com/support\nSoftware supplied by: ARM Limited",
+    "source_files": 49,
+    "max_address": "0x800b4db",
+    "load_bytes": 46300,
+    "hex_sha256": "be87c2688a484d54e424dc386887ce3ccdd5c13e823097a59d4fe704c0d2f13a",
+    "warnings": 2,
+    "errors": 0
+  },
+  "keil_rebuild": "0 errors, 2 original filter warnings",
+  "arm_tests": {
+    "axf_sha256": "e39e1cf17ab185cfd4decdf9e5d4e6260ca7f9ba152360652a85cf9577e5eb5d",
+    "tests": [
+      {
+        "name": "actual user ACCEPT then late HB preserves candidate without TRIAL,0",
+        "passed": true
+      },
+      {
+        "name": "old HB cannot disrupt or keep alive a newer transaction; unknown ID still rejected",
+        "passed": true
+      },
+      {
+        "name": "rollback records completed ID and preserves full baseline restoration",
+        "passed": true
+      },
+      {
+        "name": "2-second heartbeat protection remains active",
+        "passed": true
+      },
+      {
+        "name": "unchanged 5 Hz fast / 2.5 Hz feature cadence / 1 Hz slow scheduling",
+        "passed": true
+      },
+      {
+        "name": "150 baseline control cycles unchanged across Standard Load TEST",
+        "passed": true
+      }
+    ]
+  },
+  "hardware_verified": false,
+  "real_llm_verified": false
+}

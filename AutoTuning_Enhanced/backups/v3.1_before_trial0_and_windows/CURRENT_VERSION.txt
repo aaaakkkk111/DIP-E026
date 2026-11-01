@@ -1,0 +1,2 @@
+RA1.9-AUTO6 / Web v3.1
+Web-only update; firmware identical to Web v3.0 release.

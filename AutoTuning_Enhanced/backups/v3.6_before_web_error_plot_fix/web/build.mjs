@@ -1,0 +1,11 @@
+import { readFile, writeFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+const dir = new URL('./src/', import.meta.url);
+let html = await readFile(new URL('template.html', dir), 'utf8');
+const css = 'select{width:100%;margin-top:9px;border:1px solid #2c4861;background:#091827;color:var(--text);border-radius:12px;padding:12px;font:inherit}.check{line-height:1.6}.check input{width:auto;margin-right:8px}details{margin-top:12px}summary{cursor:pointer;color:var(--blue)}.pressed{background:#047d78!important}.notice{background:#122b40;border:1px solid #31516c}button:disabled{cursor:not-allowed;opacity:.38}#candidateBox{white-space:pre-wrap}#operationStatus{overflow-wrap:anywhere}';
+html = html.replace('</style>', css + '\n</style>');
+const scripts = await Promise.all(['i18n.js','core.js','simulator.js','app.js'].map(f=>readFile(new URL(f,dir),'utf8')));
+html = html.replace('</body>', () => scripts.map(s=>'<script>\n'+s+'\n</script>').join('\n')+'\n</body>');
+const out = new URL('../routea_bluefy.html', import.meta.url);
+await writeFile(out, html.replace(/\r\n/g, '\n'), 'utf8');
+console.log('Built ' + fileURLToPath(out));

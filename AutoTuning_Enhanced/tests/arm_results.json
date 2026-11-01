@@ -1,0 +1,78 @@
+{
+  "axf_sha256": "9b304150e5b079ae41633a7c06d51befb1e5fd37638939eb46471387a34b21cb",
+  "tests": [
+    {
+      "name": "manual six coefficients apply only on control boundary",
+      "passed": true
+    },
+    {
+      "name": "LLM all six update and full champion rollback",
+      "passed": true
+    },
+    {
+      "name": "nonfinite out-of-range and manual-lock rejection",
+      "passed": true
+    },
+    {
+      "name": "six real ARM parser paths survive balance-IRQ preemption",
+      "passed": true,
+      "max_observed_stack": 1168
+    },
+    {
+      "name": "300 baseline control cycles match RA1.8 across all three supported modes",
+      "passed": true
+    },
+    {
+      "name": "three-mode menu wraps forwards and backwards with original internal IDs",
+      "passed": true
+    },
+    {
+      "name": "real ARM heartbeat timeout restores complete accepted vector",
+      "passed": true
+    },
+    {
+      "name": "feature reporting stays separate at 2.5 Hz and exposes warmup",
+      "passed": true,
+      "frames_in_one_second": 3
+    },
+    {
+      "name": "actual ARM bandpass matches double-precision reference",
+      "passed": true,
+      "hz": 0.1,
+      "osc": 0.02622338756918907,
+      "lean": 0.18554304540157318
+    },
+    {
+      "name": "actual ARM bandpass matches double-precision reference",
+      "passed": true,
+      "hz": 1,
+      "osc": 0.8528221845626831,
+      "lean": 1.2162209749221802
+    },
+    {
+      "name": "actual ARM bandpass matches double-precision reference",
+      "passed": true,
+      "hz": 4,
+      "osc": 2.850264072418213,
+      "lean": 0.6307428479194641
+    },
+    {
+      "name": "actual ARM bandpass matches double-precision reference",
+      "passed": true,
+      "hz": 12,
+      "osc": 4.0210137367248535,
+      "lean": 0.22683735191822052
+    },
+    {
+      "name": "actual ARM bandpass matches double-precision reference",
+      "passed": true,
+      "hz": 35,
+      "osc": 2.2662062644958496,
+      "lean": 0.0820000171661377
+    },
+    {
+      "name": "invalid feature input resets prewarm state",
+      "passed": true
+    }
+  ]
+}

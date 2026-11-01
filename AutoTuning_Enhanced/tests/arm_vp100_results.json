@@ -1,0 +1,21 @@
+{
+  "axf_sha256": "655a08b23775c30dcf510b0d9866b6a5a66886f036a0c1dd0fb8c787be119eba",
+  "tests": [
+    {
+      "name": "real ARM MSET/APPLY boundary and GET preserve VP72/76/80/84/100 and scaling",
+      "passed": true
+    },
+    {
+      "name": "real ARM rejects >100 nonfinite and below10 without parameter change",
+      "passed": true
+    },
+    {
+      "name": "real ARM automatic PREP VP100 applies and rolls back; VP101 rejected",
+      "passed": true
+    },
+    {
+      "name": "max-range slow telemetry fits formatter with VP100 firmware tag",
+      "passed": true
+    }
+  ]
+}

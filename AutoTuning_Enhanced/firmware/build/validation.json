@@ -1,0 +1,9 @@
+{
+  "compiler": "Product: MDK Plus 5.40\nComponent: ARM Compiler 5.06 update 7 (build 960)\nTool: armcc [4d365d]\nFor support see http://www.arm.com/support\nSoftware supplied by: ARM Limited",
+  "source_files": 49,
+  "max_address": "0x800b463",
+  "load_bytes": 46180,
+  "hex_sha256": "ccf09e69bc008c300fff321a710487a46657d477c3e01892618d884fec878b83",
+  "warnings": 2,
+  "errors": 0
+}

@@ -1,0 +1,8 @@
+{
+  "web/src/core.js": "7bb1a092bc232c4a9cb06136cbb482fa85df276d26fedfce3ed1cb4c55d0d2b3",
+  "web/src/simulator.js": "81dbfdfdc63832f1c71fb11a091869ce429607388b52584877cda1849b048015",
+  "firmware/firmware/APP/RouteA/route_a.c": "83859cb82812b0a72d8413a3730f20280af9c9f5e40ef0d5acea91742dac6783",
+  "releases/stm32_Balance_Car_RA1_9_AUTO6_TXFIX_VP100_NOGUARD.hex": "ccf09e69bc008c300fff321a710487a46657d477c3e01892618d884fec878b83",
+  "docs/LLM_SYSTEM_tuning.txt": "438cf5496960a97f9849c1d075b181e781b010866e4b75fee16f39c82b38c1a1",
+  "docs/LLM_SYSTEM_review.txt": "8ab8c10225fafe5d6a848d8224f7c44b1e4c6c6747801d98cced9d7da6ebee02"
+}

@@ -1,0 +1,25 @@
+{
+  "firmware_version": "RA1.9-AUTO6-TXFIX",
+  "web_version": "3.2",
+  "active_firmware_file": "stm32_Balance_Car_RA1_9_AUTO6_TXFIX.hex",
+  "rollback_firmware_file": "stm32_Balance_Car_RA1_9_AUTO6.hex",
+  "build": {
+    "compiler": "Product: MDK Plus 5.40\nComponent: ARM Compiler 5.06 update 7 (build 960)\nTool: armcc [4d365d]\nFor support see http://www.arm.com/support\nSoftware supplied by: ARM Limited",
+    "source_files": 49,
+    "max_address": "0x800b4db",
+    "load_bytes": 46300,
+    "hex_sha256": "be87c2688a484d54e424dc386887ce3ccdd5c13e823097a59d4fe704c0d2f13a",
+    "warnings": 2,
+    "errors": 0
+  },
+  "web_test_count": 50,
+  "arm_test_count": 6,
+  "hardware_verified": false,
+  "real_llm_verified": false,
+  "url": "https://aaaakkkk111.github.io/DIP-E026/?v=AUTO6-3.2",
+  "files": {
+    "index.html": "a303b455b64938bdba3df846cc3dac2284f0dc5e48ec10d9fa55a2b7128548ad",
+    "routea_bluefy.html": "a303b455b64938bdba3df846cc3dac2284f0dc5e48ec10d9fa55a2b7128548ad",
+    "stm32_Balance_Car_RA1_9_AUTO6_TXFIX.hex": "be87c2688a484d54e424dc386887ce3ccdd5c13e823097a59d4fe704c0d2f13a"
+  }
+}

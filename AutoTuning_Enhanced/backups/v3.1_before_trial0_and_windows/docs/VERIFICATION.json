@@ -1,0 +1,13 @@
+{
+  "web_version": "3.1",
+  "web_tests": 42,
+  "web_failures": 0,
+  "firmware_version": "RA1.9-AUTO6",
+  "firmware_changed": false,
+  "firmware_source_files_verified_unchanged": 120,
+  "firmware_hex_sha256": "87dab079619648605502c90737cbf68d2182ccc694f6bb16f8d335cc72a2c110",
+  "previous_arm_tests": 14,
+  "previous_arm_tests_reused_for_identical_firmware": true,
+  "hardware_verified": false,
+  "real_llm_verified": false
+}

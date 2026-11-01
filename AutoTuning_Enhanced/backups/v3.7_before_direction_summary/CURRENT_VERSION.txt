@@ -1,0 +1,2 @@
+RA1.9-AUTO6-TXFIX-VP100-NOGUARD / Web v3.7
+Web-only English LLM validation/error visibility fix and separate auto-scaled angle/raw-gyro plots. Firmware unchanged.

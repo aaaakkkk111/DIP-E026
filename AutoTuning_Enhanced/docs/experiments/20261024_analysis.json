@@ -1,0 +1,350 @@
+{
+  "source": "D:\\DIP\\Simulation\\outputs\\01a06c2e-8be6-7bf1-8acd-e3923389db5b\\pid_experience_20261024\\按网页读数的PID实验表.xlsx",
+  "source_sha256": "8b04ba64ac9f4c6d105a6503ea46e12f6b616c9b9687d99eae718330ce180572",
+  "statistics_note": "三次手抄读数的算术均值，不是整段时间均值，不能代替连续遥测与重复实验。",
+  "motion_note": "用户定义距离为前后运动的两端最远位置间距，不是净位移或累计行程。",
+  "rows": [
+    {
+      "id": "T0",
+      "changed": "基准",
+      "pid": {
+        "AP": 96,
+        "AD": 48,
+        "VP": 62,
+        "VI": 31,
+        "TP": 17,
+        "TD": 20
+      },
+      "voltage": 12.02,
+      "angle_min_as_entered": -2.31,
+      "angle_max_as_entered": 1.93,
+      "angle_order_valid": true,
+      "osc_readings": [
+        1.365,
+        3.873,
+        2.309
+      ],
+      "osc_three_point_mean": 2.5156666666666667,
+      "lean_readings": [
+        1.253,
+        0.728,
+        1.07
+      ],
+      "lean_three_point_mean": 1.0170000000000001,
+      "motion": "轻微往复(2-3cm)",
+      "notes": "未倒，无干扰（距离值为该工况下小车轮子前后移动的两端最远位置的距离，后续相同）"
+    },
+    {
+      "id": "T1",
+      "changed": "AP减小",
+      "pid": {
+        "AP": 56,
+        "AD": 48,
+        "VP": 62,
+        "VI": 31,
+        "TP": 17,
+        "TD": 20
+      },
+      "voltage": 11.98,
+      "angle_min_as_entered": -11.07,
+      "angle_max_as_entered": 12.91,
+      "angle_order_valid": true,
+      "osc_readings": [
+        7.843,
+        10.271,
+        8.46
+      ],
+      "osc_three_point_mean": 8.858,
+      "lean_readings": [
+        7.182,
+        8.18,
+        8.865
+      ],
+      "lean_three_point_mean": 8.075666666666667,
+      "motion": "轻微往复(6-7cm)",
+      "notes": "未倒，无干扰"
+    },
+    {
+      "id": "T2",
+      "changed": "AP增大",
+      "pid": {
+        "AP": 150,
+        "AD": 48,
+        "VP": 62,
+        "VI": 31,
+        "TP": 17,
+        "TD": 20
+      },
+      "voltage": 11.97,
+      "angle_min_as_entered": -1.27,
+      "angle_max_as_entered": 1.31,
+      "angle_order_valid": true,
+      "osc_readings": [
+        3.714,
+        2.834,
+        1.63
+      ],
+      "osc_three_point_mean": 2.7260000000000004,
+      "lean_readings": [
+        0.43,
+        0.624,
+        0.378
+      ],
+      "lean_three_point_mean": 0.47733333333333333,
+      "motion": "无明显跑动",
+      "notes": "未倒，无干扰"
+    },
+    {
+      "id": "T3",
+      "changed": "AD减小",
+      "pid": {
+        "AP": 96,
+        "AD": 29,
+        "VP": 62,
+        "VI": 31,
+        "TP": 17,
+        "TD": 20
+      },
+      "voltage": 11.96,
+      "angle_min_as_entered": -28.2,
+      "angle_max_as_entered": 28.75,
+      "angle_order_valid": true,
+      "osc_readings": [
+        62.91,
+        65.61,
+        52.34
+      ],
+      "osc_three_point_mean": 60.28666666666666,
+      "lean_readings": [
+        14.9,
+        14.01,
+        14.97
+      ],
+      "lean_three_point_mean": 14.626666666666667,
+      "motion": "明显往复（12-13cm）",
+      "notes": "其他（偶尔倒下，扶正后仍平衡但是接近临界）"
+    },
+    {
+      "id": "T4",
+      "changed": "AD增大",
+      "pid": {
+        "AP": 96,
+        "AD": 100,
+        "VP": 62,
+        "VI": 31,
+        "TP": 17,
+        "TD": 20
+      },
+      "voltage": 11.72,
+      "angle_min_as_entered": -7.04,
+      "angle_max_as_entered": 9.26,
+      "angle_order_valid": true,
+      "osc_readings": [
+        60.73,
+        55.72,
+        50.25
+      ],
+      "osc_three_point_mean": 55.56666666666666,
+      "lean_readings": [
+        2.81,
+        3.86,
+        1.917
+      ],
+      "lean_three_point_mean": 2.8623333333333334,
+      "motion": "明显往复(20-25cm)",
+      "notes": "未倒，无干扰"
+    },
+    {
+      "id": "T5",
+      "changed": "VP减小",
+      "pid": {
+        "AP": 96,
+        "AD": 48,
+        "VP": 30,
+        "VI": 31,
+        "TP": 17,
+        "TD": 20
+      },
+      "voltage": 11.59,
+      "angle_min_as_entered": -12.84,
+      "angle_max_as_entered": 12.99,
+      "angle_order_valid": true,
+      "osc_readings": [
+        2.913,
+        6.408,
+        4.198
+      ],
+      "osc_three_point_mean": 4.506333333333333,
+      "lean_readings": [
+        4.693,
+        9.015,
+        7.588
+      ],
+      "lean_three_point_mean": 7.0986666666666665,
+      "motion": "明显往复(40-45cm)",
+      "notes": "未倒，无干扰"
+    },
+    {
+      "id": "T6",
+      "changed": "VP增大",
+      "pid": {
+        "AP": 96,
+        "AD": 48,
+        "VP": 72,
+        "VI": 31,
+        "TP": 17,
+        "TD": 20
+      },
+      "voltage": 11.65,
+      "angle_min_as_entered": -2.37,
+      "angle_max_as_entered": 2.28,
+      "angle_order_valid": true,
+      "osc_readings": [
+        3.613,
+        2.689,
+        4.045
+      ],
+      "osc_three_point_mean": 3.449,
+      "lean_readings": [
+        1.24,
+        1.31,
+        1.328
+      ],
+      "lean_three_point_mean": 1.2926666666666666,
+      "motion": "轻微往复(1cm)",
+      "notes": "未倒，无干扰"
+    },
+    {
+      "id": "T7",
+      "changed": "VI减小",
+      "pid": {
+        "AP": 96,
+        "AD": 48,
+        "VP": 62,
+        "VI": 1,
+        "TP": 17,
+        "TD": 20
+      },
+      "voltage": 11.66,
+      "angle_min_as_entered": -2.4,
+      "angle_max_as_entered": 2.14,
+      "angle_order_valid": true,
+      "osc_readings": [
+        1.733,
+        1.607,
+        1.228
+      ],
+      "osc_three_point_mean": 1.5226666666666666,
+      "lean_readings": [
+        1.105,
+        0.422,
+        0.76
+      ],
+      "lean_three_point_mean": 0.7623333333333333,
+      "motion": "轻微往复(1cm)",
+      "notes": "未倒，无干扰"
+    },
+    {
+      "id": "T8",
+      "changed": "VI增大",
+      "pid": {
+        "AP": 96,
+        "AD": 48,
+        "VP": 62,
+        "VI": 100,
+        "TP": 17,
+        "TD": 20
+      },
+      "voltage": 11.64,
+      "angle_min_as_entered": -7.74,
+      "angle_max_as_entered": 7.94,
+      "angle_order_valid": true,
+      "osc_readings": [
+        7.812,
+        9.214,
+        6.934
+      ],
+      "osc_three_point_mean": 7.986666666666667,
+      "lean_readings": [
+        4.723,
+        5.465,
+        4.241
+      ],
+      "lean_three_point_mean": 4.809666666666666,
+      "motion": "轻微往复(4cm)",
+      "notes": "未倒，无干扰"
+    }
+  ],
+  "baseline_repeats": [
+    [
+      "T0复测",
+      11.97,
+      "相比之前测的T0无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "未倒，无干扰"
+    ],
+    [
+      "T0复测",
+      11.97,
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "未倒，无干扰"
+    ],
+    [
+      "T0复测",
+      11.72,
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "未倒，无干扰"
+    ],
+    [
+      "T0复测",
+      11.62,
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "未倒，无干扰"
+    ],
+    [
+      "T0复测",
+      11.65,
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "无显著变化",
+      "未倒，无干扰"
+    ]
+  ]
+}

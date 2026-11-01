@@ -1,0 +1,758 @@
+{
+  "viewport": "430x932",
+  "browser": "headless Chrome",
+  "hardware_verified": false,
+  "reports": [
+    {
+      "tab": "status",
+      "untranslated": [],
+      "overflow": false,
+      "controls": [
+        {
+          "id": "connectionPill",
+          "action": "connect",
+          "left": 268.859375,
+          "right": 414,
+          "top": 23.1875,
+          "bottom": 67.1875
+        },
+        {
+          "id": "languageSelect",
+          "action": "",
+          "left": 300,
+          "right": 416,
+          "top": 90.390625,
+          "bottom": 134.390625
+        },
+        {
+          "id": "emergencyStop",
+          "action": "stop",
+          "left": 232.53125,
+          "right": 416,
+          "top": 787,
+          "bottom": 841
+        },
+        {
+          "id": "",
+          "action": "status",
+          "left": 8,
+          "right": 90.796875,
+          "top": 859,
+          "bottom": 932
+        },
+        {
+          "id": "",
+          "action": "drive",
+          "left": 90.796875,
+          "right": 173.59375,
+          "top": 859,
+          "bottom": 932
+        },
+        {
+          "id": "",
+          "action": "pid",
+          "left": 173.59375,
+          "right": 256.390625,
+          "top": 859,
+          "bottom": 932
+        },
+        {
+          "id": "",
+          "action": "training",
+          "left": 256.390625,
+          "right": 339.1875,
+          "top": 859,
+          "bottom": 932
+        },
+        {
+          "id": "",
+          "action": "settings",
+          "left": 339.1875,
+          "right": 422,
+          "top": 859,
+          "bottom": 932
+        }
+      ]
+    },
+    {
+      "tab": "drive",
+      "untranslated": [],
+      "overflow": false,
+      "controls": [
+        {
+          "id": "connectionPill",
+          "action": "connect",
+          "left": 268.859375,
+          "right": 414,
+          "top": 23.1875,
+          "bottom": 67.1875
+        },
+        {
+          "id": "languageSelect",
+          "action": "",
+          "left": 300,
+          "right": 416,
+          "top": 90.390625,
+          "bottom": 134.390625
+        },
+        {
+          "id": "",
+          "action": "1,0",
+          "left": 155,
+          "right": 275,
+          "top": 330.140625,
+          "bottom": 426.140625
+        },
+        {
+          "id": "",
+          "action": "3,0",
+          "left": 27,
+          "right": 147,
+          "top": 434.140625,
+          "bottom": 530.140625
+        },
+        {
+          "id": "",
+          "action": "stop",
+          "left": 162,
+          "right": 268,
+          "top": 441.140625,
+          "bottom": 523.140625
+        },
+        {
+          "id": "",
+          "action": "4,0",
+          "left": 283,
+          "right": 403,
+          "top": 434.140625,
+          "bottom": 530.140625
+        },
+        {
+          "id": "",
+          "action": "2,0",
+          "left": 155,
+          "right": 275,
+          "top": 538.140625,
+          "bottom": 634.140625
+        },
+        {
+          "id": "",
+          "action": "0,1",
+          "left": 14,
+          "right": 210,
+          "top": 659.140625,
+          "bottom": 709.140625
+        },
+        {
+          "id": "",
+          "action": "0,2",
+          "left": 220,
+          "right": 416,
+          "top": 659.140625,
+          "bottom": 709.140625
+        },
+        {
+          "id": "",
+          "action": "",
+          "left": 31,
+          "right": 210.5,
+          "top": 885.140625,
+          "bottom": 935.140625
+        },
+        {
+          "id": "",
+          "action": "",
+          "left": 219.5,
+          "right": 399,
+          "top": 885.140625,
+          "bottom": 935.140625
+        },
+        {
+          "id": "",
+          "action": "",
+          "left": 31,
+          "right": 210.5,
+          "top": 944.140625,
+          "bottom": 994.140625
+        },
+        {
+          "id": "",
+          "action": "",
+          "left": 219.5,
+          "right": 399,
+          "top": 944.140625,
+          "bottom": 994.140625
+        },
+        {
+          "id": "",
+          "action": "",
+          "left": 31,
+          "right": 399,
+          "top": 1003.140625,
+          "bottom": 1053.140625
+        },
+        {
+          "id": "emergencyStop",
+          "action": "stop",
+          "left": 232.53125,
+          "right": 416,
+          "top": 787,
+          "bottom": 841
+        },
+        {
+          "id": "",
+          "action": "status",
+          "left": 8,
+          "right": 90.796875,
+          "top": 859,
+          "bottom": 932
+        },
+        {
+          "id": "",
+          "action": "drive",
+          "left": 90.796875,
+          "right": 173.59375,
+          "top": 859,
+          "bottom": 932
+        },
+        {
+          "id": "",
+          "action": "pid",
+          "left": 173.59375,
+          "right": 256.390625,
+          "top": 859,
+          "bottom": 932
+        },
+        {
+          "id": "",
+          "action": "training",
+          "left": 256.390625,
+          "right": 339.1875,
+          "top": 859,
+          "bottom": 932
+        },
+        {
+          "id": "",
+          "action": "settings",
+          "left": 339.1875,
+          "right": 422,
+          "top": 859,
+          "bottom": 932
+        }
+      ]
+    },
+    {
+      "tab": "pid",
+      "untranslated": [],
+      "overflow": false,
+      "controls": [
+        {
+          "id": "connectionPill",
+          "action": "connect",
+          "left": 268.859375,
+          "right": 414,
+          "top": 23.1875,
+          "bottom": 67.1875
+        },
+        {
+          "id": "languageSelect",
+          "action": "",
+          "left": 300,
+          "right": 416,
+          "top": 90.390625,
+          "bottom": 134.390625
+        },
+        {
+          "id": "",
+          "action": "get-pid",
+          "left": 340.078125,
+          "right": 414,
+          "top": 149.484375,
+          "bottom": 191.484375
+        },
+        {
+          "id": "editAP",
+          "action": "",
+          "left": 28,
+          "right": 196,
+          "top": 335.953125,
+          "bottom": 381.953125
+        },
+        {
+          "id": "editAD",
+          "action": "",
+          "left": 234,
+          "right": 402,
+          "top": 335.953125,
+          "bottom": 381.953125
+        },
+        {
+          "id": "editVP",
+          "action": "",
+          "left": 28,
+          "right": 196,
+          "top": 447.953125,
+          "bottom": 493.953125
+        },
+        {
+          "id": "editVI",
+          "action": "",
+          "left": 234,
+          "right": 402,
+          "top": 447.953125,
+          "bottom": 493.953125
+        },
+        {
+          "id": "editTP",
+          "action": "",
+          "left": 28,
+          "right": 196,
+          "top": 559.953125,
+          "bottom": 605.953125
+        },
+        {
+          "id": "editTD",
+          "action": "",
+          "left": 234,
+          "right": 402,
+          "top": 559.953125,
+          "bottom": 605.953125
+        },
+        {
+          "id": "",
+          "action": "copy-pid",
+          "left": 14,
+          "right": 416,
+          "top": 716.234375,
+          "bottom": 766.234375
+        },
+        {
+          "id": "manualPidButton",
+          "action": "manual-pid",
+          "left": 14,
+          "right": 416,
+          "top": 776.234375,
+          "bottom": 826.234375
+        },
+        {
+          "id": "emergencyStop",
+          "action": "stop",
+          "left": 232.53125,
+          "right": 416,
+          "top": 787,
+          "bottom": 841
+        },
+        {
+          "id": "",
+          "action": "status",
+          "left": 8,
+          "right": 90.796875,
+          "top": 859,
+          "bottom": 932
+        },
+        {
+          "id": "",
+          "action": "drive",
+          "left": 90.796875,
+          "right": 173.59375,
+          "top": 859,
+          "bottom": 932
+        },
+        {
+          "id": "",
+          "action": "pid",
+          "left": 173.59375,
+          "right": 256.390625,
+          "top": 859,
+          "bottom": 932
+        },
+        {
+          "id": "",
+          "action": "training",
+          "left": 256.390625,
+          "right": 339.1875,
+          "top": 859,
+          "bottom": 932
+        },
+        {
+          "id": "",
+          "action": "settings",
+          "left": 339.1875,
+          "right": 422,
+          "top": 859,
+          "bottom": 932
+        }
+      ]
+    },
+    {
+      "tab": "training",
+      "untranslated": [],
+      "overflow": false,
+      "controls": [
+        {
+          "id": "connectionPill",
+          "action": "connect",
+          "left": 268.859375,
+          "right": 414,
+          "top": 23.1875,
+          "bottom": 67.1875
+        },
+        {
+          "id": "languageSelect",
+          "action": "",
+          "left": 300,
+          "right": 416,
+          "top": 90.390625,
+          "bottom": 134.390625
+        },
+        {
+          "id": "continuousStart",
+          "action": "continuous-start",
+          "left": 31,
+          "right": 210,
+          "top": 372.015625,
+          "bottom": 422.015625
+        },
+        {
+          "id": "continuousStop",
+          "action": "continuous-stop",
+          "left": 220,
+          "right": 399,
+          "top": 372.015625,
+          "bottom": 422.015625
+        },
+        {
+          "id": "loopSource",
+          "action": "",
+          "left": 31,
+          "right": 399,
+          "top": 1590,
+          "bottom": 1634
+        },
+        {
+          "id": "loopReview",
+          "action": "",
+          "left": 31,
+          "right": 399,
+          "top": 1671,
+          "bottom": 1715
+        },
+        {
+          "id": "baselineSeconds",
+          "action": "",
+          "left": 31,
+          "right": 210,
+          "top": 1752,
+          "bottom": 1794
+        },
+        {
+          "id": "trialSeconds",
+          "action": "",
+          "left": 220,
+          "right": 399,
+          "top": 1752,
+          "bottom": 1794
+        },
+        {
+          "id": "loopCooldown",
+          "action": "",
+          "left": 31,
+          "right": 210,
+          "top": 1841,
+          "bottom": 1883
+        },
+        {
+          "id": "emergencyStop",
+          "action": "stop",
+          "left": 232.53125,
+          "right": 416,
+          "top": 787,
+          "bottom": 841
+        },
+        {
+          "id": "",
+          "action": "status",
+          "left": 8,
+          "right": 90.796875,
+          "top": 859,
+          "bottom": 932
+        },
+        {
+          "id": "",
+          "action": "drive",
+          "left": 90.796875,
+          "right": 173.59375,
+          "top": 859,
+          "bottom": 932
+        },
+        {
+          "id": "",
+          "action": "pid",
+          "left": 173.59375,
+          "right": 256.390625,
+          "top": 859,
+          "bottom": 932
+        },
+        {
+          "id": "",
+          "action": "training",
+          "left": 256.390625,
+          "right": 339.1875,
+          "top": 859,
+          "bottom": 932
+        },
+        {
+          "id": "",
+          "action": "settings",
+          "left": 339.1875,
+          "right": 422,
+          "top": 859,
+          "bottom": 932
+        }
+      ]
+    },
+    {
+      "tab": "settings",
+      "untranslated": [],
+      "overflow": false,
+      "controls": [
+        {
+          "id": "connectionPill",
+          "action": "connect",
+          "left": 268.859375,
+          "right": 414,
+          "top": 23.1875,
+          "bottom": 67.1875
+        },
+        {
+          "id": "languageSelect",
+          "action": "",
+          "left": 300,
+          "right": 416,
+          "top": 90.390625,
+          "bottom": 134.390625
+        },
+        {
+          "id": "serviceUuid",
+          "action": "",
+          "left": 31,
+          "right": 399,
+          "top": 251.578125,
+          "bottom": 293.578125
+        },
+        {
+          "id": "charUuid",
+          "action": "",
+          "left": 31,
+          "right": 399,
+          "top": 330.578125,
+          "bottom": 372.578125
+        },
+        {
+          "id": "namePrefix",
+          "action": "",
+          "left": 31,
+          "right": 399,
+          "top": 409.578125,
+          "bottom": 451.578125
+        },
+        {
+          "id": "chunkSize",
+          "action": "",
+          "left": 31,
+          "right": 210,
+          "top": 488.578125,
+          "bottom": 530.578125
+        },
+        {
+          "id": "chunkDelay",
+          "action": "",
+          "left": 220,
+          "right": 399,
+          "top": 488.578125,
+          "bottom": 530.578125
+        },
+        {
+          "id": "",
+          "action": "save-settings",
+          "left": 31,
+          "right": 399,
+          "top": 562.578125,
+          "bottom": 612.578125
+        },
+        {
+          "id": "llmBase",
+          "action": "",
+          "left": 31,
+          "right": 399,
+          "top": 724.578125,
+          "bottom": 766.578125
+        },
+        {
+          "id": "llmModel",
+          "action": "",
+          "left": 31,
+          "right": 399,
+          "top": 803.578125,
+          "bottom": 845.578125
+        },
+        {
+          "id": "llmKey",
+          "action": "",
+          "left": 31,
+          "right": 399,
+          "top": 882.578125,
+          "bottom": 924.578125
+        },
+        {
+          "id": "reviewBase",
+          "action": "",
+          "left": 31,
+          "right": 399,
+          "top": 1009.578125,
+          "bottom": 1051.578125
+        },
+        {
+          "id": "reviewModel",
+          "action": "",
+          "left": 31,
+          "right": 399,
+          "top": 1088.578125,
+          "bottom": 1130.578125
+        },
+        {
+          "id": "reviewKey",
+          "action": "",
+          "left": 31,
+          "right": 399,
+          "top": 1167.578125,
+          "bottom": 1209.578125
+        },
+        {
+          "id": "",
+          "action": "test-llm",
+          "left": 31,
+          "right": 210,
+          "top": 1221.578125,
+          "bottom": 1283.578125
+        },
+        {
+          "id": "",
+          "action": "cancel-llm",
+          "left": 220,
+          "right": 399,
+          "top": 1221.578125,
+          "bottom": 1283.578125
+        },
+        {
+          "id": "",
+          "action": "use-proxy",
+          "left": 31,
+          "right": 399,
+          "top": 1303.578125,
+          "bottom": 1353.578125
+        },
+        {
+          "id": "",
+          "action": "connect",
+          "left": 31,
+          "right": 210,
+          "top": 1521.015625,
+          "bottom": 1571.015625
+        },
+        {
+          "id": "",
+          "action": "disconnect",
+          "left": 220,
+          "right": 399,
+          "top": 1521.015625,
+          "bottom": 1571.015625
+        },
+        {
+          "id": "",
+          "action": "mock",
+          "left": 31,
+          "right": 399,
+          "top": 1591.015625,
+          "bottom": 1641.015625
+        },
+        {
+          "id": "",
+          "action": "export-csv",
+          "left": 31,
+          "right": 210,
+          "top": 2235.984375,
+          "bottom": 2297.984375
+        },
+        {
+          "id": "",
+          "action": "export-json",
+          "left": 220,
+          "right": 399,
+          "top": 2235.984375,
+          "bottom": 2297.984375
+        },
+        {
+          "id": "",
+          "action": "clear-log",
+          "left": 31,
+          "right": 399,
+          "top": 2317.984375,
+          "bottom": 2367.984375
+        },
+        {
+          "id": "emergencyStop",
+          "action": "stop",
+          "left": 232.53125,
+          "right": 416,
+          "top": 787,
+          "bottom": 841
+        },
+        {
+          "id": "",
+          "action": "status",
+          "left": 8,
+          "right": 90.796875,
+          "top": 859,
+          "bottom": 932
+        },
+        {
+          "id": "",
+          "action": "drive",
+          "left": 90.796875,
+          "right": 173.59375,
+          "top": 859,
+          "bottom": 932
+        },
+        {
+          "id": "",
+          "action": "pid",
+          "left": 173.59375,
+          "right": 256.390625,
+          "top": 859,
+          "bottom": 932
+        },
+        {
+          "id": "",
+          "action": "training",
+          "left": 256.390625,
+          "right": 339.1875,
+          "top": 859,
+          "bottom": 932
+        },
+        {
+          "id": "",
+          "action": "settings",
+          "left": 339.1875,
+          "right": 422,
+          "top": 859,
+          "bottom": 932
+        }
+      ]
+    },
+    {
+      "demoCandidateText": "PROPOSE · Simulated candidate demonstrates the workflow only; it is not physical optimization"
+    }
+  ],
+  "errors": []
+}

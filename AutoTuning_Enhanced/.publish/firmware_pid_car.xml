@@ -1,0 +1,114 @@
+<mujoco model="yahboom_stm32_balance_car_v2">
+  <!--
+    Physical axes: X forward, Y left, Z up.
+    Dimensions are in SI units.  The envelope is based on the supplied STEP
+    assembly; the 67 mm tire diameter and drivetrain constants come from the
+    vendor firmware/manual.  Collision geometry is deliberately simple so the
+    contact model remains stable and reproducible.
+  -->
+  <compiler angle="radian" inertiafromgeom="true" autolimits="true" />
+  <option timestep="0.001" gravity="0 0 -9.81" integrator="implicitfast"
+          solver="Newton" iterations="80" noslip_iterations="8"
+          tolerance="1e-10" />
+
+  <default>
+    <!-- Stiff contact: the plane is fixed to worldbody and therefore immovable. -->
+    <geom condim="4" friction="1.15 0.015 0.001" density="500"
+          solref="0.002 1" solimp="0.995 0.9999 0.0001" />
+    <joint damping="0.003" armature="0.00020" frictionloss="0.018" />
+    <!-- ctrl is wheel torque in N m after the PWM motor model. -->
+    <motor ctrllimited="true" ctrlrange="-0.52 0.52" />
+  </default>
+
+  <visual>
+    <global azimuth="120" elevation="-18" />
+    <headlight ambient="0.35 0.35 0.35" diffuse="0.65 0.65 0.65" />
+  </visual>
+
+  <worldbody>
+    <light name="key" pos="0 -2 3" dir="0 0 -1" directional="true" />
+    <!-- A worldbody plane has no joint or mass and is a static rigid ground. -->
+    <geom name="ground" type="plane" size="5 5 0.05"
+          rgba="0.18 0.20 0.23 1" friction="1.15 0.015 0.001" />
+
+    <!-- The chassis frame origin is the wheel axle midpoint. -->
+    <body name="chassis" pos="0 0 0.0335">
+      <freejoint name="root" />
+
+      <!-- Simplified standard chassis: about 1.01 kg without payload. -->
+      <geom name="lower_plate" type="box" pos="0 0 0.034"
+            size="0.075 0.052 0.002" mass="0.18"
+            rgba="0.10 0.12 0.15 1" contype="0" conaffinity="0" />
+      <geom name="battery_pack" type="box" pos="-0.010 0 0.063"
+            size="0.044 0.034 0.025" mass="0.18"
+            rgba="0.08 0.09 0.10 1" contype="0" conaffinity="0" />
+      <geom name="controller_board" type="box" pos="0.003 0 0.100"
+            size="0.047 0.036 0.006" mass="0.12"
+            rgba="0.08 0.42 0.25 1" contype="0" conaffinity="0" />
+      <geom name="left_standoff" type="capsule" fromto="-0.055 0.046 0.040 -0.055 0.046 0.150"
+            size="0.003" mass="0.0125" rgba="0.75 0.58 0.18 1"
+            contype="0" conaffinity="0" />
+      <geom name="right_standoff" type="capsule" fromto="-0.055 -0.046 0.040 -0.055 -0.046 0.150"
+            size="0.003" mass="0.0125" rgba="0.75 0.58 0.18 1"
+            contype="0" conaffinity="0" />
+      <geom name="front_left_standoff" type="capsule" fromto="0.055 0.046 0.040 0.055 0.046 0.150"
+            size="0.003" mass="0.0125" rgba="0.75 0.58 0.18 1"
+            contype="0" conaffinity="0" />
+      <geom name="front_right_standoff" type="capsule" fromto="0.055 -0.046 0.040 0.055 -0.046 0.150"
+            size="0.003" mass="0.0125" rgba="0.75 0.58 0.18 1"
+            contype="0" conaffinity="0" />
+      <geom name="top_platform" type="box" pos="0 0 0.153"
+            size="0.085 0.060 0.0025" mass="0.06"
+            rgba="0.63 0.73 0.83 0.72" contype="0" conaffinity="0" />
+
+      <site name="imu" pos="0.003 0 0.103" size="0.004"
+            rgba="1 0.15 0.10 1" />
+
+      <!-- Adjustable load is fixed to the upper platform. -->
+      <body name="payload" pos="0 0 0.158">
+        <geom name="payload_box" type="box" pos="0 0 0.025"
+              size="0.060 0.045 0.025" mass="0.000001"
+              rgba="0.93 0.55 0.12 0.85" contype="0" conaffinity="0" />
+      </body>
+
+      <!-- 520 geared motors, 150 g each. -->
+      <geom name="left_motor_case" type="cylinder" pos="0 0.047 0"
+            size="0.018 0.022" euler="1.57079632679 0 0" mass="0.15"
+            rgba="0.55 0.57 0.61 1" contype="0" conaffinity="0" />
+      <geom name="right_motor_case" type="cylinder" pos="0 -0.047 0"
+            size="0.018 0.022" euler="1.57079632679 0 0" mass="0.15"
+            rgba="0.55 0.57 0.61 1" contype="0" conaffinity="0" />
+
+      <body name="left_wheel" pos="0 0.063 0">
+        <joint name="left_wheel_hinge" type="hinge" axis="0 1 0" />
+        <geom name="left_tire" type="cylinder" size="0.0335 0.013"
+              euler="1.57079632679 0 0" mass="0.05"
+              rgba="0.045 0.047 0.052 1" />
+        <geom name="left_hub" type="cylinder" size="0.016 0.0135"
+              euler="1.57079632679 0 0" mass="0.01"
+              rgba="0.12 0.32 0.78 1" contype="0" conaffinity="0" />
+      </body>
+
+      <body name="right_wheel" pos="0 -0.063 0">
+        <joint name="right_wheel_hinge" type="hinge" axis="0 1 0" />
+        <geom name="right_tire" type="cylinder" size="0.0335 0.013"
+              euler="1.57079632679 0 0" mass="0.05"
+              rgba="0.045 0.047 0.052 1" />
+        <geom name="right_hub" type="cylinder" size="0.016 0.0135"
+              euler="1.57079632679 0 0" mass="0.01"
+              rgba="0.12 0.32 0.78 1" contype="0" conaffinity="0" />
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <motor name="left_motor" joint="left_wheel_hinge" gear="1" />
+    <motor name="right_motor" joint="right_wheel_hinge" gear="1" />
+  </actuator>
+
+  <sensor>
+    <framequat name="chassis_orientation" objtype="body" objname="chassis" />
+    <gyro name="chassis_gyro" site="imu" />
+    <velocimeter name="chassis_velocity" site="imu" />
+  </sensor>
+</mujoco>

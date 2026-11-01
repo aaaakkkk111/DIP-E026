@@ -1,0 +1,30 @@
+{
+  "firmware_version": "RA1.9-AUTO6-TXFIX-VP100",
+  "web_version": "3.3",
+  "active_firmware_file": "stm32_Balance_Car_RA1_9_AUTO6_TXFIX_VP100.hex",
+  "rollback_firmware_file": "stm32_Balance_Car_RA1_9_AUTO6_TXFIX.hex",
+  "build": {
+    "compiler": "Product: MDK Plus 5.40\nComponent: ARM Compiler 5.06 update 7 (build 960)\nTool: armcc [4d365d]\nFor support see http://www.arm.com/support\nSoftware supplied by: ARM Limited",
+    "source_files": 49,
+    "max_address": "0x800b4db",
+    "load_bytes": 46300,
+    "hex_sha256": "ebab057543773c6d080eb47a9a9daaabbe30a1c6ef61bc2c29df70c48f271890",
+    "warnings": 2,
+    "errors": 0
+  },
+  "web_test_count": 56,
+  "arm_test_count": 10,
+  "hardware_verified": false,
+  "previous_v3_2_user_hardware_verified": true,
+  "real_llm_verified": false,
+  "url": "https://aaaakkkk111.github.io/DIP-E026/?v=VP100-3.3",
+  "vp_range": [
+    10,
+    100
+  ],
+  "files": {
+    "index.html": "4b137e957b5def64ac40023fe3f1cfba2160554802bda90a64d6ed7a06839ac7",
+    "routea_bluefy.html": "4b137e957b5def64ac40023fe3f1cfba2160554802bda90a64d6ed7a06839ac7",
+    "stm32_Balance_Car_RA1_9_AUTO6_TXFIX_VP100.hex": "ebab057543773c6d080eb47a9a9daaabbe30a1c6ef61bc2c29df70c48f271890"
+  }
+}

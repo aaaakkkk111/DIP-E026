@@ -1,0 +1,22 @@
+{
+  "web/src/core.js": "7bb1a092bc232c4a9cb06136cbb482fa85df276d26fedfce3ed1cb4c55d0d2b3",
+  "web/src/app.js": "0eb48479986f51617b08271baffae75d3c4b9c6b5b10463bad51f7eb2c5efdfb",
+  "web/src/template.html": "eee8dc09d6d6c7b1bd88321f42cafc21579cfce2dfa84d7a38c9d7ada2e64822",
+  "web/src/i18n.js": "fed9f73e31ca22dd0bc207c5ffc9dc570919ea5ca38c3583c9c29d89d8922152",
+  "web/build.mjs": "61b0a562cf7fd67c531f818dc0fedc438181af4a4469776a3e1bf7f0e10da391",
+  "web/tests/harness.cjs": "30a191250e7e986282c33f2390e43bd9c0ae925194658b1edce40a1fe0d63d45",
+  "web/tests/core.test.cjs": "7718a079cd99ca32c1bf195ee808f7b042c6ff5e7ecf9dc3a26e15b69e89796c",
+  "web/tests/empirical-prompt.test.cjs": "2e70f6159ff88c052b4c918d85a1526436346b7de87f46e5193160c9856a585c",
+  "README.md": "cf3ba2bf547aac8e87b22fdca4654e86c0f21c4f1d18347de1c5604c63be3bfd",
+  "web/README.md": "b8c729b14e0236c6e9bd5e58f580161cb3f794078cabca97fd2b1c8b45e36b1f",
+  "releases/README.md": "e9bc6ef24c10c09ca500fc8e74511f52df8b823716972fc8a200738ad1534dd4",
+  "CURRENT_VERSION.txt": "cc1d0439dc764334c62c36e5d41bbb65fae155da20e9275d7f9da83f42cc8add",
+  "releases/ACCEPTANCE.md": "ab018d4c0610b481c849f9dab00b0ed7afae0b20106a7458df247fdad3a5554e",
+  "routea_bluefy.html": "b63229e470ec7defdb2770f6c87e95ae840d643cc3b30d2b8491714f403d6a43",
+  "releases/index.html": "b63229e470ec7defdb2770f6c87e95ae840d643cc3b30d2b8491714f403d6a43",
+  "releases/routea_bluefy.html": "b63229e470ec7defdb2770f6c87e95ae840d643cc3b30d2b8491714f403d6a43",
+  "releases/manifest.json": "bb06262730eb3ea9fd287e8c11a3a96c4292e40f496a2e6cb9cf03e3f360f39b",
+  "releases/PUBLICATION.json": "15356295b105551523de7b3c5a05d2bb7918da74ba98e8d8693d4f3291b80921",
+  "releases/SHA256SUMS.txt": "2e8852ff32aa1b641e8fb8f37f5c980bc447ede93dda28c645831b963bc2a6c4",
+  "releases/AutoTuning_Enhanced_source.zip": "c3e9d8ac342331c2113383e7e3ab2de635cf8ef3251eaf707414452f42bdcbf9"
+}

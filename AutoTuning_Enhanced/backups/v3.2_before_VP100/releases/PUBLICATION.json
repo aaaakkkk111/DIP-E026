@@ -1,0 +1,22 @@
+{
+  "web_version": "3.2",
+  "firmware_version": "RA1.9-AUTO6-TXFIX",
+  "firmware_changed": true,
+  "commit": "a028f2ed4abb85a09b1ab4c2ca0e9ee1d1129f43",
+  "branch": "codex/routea-mobile-v1.5",
+  "workflow_run": 39947521339,
+  "workflow_conclusion": "success",
+  "expected_sha256": "a303b455b64938bdba3df846cc3dac2284f0dc5e48ec10d9fa55a2b7128548ad",
+  "pages": [
+    {
+      "url": "https://aaaakkkk111.github.io/DIP-E026/?v=AUTO6-3.2",
+      "sha256": "a303b455b64938bdba3df846cc3dac2284f0dc5e48ec10d9fa55a2b7128548ad",
+      "matches_release": true
+    },
+    {
+      "url": "https://aaaakkkk111.github.io/DIP-E026/AutoTuning_Enhanced/routea_bluefy.html?v=AUTO6-3.2",
+      "sha256": "a303b455b64938bdba3df846cc3dac2284f0dc5e48ec10d9fa55a2b7128548ad",
+      "matches_release": true
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+RA1.9-AUTO6-TXFIX-VP100-NOGUARD / Web v3.9
+Web-only explicit first-round decisive correction prompt and round metadata. Firmware, local directional policy, PID bounds, acceptance, timing, UI layout and communication unchanged.

@@ -1,0 +1,27 @@
+{
+  "browser": "headless Chrome",
+  "viewport": "430x932",
+  "actualExplanationCharacters": 714,
+  "actualCandidateApplied": true,
+  "persistentErrorVisibleAfterUnlock": true,
+  "bilingualErrorVerified": true,
+  "plots": {
+    "angle": "±5 °",
+    "gyro": "±2500 raw",
+    "canvases": [
+      {
+        "id": "chart",
+        "width": 368,
+        "height": 180
+      },
+      {
+        "id": "gyroChart",
+        "width": 368,
+        "height": 180
+      }
+    ],
+    "overflow": false
+  },
+  "errors": [],
+  "hardware_verified": false
+}

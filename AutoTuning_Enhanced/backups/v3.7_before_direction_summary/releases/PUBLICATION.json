@@ -1,0 +1,31 @@
+{
+  "web_version": "3.7",
+  "firmware_version": "RA1.9-AUTO6-TXFIX-VP100-NOGUARD",
+  "firmware_changed": false,
+  "commit": "6779f3d44194bf8db5e551ba1d719a52ce24e1e2",
+  "branch": "codex/routea-mobile-v1.5",
+  "expected_sha256": "1ae90216eef49c177a9af2c3c66efc8edbc05fc30d401498553c0565d5ee78bf",
+  "checked_at": "2026-10-25T04:50:15.794667+00:00",
+  "pages": [
+    {
+      "url": "https://aaaakkkk111.github.io/DIP-E026/?v=WEBFIX-3.7&lang=en&check=6779f3d",
+      "sha256": "1ae90216eef49c177a9af2c3c66efc8edbc05fc30d401498553c0565d5ee78bf",
+      "matches_release": true
+    },
+    {
+      "url": "https://aaaakkkk111.github.io/DIP-E026/AutoTuning_Enhanced/routea_bluefy.html?v=WEBFIX-3.7&lang=en&check=6779f3d",
+      "sha256": "1ae90216eef49c177a9af2c3c66efc8edbc05fc30d401498553c0565d5ee78bf",
+      "matches_release": true
+    }
+  ],
+  "workflow_runs": [
+    {
+      "id": 40163233991,
+      "name": "pages build and deployment",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/aaaakkkk111/DIP-E026/actions/runs/40163233991"
+    }
+  ],
+  "status": "published_verified"
+}

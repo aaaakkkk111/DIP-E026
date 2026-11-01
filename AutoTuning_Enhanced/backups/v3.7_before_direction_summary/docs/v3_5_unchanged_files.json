@@ -1,0 +1,9 @@
+{
+  "firmware/firmware/APP/app_motor.c": "84286240c38ec66fb5cee5fb2201372776e4c0ef144c90ff6333f44de1106402",
+  "firmware/firmware/APP/app_control.c": "ec851c1391089079f977112588f71cba7542f7472b7d2ff95ea4f54a3bf879cb",
+  "firmware/firmware/APP/PID/pid_control.c": "dc9d602b2f57df04569fe5ba311655142619f42bc8f4c879365ab5fad7551e97",
+  "firmware/firmware/USER/stm32_Balance_Car.uvprojx": "8c4e7b7ee86fa59475dceef63a0799c30cd924823ee39aceccddae5eee4c3108",
+  "web/src/core.js": "7bb1a092bc232c4a9cb06136cbb482fa85df276d26fedfce3ed1cb4c55d0d2b3",
+  "docs/LLM_SYSTEM_tuning.txt": "438cf5496960a97f9849c1d075b181e781b010866e4b75fee16f39c82b38c1a1",
+  "docs/LLM_SYSTEM_review.txt": "8ab8c10225fafe5d6a848d8224f7c44b1e4c6c6747801d98cced9d7da6ebee02"
+}

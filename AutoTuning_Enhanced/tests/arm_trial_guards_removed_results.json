@@ -1,0 +1,39 @@
+{
+  "axf": "D:\\DIP\\Auto tuning_10.22\\AutoTuning_Enhanced\\firmware\\build\\stm32_Balance_Car_RA1_9_AUTO6_TXFIX_VP100_NOGUARD.axf",
+  "sha256": "655a08b23775c30dcf510b0d9866b6a5a66886f036a0c1dd0fb8c787be119eba",
+  "hardware_verified": false,
+  "tests": [
+    {
+      "name": "angle-only: 100 capture cycles retain candidate; explicit completion works",
+      "passed": true
+    },
+    {
+      "name": "saturation-only: 100 capture cycles retain candidate; explicit completion works",
+      "passed": true
+    },
+    {
+      "name": "battery-only: 100 capture cycles retain candidate; explicit completion works",
+      "passed": true
+    },
+    {
+      "name": "combined: 100 capture cycles retain candidate; explicit completion works",
+      "passed": true
+    },
+    {
+      "name": "missing heartbeat still restores the baseline after 2 seconds",
+      "passed": true
+    },
+    {
+      "name": "transaction TTL still closes an expired trial despite heartbeats",
+      "passed": true
+    },
+    {
+      "name": "Standard/Load/idle TEST control outputs match previous firmware for 150 cycles",
+      "passed": true
+    },
+    {
+      "name": "5Hz fast, 2.5Hz features and 1Hz slow telemetry retain valid extended version frames",
+      "passed": true
+    }
+  ]
+}

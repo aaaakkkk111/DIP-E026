@@ -1,0 +1,2 @@
+RA1.9-AUTO6-TXFIX-VP100 / Web v3.4
+Web-only empirical prompt extension. Firmware/HEX identical to v3.3. Priors derive from unloaded, level-ground experiments and are not fixed gains.

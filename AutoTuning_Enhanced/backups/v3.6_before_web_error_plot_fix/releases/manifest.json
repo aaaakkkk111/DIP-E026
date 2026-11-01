@@ -1,0 +1,58 @@
+{
+  "firmware_version": "RA1.9-AUTO6-TXFIX-VP100-NOGUARD",
+  "web_version": "3.6",
+  "active_firmware_file": "stm32_Balance_Car_RA1_9_AUTO6_TXFIX_VP100_NOGUARD.hex",
+  "rollback_firmware_file": "stm32_Balance_Car_RA1_9_AUTO6_TXFIX_VP100.hex",
+  "build": {
+    "compiler": "Product: MDK Plus 5.40\nComponent: ARM Compiler 5.06 update 7 (build 960)\nTool: armcc [4d365d]\nFor support see http://www.arm.com/support\nSoftware supplied by: ARM Limited",
+    "source_files": 49,
+    "max_address": "0x800b463",
+    "load_bytes": 46180,
+    "hex_sha256": "ccf09e69bc008c300fff321a710487a46657d477c3e01892618d884fec878b83",
+    "warnings": 2,
+    "errors": 0
+  },
+  "web_test_count": 60,
+  "arm_test_count": 18,
+  "hardware_verified": false,
+  "real_llm_verified": false,
+  "url": "https://aaaakkkk111.github.io/DIP-E026/?v=I18N-3.6",
+  "firmware_changed": false,
+  "previous_arm_tests_reused": true,
+  "removed_trial_gates": [
+    "web_apply_angle_25",
+    "web_apply_output_2595",
+    "web_review_battery",
+    "web_apply_battery",
+    "web_trial_angle_25",
+    "web_trial_battery",
+    "firmware_trial_three_cycle_angle_output_battery"
+  ],
+  "unchanged_file_hashes": {
+    "web/src/core.js": "7bb1a092bc232c4a9cb06136cbb482fa85df276d26fedfce3ed1cb4c55d0d2b3",
+    "web/src/simulator.js": "81dbfdfdc63832f1c71fb11a091869ce429607388b52584877cda1849b048015",
+    "firmware/firmware/APP/RouteA/route_a.c": "83859cb82812b0a72d8413a3730f20280af9c9f5e40ef0d5acea91742dac6783",
+    "releases/stm32_Balance_Car_RA1_9_AUTO6_TXFIX_VP100_NOGUARD.hex": "ccf09e69bc008c300fff321a710487a46657d477c3e01892618d884fec878b83",
+    "docs/LLM_SYSTEM_tuning.txt": "438cf5496960a97f9849c1d075b181e781b010866e4b75fee16f39c82b38c1a1",
+    "docs/LLM_SYSTEM_review.txt": "8ab8c10225fafe5d6a848d8224f7c44b1e4c6c6747801d98cced9d7da6ebee02"
+  },
+  "files": {
+    "index.html": "b63229e470ec7defdb2770f6c87e95ae840d643cc3b30d2b8491714f403d6a43",
+    "routea_bluefy.html": "b63229e470ec7defdb2770f6c87e95ae840d643cc3b30d2b8491714f403d6a43",
+    "stm32_Balance_Car_RA1_9_AUTO6_TXFIX_VP100_NOGUARD.hex": "ccf09e69bc008c300fff321a710487a46657d477c3e01892618d884fec878b83"
+  },
+  "languages": [
+    "zh",
+    "en"
+  ],
+  "english_url": "https://aaaakkkk111.github.io/DIP-E026/?v=I18N-3.6&lang=en",
+  "system_prompt_change": "English UI changes only the requested explanation language; Chinese system prompt and empirical priors remain unchanged.",
+  "browser_layout_check": {
+    "viewport": "430x932",
+    "browser": "headless Chrome",
+    "pages": 5,
+    "hardware_verified": false,
+    "manual_pid_verified": true,
+    "demo_cycle_verified": true
+  }
+}

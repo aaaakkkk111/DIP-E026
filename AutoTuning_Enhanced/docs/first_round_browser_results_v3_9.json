@@ -1,0 +1,47 @@
+{
+  "web_version": "3.9",
+  "browser": "headless Chrome",
+  "viewport": "430x932",
+  "model_calls": "intercepted mock responses only",
+  "hardware_verified": false,
+  "results": [
+    {
+      "language": "zh",
+      "round": {
+        "number": 1,
+        "first_round": true
+      },
+      "large_first_candidate_applied": true,
+      "candidate": {
+        "AP": 165,
+        "AD": 55,
+        "VP": 50,
+        "VI": 10,
+        "TP": 17,
+        "TD": 20
+      },
+      "baseline_restored_on_stop": true,
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "language": "en",
+      "round": {
+        "number": 1,
+        "first_round": true
+      },
+      "large_first_candidate_applied": true,
+      "candidate": {
+        "AP": 165,
+        "AD": 55,
+        "VP": 50,
+        "VI": 10,
+        "TP": 17,
+        "TD": 20
+      },
+      "baseline_restored_on_stop": true,
+      "errors": [],
+      "overflow": false
+    }
+  ]
+}

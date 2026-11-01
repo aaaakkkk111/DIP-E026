@@ -1,0 +1,167 @@
+{
+  "web_version": "3.8",
+  "browser": "headless Chrome",
+  "viewport": "430x932",
+  "model_calls": "intercepted mock responses only",
+  "hardware_verified": false,
+  "results": [
+    {
+      "language": "zh",
+      "roundsRequested": 2,
+      "localComparison": {
+        "scope": "last_5_trials_in_current_auto_run_same_source_connected_PID_path",
+        "current_metrics": {
+          "meanOsc": 0.8591764705882351,
+          "meanLean": 0.7621764705882351,
+          "rmsAngle": 1.8667288154920185,
+          "peakAngle": 2.75,
+          "rmsGyro": 8.229537904259695,
+          "saturationRate": 0
+        },
+        "comparisons": [
+          {
+            "id": 1703494075,
+            "time": "2026-10-25T05:33:07.548Z",
+            "outcome": "accepted",
+            "base_pid": {
+              "AP": 96,
+              "AD": 48,
+              "VP": 62,
+              "VI": 31,
+              "TP": 17,
+              "TD": 20
+            },
+            "tested_pid": {
+              "AP": 96,
+              "AD": 75,
+              "VP": 62,
+              "VI": 31,
+              "TP": 17,
+              "TD": 20
+            },
+            "changed_parameters": [
+              "AD"
+            ],
+            "pid_delta": {
+              "AD": 27
+            },
+            "before": {
+              "meanOsc": 0.8761176470588237,
+              "meanLean": 0.753,
+              "rmsAngle": 1.885210239484929,
+              "peakAngle": 2.63,
+              "rmsGyro": 8.20423133295898,
+              "saturationRate": 0
+            },
+            "after": {
+              "meanOsc": 1.1713333333333331,
+              "meanLean": 0.5195,
+              "rmsAngle": 1.9324681972372362,
+              "peakAngle": 2.72,
+              "rmsGyro": 8.171597151108221,
+              "saturationRate": 0
+            },
+            "osc_delta": 0.29521568627450945,
+            "lean_delta": -0.23350000000000004,
+            "attribution": "single_gain_observation_not_causal_proof"
+          }
+        ],
+        "preferred_direction": {
+          "action": "prefer_lower_AD_if_osc_remains_problematic",
+          "evidence_ids": [
+            1703494075
+          ],
+          "coordinated": false,
+          "context_changed_since": false,
+          "note": "A conditional priority, never a hard direction lock. Cite new measured evidence to reverse it; choose magnitude and coordinated gains using current lean and responses."
+        },
+        "experiment_target": {
+          "specified": false,
+          "note": "No numeric stability target is configured; do not invent one or confuse acceptance with stability."
+        },
+        "limits": "Descriptive window comparisons, not causal proof or significance tests. No universal high/low osc or lean threshold. Gains, load, slope and noise may interact."
+      },
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "language": "en",
+      "roundsRequested": 2,
+      "localComparison": {
+        "scope": "last_5_trials_in_current_auto_run_same_source_connected_PID_path",
+        "current_metrics": {
+          "meanOsc": 0.8591764705882351,
+          "meanLean": 0.7621764705882351,
+          "rmsAngle": 1.8667288154920185,
+          "peakAngle": 2.75,
+          "rmsGyro": 8.229537904259695,
+          "saturationRate": 0
+        },
+        "comparisons": [
+          {
+            "id": 410029864,
+            "time": "2026-10-25T05:33:22.256Z",
+            "outcome": "accepted",
+            "base_pid": {
+              "AP": 96,
+              "AD": 48,
+              "VP": 62,
+              "VI": 31,
+              "TP": 17,
+              "TD": 20
+            },
+            "tested_pid": {
+              "AP": 96,
+              "AD": 75,
+              "VP": 62,
+              "VI": 31,
+              "TP": 17,
+              "TD": 20
+            },
+            "changed_parameters": [
+              "AD"
+            ],
+            "pid_delta": {
+              "AD": 27
+            },
+            "before": {
+              "meanOsc": 0.8761176470588237,
+              "meanLean": 0.753,
+              "rmsAngle": 1.885210239484929,
+              "peakAngle": 2.63,
+              "rmsGyro": 8.20423133295898,
+              "saturationRate": 0
+            },
+            "after": {
+              "meanOsc": 1.1713333333333331,
+              "meanLean": 0.5195,
+              "rmsAngle": 1.9324681972372362,
+              "peakAngle": 2.72,
+              "rmsGyro": 8.171597151108221,
+              "saturationRate": 0
+            },
+            "osc_delta": 0.29521568627450945,
+            "lean_delta": -0.23350000000000004,
+            "attribution": "single_gain_observation_not_causal_proof"
+          }
+        ],
+        "preferred_direction": {
+          "action": "prefer_lower_AD_if_osc_remains_problematic",
+          "evidence_ids": [
+            410029864
+          ],
+          "coordinated": false,
+          "context_changed_since": false,
+          "note": "A conditional priority, never a hard direction lock. Cite new measured evidence to reverse it; choose magnitude and coordinated gains using current lean and responses."
+        },
+        "experiment_target": {
+          "specified": false,
+          "note": "No numeric stability target is configured; do not invent one or confuse acceptance with stability."
+        },
+        "limits": "Descriptive window comparisons, not causal proof or significance tests. No universal high/low osc or lean threshold. Gains, load, slope and noise may interact."
+      },
+      "errors": [],
+      "overflow": false
+    }
+  ]
+}

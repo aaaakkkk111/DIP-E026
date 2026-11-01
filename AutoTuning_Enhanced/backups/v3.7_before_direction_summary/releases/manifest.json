@@ -1,0 +1,80 @@
+{
+  "firmware_version": "RA1.9-AUTO6-TXFIX-VP100-NOGUARD",
+  "web_version": "3.7",
+  "active_firmware_file": "stm32_Balance_Car_RA1_9_AUTO6_TXFIX_VP100_NOGUARD.hex",
+  "rollback_firmware_file": "stm32_Balance_Car_RA1_9_AUTO6_TXFIX_VP100.hex",
+  "build": {
+    "compiler": "Product: MDK Plus 5.40\nComponent: ARM Compiler 5.06 update 7 (build 960)\nTool: armcc [4d365d]\nFor support see http://www.arm.com/support\nSoftware supplied by: ARM Limited",
+    "source_files": 49,
+    "max_address": "0x800b463",
+    "load_bytes": 46180,
+    "hex_sha256": "ccf09e69bc008c300fff321a710487a46657d477c3e01892618d884fec878b83",
+    "warnings": 2,
+    "errors": 0
+  },
+  "web_test_count": 73,
+  "arm_test_count": 18,
+  "hardware_verified": false,
+  "real_llm_verified": false,
+  "url": "https://aaaakkkk111.github.io/DIP-E026/?v=WEBFIX-3.7",
+  "firmware_changed": false,
+  "previous_arm_tests_reused": true,
+  "removed_trial_gates": [
+    "web_apply_angle_25",
+    "web_apply_output_2595",
+    "web_review_battery",
+    "web_apply_battery",
+    "web_trial_angle_25",
+    "web_trial_battery",
+    "firmware_trial_three_cycle_angle_output_battery"
+  ],
+  "unchanged_file_hashes": {
+    "web/src/simulator.js": "81dbfdfdc63832f1c71fb11a091869ce429607388b52584877cda1849b048015",
+    "firmware/firmware/APP/RouteA/route_a.c": "83859cb82812b0a72d8413a3730f20280af9c9f5e40ef0d5acea91742dac6783",
+    "firmware/firmware/APP/PID/pid_control.c": "dc9d602b2f57df04569fe5ba311655142619f42bc8f4c879365ab5fad7551e97",
+    "releases/stm32_Balance_Car_RA1_9_AUTO6_TXFIX_VP100_NOGUARD.hex": "ccf09e69bc008c300fff321a710487a46657d477c3e01892618d884fec878b83",
+    "docs/LLM_SYSTEM_tuning.txt": "438cf5496960a97f9849c1d075b181e781b010866e4b75fee16f39c82b38c1a1",
+    "docs/LLM_SYSTEM_review.txt": "8ab8c10225fafe5d6a848d8224f7c44b1e4c6c6747801d98cced9d7da6ebee02",
+    "docs/EMPIRICAL_PRIOR_V3_4.txt": "6bc5dc0f1788777c0126d67910e57cfaea459f6e9163530e947f3d9b50a0d412"
+  },
+  "files": {
+    "index.html": "1ae90216eef49c177a9af2c3c66efc8edbc05fc30d401498553c0565d5ee78bf",
+    "routea_bluefy.html": "1ae90216eef49c177a9af2c3c66efc8edbc05fc30d401498553c0565d5ee78bf",
+    "stm32_Balance_Car_RA1_9_AUTO6_TXFIX_VP100_NOGUARD.hex": "ccf09e69bc008c300fff321a710487a46657d477c3e01892618d884fec878b83"
+  },
+  "languages": [
+    "zh",
+    "en"
+  ],
+  "english_url": "https://aaaakkkk111.github.io/DIP-E026/?v=WEBFIX-3.7&lang=en",
+  "system_prompt_change": "None; preserves the previous prompts, empirical priors, PID bounds and acceptance policy. Explanatory text validation tolerates up to 3000 characters in either language.",
+  "browser_layout_check": {
+    "browser": "headless Chrome",
+    "viewport": "430x932",
+    "actualExplanationCharacters": 714,
+    "actualCandidateApplied": true,
+    "persistentErrorVisibleAfterUnlock": true,
+    "bilingualErrorVerified": true,
+    "plots": {
+      "angle": "\u53645 \u63b3",
+      "gyro": "\u53642500 raw",
+      "canvases": [
+        {
+          "id": "chart",
+          "width": 368,
+          "height": 180
+        },
+        {
+          "id": "gyroChart",
+          "width": 368,
+          "height": 180
+        }
+      ],
+      "overflow": false
+    },
+    "errors": [],
+    "hardware_verified": false
+  },
+  "explanation_text_limit": 3000,
+  "original_prompt_explanation_limit": 500
+}

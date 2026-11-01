@@ -1,0 +1,13 @@
+const {test,before,after}=require('node:test'),assert=require('node:assert/strict');
+const {spawn}=require('node:child_process'),path=require('node:path'),{pathToFileURL}=require('node:url');
+const base='http://127.0.0.1:8791';let child;
+before(async()=>{child=spawn(process.execPath,['--import',pathToFileURL(path.join(__dirname,'proxy-fixture.mjs')).href,path.join(__dirname,'../server.mjs')],{env:{...process.env,HOST:'127.0.0.1',PORT:'8791',LLM_API_KEY:'TEST-ONLY-SECRET',LLM_ENDPOINT:'https://api.deepseek.com/chat/completions',LLM_ALLOWED_HOSTS:'api.deepseek.com',PROXY_TOKEN:''},stdio:['ignore','pipe','pipe']});await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error('test proxy startup timeout')),5000);child.stdout.once('data',()=>{clearTimeout(timer);resolve();});child.once('error',reject);child.once('exit',code=>reject(Error('proxy exited '+code)));});});
+after(()=>child?.kill());
+const request=async(body,headers={})=>fetch(base+'/api/chat/completions',{method:'POST',headers:{'Content-Type':'application/json',...headers},body:JSON.stringify(body)});
+const input={model:'test-fixture',messages:[{role:'user',content:'test'}]};
+test('serves self-contained HTML and health without exposing upstream keys',async()=>{const response=await fetch(base),html=await response.text();assert.equal(response.status,200);assert.ok(html.includes('Route A 控制台'));assert.ok(!html.includes('TEST-ONLY-SECRET'));assert.deepEqual(await (await fetch(base+'/health')).json(),{ok:true,proxyConfigured:true,tls:false});assert.equal((await fetch(base+'/original.html')).status,404);});
+test('same-origin proxy normalizes request; upstream is fixed server configuration',async()=>{const response=await request({...input,url:'https://attacker.example',stream:true},{Origin:base}),result=await response.json();assert.equal(response.status,200);assert.equal(result.testOnly.url,'https://api.deepseek.com/chat/completions');assert.equal(result.testOnly.stream,false);assert.equal(result.testOnly.model,'test-fixture');});
+test('proxy refuses cross-origin and malformed requests',async()=>{assert.equal((await request(input,{Origin:'https://attacker.example'})).status,403);assert.equal((await request({model:'x',messages:[{role:'tool',content:'x'}]})).status,400);assert.equal((await request({...input,messages:[]})).status,400);const response=await fetch(base+'/api/chat/completions',{method:'POST',body:'{'});assert.equal(response.status,400);});
+test('upstream errors are forwarded without leaking API key',async()=>{const response=await request({...input,model:'fail'});assert.equal(response.status,401);const body=await response.text();assert.ok(!body.includes('TEST-ONLY-SECRET'));assert.ok(body.includes('[REDACTED]'));});
+
+

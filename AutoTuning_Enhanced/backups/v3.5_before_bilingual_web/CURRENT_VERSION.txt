@@ -1,0 +1,2 @@
+RA1.9-AUTO6-TXFIX-VP100-NOGUARD / Web v3.5
+Removed Route A tuning-only angle, saturation and battery apply/rollback gates. Firmware and web both changed.

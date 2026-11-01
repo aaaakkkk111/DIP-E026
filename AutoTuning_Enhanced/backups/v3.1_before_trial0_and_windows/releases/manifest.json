@@ -1,0 +1,33 @@
+{
+  "firmware_version": "RA1.9-AUTO6",
+  "web_version": "3.1",
+  "baseline": "User-validated RA1.8 + web2.5",
+  "original_trees_unchanged": {
+    "firmware": 152,
+    "web": 24
+  },
+  "build": {
+    "compiler": "Product: MDK Plus 5.40\nComponent: ARM Compiler 5.06 update 7 (build 960)\nTool: armcc [4d365d]\nFor support see http://www.arm.com/support\nSoftware supplied by: ARM Limited",
+    "source_files": 49,
+    "max_address": "0x800b4a3",
+    "load_bytes": 46244,
+    "hex_sha256": "87dab079619648605502c90737cbf68d2182ccc694f6bb16f8d335cc72a2c110",
+    "warnings": 2,
+    "errors": 0
+  },
+  "web_test_count": 42,
+  "hardware_verified": false,
+  "real_llm_verified": false,
+  "url": "https://aaaakkkk111.github.io/DIP-E026/?v=AUTO6-3.1",
+  "files": {
+    "index.html": "023de6d854d01007e6419471f6029af85259f48e7c77baf6e0d6b07d045de1d3",
+    "routea_bluefy.html": "023de6d854d01007e6419471f6029af85259f48e7c77baf6e0d6b07d045de1d3",
+    "stm32_Balance_Car_RA1_9_AUTO6.hex": "87dab079619648605502c90737cbf68d2182ccc694f6bb16f8d335cc72a2c110"
+  },
+  "arm_test_count": 14,
+  "arm_axf_sha256": "9b304150e5b079ae41633a7c06d51befb1e5fd37638939eb46471387a34b21cb",
+  "firmware_changed": false,
+  "previous_arm_tests_reused": true,
+  "acceptance_max_weighted_cost": 1.1,
+  "llm_manual_workflow": false
+}

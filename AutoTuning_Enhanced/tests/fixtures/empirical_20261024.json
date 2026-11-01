@@ -1,0 +1,265 @@
+{
+  "source_sha256": "a961b3198e0b3dc875092905c286551b0985ca4ec7e7c251a873bda475482805",
+  "source_file": "D:\\DIP\\Simulation\\outputs\\01a06c2e-8be6-7bf1-8acd-e3923389db5b\\pid_experience_20261024\\按网页读数的PID实验表.xlsx",
+  "context": {
+    "payload": "none",
+    "slope": "level ground",
+    "context_source": "User explicitly stated experimental boundary conditions in chat; not inferred from telemetry.",
+    "purpose": "Directional priors only; not fixed gains for changing load/slope."
+  },
+  "statistic": "Arithmetic mean of three manually copied readings, not a time-window mean or independent repetitions.",
+  "rows": [
+    {
+      "id": "T0",
+      "pid": {
+        "AP": 96,
+        "AD": 48,
+        "VP": 62,
+        "VI": 31,
+        "TP": 17,
+        "TD": 20
+      },
+      "battery": 12.02,
+      "angle_min": -2.31,
+      "angle_max": 1.93,
+      "osc_readings": [
+        1.365,
+        3.873,
+        2.309
+      ],
+      "lean_readings": [
+        1.253,
+        0.728,
+        1.07
+      ],
+      "osc_three_reading_mean": 2.5156666666666667,
+      "lean_three_reading_mean": 1.0170000000000001,
+      "human_motion": "轻微往复(2-3cm)",
+      "notes": "未倒，无干扰（距离值为该工况下小车轮子前后移动的两端最远位置的距离，后续相同）"
+    },
+    {
+      "id": "T1",
+      "pid": {
+        "AP": 56,
+        "AD": 48,
+        "VP": 62,
+        "VI": 31,
+        "TP": 17,
+        "TD": 20
+      },
+      "battery": 11.98,
+      "angle_min": -11.07,
+      "angle_max": 12.91,
+      "osc_readings": [
+        7.843,
+        10.271,
+        8.46
+      ],
+      "lean_readings": [
+        7.182,
+        8.18,
+        8.865
+      ],
+      "osc_three_reading_mean": 8.858,
+      "lean_three_reading_mean": 8.075666666666667,
+      "human_motion": "轻微往复(6-7cm)",
+      "notes": "未倒，无干扰"
+    },
+    {
+      "id": "T2",
+      "pid": {
+        "AP": 150,
+        "AD": 48,
+        "VP": 62,
+        "VI": 31,
+        "TP": 17,
+        "TD": 20
+      },
+      "battery": 11.97,
+      "angle_min": -1.27,
+      "angle_max": 1.31,
+      "osc_readings": [
+        3.714,
+        2.834,
+        1.63
+      ],
+      "lean_readings": [
+        0.43,
+        0.624,
+        0.378
+      ],
+      "osc_three_reading_mean": 2.7260000000000004,
+      "lean_three_reading_mean": 0.47733333333333333,
+      "human_motion": "无明显跑动",
+      "notes": "未倒，无干扰"
+    },
+    {
+      "id": "T3",
+      "pid": {
+        "AP": 96,
+        "AD": 29,
+        "VP": 62,
+        "VI": 31,
+        "TP": 17,
+        "TD": 20
+      },
+      "battery": 11.96,
+      "angle_min": -28.2,
+      "angle_max": 28.75,
+      "osc_readings": [
+        62.91,
+        65.61,
+        52.34
+      ],
+      "lean_readings": [
+        14.9,
+        14.01,
+        14.97
+      ],
+      "osc_three_reading_mean": 60.28666666666666,
+      "lean_three_reading_mean": 14.626666666666667,
+      "human_motion": "明显往复（12-13cm）",
+      "notes": "其他（偶尔倒下，扶正后仍平衡但是接近临界）"
+    },
+    {
+      "id": "T4",
+      "pid": {
+        "AP": 96,
+        "AD": 100,
+        "VP": 62,
+        "VI": 31,
+        "TP": 17,
+        "TD": 20
+      },
+      "battery": 11.72,
+      "angle_min": -7.04,
+      "angle_max": 9.26,
+      "osc_readings": [
+        60.73,
+        55.72,
+        50.25
+      ],
+      "lean_readings": [
+        2.81,
+        3.86,
+        1.917
+      ],
+      "osc_three_reading_mean": 55.56666666666666,
+      "lean_three_reading_mean": 2.8623333333333334,
+      "human_motion": "明显往复(20-25cm)",
+      "notes": "未倒，无干扰"
+    },
+    {
+      "id": "T5",
+      "pid": {
+        "AP": 96,
+        "AD": 48,
+        "VP": 30,
+        "VI": 31,
+        "TP": 17,
+        "TD": 20
+      },
+      "battery": 11.59,
+      "angle_min": -12.84,
+      "angle_max": 12.99,
+      "osc_readings": [
+        2.913,
+        6.408,
+        4.198
+      ],
+      "lean_readings": [
+        4.693,
+        9.015,
+        7.588
+      ],
+      "osc_three_reading_mean": 4.506333333333333,
+      "lean_three_reading_mean": 7.0986666666666665,
+      "human_motion": "明显往复(40-45cm)",
+      "notes": "未倒，无干扰"
+    },
+    {
+      "id": "T6",
+      "pid": {
+        "AP": 96,
+        "AD": 48,
+        "VP": 94,
+        "VI": 31,
+        "TP": 17,
+        "TD": 20
+      },
+      "battery": 12.3,
+      "angle_min": -10.27,
+      "angle_max": 10.33,
+      "osc_readings": [
+        34.884,
+        32.492,
+        39.205
+      ],
+      "lean_readings": [
+        5.36,
+        4.81,
+        4.369
+      ],
+      "osc_three_reading_mean": 35.527,
+      "lean_three_reading_mean": 4.846333333333333,
+      "human_motion": "轻微往复(2cm)",
+      "notes": "未倒，无干扰"
+    },
+    {
+      "id": "T7",
+      "pid": {
+        "AP": 96,
+        "AD": 48,
+        "VP": 62,
+        "VI": 1,
+        "TP": 17,
+        "TD": 20
+      },
+      "battery": 11.66,
+      "angle_min": -2.4,
+      "angle_max": 2.14,
+      "osc_readings": [
+        1.733,
+        1.607,
+        1.228
+      ],
+      "lean_readings": [
+        1.105,
+        0.422,
+        0.76
+      ],
+      "osc_three_reading_mean": 1.5226666666666666,
+      "lean_three_reading_mean": 0.7623333333333333,
+      "human_motion": "轻微往复(1cm)",
+      "notes": "未倒，无干扰"
+    },
+    {
+      "id": "T8",
+      "pid": {
+        "AP": 96,
+        "AD": 48,
+        "VP": 62,
+        "VI": 100,
+        "TP": 17,
+        "TD": 20
+      },
+      "battery": 11.64,
+      "angle_min": -7.74,
+      "angle_max": 7.94,
+      "osc_readings": [
+        7.812,
+        9.214,
+        6.934
+      ],
+      "lean_readings": [
+        4.723,
+        5.465,
+        4.241
+      ],
+      "osc_three_reading_mean": 7.986666666666667,
+      "lean_three_reading_mean": 4.809666666666666,
+      "human_motion": "轻微往复(4cm)",
+      "notes": "未倒，无干扰"
+    }
+  ]
+}

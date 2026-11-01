@@ -1,0 +1,29 @@
+{
+  "axf_sha256": "e39e1cf17ab185cfd4decdf9e5d4e6260ca7f9ba152360652a85cf9577e5eb5d",
+  "tests": [
+    {
+      "name": "actual user ACCEPT then late HB preserves candidate without TRIAL,0",
+      "passed": true
+    },
+    {
+      "name": "old HB cannot disrupt or keep alive a newer transaction; unknown ID still rejected",
+      "passed": true
+    },
+    {
+      "name": "rollback records completed ID and preserves full baseline restoration",
+      "passed": true
+    },
+    {
+      "name": "2-second heartbeat protection remains active",
+      "passed": true
+    },
+    {
+      "name": "unchanged 5 Hz fast / 2.5 Hz feature cadence / 1 Hz slow scheduling",
+      "passed": true
+    },
+    {
+      "name": "150 baseline control cycles unchanged across Standard Load TEST",
+      "passed": true
+    }
+  ]
+}

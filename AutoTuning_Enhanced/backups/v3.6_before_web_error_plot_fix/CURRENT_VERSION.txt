@@ -1,0 +1,2 @@
+RA1.9-AUTO6-TXFIX-VP100-NOGUARD / Web v3.6
+Web-only Chinese/English localization. Firmware and HEX unchanged from v3.5.

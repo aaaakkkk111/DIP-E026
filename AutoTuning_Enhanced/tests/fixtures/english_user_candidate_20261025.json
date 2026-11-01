@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "decision": "propose",
+  "stage": "balance",
+  "candidate": {"AP":75,"AD":55,"VP":62,"VI":10,"TP":17,"TD":20},
+  "expected_effect": "Current stationary run shows sustained low-frequency oscillatory meanOsc ~13 deg/s with rmsGyro ~1110 counts and angle swinging roughly +13 to -13 deg every ~0.2-0.4s while meanLean stays high (~8 deg), indicating weak restoring stiffness and poorly damped fore-aft limit cycle rather than a single spike. Raise AP (50->75) for stronger restoring torque and AD (45->55) for more damping; reduce VI (31->10) because integral windup is likely sustaining the slow sway/lean offset with little benefit. VP left at 62 to avoid the historical VP94 oscillation tradeoff; leaving steering gains unchanged since stationary data cannot identify steering. Quiet_balance trial to check reduced osc/lean amplitude and gyro RMS.",
+  "requested_test": "quiet_balance",
+  "confidence": 0.45
+}

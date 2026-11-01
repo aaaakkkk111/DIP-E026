@@ -1,0 +1,32 @@
+{
+  "web_version": "3.4",
+  "web_tests": 59,
+  "web_failures": 0,
+  "firmware_version": "RA1.9-AUTO6-TXFIX-VP100",
+  "firmware_changed": false,
+  "firmware_files_verified_unchanged": 343,
+  "firmware_hex_sha256": "ebab057543773c6d080eb47a9a9daaabbe30a1c6ef61bc2c29df70c48f271890",
+  "previous_arm_tests": 10,
+  "previous_arm_tests_reused_for_identical_firmware": true,
+  "core_protocol_safety_acceptance_unchanged": true,
+  "original_tuning_and_review_prefixes_preserved": true,
+  "empirical_context": {
+    "payload": "none",
+    "slope": "level ground",
+    "scope": "conditional directional priors only"
+  },
+  "runtime_requests_verified": [
+    "tuning",
+    "optional review",
+    "unchanged connection test"
+  ],
+  "fast_telemetry_hz": 5,
+  "default_acquisition_seconds": 3,
+  "default_evaluation_seconds": 1,
+  "vp_range": [
+    10,
+    100
+  ],
+  "new_prompt_hardware_effectiveness_verified": false,
+  "real_llm_verified": false
+}

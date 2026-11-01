@@ -1,0 +1,18 @@
+[
+  "..\\BSP\\IRtracking\\bsp_irtracking.c",
+  "..\\BSP\\ElE_Track\\bsp_ele_track.c",
+  "..\\BSP\\CCD\\bsp_ccd.c",
+  "..\\BSP\\Usart1\\bsp_usart2.c",
+  "..\\BSP\\Lidar\\bsp_lidar.c",
+  "..\\BSP\\PS2\\bsp_ps2.c",
+  "..\\BSP\\PS2\\app_ps2.c",
+  "..\\APP\\app_tracking.c",
+  "..\\APP\\app_ccd_tracking.c",
+  "..\\APP\\app_ele_tracking.c",
+  "..\\APP\\K210\\app_k210.c",
+  "..\\APP\\K210\\app_k210_AI.c",
+  "..\\APP\\K210\\app_line.c",
+  "..\\APP\\K210\\app_follow.c",
+  "..\\APP\\Lidar\\app_lidar.c",
+  "..\\APP\\Lidar\\app_lidar_car.c"
+]

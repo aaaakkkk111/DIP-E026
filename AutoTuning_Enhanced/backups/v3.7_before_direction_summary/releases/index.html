@@ -1,0 +1,1450 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#07111f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Route A · Web v3.7 · AUTO6</title>
+  <style>:root{color-scheme:dark;--bg:#07111f;--card:#101e2f;--card2:#13263b;--line:#203a52;--text:#eff7ff;--muted:#8fa7ba;--cyan:#2dd4bf;--blue:#38bdf8;--amber:#fbbf24;--red:#fb4b5c;--green:#4ade80;--nav:80px;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC",system-ui,sans-serif}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;background:radial-gradient(circle at 80% -10%,#12375a 0,transparent 38%),var(--bg);color:var(--text)}body{padding:calc(env(safe-area-inset-top) + 12px) 14px calc(var(--nav) + env(safe-area-inset-bottom) + 82px);overscroll-behavior:none}button,input,textarea{font:inherit}button{touch-action:manipulation}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:760px;margin:auto;padding:4px 2px 16px}.eyebrow{font-size:11px;letter-spacing:.13em;color:var(--cyan);font-weight:800}.topbar h1,.section-head h2{font-size:24px;line-height:1.1;margin:4px 0 0}.pill{border:1px solid #3a5167;background:#132337;color:var(--text);border-radius:999px;padding:10px 13px;min-height:44px;display:flex;align-items:center;gap:8px}.pill span{width:10px;height:10px;border-radius:50%;background:var(--red);box-shadow:0 0 10px var(--red)}.pill.online span{background:var(--green);box-shadow:0 0 10px var(--green)}.pill.connecting span{background:var(--amber);box-shadow:0 0 10px var(--amber)}main{max-width:760px;margin:auto}.page{display:none;animation:fade .18s ease}.page.active{display:block}@keyframes fade{from{opacity:.5;transform:translateY(4px)}}.card{border:1px solid var(--line);background:linear-gradient(150deg,rgba(20,39,59,.96),rgba(12,28,44,.96));border-radius:20px;padding:16px;margin-bottom:12px;box-shadow:0 10px 30px rgba(0,0,0,.16)}.banner,.notice{border-radius:15px;padding:12px 14px;margin-bottom:12px;line-height:1.45}.banner:empty{display:none}.warning{background:#3a2d0f;border:1px solid #765c19;color:#ffe59c}.danger{background:#3d1821;border:1px solid #7f2c3c;color:#ffc7cf}.hero{display:flex;justify-content:space-between;align-items:center;min-height:176px;background:linear-gradient(135deg,#102a42,#0c1b2b)}.hero .label,.metric span{display:block;color:var(--muted);font-size:13px}.hero strong{display:block;font-size:52px;letter-spacing:-.05em;margin:5px 0}.hero small{color:var(--blue)}.ring{width:145px;height:145px}.ring canvas{width:100%;height:100%}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metrics .card{margin:0 0 2px}.metric b{display:block;font-size:19px;margin-top:8px}.card-title,.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.card-title{font-weight:800;margin-bottom:12px}.legend{font-size:11px;color:var(--muted)}.legend i{display:inline-block;width:16px;height:3px;border-radius:2px;background:var(--cyan);margin:0 4px}.legend i+ i{background:var(--amber);margin-left:10px}#chart{display:block;width:100%;height:210px}.status-list{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}.status-list div{padding:10px 0;border-bottom:1px solid var(--line)}.status-list span{display:block;color:var(--muted);font-size:12px}.status-list b{display:block;margin-top:4px;overflow-wrap:anywhere}.section-head{margin:4px 2px 15px}.tag{display:inline-flex;border:1px solid #36516a;border-radius:999px;padding:6px 9px;color:#b9d2e5;font-size:12px}.tag.amber{border-color:#6b561c;color:#ffe08b}.btn,.diag-grid button{min-height:50px;border:1px solid #31516c;border-radius:14px;background:#172c42;color:var(--text);font-weight:750;padding:10px}.btn:active,.diag-grid button:active,.drive-btn:active{transform:scale(.97)}.btn.primary{background:linear-gradient(135deg,#047d78,#0d9b96);border-color:#2dd4bf}.btn.accent{background:#15385c;border-color:#2b78a8}.btn.success{background:#164d35;border-color:#2c8c5f}.btn.danger-btn{background:#511e2b;border-color:#a63a52}.btn.warning-btn{background:#593e13;border-color:#a67825}.btn.full{width:100%;margin-top:10px}.btn.compact{min-height:42px;padding:8px 16px}.btn:disabled,.drive-btn:disabled{opacity:.38;filter:saturate(.35)}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}.drive-pad{display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:96px 96px 96px;gap:8px;padding:12px}.drive-btn{border:1px solid #31516c;background:#172c42;color:white;border-radius:18px;font-size:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;touch-action:none;user-select:none}.drive-btn small{font-size:13px;margin-top:4px}.forward{grid-column:2}.left{grid-row:2;grid-column:1}.right{grid-row:2;grid-column:3}.back{grid-row:3;grid-column:2}.stop-main{grid-row:2;grid-column:2;border-radius:50%;margin:7px;border:2px solid #ff6879;background:radial-gradient(circle,#e92f48,#9b1730);color:white;font-size:17px;font-weight:900;box-shadow:0 0 24px rgba(251,75,92,.35)}.diag-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.diag-grid .span2{grid-column:1/-1}.muted,.footnote{color:var(--muted)}.footnote{font-size:12px;line-height:1.5}.pid-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pid-item{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:13px}.pid-item label{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px}.pid-item label b{color:var(--cyan);font-size:15px}.pid-item input,.form-card input,textarea{width:100%;border:1px solid #2c4861;background:#091827;color:var(--text);border-radius:12px;padding:12px;margin-top:9px;outline:none}.pid-item input:focus,.form-card input:focus,textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 2px rgba(45,212,191,.12)}.delta{font-size:13px;line-height:1.55}.training-flow{display:grid;grid-template-columns:1fr 1fr;gap:9px}.training-flow div{display:flex;align-items:center;gap:9px;color:var(--muted);font-size:13px}.training-flow b{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#1d354a;color:#b9cad9}.training-flow .done{color:var(--text)}.training-flow .done b{background:var(--cyan);color:#052b28}.metric-lines{line-height:1.65;font-size:13px;margin-top:12px}.candidate{line-height:1.6;font-size:13px;margin-top:12px}.form-card label{display:block;color:var(--muted);font-size:13px;margin-bottom:12px}textarea{resize:vertical;line-height:1.4;font-family:"SF Mono",ui-monospace,monospace;font-size:12px}pre{height:250px;overflow:auto;background:#06111c;border-radius:12px;padding:10px;color:#a9c5d8;font:11px/1.55 "SF Mono",ui-monospace,monospace;white-space:pre-wrap;word-break:break-all}.about{font-size:13px;line-height:1.5}.emergency{position:fixed;z-index:20;right:14px;bottom:calc(var(--nav) + env(safe-area-inset-bottom) + 11px);min-height:54px;border:2px solid #ff7180;border-radius:18px;background:#d5213b;color:white;padding:0 18px;font-weight:900;box-shadow:0 8px 28px rgba(213,33,59,.45)}nav{position:fixed;z-index:19;left:0;right:0;bottom:0;height:calc(var(--nav) + env(safe-area-inset-bottom));padding:6px 8px env(safe-area-inset-bottom);display:grid;grid-template-columns:repeat(5,1fr);background:rgba(6,16,27,.94);border-top:1px solid #1e3447;backdrop-filter:blur(18px)}nav button{border:0;background:transparent;color:#7790a5;font-size:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}nav button span{font-size:20px}nav button.active{color:var(--cyan)}#toast{position:fixed;z-index:50;left:50%;bottom:calc(var(--nav) + env(safe-area-inset-bottom) + 78px);transform:translate(-50%,18px);width:min(88%,540px);background:#eaf8ff;color:#07111f;border-radius:13px;padding:12px 15px;text-align:center;font-weight:750;opacity:0;pointer-events:none;transition:.2s}#toast.show{opacity:1;transform:translate(-50%,0)}@media(max-width:380px){.hero strong{font-size:42px}.ring{width:120px;height:120px}.status-list{grid-template-columns:1fr}.topbar h1{font-size:21px}.drive-pad{grid-template-rows:82px 82px 82px}}@media(orientation:landscape) and (max-height:520px){body{padding-top:8px}.topbar{padding-bottom:8px}.hero{min-height:130px}.ring{width:110px;height:110px}.drive-pad{grid-template-rows:72px 72px 72px;max-width:520px;margin:auto}.emergency{right:92px}}
+b[id$="Value"]{display:block;font-size:1.3rem;overflow-wrap:anywhere}#continuousState{white-space:pre-wrap;overflow-wrap:anywhere}button{touch-action:manipulation}.auto-hero h3{font-size:21px;margin:14px 0;line-height:1.45}.auto-stages{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;padding:0;list-style:none;font-size:12px;text-align:center}.auto-stages li{border-bottom:3px solid #29455b;padding:10px 1px;color:#8fa7ba}.auto-stages li.active{border-color:#38bdf8;color:#fff;background:#15364b;border-radius:8px 8px 0 0;animation:autoPulse 1.4s ease-in-out infinite}.auto-stages li.done{border-color:#2dd4bf;color:#2dd4bf}progress{width:100%;height:10px;accent-color:#2dd4bf}.pid-compare-row{display:grid;grid-template-columns:.7fr 1fr 1fr;gap:8px;padding:9px 0;border-bottom:1px solid #203a52;font-variant-numeric:tabular-nums}.pid-compare-row strong{color:#2dd4bf}.round-history{white-space:pre-wrap;font-size:12px;line-height:1.6;max-height:240px;overflow:auto}#scoreValue{font-size:26px;color:#2dd4bf}#autoDetail{min-height:22px}summary{min-height:36px;line-height:1.8}@keyframes autoPulse{50%{background:#1d4a62}}@media(prefers-reduced-motion:reduce){.auto-stages li.active{animation:none}}
+.topbar>div{min-width:0}.topbar h1{overflow-wrap:anywhere}.pill{flex-shrink:0}.pill b{max-width:108px;overflow-wrap:anywhere}.language-bar{max-width:760px;margin:0 auto 12px;display:flex;align-items:center;justify-content:flex-end;gap:10px;font-size:13px;color:var(--muted)}#languageSelect{width:auto;min-width:116px;max-width:160px;margin:0;padding:9px 12px;min-height:44px}html[lang="en"] .hero strong{font-size:clamp(38px,10vw,62px)}html[lang="en"] .section-head h2{font-size:22px}.auto-stages li{overflow-wrap:anywhere}.card-title{gap:8px;flex-wrap:wrap}.tag{max-width:100%;overflow-wrap:anywhere}.status-list>div{min-width:0}.drive-btn small{font-size:13px}nav button{min-width:0}.two-col .btn{overflow-wrap:anywhere}.pid-compare-row{min-width:0}
+nav button>[data-i18n]{font-size:11px;line-height:1.2;letter-spacing:normal}.legend i:nth-of-type(2){background:var(--amber)}
+
+.telemetry-plots canvas{display:block;width:100%;height:180px}.telemetry-plots #chart,.telemetry-plots #gyroChart{height:180px}.plot-heading{display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:13px;margin-top:14px}.plot-heading b{font-variant-numeric:tabular-nums;font-size:12px}.angle-color{color:#2dd4bf}.gyro-color{color:#fbbf24}#autoError{border:2px solid #fb7185;background:#411d2a;overflow-wrap:anywhere;scroll-margin-top:12px}#autoError p{line-height:1.6;margin:10px 0}#autoErrorReason{color:#ffe5e9;font-weight:700}
+select{width:100%;margin-top:9px;border:1px solid #2c4861;background:#091827;color:var(--text);border-radius:12px;padding:12px;font:inherit}.check{line-height:1.6}.check input{width:auto;margin-right:8px}details{margin-top:12px}summary{cursor:pointer;color:var(--blue)}.pressed{background:#047d78!important}.notice{background:#122b40;border:1px solid #31516c}button:disabled{cursor:not-allowed;opacity:.38}#candidateBox{white-space:pre-wrap}#operationStatus{overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <div><div class="eyebrow">BALANCEBOT · TEST MODE · WEB 3.7</div><h1><span data-i18n="s0">Route A 控制台</span></h1></div>
+    <button id="connectionPill" class="pill offline" data-action="connect"><span></span><b><span data-i18n="s1">未连接</span></b></button>
+  </header>
+  <div class="language-bar"><label for="languageSelect"><span data-i18n="s2">Language / 语言</span></label><select id="languageSelect" aria-label="Language / 语言" data-i18n-aria-label="s2"><option value="zh">中文</option><option value="en">English</option></select></div>
+  <main>
+    <section class="page active" data-page="status">
+      <div id="secureBanner" class="banner warning"></div>
+      <div id="dataBanner" class="banner warning"><span data-i18n="s3">未连接：显示值尚未由小车确认</span></div>
+      <div id="operationStatus" class="notice" role="status" aria-live="polite"><span data-i18n="s4">等待连接</span></div>
+      <div class="hero card">
+        <div><span class="label"><span data-i18n="s5">实时倾角</span></span><strong id="angleHero">--.-°</strong><small id="gyroHero"><span data-i18n="s6">角速度 --.-</span></small></div>
+        <div class="ring"><canvas id="angleGauge" width="160" height="160"></canvas></div>
+      </div>
+      <div class="grid metrics">
+        <div class="card metric"><span><span data-i18n="s7">电池</span></span><b id="battery">-- V</b></div>
+        <div class="card metric"><span><span data-i18n="s8">遥测频率</span></span><b id="rxHz">0.0 Hz</b></div>
+        <div class="card metric"><span><span data-i18n="s9">左 / 右编码器</span></span><b id="encoders">-- / --</b></div>
+        <div class="card metric"><span><span data-i18n="s10">左 / 右电机</span></span><b id="motors">-- / --</b></div>
+      </div>
+      <div class="card telemetry-plots"><div class="card-title"><span data-i18n="s11">最近 30 秒</span><span class="tag" data-i18n="s130">独立纵轴 · 自动缩放</span></div>
+        <div class="plot-heading angle-color"><span data-i18n="s131">角度（°）</span><b id="angleScale">±5 °</b></div><canvas id="chart" height="180" aria-label="角度最近30秒曲线" data-i18n-aria-label="s134"></canvas>
+        <div class="plot-heading gyro-color"><span data-i18n="s132">角速度（raw）</span><b id="gyroScale">±100 raw</b></div><canvas id="gyroChart" height="180" aria-label="角速度原始值最近30秒曲线" data-i18n-aria-label="s135"></canvas>
+        <p class="footnote" data-i18n="s133">两个纵轴独立缩放；角速度保留raw值，不做平滑或单位换算。</p></div>
+      <div class="card status-list">
+        <div><span><span data-i18n="s14">设备</span></span><b id="deviceName">—</b></div><div><span><span data-i18n="s15">固件</span></span><b id="firmware">—</b></div>
+        <div><span><span data-i18n="s16">平衡</span></span><b id="balanceState"><span data-i18n="s17">未确认</span></b></div><div><span><span data-i18n="s18">训练锁</span></span><b id="lockState"><span data-i18n="s17">未确认</span></b></div>
+        <div><span><span data-i18n="s19">固件状态</span></span><b id="fwState"><span data-i18n="s20">未知</span></b></div><div><span><span data-i18n="s21">最近接收</span></span><b id="lastRx">—</b></div>
+        <div><span><span data-i18n="s22">有效 / 错误帧</span></span><b id="frameCounts">0 / 0</b></div><div><span><span data-i18n="s23">固件丢包</span></span><b id="dropped">—</b></div>
+        <div><span>TIM8 CCR1 / CCR2</span><b id="ccrLeft">—</b></div><div><span>TIM8 CCR3 / CCR4</span><b id="ccrRight">—</b></div>
+        <div><span><span data-i18n="s24">平衡 / 速度 / 转向输出</span></span><b id="loopOutputs">—</b></div><div><span><span data-i18n="s25">双向通信 / PID 读回</span></span><b id="linkReady"><span data-i18n="s26">尚未确认</span></b></div>
+      </div>
+    <div class="card"><div class="card-title"><span><span data-i18n="s27">STM32 振荡指标</span></span><span id="featureState" class="tag"><span data-i18n="s28">等待指标</span></span></div>
+<div class="two-col"><div>osc · 8–16 Hz RMS<b id="oscValue">—</b></div><div>lean · 0.3–2 Hz RMS<b id="leanValue">—</b></div></div><p><span data-i18n="s29">有符号 lean_band：</span><span id="leanBandValue">—</span></p><p class="footnote"><span data-i18n="s30">200 Hz计算，2.5 Hz指标上报。仅测量；不在STM32自动切档。</span></p><canvas id="featureChart" style="width:100%;height:150px" aria-label="osc和lean最近30秒曲线" data-i18n-aria-label="s31"></canvas></div></section>
+
+    <section class="page" data-page="drive">
+      <div class="section-head"><div><span class="eyebrow"><span data-i18n="s32">按住移动 · 松开即停</span></span><h2><span data-i18n="s33">人工控制</span></h2></div><span id="driveReady" class="tag"><span data-i18n="s4">等待连接</span></span></div>
+      <div class="notice danger"><span data-i18n="s34">蓝牙断开不一定让小车立刻停止。移动时保持手指按住按钮，异常时按红色停止。</span></div>
+      <div class="drive-pad card">
+        <button class="drive-btn forward" data-motion="1,0">▲<small><span data-i18n="s35">前进</span></small></button>
+        <button class="drive-btn left" data-motion="3,0">◀<small><span data-i18n="s36">左转</span></small></button>
+        <button class="stop-main" data-action="stop"><span data-i18n="s37">停止</span></button>
+        <button class="drive-btn right" data-motion="4,0">▶<small><span data-i18n="s38">右转</span></small></button>
+        <button class="drive-btn back" data-motion="2,0">▼<small><span data-i18n="s39">后退</span></small></button>
+      </div>
+      <div class="two-col">
+        <button class="btn secondary hold" data-motion="0,1"><span data-i18n="s40">↶ 原地左转</span></button>
+        <button class="btn secondary hold" data-motion="0,2"><span data-i18n="s41">↷ 原地右转</span></button>
+      </div>
+      <div class="card">
+        <div class="card-title"><span><span data-i18n="s42">架空电机诊断</span></span><span class="tag amber"><span data-i18n="s43">仅平衡启动前</span></span></div>
+        <p class="muted"><span data-i18n="s44">将两轮架空后点按。每次脉冲约 0.6 秒；平衡启动或训练锁定后固件会拒绝。</span></p>
+        <div class="diag-grid"><button data-diag="L+"><span data-i18n="s45">左轮 +</span></button><button data-diag="L-"><span data-i18n="s46">左轮 −</span></button><button data-diag="R+"><span data-i18n="s47">右轮 +</span></button><button data-diag="R-"><span data-i18n="s48">右轮 −</span></button><button class="span2" data-diag="STOP"><span data-i18n="s49">诊断停止</span></button></div>
+      </div>
+    </section>
+
+    <section class="page" data-page="pid">
+      <div class="section-head"><div><span class="eyebrow">LIVE + EDITABLE</span><h2><span data-i18n="s50">PID 参数</span></h2></div><button class="btn compact" data-action="get-pid"><span data-i18n="s51">读取</span></button></div>
+      <div id="pidIntegrity" class="notice" role="status"><span data-i18n="s52">等待小车六参数读回</span></div>
+      <div id="pidGrid" class="pid-grid"></div>
+      <div id="pidDelta" class="card delta"><span data-i18n="s53">先读取当前 PID，才允许人工写入。</span></div>
+      <button class="btn full" data-action="copy-pid"><span data-i18n="s54">复制当前 PID 到编辑框</span></button>
+      <button id="manualPidButton" class="btn primary full" data-action="manual-pid" disabled><span data-i18n="s55">应用人工 PID</span></button>
+      <p class="footnote"><span data-i18n="s56">显示值按固件协议发送，网页不会再次乘以内部倍率。训练开始后，网页和 STM32 都会锁定人工调参。</span></p>
+    </section>
+
+    <section class="page" data-page="training">
+      <div class="card notice danger" id="autoError" role="alert" aria-live="assertive" hidden><b id="autoErrorTitle"></b><p id="autoErrorStage"></p><p id="autoErrorReason"></p><p id="autoErrorEffect" class="footnote"></p><small id="autoErrorTime"></small></div>
+      <div class="section-head"><div><span class="eyebrow">AUTOMATIC · SIX PID</span><h2><span data-i18n="s57">自动调参</span></h2></div><span id="roundCount" class="tag"><span data-i18n="s58">第0轮</span></span></div>
+      <div class="card auto-hero"><span id="trialState" class="tag">IDLE</span><h3 id="continuousState" role="status" aria-live="polite"><span data-i18n="s59">等待启动</span></h3><p id="workflowHint" class="muted"><span data-i18n="s60">配置接口后启动，后续全部自动</span></p>
+      <div class="two-col"><button id="continuousStart" class="btn primary" data-action="continuous-start"><span data-i18n="s61">启动自动调参</span></button><button id="continuousStop" class="btn danger-btn" data-action="continuous-stop"><span data-i18n="s62">停止并解锁</span></button></div></div>
+      <div class="card"><ol class="auto-stages"><li data-stage="sample"><span data-i18n="s63">采集</span></li><li data-stage="llm">LLM</li><li data-stage="apply"><span data-i18n="s64">应用</span></li><li data-stage="evaluate"><span data-i18n="s65">评价</span></li><li data-stage="wait"><span data-i18n="s66">下一轮</span></li></ol><progress id="autoProgress" max="100" value="0" aria-label="当前阶段进度" data-i18n-aria-label="s67"></progress><p id="autoDetail" role="status"><span data-i18n="s59">等待启动</span></p><small id="autoCounts"><span data-i18n="s68">已接受0 · 已回滚0</span></small><p id="transactionStatus" class="muted" role="status"><span data-i18n="s69">等待固件响应</span></p></div>
+      <div class="card"><div class="card-title"><span><span data-i18n="s70">本轮候选</span></span><span id="proposalSource" class="tag"><span data-i18n="s71">无</span></span></div><div id="candidateGrid"></div><p id="candidateBox" class="candidate"><span data-i18n="s72">等待模型建议</span></p><p id="reviewResult" class="muted"><span data-i18n="s73">收到建议后自动检查、应用和评价</span></p></div>
+      <div class="card"><div class="card-title"><span><span data-i18n="s74">本轮相对代价</span></span><strong id="scoreValue">—</strong></div><canvas id="autoChart" style="width:100%;height:140px" aria-label="最近24轮综合代价与接受线" data-i18n-aria-label="s75"></canvas><p class="footnote"><span data-i18n="s76">各轮以自己的基线为1.00，≤1.10可接受。允许指标间取舍和探索容差，不要求每项改善，也不按PID改动百分比拒绝。</span></p><div id="roundHistory" class="round-history" role="log"><span data-i18n="s77">首轮结束后显示结果</span></div></div>
+      <details class="card form-card"><summary><span data-i18n="s78">自动运行设置</span></summary><label><span data-i18n="s79">建议来源</span><select id="loopSource"><option value="llm" data-i18n="s126">真实LLM接口</option><option value="demo" data-i18n="s127">模拟演示（仅模拟设备）</option></select></label><label><span data-i18n="s80">自动检查</span><select id="loopReview"><option value="rules-auto" data-i18n="s128">格式、范围与实时状态检查</option><option value="llm-auto" data-i18n="s129">额外独立LLM检查</option></select></label><div class="two-col"><label><span data-i18n="s81">采集秒数</span><input id="baselineSeconds" type="number" min="1" max="20" value="3"></label><label><span data-i18n="s82">评价秒数</span><input id="trialSeconds" type="number" min="1" max="20" value="1"></label><label><span data-i18n="s83">轮间等待秒数</span><input id="loopCooldown" type="number" min="2" max="60" value="5"></label></div><p class="footnote"><span data-i18n="s84">启动即授权本次前台会话自动运行，停止后不自动恢复。允许大幅调整全部六项，调参倾角、输出饱和及低电压门槛已移除；保留固件绝对范围、实际读回和通信故障回滚。连续回滚不再触发三轮停止。</span></p></details>
+      <details class="card"><summary><span data-i18n="s85">数据与模型返回</span></summary><span id="sampleCount" class="tag"><span data-i18n="s86">0样本</span></span><pre id="metricsBox"><span data-i18n="s87">等待基线</span></pre><pre id="trialMetrics"><span data-i18n="s88">等待试验</span></pre><details><summary><span data-i18n="s89">本轮请求</span></summary><pre id="llmPayload"><span data-i18n="s90">尚未发送</span></pre></details><details><summary><span data-i18n="s91">模型原始返回</span></summary><pre id="llmResponse"><span data-i18n="s92">尚未返回</span></pre></details></details>
+    </section>
+
+    <section class="page" data-page="settings">
+      <div class="section-head"><div><span class="eyebrow">CONNECTION + RECORDS</span><h2><span data-i18n="s93">设置与日志</span></h2></div></div>
+      <div class="card form-card">
+        <label>BLE Service UUID<input id="serviceUuid" value="0000ffe0-0000-1000-8000-00805f9b34fb"></label>
+        <label>BLE Characteristic UUID<input id="charUuid" value="0000ffe1-0000-1000-8000-00805f9b34fb"></label>
+        <label><span data-i18n="s94">名称前缀</span><input id="namePrefix" value="YahBoom_BL"></label>
+        <div class="two-col"><label><span data-i18n="s95">分片字节</span><input id="chunkSize" type="number" min="1" max="20" value="20"></label><label><span data-i18n="s96">分片间隔 ms</span><input id="chunkDelay" type="number" min="0" max="100" value="18"></label></div>
+        <button class="btn full" data-action="save-settings"><span data-i18n="s97">保存通信设置</span></button>
+      </div>
+      <div class="card form-card">
+        <div class="card-title"><span><span data-i18n="s98">LLM 接口</span></span><span class="tag">OpenAI-compatible</span></div>
+        <label>Base URL<input id="llmBase" value="https://api.deepseek.com"></label>
+        <label>Model<input id="llmModel" value="deepseek-chat"></label>
+        <label><span data-i18n="s99">API Key（仅本次页面会话）</span><input id="llmKey" type="password" autocomplete="off" placeholder="sk-..."></label>
+        <p class="footnote"><span data-i18n="s100">六参数允许大幅、协同调整；启动后自动执行，无需逐轮人工审核。</span></p>
+        <label><span data-i18n="s101">审核 LLM 的 Base URL（留空复用建议接口）</span><input id="reviewBase" placeholder="https://api.deepseek.com"></label>
+        <label><span data-i18n="s102">审核 Model（留空复用建议模型）</span><input id="reviewModel" placeholder="填写当前账号可用的模型 ID" data-i18n-placeholder="s103"></label>
+        <label><span data-i18n="s104">审核 API Key（留空复用；仅当前会话）</span><input id="reviewKey" type="password" autocomplete="off"></label>
+        <div class="two-col"><button class="btn" data-action="test-llm"><span data-i18n="s105">测试 LLM 接口</span></button><button class="btn" data-action="cancel-llm"><span data-i18n="s106">取消 LLM 请求</span></button></div>
+        <button class="btn full" data-action="use-proxy"><span data-i18n="s107">使用本页面的同源代理</span></button>
+        <div id="llmStatus" class="metric-lines"><span data-i18n="s108">尚未请求接口</span></div>
+        <p class="footnote"><span data-i18n="s109">浏览器会直接请求所填接口。若服务端不允许 CORS，请使用你自己的 HTTPS 代理地址；密钥不会写入 localStorage 或导出日志。</span></p>
+      </div>
+      <div class="card">
+        <div class="two-col"><button class="btn primary" data-action="connect"><span data-i18n="s110">连接小车</span></button><button class="btn" data-action="disconnect"><span data-i18n="s111">安全断开</span></button></div>
+        <button class="btn full" data-action="mock"><span data-i18n="s112">启动演示模式</span></button>
+      </div>
+      <div class="card">
+        <label><span data-i18n="s113">关键事务日志（请长按复制这里，保留最近 500 条）</span><textarea id="transactionLog" rows="10" readonly spellcheck="false"></textarea></label>
+        <div class="card-title"><span><span data-i18n="s114">原始通信日志</span></span><span id="logCount" class="tag">0</span></div><pre id="log"></pre>
+        <div class="two-col"><button class="btn" data-action="export-csv"><span data-i18n="s115">导出 CSV</span></button><button class="btn" data-action="export-json"><span data-i18n="s116">导出完整日志 JSON</span></button></div>
+        <button class="btn full" data-action="clear-log"><span data-i18n="s117">清空显示</span></button>
+      </div>
+      <div class="card about"><b><span data-i18n="s118">运行要求</span></b><p><span data-i18n="s119">iPhone：用 Bluefy 打开 HTTPS 页面。小车在 3.TEST MODE，JDY-23 使用 FFE0 / FFE1。先验证 PID 回包再操作；平衡启动沿用小车现有硬件流程，网页没有虚构启动指令。网页打开期间保持前台。</span></p><p><span data-i18n="s120">独立 HTML 可直接使用允许 CORS 的接口；若请求因 CORS 失败，请使用随附服务的 HTTPS 同源代理。模型 ID 按你的 API 账号实际可用值填写。</span></p></div>
+    </section>
+  </main>
+  <button id="emergencyStop" class="emergency" data-action="stop"><span data-i18n="s121">■ 紧急停止</span></button>
+  <nav>
+    <button class="active" data-nav="status"><span>◉</span><span data-i18n="s122">状态</span></button><button data-nav="drive"><span>✥</span><span data-i18n="s123">遥控</span></button><button data-nav="pid"><span>⌁</span>PID</button><button data-nav="training"><span>◇</span><span data-i18n="s124">训练</span></button><button data-nav="settings"><span>⚙</span><span data-i18n="s125">设置</span></button>
+  </nav>
+  <div id="toast" role="status"></div>
+  
+  
+<script>
+(function(root,factory){
+  const api=factory(root);
+  if(typeof module==='object'&&module.exports)module.exports=api;
+  root.RouteAI18n=api;
+})(typeof globalThis!=='undefined'?globalThis:this,function(root){
+  'use strict';
+  const CATALOG={
+  "等待连接": "Waiting for connection",
+  "未启动": "Not started",
+  "VP大于72需要烧录RA1.9-AUTO6-TXFIX-VP100；当前固件 ": "VP above 72 requires RA1.9-AUTO6-TXFIX-VP100 firmware; current firmware: ",
+  "操作失败：": "Operation failed: ",
+  "需要连接并收到有效 PID 回包；请确认小车处于 3.TEST MODE": "Connect and receive a valid PID reply first; select 3.TEST MODE on the car",
+  "BLE 写入接口未完成，请断开后重连": "BLE write is incomplete; disconnect and reconnect",
+  "命令功能需要 RA1.9-AUTO6 六参数固件；当前仅显示真实反馈，固件版本 ": "Commands require RA1.9-AUTO6 six-PID firmware; feedback is read-only. Firmware: ",
+  "需要训练锁定、平衡运行、实时快慢遥测和固件 IDLE": "Training must be locked, balance started, fast/slow telemetry fresh, and firmware IDLE",
+  "评价时长必须在 1..20 秒": "Evaluation duration must be 1..20 seconds",
+  "采集时长必须在 1..20 秒": "Acquisition duration must be 1..20 seconds",
+  "评价": "Evaluation",
+  "采集": "Acquisition",
+  "数据不足：需覆盖": " needs more data: cover ",
+  "秒、至少": " seconds with at least ",
+  "帧有效数据，帧间隔不超过1.5秒": " valid frames, with no gap above 1.5 seconds",
+  " 参数\" id=\"edit": " parameter\" id=\"edit",
+  "先读取当前 PID，才允许人工写入。": "Read the current PID before writing manual changes.",
+  "无法读取本地设置": "Could not read saved settings",
+  "BLE UUID 格式错误": "Invalid BLE UUID format",
+  "分片字节必须为 1..20 整数，间隔 0..100ms": "Chunk size must be an integer from 1 to 20 bytes; interval 0..100 ms",
+  "通信、LLM 与审核设置已保存；密钥仅保留在本页面会话": "Connection, LLM and review settings saved; keys remain in this page session only",
+  "尚无合格候选": "No validated candidate",
+  "无": "None",
+  "尚未审核": "Not reviewed",
+  "会话已结束": "Session ended",
+  "尚未计算": "Not calculated",
+  "0 样本": "0 samples",
+  "尚无试验数据": "No trial data",
+  "当前浏览器没有 Web Bluetooth；iPhone 请在 Bluefy 打开 HTTPS 页面": "Web Bluetooth is unavailable; on iPhone, open the HTTPS page in Bluefy",
+  "BLE 需要 HTTPS 安全上下文": "BLE requires a secure HTTPS context",
+  "BLE 设备": "BLE device",
+  "GATT 已连接；正在验证 GET → PID 双向通信": "GATT connected; verifying GET → PID bidirectional communication",
+  "双向通信已确认，PID 来自固件读回": "Bidirectional communication verified; PID read back from firmware",
+  "GET 握手未确认：": "GET handshake not confirmed: ",
+  "；BLE 和遥测已保留，命令功能仍锁定。": "; BLE and telemetry remain connected, but commands are locked.",
+  "连接/握手失败：": "Connection/handshake failed: ",
+  "。检查 Test_Mode、UART5 和 FFE1 通知。": ". Check Test_Mode, UART5 and FFE1 notifications.",
+  "BLE 已断开，旧 PID / 候选已清除；请确认小车停止": "BLE disconnected; stale PID/candidates cleared. Check that the car has stopped",
+  "：等待固件响应超时": ": timed out waiting for firmware response",
+  "固件操作未确认，取消后续发送": "Firmware operation unconfirmed; subsequent sends cancelled",
+  "请先连接小车": "Connect the car first",
+  "PID 读回不一致，不能判定写入已生效": "PID readback mismatch; application cannot be confirmed",
+  "固件状态读回不一致": "Firmware state readback mismatch",
+  "训练锁读回不一致": "Training lock readback mismatch",
+  "控制周期后 PID / 状态读回不一致，操作未确认": "PID/state readback mismatch after the control cycle; operation unconfirmed",
+  "等待 ": "Waiting for ",
+  " ACK（事务 ": " ACK (transaction ",
+  "BLE 未连接": "BLE is disconnected",
+  "过期会话命令已取消": "Command from an expired session cancelled",
+  "会话已断开": "Session disconnected",
+  "发送已取消或连接断开": "Send cancelled or connection disconnected",
+  "FFE1 没有可用写入方法": "No supported write method on FFE1",
+  "BLE 写入接口超过 5 秒未完成；请断开后重连": "BLE write did not finish within 5 seconds; disconnect and reconnect",
+  "BLE 写入超时": "BLE write timeout",
+  "PID 回读异常：": "Invalid PID readback: ",
+  "；已锁定控制，请通过硬件停止并检查固件并重新读取 PID": "; controls locked. Stop using the hardware, check firmware and read PID again",
+  "PID 异常": "PID fault",
+  "异常": "Fault",
+  "固件未识别 Route A 包头，请使用 RA1.9-AUTO6 六参数固件": "Firmware did not recognize the Route A header; use RA1.9-AUTO6 six-PID firmware",
+  "固件返回 ReceivePackError：接收包未识别为 Route A": "Firmware returned ReceivePackError: received frame was not recognized as Route A",
+  "结束ACK已确认；迟到TRIAL,0不打断PID读回，仍须核对实际参数和IDLE状态": "Completion ACK confirmed; late TRIAL,0 does not interrupt PID readback. Actual PID and IDLE must still match",
+  "已结束事务的迟到 TRIAL,0 回包；保留已核对的事务结果": "Late TRIAL,0 for a closed transaction; preserving its verified result",
+  "事务已失效（TRIAL,0）；固件当前无活动事务，需读回确认结果": "Transaction expired (TRIAL,0); firmware has no active trial. Read back to confirm the result",
+  "固件实时参数越界": "Live firmware PID is out of range",
+  "字段非法": "Invalid field",
+  "基线已中止：平衡/训练锁/固件状态不符合条件": "Baseline aborted: balance, training lock or firmware state is invalid",
+  "固件已结束试验或发生保护；正在读取回滚结果": "Firmware ended the trial or rolled back; reading the result",
+  "基线已中止：PID 在采集中变化": "Baseline aborted: PID changed during acquisition",
+  "固件拒绝：": "Firmware rejected: ",
+  "另一项固件操作正在等待确认": "Another firmware operation is awaiting confirmation",
+  "训练锁定或活动事务期间不能人工调参": "Manual PID writes are disabled while training is locked or a transaction is active",
+  "确认将六个 PID 写入小车？完成后将核对 ACK 和 PID 读回。": "Write all six PID values to the car? ACK and actual PID readback will be checked.",
+  "人工 PID 已获 ACK，且六个参数读回一致": "Manual PID ACK received and all six values read back correctly",
+  "参数已确认生效": "Parameters confirmed applied",
+  "需要平衡已启动、固件空闲且训练未锁定": "Balance must be started, firmware IDLE and training unlocked",
+  "训练锁已由固件确认；可以采集基线": "Firmware confirmed the training lock; ready to acquire a baseline",
+  "停止训练，已取消待发命令": "Stopping training; queued commands cancelled",
+  "停止训练": "Stop training",
+  "训练已停止、事务已结束、人工 PID 已解锁（固件读回确认）": "Training stopped, transaction closed and manual PID unlocked (firmware readback confirmed)",
+  "存在活动试验": "A trial is active",
+  "采集中；记录当前抖动": "Acquiring current oscillation for ",
+  "秒，采集期间不发送移动指令": " seconds; no movement commands during acquisition",
+  "开始采集当前 PID 下的基线数据（来源见顶部标识）": "Acquiring baseline data under the current PID (source shown at the top)",
+  "osc均值 ": "Mean osc ",
+  " °/s / lean均值 ": " °/s / mean lean ",
+  "° / 指标样本 ": "° / feature samples ",
+  "\n倾角 RMS ": "\nAngle RMS ",
+  "° / 峰值 ": "° / peak ",
+  "°\n角速度 RMS ": "°\nGyro RMS ",
+  " raw / PWM 饱和率 ": " raw / PWM saturation ",
+  " 样本 / ": " samples / ",
+  " 秒 / 最大间隔 ": " s / largest gap ",
+  "当前没有基线采集": "No baseline acquisition is active",
+  "当前 PID 与采集基线不同": "Current PID differs from the baseline PID",
+  "基线采集完成；可以调用 LLM 或粘贴候选": "Baseline acquired; ready to request a candidate from the LLM",
+  "请先完成基线采集": "Complete baseline acquisition first",
+  "PID 或会话已变化，请重新采集基线": "PID or session changed; acquire a new baseline",
+  "基线超过 3 分钟，请重新采集": "Baseline is older than 3 minutes; acquire it again",
+  " / 置信度 ": " / confidence ",
+  "候选校验通过，尚未审核或发送小车": "Candidate validated; not yet reviewed or sent to the car",
+  "LLM 请求进行中，请等待或取消": "An LLM request is active; wait or cancel it",
+  "请填写模型 ID": "Enter a model ID",
+  "请在设置页填写 API Key": "Enter an API Key in Settings",
+  "正在请求 ": "Requesting ",
+  "审核": "review",
+  "建议": "proposal",
+  "请求 ": "Request ",
+  "，模型 ": "; model ",
+  "接口未返回 choices[0].message.content": "API did not return choices[0].message.content",
+  "过期 LLM 响应已丢弃": "Stale LLM response discarded",
+  "接口响应成功；正在校验 JSON": "API response received; validating JSON",
+  "LLM 请求已取消或超过 45 秒": "LLM request cancelled or exceeded 45 seconds",
+  "网络/CORS 请求失败；请检查 HTTPS、接口地址或使用随附同源代理": "Network/CORS request failed; check HTTPS and the endpoint, or use the supplied same-origin proxy",
+  "基线已变化，丢弃旧 LLM 建议": "Baseline changed; stale LLM proposal discarded",
+  "LLM 建议已收到，自动检查并进入试验": "LLM proposal received; checking and starting the trial automatically",
+  "测试响应不符合 {\"ok\":true}": "Test response does not match {\"ok\":true}",
+  "LLM 接口、模型和 JSON 返回验证成功；未向小车发送参数": "LLM endpoint, model and JSON response verified; no parameters sent to the car",
+  "LLM 接口测试通过": "LLM connection test passed",
+  "请先生成并验证候选": "Generate and validate a candidate first",
+  "当前建议为 ": "Current decision is ",
+  "，无需应用候选": "; no candidate application needed",
+  "候选没有改变 PID，无需试验": "Candidate PID is unchanged; no trial needed",
+  "基线质量、六参数绝对范围、训练锁和实时数据检查通过": "Baseline quality, six-PID absolute bounds, training lock and fresh telemetry checks passed",
+  "审核返回格式无效": "Invalid review response format",
+  "会话或候选已变化": "Session or candidate changed",
+  "自动检查通过，开始试验": "Automatic checks passed; starting the trial",
+  "候选六参数已读回，自动观察并评价": "All six candidate values read back; observing and evaluating automatically",
+  "自动流程失败：": "Automatic workflow failed: ",
+  "仅自动应用候选": "Candidates can only be applied automatically",
+  "请等待 LLM 请求结束": "Wait for the LLM request to finish",
+  "PREP ACK 和 IDLE→PREPARED 状态已确认，当前 PID 仍是基线": "PREP ACK and IDLE→PREPARED confirmed; current PID is still the baseline",
+  "PREP 结果未确认，请回滚后重新采集": "PREP result unconfirmed; roll back and acquire a new baseline",
+  "快遥测未就绪，不能 APPLY": "Fast telemetry is not ready; cannot APPLY",
+  "PREPARE 尚未确认": "PREPARE is not confirmed",
+  "实时遥测或平衡启动状态不符合 APPLY 条件": "Fresh telemetry or balance-start state does not meet APPLY requirements",
+  "APPLY ACK、TRIAL 状态和候选六参数读回一致；开始试验采集": "APPLY ACK, TRIAL state and all six candidate values verified; acquiring trial data",
+  "有效osc/lean样本不足80%": "Fewer than 80% of osc/lean samples are valid",
+  "仅自动接受候选": "Candidates can only be accepted automatically",
+  "没有已确认的实时 TRIAL": "No confirmed live TRIAL",
+  "试验审核拒绝：": "Trial review rejected: ",
+  "ACCEPT ACK 和六参数读回一致；新 PID 已确认，下一轮需重新采集基线": "ACCEPT ACK and all six values verified; new PID confirmed. Next round needs a new baseline",
+  "固件自行结束试验，基线已读回": "Firmware ended the trial; baseline read back",
+  "候选曾生效，随后试验结束/保护回滚；基线 PID 已读回确认": "Candidate was applied, then the trial ended/rolled back; baseline PID verified",
+  "候选事务已结束，基线 PID 已读回；未收到 TRIAL 生效确认": "Candidate transaction ended; baseline read back, but TRIAL application was not confirmed",
+  "事务结束但基线未确认，请停止训练并重新读取 PID": "Transaction ended but baseline is unconfirmed; stop training and read PID again",
+  "保护触发，待发命令已取消": "Recovery triggered; queued commands cancelled",
+  "保护触发：": "Recovery triggered: ",
+  "请求停止/回滚：": "Requesting stop/rollback: ",
+  "保护回滚已获 ACK，基线 PID 已读回：": "Rollback ACK received and baseline PID verified: ",
+  "已发送停止移动；无当前网页事务 ID，请读取固件状态": "Movement stop sent; no current browser transaction ID. Read firmware state",
+  "停止/回滚未确认：": "Stop/rollback unconfirmed: ",
+  "；请现场确认小车状态": "; check the car on site",
+  "移动已释放": "Movement button released",
+  "移动需要实时平衡数据、训练未锁定且无事务": "Movement requires fresh balance telemetry, training unlocked and no active transaction",
+  "紧急停止取消待发命令": "Emergency stop cancelled queued commands",
+  "紧急停止": "Emergency stop",
+  "未连接；无法向小车发送停止命令": "Disconnected; cannot send the stop command",
+  "当前为只读反馈，停止指令尚不可确认；请通过小车硬件停止": "Feedback is read-only; stop command cannot be confirmed. Use the car's hardware stop",
+  "用户紧急停止": "User emergency stop",
+  "停止移动指令已发送；平衡控制仍在运行，请观察电机反馈": "Movement stop sent; balance control is still running. Check motor feedback",
+  "停止移动与诊断停止已发送；请观察电机反馈确认": "Movement and diagnostic stop sent; verify motor feedback",
+  "只读 BLE 连接已关闭；小车平衡状态由硬件控制": "Read-only BLE connection closed; balance remains controlled by hardware",
+  "断开前 TRAIN_STOP": "TRAIN_STOP before disconnect",
+  "连接已关闭，旧数据已清除；请现场确认小车停止": "Connection closed and stale data cleared; check that the car has stopped",
+  "诊断仅允许轮子架空、平衡启动前、训练未锁定": "Diagnostics require raised wheels, balance not started and training unlocked",
+  "确认两轮已经架空？电机将进行短脉冲。": "Are both wheels off the ground? A short motor pulse will be sent.",
+  "诊断命令已获 ACK，请查看电机和 TIM8 CCR 反馈": "Diagnostic ACK received; check motors and TIM8 CCR feedback",
+  "请先安全断开真实设备": "Safely disconnect the real device first",
+  "模拟 YahBoom_BL（非真车）": "Simulated YahBoom_BL (not a real car)",
+  "演示模式：独立固件模拟器，所有数据均为模拟": "Demo mode: independent firmware simulator; all data is simulated",
+  "基线中止：遥测中断，请重新采集": "Baseline aborted: telemetry interrupted. Acquire a new baseline",
+  "实时遥测中断": "Live telemetry interrupted",
+  "试验自动审核：": "Automatic trial review: ",
+  "接受结果未确认：": "Acceptance unconfirmed: ",
+  "回滚结果未确认：": "Rollback unconfirmed: ",
+  "连接中": "Connecting",
+  "演示模式": "Demo mode",
+  "真车已确认": "Car verified",
+  "只读反馈": "Read-only",
+  "等待回包": "Awaiting reply",
+  "未连接": "Disconnected",
+  "演示数据：本页未连接真实小车": "Simulated data: this page is not connected to a real car",
+  "未连接：旧数据已清除": "Disconnected: stale data cleared",
+  "已连接 GATT，尚未验证小车 PID 回包": "GATT connected; car PID reply not yet verified",
+  "真实反馈只读：命令功能需要 RA1.9-AUTO6 六参数固件": "Real feedback, read-only: commands require RA1.9-AUTO6 six-PID firmware",
+  "真车连接；快遥测未收到或已过期，移动和试验已禁用": "Car connected; fast telemetry is missing/stale. Movement and trials disabled",
+  "真实 BLE 数据 / 最近快遥测 ": "Real BLE data / last fast frame ",
+  " 秒前": " s ago",
+  "角速度 ": "Gyro ",
+  "角速度 --.-": "Gyro --.-",
+  "未确认": "Unconfirmed",
+  "已启动": "Started",
+  "已锁定": "Locked",
+  "未锁定": "Unlocked",
+  "IDLE / 基线": "IDLE / baseline",
+  "未知": "Unknown",
+  "GET / PID 已确认": "GET / PID verified",
+  "尚未确认": "Not confirmed",
+  " 样本": " samples",
+  "实时平衡反馈": "Live balance feedback",
+  "等待有效反馈": "Awaiting valid feedback",
+  "等待小车六参数读回": "Awaiting all six PID values from the car",
+  "六参数数值范围检查通过；参数是否生效以 ACK 和读回一致为准": "All six PID values are within range; application requires matching ACK and readback",
+  "先连接并确认固件与PID": "Connect and verify firmware/PID first",
+  "按小车硬件流程启动平衡": "Start balance using the car's hardware procedure",
+  "自动采集、应用和评价；保持Bluefy前台": "Automatic acquisition, application and evaluation; keep Bluefy in the foreground",
+  "配置接口后启动，LLM调参全程自动；人工PID仍在PID页": "Configure the endpoint, then start automatic LLM tuning. Manual PID remains on the PID tab",
+  " 满刻度 ": " full scale ",
+  "接受线 1.10 · 越低越好": "Accept line 1.10 · lower is better",
+  "已停止 · ": "Stopped · ",
+  "第 ": "Round ",
+  " 轮": "",
+  "等待指标": "Awaiting features",
+  "指标过期": "Features stale",
+  "已预热 · STM32 200 Hz": "Warmed up · STM32 200 Hz",
+  "预热中（3秒）": "Warming up (3 s)",
+  "等待启动": "Ready to start",
+  "已采集 ": "Acquired ",
+  " 秒 / ": " s / ",
+  "等待模型响应 · ": "Waiting for model response · ",
+  " 秒": " s",
+  "观察 ": "Observing ",
+  " 秒 · ": " s · ",
+  "等待ACK及实际六参数读回": "Waiting for ACK and actual six-PID readback",
+  "本轮已结束，等待下一轮": "Round finished; waiting for the next round",
+  "已接受 ": "Accepted ",
+  " · 已回滚 ": " · Rolled back ",
+  "<div class=\"pid-compare-row\"><b>参数</b><b>当前</b><b>候选</b></div>": "<div class=\"pid-compare-row\"><b>Parameter</b><b>Current</b><b>Candidate</b></div>",
+  "本轮建议": "This round's proposal",
+  "第": "Round ",
+  "轮建议": " proposal",
+  "接受": "Accepted",
+  "回滚": "Rolled back",
+  " · 代价 ": " · cost ",
+  "首轮结束后显示结果": "Results appear after the first round",
+  "LLM调参仅允许在自动运行中执行": "LLM tuning is available only while automatic mode is running",
+  "运行中": "Running",
+  "已取消": "Cancelled",
+  "连续调参已停止": "Automatic tuning stopped",
+  "连续调参实时条件失效": "Live conditions for automatic tuning are no longer valid",
+  "osc/lean未预热或已过期": "osc/lean are not warmed up or are stale",
+  "本轮回滚已确认：": "Round rollback confirmed: ",
+  "需要无事务且已启动平衡的实时连接": "A live connection with balance started and no active transaction is required",
+  "请等待osc/lean预热完成": "Wait for osc/lean warmup to finish",
+  "采集1..20秒，轮间等待2..60秒": "Acquisition must be 1..20 seconds; interval between rounds 2..60 seconds",
+  "演示建议源只允许模拟设备": "Demo proposals are available only with a simulated device",
+  "请先配置LLM模型和会话密钥": "Configure the LLM model and session key first",
+  "采集新基线": "Acquiring a new baseline",
+  "基线有效指标不足80%": "Fewer than 80% of baseline feature samples are valid",
+  "生成模拟候选": "Generating a simulated candidate",
+  "LLM生成建议": "LLM generating a proposal",
+  "模拟候选仅用于展示闭环；不代表物理优化": "Simulated candidate demonstrates the workflow only; it is not physical optimization",
+  "模拟演示": "Simulation",
+  "保持参数，等待重新观察": "Keeping PID; waiting to observe again",
+  "连续模式仅支持静止平衡，不能自动实施恢复扰动": "Automatic mode supports quiet balance only; it cannot generate recovery disturbances",
+  "自动检查与应用": "Automatic checks and application",
+  "审核拒绝，重新观察": "Review rejected; observing again",
+  "未确认候选已进入TRIAL": "Candidate entry into TRIAL is unconfirmed",
+  "试验采集与自动评价": "Trial acquisition and automatic evaluation",
+  "事务结果未确认": "Transaction result unconfirmed",
+  "固件保护已回滚，需检查实车后再启动": "Firmware rolled back; check the car before restarting",
+  "参数已接受，等待下一轮": "PID accepted; waiting for the next round",
+  "已恢复基线，等待下一轮": "Baseline restored; waiting for the next round",
+  "用户停止连续调参": "User stopped automatic tuning",
+  "当前操作尚未结束，自动流程已停止；请使用停止训练同步状态": "Current operation is unfinished; automatic mode stopped. Stop training to synchronize state",
+  "当前PID已读取": "Current PID read",
+  "用户取消LLM请求": "User cancelled the LLM request",
+  "需通过HTTPS代理服务打开": "Open the page through the HTTPS proxy service",
+  "已选择同源代理": "Same-origin proxy selected",
+  "未绑定操作 ": "Unbound action ",
+  "运行设置已改变": "Run settings changed",
+  "页面进入后台": "Page moved to the background",
+  "当前为非 HTTPS 页面，Bluefy 蓝牙连接需要安全上下文": "This page is not HTTPS; Bluefy BLE requires a secure context",
+  "当前浏览器没有 Web Bluetooth；iPhone 请在 Bluefy 中打开 HTTPS 页面": "Web Bluetooth is unavailable; on iPhone, open the HTTPS page in Bluefy",
+  "Route A 控制台 v3.5 就绪；调参倾角/饱和/低电压门槛已移除；匹配 RA1.9-AUTO6-TXFIX-VP100-NOGUARD": "Route A console v3.5 ready; tuning angle/saturation/battery gates removed; firmware RA1.9-AUTO6-TXFIX-VP100-NOGUARD",
+  "报文正文无效": "Invalid frame body",
+  " 不能为空": " must not be empty",
+  " 必须是有限数字": " must be a finite number",
+  "PID 必须是对象": "PID must be an object",
+  " 超出保护范围 ": " is outside the allowed range ",
+  "LLM 地址必须使用 HTTPS（本机 localhost 除外）": "LLM endpoint must use HTTPS (except local localhost)",
+  "接口地址不能包含账号、查询参数或片段": "Endpoint cannot contain credentials, a query string or a fragment",
+  "移动字段无效": "Invalid movement fields",
+  "字段前缀错误": "Incorrect field prefix",
+  "没有可用遥测样本": "No usable telemetry samples",
+  "评价指标无效：": "Invalid evaluation metric: ",
+  "窗口指标改善或持平": "Window metrics improved or stayed unchanged",
+  "接受探索容差内的取舍，不代表已改善": "Tradeoff accepted within exploration tolerance; this does not prove improvement",
+  "超过探索容差，恢复上一组参数": "Exploration tolerance exceeded; restoring the previous PID",
+  "综合代价 ": "Weighted cost ",
+  " / 接受阈值 ": " / acceptance limit ",
+  "本地确定性规则建议；仅作流程测试，不代表参数已优化。": "Local deterministic proposal for workflow testing only; parameters are not proven optimized.",
+  "LLM JSON 必须是对象": "LLM JSON must be an object",
+  "LLM JSON 字段不符合固定 schema": "LLM JSON fields do not match the fixed schema",
+  "LLM 决策或阶段无效": "Invalid LLM decision or stage",
+  "requested_test 无效": "Invalid requested_test",
+  "expected_effect 无效": "Invalid expected_effect",
+  "confidence 必须是数字": "confidence must be a number",
+  "confidence 超出 0..1": "confidence is outside 0..1",
+  "candidate 六个 PID 必须是数字": "All six candidate PID values must be numbers",
+  "candidate 必须恰好包含六个 PID": "candidate must contain exactly six PID values",
+  "hold / rollback 必须返回当前 PID": "hold / rollback must return the current PID unchanged",
+  "Route A 控制台": "Route A Console",
+  "未连接：显示值尚未由小车确认": "Disconnected: displayed values are not yet verified by the car",
+  "实时倾角": "Live tilt angle",
+  "电池": "Battery",
+  "遥测频率": "Telemetry rate",
+  "左 / 右编码器": "Left / right encoder",
+  "左 / 右电机": "Left / right motor",
+  "最近 30 秒": "Last 30 seconds",
+  "角度": "Angle",
+  "角速度/10": "Gyro / 10",
+  "设备": "Device",
+  "固件": "Firmware",
+  "平衡": "Balance",
+  "训练锁": "Training lock",
+  "固件状态": "Firmware state",
+  "最近接收": "Last received",
+  "有效 / 错误帧": "Valid / bad frames",
+  "固件丢包": "Firmware TX drops",
+  "平衡 / 速度 / 转向输出": "Balance / velocity / turn output",
+  "双向通信 / PID 读回": "Bidirectional link / PID readback",
+  "STM32 振荡指标": "STM32 oscillation features",
+  "有符号 lean_band：": "Signed lean_band: ",
+  "200 Hz计算，2.5 Hz指标上报。仅测量；不在STM32自动切档。": "Computed at 200 Hz; features reported at 2.5 Hz. Measurement only; no automatic gear switching on STM32.",
+  "按住移动 · 松开即停": "Hold to move · release to stop",
+  "人工控制": "Manual control",
+  "蓝牙断开不一定让小车立刻停止。移动时保持手指按住按钮，异常时按红色停止。": "A BLE disconnect may not stop the car immediately. Hold the movement button and use the red stop button if needed.",
+  "前进": "Forward",
+  "左转": "Left",
+  "停止": "Stop",
+  "右转": "Right",
+  "后退": "Reverse",
+  "↶ 原地左转": "↶ Pivot left",
+  "↷ 原地右转": "↷ Pivot right",
+  "架空电机诊断": "Raised-wheel motor diagnostics",
+  "仅平衡启动前": "Before starting balance only",
+  "将两轮架空后点按。每次脉冲约 0.6 秒；平衡启动或训练锁定后固件会拒绝。": "Raise both wheels before tapping. Each pulse lasts about 0.6 s; firmware rejects it after balance starts or training locks.",
+  "左轮 +": "Left wheel +",
+  "左轮 −": "Left wheel −",
+  "右轮 +": "Right wheel +",
+  "右轮 −": "Right wheel −",
+  "诊断停止": "Stop diagnostics",
+  "PID 参数": "PID parameters",
+  "读取": "Read",
+  "复制当前 PID 到编辑框": "Copy current PID into the fields",
+  "应用人工 PID": "Apply manual PID",
+  "显示值按固件协议发送，网页不会再次乘以内部倍率。训练开始后，网页和 STM32 都会锁定人工调参。": "Values use firmware protocol units without extra scaling. The browser and STM32 lock manual writes during training.",
+  "自动调参": "Automatic tuning",
+  "第0轮": "Round 0",
+  "配置接口后启动，后续全部自动": "Configure the endpoint and start; subsequent rounds run automatically",
+  "启动自动调参": "Start auto tuning",
+  "停止并解锁": "Stop and unlock",
+  "应用": "Apply",
+  "下一轮": "Next round",
+  "已接受0 · 已回滚0": "Accepted 0 · Rolled back 0",
+  "等待固件响应": "Waiting for firmware response",
+  "本轮候选": "Round candidate",
+  "等待模型建议": "Waiting for a model proposal",
+  "收到建议后自动检查、应用和评价": "Proposals are checked, applied and evaluated automatically",
+  "本轮相对代价": "Relative round cost",
+  "各轮以自己的基线为1.00，≤1.10可接受。允许指标间取舍和探索容差，不要求每项改善，也不按PID改动百分比拒绝。": "Each round's own baseline is 1.00; ≤1.10 can be accepted. Metric tradeoffs and exploration tolerance are allowed; no per-metric improvement or PID percentage-change rule.",
+  "自动运行设置": "Automatic run settings",
+  "建议来源": "Proposal source",
+  "真实LLM接口": "Real LLM endpoint",
+  "模拟演示（仅模拟设备）": "Demo (simulated device only)",
+  "自动检查": "Automatic checks",
+  "格式、范围与实时状态检查": "Format, bounds and live state",
+  "额外独立LLM检查": "Additional independent LLM review",
+  "采集秒数": "Acquisition (s)",
+  "评价秒数": "Evaluation (s)",
+  "轮间等待秒数": "Between rounds (s)",
+  "启动即授权本次前台会话自动运行，停止后不自动恢复。允许大幅调整全部六项，调参倾角、输出饱和及低电压门槛已移除；保留固件绝对范围、实际读回和通信故障回滚。连续回滚不再触发三轮停止。": "Starting authorizes automatic operation in this foreground session; it does not resume after stopping. Large six-PID changes are allowed. Tuning angle, output-saturation and battery gates are removed; absolute bounds, actual readback and communication-fault rollback remain. Three rejected rounds no longer stop the loop.",
+  "数据与模型返回": "Data and model responses",
+  "0样本": "0 samples",
+  "等待基线": "Waiting for a baseline",
+  "等待试验": "Waiting for a trial",
+  "本轮请求": "Round request",
+  "尚未发送": "Not sent",
+  "模型原始返回": "Raw model response",
+  "尚未返回": "No response yet",
+  "设置与日志": "Settings and logs",
+  "名称前缀": "Name prefix",
+  "分片字节": "Chunk size (bytes)",
+  "分片间隔 ms": "Chunk interval (ms)",
+  "保存通信设置": "Save connection settings",
+  "LLM 接口": "LLM endpoint",
+  "API Key（仅本次页面会话）": "API Key (this page session only)",
+  "六参数允许大幅、协同调整；启动后自动执行，无需逐轮人工审核。": "Large coordinated changes to all six gains are allowed; rounds run automatically without manual review.",
+  "审核 LLM 的 Base URL（留空复用建议接口）": "Review LLM Base URL (blank: use proposal endpoint)",
+  "审核 Model（留空复用建议模型）": "Review Model (blank: use proposal model)",
+  "审核 API Key（留空复用；仅当前会话）": "Review API Key (blank: reuse key; session only)",
+  "测试 LLM 接口": "Test LLM endpoint",
+  "取消 LLM 请求": "Cancel LLM request",
+  "使用本页面的同源代理": "Use this page's same-origin proxy",
+  "尚未请求接口": "No API request yet",
+  "浏览器会直接请求所填接口。若服务端不允许 CORS，请使用你自己的 HTTPS 代理地址；密钥不会写入 localStorage 或导出日志。": "The browser requests the configured endpoint directly. If CORS is blocked, use your own HTTPS proxy. Keys are not saved in localStorage or exported logs.",
+  "连接小车": "Connect car",
+  "安全断开": "Safely disconnect",
+  "启动演示模式": "Start demo mode",
+  "关键事务日志（请长按复制这里，保留最近 500 条）": "Transaction log (press and hold to copy; latest 500 entries)",
+  "原始通信日志": "Raw communication log",
+  "导出 CSV": "Export CSV",
+  "导出完整日志 JSON": "Export full JSON log",
+  "清空显示": "Clear log display",
+  "运行要求": "Requirements",
+  "iPhone：用 Bluefy 打开 HTTPS 页面。小车在 3.TEST MODE，JDY-23 使用 FFE0 / FFE1。先验证 PID 回包再操作；平衡启动沿用小车现有硬件流程，网页没有虚构启动指令。网页打开期间保持前台。": "iPhone: open the HTTPS page in Bluefy. Select 3.TEST MODE; JDY-23 uses FFE0 / FFE1. Verify PID replies before operating. Start balance using the existing hardware procedure; the page does not invent a start command. Keep the page in the foreground.",
+  "独立 HTML 可直接使用允许 CORS 的接口；若请求因 CORS 失败，请使用随附服务的 HTTPS 同源代理。模型 ID 按你的 API 账号实际可用值填写。": "The standalone HTML works with CORS-enabled APIs. If CORS blocks requests, use the supplied HTTPS same-origin proxy. Enter a model ID that is available to your API account.",
+  "■ 紧急停止": "■ Emergency stop",
+  "状态": "Status",
+  "遥控": "Drive",
+  "训练": "Training",
+  "设置": "Settings",
+  "osc和lean最近30秒曲线": "osc and lean over the last 30 seconds",
+  "当前阶段进度": "Current stage progress",
+  "最近24轮综合代价与接受线": "Weighted cost and acceptance line over the last 24 rounds",
+  "填写当前账号可用的模型 ID": "Enter a model ID available to your account",
+  "Route A 控制台 v3.6 就绪；调参倾角/饱和/低电压门槛已移除；匹配 RA1.9-AUTO6-TXFIX-VP100-NOGUARD": "Route A console v3.6 ready; tuning angle/saturation/battery gates removed; firmware RA1.9-AUTO6-TXFIX-VP100-NOGUARD",
+  "Language / 语言": "Language",
+  "参数": "Parameter",
+  "当前": "Current",
+  "候选": "Candidate",
+  " 参数": " parameter",
+  "自动调参已停止，请检查原因": "Automatic tuning stopped — check the reason",
+  "阶段：": "Stage: ",
+  "LLM处理失败：": "LLM processing failed: ",
+  "本轮尚未发送PID候选，未因本次失败写入新参数": "No PID candidate was sent in this round; this failure did not write new parameters",
+  "曾建立候选事务；恢复结果请核对ACK和PID读回": "A candidate transaction was created; verify recovery using ACK and PID readback",
+  "故障发生时无活动候选事务；当前参数以PID读回为准": "No candidate transaction was active at failure; use PID readback to verify the current parameters",
+  "LLM返回不是有效JSON：": "LLM response is not valid JSON: ",
+  "LLM输出被截断（finish_reason=length），未发送候选；请检查接口输出长度设置": "LLM output was truncated (finish_reason=length); no candidate was sent. Check the API output-length setting",
+  "expected_effect 说明过长：": "expected_effect explanation is too long: ",
+  "审核说明过长：": "Review explanation is too long: ",
+  " 字符，上限 ": " characters; limit ",
+  "独立纵轴 · 自动缩放": "Independent axes · auto scale",
+  "角度（°）": "Angle (°)",
+  "角速度（raw）": "Gyro (raw)",
+  "两个纵轴独立缩放；角速度保留raw值，不做平滑或单位换算。": "The two axes scale independently. Gyro keeps its raw values, without smoothing or unit conversion.",
+  "角度最近30秒曲线": "Angle over the last 30 seconds",
+  "角速度原始值最近30秒曲线": "Raw gyro over the last 30 seconds",
+  "自动调参已停止；详细原因已保留在训练页。": "Automatic tuning stopped; the detailed reason remains on the Training tab.",
+  "Route A 控制台 v3.7 就绪；调参倾角/饱和/低电压门槛已移除；匹配 RA1.9-AUTO6-TXFIX-VP100-NOGUARD": "Route A console v3.7 ready; tuning angle/saturation/battery gates removed; firmware RA1.9-AUTO6-TXFIX-VP100-NOGUARD",
+  "已停止 · 详细原因见上方": "Stopped · see the reason above"
+};
+  const STATIC={
+  "s0": "Route A 控制台",
+  "s1": "未连接",
+  "s2": "Language / 语言",
+  "s3": "未连接：显示值尚未由小车确认",
+  "s4": "等待连接",
+  "s5": "实时倾角",
+  "s6": "角速度 --.-",
+  "s7": "电池",
+  "s8": "遥测频率",
+  "s9": "左 / 右编码器",
+  "s10": "左 / 右电机",
+  "s11": "最近 30 秒",
+  "s12": "角度",
+  "s13": "角速度/10",
+  "s14": "设备",
+  "s15": "固件",
+  "s16": "平衡",
+  "s17": "未确认",
+  "s18": "训练锁",
+  "s19": "固件状态",
+  "s20": "未知",
+  "s21": "最近接收",
+  "s22": "有效 / 错误帧",
+  "s23": "固件丢包",
+  "s24": "平衡 / 速度 / 转向输出",
+  "s25": "双向通信 / PID 读回",
+  "s26": "尚未确认",
+  "s27": "STM32 振荡指标",
+  "s28": "等待指标",
+  "s29": "有符号 lean_band：",
+  "s30": "200 Hz计算，2.5 Hz指标上报。仅测量；不在STM32自动切档。",
+  "s31": "osc和lean最近30秒曲线",
+  "s32": "按住移动 · 松开即停",
+  "s33": "人工控制",
+  "s34": "蓝牙断开不一定让小车立刻停止。移动时保持手指按住按钮，异常时按红色停止。",
+  "s35": "前进",
+  "s36": "左转",
+  "s37": "停止",
+  "s38": "右转",
+  "s39": "后退",
+  "s40": "↶ 原地左转",
+  "s41": "↷ 原地右转",
+  "s42": "架空电机诊断",
+  "s43": "仅平衡启动前",
+  "s44": "将两轮架空后点按。每次脉冲约 0.6 秒；平衡启动或训练锁定后固件会拒绝。",
+  "s45": "左轮 +",
+  "s46": "左轮 −",
+  "s47": "右轮 +",
+  "s48": "右轮 −",
+  "s49": "诊断停止",
+  "s50": "PID 参数",
+  "s51": "读取",
+  "s52": "等待小车六参数读回",
+  "s53": "先读取当前 PID，才允许人工写入。",
+  "s54": "复制当前 PID 到编辑框",
+  "s55": "应用人工 PID",
+  "s56": "显示值按固件协议发送，网页不会再次乘以内部倍率。训练开始后，网页和 STM32 都会锁定人工调参。",
+  "s57": "自动调参",
+  "s58": "第0轮",
+  "s59": "等待启动",
+  "s60": "配置接口后启动，后续全部自动",
+  "s61": "启动自动调参",
+  "s62": "停止并解锁",
+  "s63": "采集",
+  "s64": "应用",
+  "s65": "评价",
+  "s66": "下一轮",
+  "s67": "当前阶段进度",
+  "s68": "已接受0 · 已回滚0",
+  "s69": "等待固件响应",
+  "s70": "本轮候选",
+  "s71": "无",
+  "s72": "等待模型建议",
+  "s73": "收到建议后自动检查、应用和评价",
+  "s74": "本轮相对代价",
+  "s75": "最近24轮综合代价与接受线",
+  "s76": "各轮以自己的基线为1.00，≤1.10可接受。允许指标间取舍和探索容差，不要求每项改善，也不按PID改动百分比拒绝。",
+  "s77": "首轮结束后显示结果",
+  "s78": "自动运行设置",
+  "s79": "建议来源",
+  "s80": "自动检查",
+  "s81": "采集秒数",
+  "s82": "评价秒数",
+  "s83": "轮间等待秒数",
+  "s84": "启动即授权本次前台会话自动运行，停止后不自动恢复。允许大幅调整全部六项，调参倾角、输出饱和及低电压门槛已移除；保留固件绝对范围、实际读回和通信故障回滚。连续回滚不再触发三轮停止。",
+  "s85": "数据与模型返回",
+  "s86": "0样本",
+  "s87": "等待基线",
+  "s88": "等待试验",
+  "s89": "本轮请求",
+  "s90": "尚未发送",
+  "s91": "模型原始返回",
+  "s92": "尚未返回",
+  "s93": "设置与日志",
+  "s94": "名称前缀",
+  "s95": "分片字节",
+  "s96": "分片间隔 ms",
+  "s97": "保存通信设置",
+  "s98": "LLM 接口",
+  "s99": "API Key（仅本次页面会话）",
+  "s100": "六参数允许大幅、协同调整；启动后自动执行，无需逐轮人工审核。",
+  "s101": "审核 LLM 的 Base URL（留空复用建议接口）",
+  "s102": "审核 Model（留空复用建议模型）",
+  "s103": "填写当前账号可用的模型 ID",
+  "s104": "审核 API Key（留空复用；仅当前会话）",
+  "s105": "测试 LLM 接口",
+  "s106": "取消 LLM 请求",
+  "s107": "使用本页面的同源代理",
+  "s108": "尚未请求接口",
+  "s109": "浏览器会直接请求所填接口。若服务端不允许 CORS，请使用你自己的 HTTPS 代理地址；密钥不会写入 localStorage 或导出日志。",
+  "s110": "连接小车",
+  "s111": "安全断开",
+  "s112": "启动演示模式",
+  "s113": "关键事务日志（请长按复制这里，保留最近 500 条）",
+  "s114": "原始通信日志",
+  "s115": "导出 CSV",
+  "s116": "导出完整日志 JSON",
+  "s117": "清空显示",
+  "s118": "运行要求",
+  "s119": "iPhone：用 Bluefy 打开 HTTPS 页面。小车在 3.TEST MODE，JDY-23 使用 FFE0 / FFE1。先验证 PID 回包再操作；平衡启动沿用小车现有硬件流程，网页没有虚构启动指令。网页打开期间保持前台。",
+  "s120": "独立 HTML 可直接使用允许 CORS 的接口；若请求因 CORS 失败，请使用随附服务的 HTTPS 同源代理。模型 ID 按你的 API 账号实际可用值填写。",
+  "s121": "■ 紧急停止",
+  "s122": "状态",
+  "s123": "遥控",
+  "s124": "训练",
+  "s125": "设置",
+  "s126": "真实LLM接口",
+  "s127": "模拟演示（仅模拟设备）",
+  "s128": "格式、范围与实时状态检查",
+  "s129": "额外独立LLM检查",
+  "s130": "独立纵轴 · 自动缩放",
+  "s131": "角度（°）",
+  "s132": "角速度（raw）",
+  "s133": "两个纵轴独立缩放；角速度保留raw值，不做平滑或单位换算。",
+  "s134": "角度最近30秒曲线",
+  "s135": "角速度原始值最近30秒曲线"
+};
+  const STORAGE_KEY='routea-ui-language';
+  let lang='zh',doc=null;
+  const listeners=new Set(),texts=new Map();
+  const rawIds=new Set(['llmPayload','llmResponse','log']);
+  try{const saved=root.localStorage?.getItem(STORAGE_KEY);if(saved==='en'||saved==='zh')lang=saved;}catch(_){}
+  try{const query=new URLSearchParams(root.location?.search||'').get('lang');if(query==='en'||query==='zh')lang=query;}catch(_){}
+  const escape=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  const pattern=new RegExp(Object.keys(CATALOG).sort((a,b)=>b.length-a.length).map(escape).join('|'),'g');
+  function verbatim(value){return '\uE000'+encodeURIComponent(String(value??''))+'\uE001';}
+  function t(value){
+    const input=String(value??'');
+    return input.split(/(\uE000[^\uE001]*\uE001)/g).map(part=>{
+      if(part.startsWith('\uE000')){try{return decodeURIComponent(part.slice(1,-1));}catch(_){return part.slice(1,-1);}}
+      if(lang==='zh')return part;
+      return part.replace(pattern,key=>CATALOG[key]).replace(/（/g,' (').replace(/）/g,')');
+    }).join('');
+  }
+  function text(element,value){
+    const source=String(value??'');texts.set(element,source);
+    element.textContent=rawIds.has(element.id)?source:t(source);
+    return element.textContent;
+  }
+  function renderStatic(){
+    if(!doc)return;
+    if(doc.documentElement)doc.documentElement.lang=lang==='en'?'en':'zh-CN';
+    for(const el of doc.querySelectorAll('[data-i18n]')){
+      const source=STATIC[el.dataset.i18n];if(source!==undefined)el.textContent=t(source);
+    }
+    for(const attr of ['aria-label','placeholder'])for(const el of doc.querySelectorAll('[data-i18n-'+attr+']')){
+      const key=el.getAttribute('data-i18n-'+attr),source=STATIC[key];
+      if(source!==undefined)el.setAttribute(attr,t(source));
+    }
+    const select=doc.getElementById('languageSelect');if(select)select.value=lang;
+  }
+  function refresh(){
+    renderStatic();
+    for(const [element,source]of texts){
+      if(element.isConnected===false){texts.delete(element);continue;}
+      element.textContent=rawIds.has(element.id)?source:t(source);
+    }
+  }
+  function setLanguage(value){
+    if(value!=='zh'&&value!=='en')return false;
+    lang=value;
+    try{root.localStorage?.setItem(STORAGE_KEY,lang);}catch(_){}
+    try{if(root.history?.replaceState){const url=new URL(root.location.href);url.searchParams.set('lang',lang);root.history.replaceState(null,'',url.href);}}catch(_){}
+    refresh();for(const listener of listeners)listener(lang);
+    return true;
+  }
+  function init(document){doc=document;refresh();}
+  function onChange(listener){listeners.add(listener);return()=>listeners.delete(listener);}
+  function logText(entry){
+    if(entry.text.startsWith('$')||['STATE','PROPOSAL','REVIEW','AUTO_ERR'].includes(entry.direction)||entry.direction==='LLM'&&/^[\[{]/.test(entry.text.trim()))return entry.text;
+    return t(entry.text);
+  }
+  function prompt(system){return lang==='en'?system.replace('Write expected_effect in Simplified Chinese.','Write expected_effect in English.').replace('Write reason in Simplified Chinese.','Write reason in English.'):system;}
+  return {t,text,verbatim,init,refresh,onChange,setLanguage,language:()=>lang,locale:()=>lang==='en'?'en-GB':'zh-CN',logText,prompt,catalog:CATALOG,staticTexts:STATIC};
+});
+
+</script>
+<script>
+(function (root, factory) {
+  const api = factory();
+  if (typeof module === "object" && module.exports) module.exports = api;
+  root.RouteACore = api;
+})(typeof globalThis !== "undefined" ? globalThis : this, function () {
+  "use strict";
+
+  const DEFAULT_PID = Object.freeze({ AP: 96, AD: 48, VP: 62, VI: 31, TP: 17, TD: 20 });
+  const PID_KEYS = Object.freeze(["AP", "AD", "VP", "VI", "TP", "TD"]);
+  const MAX_EXPLANATION_CHARS = 3000;
+  const RANGES = Object.freeze({ AP: [20,288], AD: [5,200], VP: [10,100], VI: [1,100], TP: [1,100], TD: [1,100] });
+
+  function crc16(text) {
+    const bytes = new TextEncoder().encode(text);
+    let crc = 0xffff;
+    for (const byte of bytes) {
+      crc ^= byte << 8;
+      for (let i = 0; i < 8; i += 1) {
+        crc = crc & 0x8000 ? ((crc << 1) ^ 0x1021) & 0xffff : (crc << 1) & 0xffff;
+      }
+    }
+    return crc;
+  }
+
+  function frame(body) {
+    if (typeof body !== "string" || /[$#\r\n]/.test(body)) throw new Error("报文正文无效");
+    return `$${body},C${crc16(body).toString(16).toUpperCase().padStart(4, "0")}#`;
+  }
+
+  function verify(raw) {
+    if (typeof raw !== "string" || raw[0] !== "$" || !raw.endsWith("#")) return false;
+    const p = raw.lastIndexOf(",C");
+    if (p < 0 || raw.length - p !== 7) return false;
+    if (!/^[0-9a-f]{4}$/i.test(raw.slice(p + 2, p + 6))) return false;
+    const expected = Number.parseInt(raw.slice(p + 2, p + 6), 16);
+    return Number.isFinite(expected) && expected === crc16(raw.slice(1, p));
+  }
+
+  class StreamParser {
+    constructor(max = 256) { this.max = max; this.buffer = ""; }
+    feed(input) {
+      const text = typeof input === "string" ? input : new TextDecoder("ascii").decode(input);
+      const out = [];
+      for (const ch of text) {
+        if (ch === "$") this.buffer = "$";
+        else if (this.buffer) {
+          this.buffer += ch;
+          if (this.buffer.length > this.max) this.buffer = "";
+          else if (ch === "#") { out.push(this.buffer); this.buffer = ""; }
+        }
+      }
+      return out;
+    }
+  }
+
+  function finiteNumber(value, name) {
+    if (value === null || value === undefined || typeof value === "boolean" || (typeof value === "string" && !value.trim())) throw new Error(`${name} 不能为空`);
+    const n = Number(value);
+    if (!Number.isFinite(n)) throw new Error(`${name} 必须是有限数字`);
+    return n;
+  }
+
+  function normalizePid(input) {
+    if (!input || typeof input !== "object") throw new Error("PID 必须是对象");
+    const p = {};
+    for (const key of PID_KEYS) p[key] = finiteNumber(input[key], key);
+    return p;
+  }
+
+  function pidCsv(pid) {
+    const p = normalizePid(pid);
+    return PID_KEYS.map((key) => p[key].toFixed(2)).join(",");
+  }
+
+  function boundedPid(input) {
+    const p = normalizePid(input);
+    for (const k of PID_KEYS) {
+      p[k] = Math.round(p[k] * 100) / 100;
+      if (p[k] < RANGES[k][0] || p[k] > RANGES[k][1]) throw new Error(`${k} 超出保护范围 ${RANGES[k].join("..")}`);
+    }
+    return p;
+  }
+  function samePid(a,b) { return !!a && !!b && PID_KEYS.every(k => Math.abs(a[k]-b[k]) < .005); }
+  function parseAck(raw) {
+    const x = bodyParts(raw);
+    if (!x || x[0] !== "P1") return null;
+    if (x[1] === "ERR") return { type: "ERR", code: x.slice(2).join(",") };
+    if (x[1] !== "ACK" || x.length < 4 || !/^\d+$/.test(x[3])) return null;
+    return { type: "ACK", name: x[2], id: Number(x[3]), fields: x.slice(4) };
+  }
+  function endpoint(base) {
+    const url = new URL(base, typeof location !== "undefined" ? location.href : "http://localhost");
+    if (url.protocol !== "https:" && !(url.protocol === "http:" && ["localhost","127.0.0.1","[::1]"].includes(url.hostname))) throw new Error("LLM 地址必须使用 HTTPS（本机 localhost 除外）");
+    if (url.username || url.password || url.search || url.hash) throw new Error("接口地址不能包含账号、查询参数或片段");
+    const path = url.pathname.replace(/\/+$/, "");
+    url.pathname = path.endsWith("/chat/completions") ? path : path + "/chat/completions";
+    return url.href;
+  }
+
+  function command(name, id) { return frame(`P1,${name},${Math.trunc(id)}`); }
+  function getPid() { return frame("P1,GET"); }
+  function training(action) { return frame(`P1,TRAIN,${action}`); }
+  function manualSet(pid) { return frame(`P1,MSET,${pidCsv(pid)}`); }
+  function prepare(id, ttl, pid) { return frame(`P1,PREP,${Math.trunc(id)},${Math.trunc(ttl)},${pidCsv(pid)}`); }
+  function motorDiag(action) { return frame(`P1,DIAG,${action}`); }
+
+  function legacyMotion(move, pivot) {
+    if (!Number.isInteger(move) || move < 0 || move > 4 || !Number.isInteger(pivot) || pivot < 0 || pivot > 2) throw new Error("移动字段无效");
+    // Official 21-byte movement-only frame: PID-operation and all update flags remain zero.
+    return `$${move},${pivot},0,0,0,0,0,0,0,0#`;
+  }
+
+  function bodyParts(raw) {
+    if (!verify(raw)) return null;
+    return raw.slice(1, raw.lastIndexOf(",C")).split(",");
+  }
+
+  function parsePidStatus(raw) {
+    const x = bodyParts(raw);
+    if (!x || x.length !== 11 || x[0] !== "P1" || x[1] !== "PID" || !/^[012]$/.test(x[8]) || !/^[01]$/.test(x[9]) || !/^[01]$/.test(x[10])) return null;
+    try {
+      return {
+        pid: normalizePid({ AP: x[2], AD: x[3], VP: x[4], VI: x[5], TP: x[6], TD: x[7] }),
+        state: Number.parseInt(x[8], 10), trainingLocked: x[9] === "1", balanceStarted: x[10] === "1"
+      };
+    } catch (_) { return null; }
+  }
+
+  function parseFast(raw) {
+    const x = bodyParts(raw);
+    if (!x || x.length !== 16 || x[0] !== "T1" || x[1] !== "F" || !/^S[012]$/.test(x[9]) || !/^L[01]$/.test(x[10]) || !/^R[01]$/.test(x[11])) return null;
+    const n = (i, prefix) => { if (!x[i].startsWith(prefix)) throw new Error("字段前缀错误"); return finiteNumber(x[i].slice(prefix.length), prefix); };
+    try {
+      return {
+        ms: n(2, ""), angle: n(3, "A"), gyro: n(4, "G"), el: n(5, "EL"), er: n(6, "ER"),
+        ml: n(7, "ML"), mr: n(8, "MR"), state: n(9, "S"),
+        trainingLocked: x[10]?.slice(1) === "1", balanceStarted: x[11]?.slice(1) === "1",
+        c1: x[12] ? n(12, "C1") : 0, c2: x[13] ? n(13, "C2") : 0,
+        c3: x[14] ? n(14, "C3") : 0, c4: x[15] ? n(15, "C4") : 0
+      };
+    } catch (_) { return null; }
+  }
+
+  function parseSlow(raw) {
+    const x = bodyParts(raw);
+    if (!x || x.length !== 17 || x[0] !== "T1" || x[1] !== "S" || !/^L[01]$/.test(x[14]) || !/^R[01]$/.test(x[15])) return null;
+    const n = (i, prefix) => { if (!x[i].startsWith(prefix)) throw new Error("字段前缀错误"); return finiteNumber(x[i].slice(prefix.length), prefix); };
+    try {
+      return {
+        ms: n(2, ""), battery: n(3, "V"), balancePwm: n(4, "B"), velocityPwm: n(5, "V"), turnPwm: n(6, "T"),
+        pid: normalizePid({ AP: n(7, "AP"), AD: n(8, "AD"), VP: n(9, "VP"), VI: n(10, "VI"), TP: n(11, "TP"), TD: n(12, "TD") }),
+        dropped: n(13, "D"), trainingLocked: x[14].slice(1) === "1", balanceStarted: x[15].slice(1) === "1", firmware: x[16]
+      };
+    } catch (_) { return null; }
+  }
+
+  function parseFeatures(raw) {
+    const x=bodyParts(raw);
+    if(!x||x.length!==7||x[0]!=="T1"||x[1]!=="E"||!/^W[01]$/.test(x[6]))return null;
+    try { const read=(i,p)=>{if(!x[i].startsWith(p))throw Error("prefix");return finiteNumber(x[i].slice(p.length),p);};
+      const f={ms:read(2,""),osc:read(3,"O"),lean:read(4,"L"),leanBand:read(5,"B"),warm:x[6]==="W1"};
+      if(f.osc<0||f.lean<0)return null;return f;
+    }catch(e){return null;}
+  }
+  function metrics(samples) {
+    if (!Array.isArray(samples) || samples.length === 0) throw new Error("没有可用遥测样本");
+    const sumAngle = samples.reduce((s, x) => s + x.angle * x.angle, 0);
+    const sumGyro = samples.reduce((s, x) => s + x.gyro * x.gyro, 0);
+    const stamps = samples.map(x=>x.at).filter(Number.isFinite);
+    const gaps = stamps.slice(1).map((t,i)=>t-stamps[i]);
+    return {
+      featureSamples: samples.filter(x=>x.featuresFresh&&x.warm).length,
+      meanOsc: samples.reduce((v,x)=>v+(x.featuresFresh&&x.warm?x.osc:0),0)/Math.max(1,samples.filter(x=>x.featuresFresh&&x.warm).length),
+      peakOsc: Math.max(0,...samples.filter(x=>x.featuresFresh&&x.warm).map(x=>x.osc)),
+      meanLean: samples.reduce((v,x)=>v+(x.featuresFresh&&x.warm?x.lean:0),0)/Math.max(1,samples.filter(x=>x.featuresFresh&&x.warm).length),
+      peakLean: Math.max(0,...samples.filter(x=>x.featuresFresh&&x.warm).map(x=>x.lean)),
+      peakLeanBand: Math.max(0,...samples.filter(x=>x.featuresFresh&&x.warm).map(x=>Math.abs(x.leanBand))),
+      rmsAngle: Math.sqrt(sumAngle / samples.length),
+      peakAngle: Math.max(...samples.map((x) => Math.abs(x.angle))),
+      rmsGyro: Math.sqrt(sumGyro / samples.length),
+      saturationRate: samples.filter((x) => Math.abs(x.ml) >= 2595 || Math.abs(x.mr) >= 2595).length / samples.length,
+      samples: samples.length,
+      durationMs: stamps.length > 1 ? stamps[stamps.length-1]-stamps[0] : 0,
+      maxGapMs: gaps.length ? Math.max(...gaps) : 0
+    };
+  }
+
+  const ACCEPTANCE = Object.freeze({maxWeightedCost:1.10, weights:{rmsAngle:.30,rmsGyro:.15,meanOsc:.25,meanLean:.25,saturationRate:.05},floors:{rmsAngle:.25,rmsGyro:5,meanOsc:1,meanLean:.15,saturationRate:.05}});
+  function evaluateCost(base,trial){
+    const terms={};let cost=0;
+    for(const key of Object.keys(ACCEPTANCE.weights)){
+      const a=base?.[key],b=trial?.[key],floor=ACCEPTANCE.floors[key];
+      if(!Number.isFinite(a)||!Number.isFinite(b)||a<0||b<0)throw Error('评价指标无效：'+key);
+      terms[key]=(b+floor)/(a+floor);cost+=ACCEPTANCE.weights[key]*terms[key];
+    }
+    return {approved:cost<=ACCEPTANCE.maxWeightedCost,cost,limit:ACCEPTANCE.maxWeightedCost,terms,reason:`综合代价 ${cost.toFixed(3)} / 接受阈值 ${ACCEPTANCE.maxWeightedCost.toFixed(2)}；${cost<=1?'窗口指标改善或持平':cost<=ACCEPTANCE.maxWeightedCost?'接受探索容差内的取舍，不代表已改善':'超过探索容差，恢复上一组参数'}`};
+  }
+  function harness(base, m) {
+    const p = normalizePid(base);
+    if (m.peakAngle > 8) p.AP *= 1.04;
+    if (m.rmsGyro > 20) p.AD *= 1.04;
+    return { schema_version: 1, decision: samePid(p,base) ? "hold" : "propose", stage: "balance", candidate: p, expected_effect: "本地确定性规则建议；仅作流程测试，不代表参数已优化。", requested_test: "quiet_balance", confidence: 0.7 };
+  }
+
+  function validateProposal(raw, base) {
+    const p = typeof raw === "string" ? JSON.parse(raw) : raw;
+    if (!p || typeof p !== "object" || Array.isArray(p)) throw new Error("LLM JSON 必须是对象");
+    p.candidate = p.candidate && { ...p.candidate };
+    const exact = ["schema_version", "decision", "stage", "candidate", "expected_effect", "requested_test", "confidence"];
+    if (Object.keys(p).sort().join() !== exact.sort().join()) throw new Error("LLM JSON 字段不符合固定 schema");
+    if (p.schema_version !== 1 || !["propose", "hold", "rollback"].includes(p.decision) || p.stage !== "balance") throw new Error("LLM 决策或阶段无效");
+    if (!["balance_recovery", "quiet_balance"].includes(p.requested_test)) throw new Error("requested_test 无效");
+    if (typeof p.expected_effect !== "string" || !p.expected_effect.trim()) throw new Error("expected_effect 无效");
+    if (p.expected_effect.length > MAX_EXPLANATION_CHARS) throw new Error(`expected_effect 说明过长：${p.expected_effect.length} 字符，上限 ${MAX_EXPLANATION_CHARS}`);
+    if (typeof p.confidence !== "number") throw new Error("confidence 必须是数字");
+    if (p.confidence < 0 || p.confidence > 1) throw new Error("confidence 超出 0..1");
+    const b = boundedPid(base);
+    if (!p.candidate || PID_KEYS.some(k=>typeof p.candidate[k] !== "number")) throw new Error("candidate 六个 PID 必须是数字");
+    const c = boundedPid(p.candidate);
+    if (Object.keys(p.candidate).sort().join() !== PID_KEYS.slice().sort().join()) throw new Error("candidate 必须恰好包含六个 PID");
+    
+    if (p.decision !== "propose" && !samePid(c,b)) throw new Error("hold / rollback 必须返回当前 PID");
+    p.candidate = c;
+    return p;
+  }
+
+  return { DEFAULT_PID, PID_KEYS, MAX_EXPLANATION_CHARS, RANGES, crc16, frame, verify, StreamParser, normalizePid, boundedPid, samePid, parseAck, endpoint, pidCsv, command, getPid, training, manualSet, prepare, motorDiag, legacyMotion, parsePidStatus, parseFast, parseSlow, parseFeatures, metrics, ACCEPTANCE, evaluateCost, harness, validateProposal };
+});
+
+
+</script>
+<script>
+(function(root,factory){
+  const api=factory();
+  if(typeof module==='object'&&module.exports)module.exports=api;
+  root.RouteAPlot=api;
+})(typeof globalThis!=='undefined'?globalThis:this,function(){
+  'use strict';
+  function niceLimit(value,minimum){
+    const target=Math.max(minimum,Math.abs(value)*1.1);
+    const power=10**Math.floor(Math.log10(target));
+    return [1,2,2.5,5,10].find(n=>n*power>=target)*power;
+  }
+  function series(samples,key,now,width,height){
+    const minimum=key==='angle'?5:100;
+    const visible=samples.filter(p=>Number.isFinite(p.at)&&Number.isFinite(p[key])&&p.at<=now&&now-p.at<=30000);
+    const peak=visible.reduce((m,p)=>Math.max(m,Math.abs(p[key])),0);
+    const limit=niceLimit(peak,minimum),left=52,right=Math.max(left+1,width-12),top=12,bottom=Math.max(top+1,height-24);
+    const points=visible.map(p=>({at:p.at,value:p[key],x:left+(p.at-(now-30000))/30000*(right-left),y:top+(limit-p[key])/(2*limit)*(bottom-top)}));
+    return {key,unit:key==='angle'?'°':'raw',limit,peak,points,left,right,top,bottom,ticks:[-limit,-limit/2,0,limit/2,limit]};
+  }
+  return {niceLimit,series};
+});
+
+</script>
+<script>
+(function(root,factory){
+  const C = root.RouteACore || (typeof require === 'function' ? require('./core.js') : null);
+  const api = factory(C);
+  if(typeof module === 'object' && module.exports) module.exports = api;
+  root.RouteASimulator = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this, function(C){
+  'use strict';
+  // Independent firmware model: the browser's candidate/state are never consulted.
+  class Simulator {
+    constructor(emit, options={}) {
+      this.emit=emit; this.pid={...C.DEFAULT_PID}; this.champion={...this.pid}; this.candidate=null;
+      this.state=0; this.lock=false; this.balance=options.balance ?? true; this.ms=0; this.id=0;this.closedId=0;
+      this.ttl=30000; this.lastHb=0; this.appliedAt=0; this.preparedAt=0; this.motion=[0,0]; this.options=options;
+    }
+    reply(body) { if(!this.options.silent) this.emit(C.frame(body)); }
+    ack(name,id=0) { if(this.options.dropAck===name) return; this.reply(`P1,ACK,${name},${id},${this.state},${this.lock?1:0}`); }
+    error(code) { this.reply(`P1,ERR,${code}`); }
+    rollback() { if(this.id)this.closedId=this.id;this.pid={...this.champion}; this.candidate=null; this.state=0; this.id=0; this.motion=[0,0]; }
+    receive(raw) {
+      if(!raw.startsWith('$P1,')) {
+        if(/^\$[0-4],[0-2],0,0,0,0,0,0,0,0#$/.test(raw)) this.motion=raw.slice(1,-1).split(',').slice(0,2).map(Number);
+        return;
+      }
+      if(!C.verify(raw)) return this.error('CRC');
+      const x=raw.slice(1,raw.lastIndexOf(',C')).split(',');
+      if(x[0]!=='P1') return this.error('PROTOCOL');
+      const op=x[1];
+      if(op==='GET') { if(!this.options.dropPid) this.reply(`P1,PID,${C.pidCsv(this.pid)},${this.state},${this.lock?1:0},${this.balance?1:0}`); return; }
+      if(op==='MSET') {
+        if(this.lock || this.state!==0) return this.error('LOCKED');
+        try { this.pid=C.boundedPid(Object.fromEntries(C.PID_KEYS.map((k,i)=>[k,x[i+2]]))); this.champion={...this.pid}; this.ack('MSET'); }
+        catch(e) { this.error('RANGE'); } return;
+      }
+      if(op==='TRAIN') {
+        if(x[2]==='START') { if(!this.balance || this.state!==0) return this.error('NOT_READY'); this.lock=true; this.champion={...this.pid}; this.ack('TRAIN_START'); }
+        else if(x[2]==='STOP') { const id=this.id;this.ack('TRAIN_STOP',id);this.rollback();this.lock=false; }
+        else this.error('COMMAND'); return;
+      }
+      if(op==='DIAG') {
+        if(this.balance || this.lock || this.state!==0) return this.error('DIAG_STATE');
+        if(!['L+','L-','R+','R-','STOP'].includes(x[2])) return this.error('DIAG_ACTION');
+        this.ack(x[2]); return;
+      }
+      const id=Number(x[2]);
+      if(op==='PREP') {
+        if(!this.lock || !this.balance || this.state!==0) return this.error('NOT_READY');
+        if(!Number.isInteger(id) || id<=0) return this.error('ID');
+        const p=Object.fromEntries(C.PID_KEYS.map((k,i)=>[k,Number(x[i+4])]));
+        try { C.validateProposal({schema_version:1,decision:'propose',stage:'balance',candidate:p,expected_effect:'sim',requested_test:'quiet_balance',confidence:1},this.pid); }
+        catch(e) { return this.error('CANDIDATE'); }
+        this.ttl=Number(x[3]); if(this.ttl<1000 || this.ttl>30000) return this.error('TTL');
+        this.candidate=p; this.id=id; this.state=1;this.preparedAt=this.ms;this.lastHb=this.ms; this.ack('PREP',id); return;
+      }
+      if(op==='STOP') { this.rollback(); this.ack('STOP',id); return; }
+      if(op==='HB'&&id&&id===this.closedId&&id!==this.id)return;
+      if(id!==this.id || !id) return this.error('TRIAL,'+this.id);
+      if(op==='APPLY' && this.state===1) { this.ack('APPLY',id);this.pid={...this.candidate}; this.state=2; this.appliedAt=this.ms; this.lastHb=this.ms; }
+      else if(op==='HB' && (this.state===1||this.state===2)) { this.lastHb=this.ms;this.ack('HB',id); }
+      else if(op==='ACCEPT' && this.state===2) { this.closedId=this.id;this.champion={...this.pid}; this.candidate=null; this.state=0; this.id=0; this.ack('ACCEPT',id); }
+      else if(op==='ROLLBACK') { this.rollback(); this.ack('ROLLBACK',id); }
+      else this.error('STATE');
+    }
+    tick(step=200) {
+      this.ms+=step;
+      if(this.state!==0 && (this.ms-this.lastHb>2000 || this.ms-this.preparedAt>=this.ttl)) this.rollback();
+      const a=this.options.unsafe ? 30 : Math.sin(this.ms/820)*2.4+Math.sin(this.ms/210)*.35;
+      const g=Math.cos(this.ms/820)*13;
+      const f=`T1,F,${this.ms},A${a.toFixed(2)},G${g.toFixed(1)},EL${Math.round(g)},ER${Math.round(g+1)},ML${Math.round(-a*120)},MR${Math.round(-a*118)},S${this.state},L${this.lock?1:0},R${this.balance?1:0},C1${Math.max(0,Math.round(a*20))},C2${Math.max(0,Math.round(-a*20))},C3${Math.max(0,Math.round(a*19))},C4${Math.max(0,Math.round(-a*19))}`;
+      this.reply(f);
+      if(this.ms%400===0)this.reply(`T1,E,${this.ms},O${(Math.abs(g)*.12).toFixed(3)},L${(Math.abs(a)*.45).toFixed(3)},B${(a*.5).toFixed(3)},W${this.ms>=3000?1:0}`);
+      if(this.ms%1000===0) this.reply(`T1,S,${this.ms},V11.82,B0,V0,T0,AP${this.pid.AP.toFixed(2)},AD${this.pid.AD.toFixed(2)},VP${this.pid.VP.toFixed(2)},VI${this.pid.VI.toFixed(2)},TP${this.pid.TP.toFixed(2)},TD${this.pid.TD.toFixed(2)},D0,L${this.lock?1:0},R${this.balance?1:0},RA1.9-AUTO6-TXFIX-VP100-NOGUARD-SIM`);
+    }
+  }
+  return { Simulator };
+});
+
+</script>
+<script>
+(function(){
+  'use strict';
+  const C=window.RouteACore, I=window.RouteAI18n, P=window.RouteAPlot, $=id=>document.getElementById(id);
+  const S={epoch:0,connected:false,connecting:false,mock:false,device:null,ch:null,server:null,sim:null,simTimer:null,
+    parser:new C.StreamParser(512),verified:false,pidFault:null,pid:null,pidAt:0,fast:null,slow:null,fastAt:0,slowAt:0,
+    locked:null,balance:null,fw:null,firmware:'—',phase:'IDLE',id:0,baseline:null,candidate:null,
+    samples:[],trialSamples:[],metrics:null,trialMetrics:null,chart:[],telemetry:[],logs:[],keyLogs:[],history:[],sawTrial:false,
+    rxTimes:[],ok:0,bad:0,seq:0,waiters:[],queue:[],writing:false,writeGeneration:0,transportFault:false,busy:false,heartbeat:null,
+    activeMotion:null,motionToken:0,llm:null,llmBusy:false,auto:false,autoToken:0,trialAt:0,
+    features:null,featureAt:0,trialBase:null,trialPid:null,trialLimits:null,ending:null,lastEvaluation:null,lastProposal:null,llmSince:0,recovery:false,lastFailure:null,op:'等待连接',review:null};
+  const EMPIRICAL_PRIOR="\n\nEMPIRICAL DIRECTIONAL PRIORS — NOT FIXED PID TARGETS\nThese real-vehicle experiments were performed with NO PAYLOAD on LEVEL GROUND. Current payload and slope can differ, change during use, or be unknown. Never assume the historical conditions still hold. Different external conditions can require different gains; use this experience only as conditional directional evidence, not as standard values, universal thresholds, or a lookup controller.\nHistorical reference vector in AP/AD/VP/VI/TP/TD order: [96,48,62,31,17,20]. Each experiment below changed ONLY the named coefficient relative to this reference. The reference is an experimental control, not an instruction to reset the current controller.\nUnits: osc in deg/s and lean in degrees. Each listed value is the arithmetic mean of THREE manually copied display readings, not a complete time-window mean or three independent repeated experiments. Human-reported motion describes fore-aft excursion, not net displacement or total travel.\nT0 reference: osc=2.516, lean=1.017; human-observed motion: 轻微往复(2-3cm); battery=12.02V.\nT1 AP=56: osc=8.858, lean=8.076; human-observed motion: 轻微往复(6-7cm); battery=11.98V.\nT2 AP=150: osc=2.726, lean=0.477; human-observed motion: 无明显跑动; battery=11.97V.\nT3 AD=29: osc=60.287, lean=14.627; human-observed motion: 明显往复（12-13cm）; battery=11.96V.\nT4 AD=100: osc=55.567, lean=2.862; human-observed motion: 明显往复(20-25cm); battery=11.72V.\nT5 VP=30: osc=4.506, lean=7.099; human-observed motion: 明显往复(40-45cm); battery=11.59V.\nT6 VP=94: osc=35.527, lean=4.846; human-observed motion: 轻微往复(2cm); battery=12.30V.\nT7 VI=1: osc=1.523, lean=0.762; human-observed motion: 轻微往复(1cm); battery=11.66V.\nT8 VI=100: osc=7.987, lean=4.810; human-observed motion: 轻微往复(4cm); battery=11.64V.\nT3 included occasional falls and manual uprighting, so it is a failed/interfered trial rather than a clean steady-state measurement. Reference rechecks mostly said \"no significant change\" without numeric repeats. Battery varied between trials, particularly T6 at 12.30V versus the reference at 12.02V and other runs near 11.6V. Do not claim statistical significance, isolated causation, or a proven optimum.\nConditional use:\n1. Near the reference conditions, AP56 worsened low-frequency sway, whereas AP150 reduced lean and visible travel without clear osc improvement. Poor restoring/low-frequency sway may justify exploring higher AP when live evidence supports it. Do not extrapolate that higher AP is always better, prescribe AP150, or attribute all low-frequency problems to AP.\n2. Both AD29 and AD100 were worse than AD48 in these tests. High osc alone does not identify whether AD should rise or fall. Consider current AD, other coefficients and recent responses; an excessively low and an excessively high AD can require opposite experimental directions. AD48 is a tested reference, not a universally optimal damping value.\n3. VP30 produced large fore-aft motion; VP94 produced much larger osc and lean despite about 2cm excursion. Do not keep raising VP solely to reduce travel. Consider a tradeoff between position behavior and posture oscillation, and do not conclude that VP94 is unsuitable under every load or slope.\n4. VI1 improved the short observation, while VI100 worsened it. Reducing VI can be a hypothesis for similar slow hunting, but VI1 is not a long-term drift or payload/slope solution. Different sustained disturbances can require different integral action.\n5. Single-parameter successes do not prove combined successes: AP150 plus VI1, or any other combination, was NOT tested. Explain coordinated changes as new hypotheses. These static tests provide no identified steering-gain preference.\nFresh measured telemetry and confirmed recent_history under current conditions override these historical priors. Do not automatically revert to the reference, forbid a coefficient merely because it failed in one historical setting, or demand manual confirmation of load/slope before every trial. Condition changes reduce confidence in direct transfer but do not prohibit a justified reversible experiment or a decisive change within the supplied ranges.\nThe current payload has no calibrated fore-aft excursion statistic. Historical human observations are not current movement measurements; do not invent present travel distance, current payload mass, or slope from sparse encoder samples or osc/lean. If source is simulation, distinguish simulated current evidence from this real-vehicle history.\nKeep the original output schema, parameter ranges, acceptance rules and allowance for large/coordinated changes. In the existing explanation field (expected_effect for tuning, reason for review), cite current evidence, the relevant prior or its context mismatch, and the intended measurable effect. Do not add JSON fields or claim a candidate is already proven better.\n";
+  const A={running:false,token:0,round:0,phase:'未启动',failures:0,startedAt:0,historyStart:0};
+  const active=()=>S.connected||S.mock, fresh=()=>Date.now()-S.fastAt<2500;
+  const firmwareWritable=()=>S.mock||/^RA1\.9-AUTO6/.test(S.firmware);
+  function pidRanges(){return {...C.RANGES,VP:[10,S.mock||/^RA1\.9-AUTO6-TXFIX-VP100(?:$|-)/.test(S.firmware)?100:72]};}
+  function checkFirmwarePid(p){if(p.VP>pidRanges().VP[1])throw Error('VP大于72需要烧录RA1.9-AUTO6-TXFIX-VP100；当前固件 '+S.firmware);return p;}
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+  let toastTimer;
+  function toast(t){ I.text($('toast'),t);$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),4000); }
+  function redact(t){let text=String(t);for(const id of ['llmKey','reviewKey']){const key=$(id).value.trim();if(key)text=text.split(key).join('[REDACTED]');}return text.replace(/Bearer\s+\S+/gi,'Bearer [REDACTED]');}
+  function log(direction,text){const entry={time:new Date().toISOString(),source:S.mock?'simulation':'ble',direction,text:redact(text)};S.logs.push(entry);if(S.logs.length>3000)S.logs.shift();if(direction!=='RX'||entry.text.startsWith('$P1,')){S.keyLogs.push(entry);if(S.keyLogs.length>500)S.keyLogs.shift();}renderLog();}
+  function renderLog(){ I.text($('log'),S.logs.slice(-120).map(x=>`${x.time.slice(11,23)} ${x.direction} ${I.logText(x)}`).join('\n'));I.text($('logCount'),S.logs.length);$('transactionLog').value=S.keyLogs.map(x=>`${x.time.slice(11,23)} ${x.direction} ${I.logText(x)}`).join('\n');$('log').scrollTop=$('log').scrollHeight; }
+  function status(t){S.op=redact(t);I.text($('operationStatus'),S.op);I.text($('transactionStatus'),S.op);log('SYS',t);update();}
+  function fail(e){const t=redact(e?.message||e);status('操作失败：'+t);toast(t);}
+  function recordAutoFailure(reason,stage=A.phase){
+    if(S.lastFailure)return;
+    const noCandidateSent=!S.id&&['BASELINE','REVIEW','IDLE'].includes(S.phase)&&['采集新基线','LLM生成建议','生成模拟候选','自动检查与应用'].includes(stage);
+    S.lastFailure={at:new Date().toISOString(),round:A.round,stage,reason:redact(reason),browserPhase:S.phase,firmwareState:S.fw,transactionId:S.id,noCandidateSent};
+    log('AUTO_ERR',JSON.stringify(S.lastFailure));
+    if(S.phase==='REVIEW'||stage.includes('LLM'))I.text($('llmStatus'),'LLM处理失败：'+S.lastFailure.reason);
+    renderAutoFailure();
+    toast('自动调参已停止；详细原因已保留在训练页。');
+    if(document.querySelector('[data-page="training"]')?.classList.contains('active'))$('autoError').scrollIntoView?.({block:'start',behavior:'smooth'});
+  }
+  function renderAutoFailure(){
+    const item=S.lastFailure;$('autoError').hidden=!item;if(!item)return;
+    I.text($('autoErrorTitle'),'自动调参已停止，请检查原因');
+    I.text($('autoErrorStage'),`阶段：${item.stage} · 第 ${item.round} 轮`);
+    I.text($('autoErrorReason'),item.reason);
+    I.text($('autoErrorEffect'),item.noCandidateSent?'本轮尚未发送PID候选，未因本次失败写入新参数':item.transactionId?'曾建立候选事务；恢复结果请核对ACK和PID读回':'故障发生时无活动候选事务；当前参数以PID读回为准');
+    I.text($('autoErrorTime'),new Date(item.at).toLocaleTimeString(I.locale(),{hour12:false}));
+  }
+
+  function requireLink(){if(!active()||!S.verified)throw Error('需要连接并收到有效 PID 回包；请确认小车处于 3.TEST MODE');if(S.transportFault)throw Error('BLE 写入接口未完成，请断开后重连');if(!firmwareWritable())throw Error('命令功能需要 RA1.9-AUTO6 六参数固件；当前仅显示真实反馈，固件版本 '+S.firmware);}
+  function requireTraining(){requireLink();if(!S.locked||!S.balance||S.fw!==0||!fresh()||Date.now()-S.slowAt>5000)throw Error('需要训练锁定、平衡运行、实时快慢遥测和固件 IDLE');}
+  function limits(){const seconds=Number($('trialSeconds').value),baselineSeconds=Number($('baselineSeconds').value);if(!Number.isFinite(seconds)||seconds<1||seconds>20)throw Error('评价时长必须在 1..20 秒');if(!Number.isFinite(baselineSeconds)||baselineSeconds<1||baselineSeconds>20)throw Error('采集时长必须在 1..20 秒');return {seconds,baselineSeconds};}
+  function quality(m,kind='baseline'){const seconds=kind==='trial'?S.trialLimits.seconds:(S.baseline?.windowSeconds??limits().baselineSeconds),minimum=Math.max(2,Math.ceil(seconds*3));if(!m||m.samples<minimum||m.durationMs<seconds*1000||m.maxGapMs>1500)throw Error(`${kind==='trial'?'评价':'采集'}数据不足：需覆盖${seconds}秒、至少${minimum}帧有效数据，帧间隔不超过1.5秒`);}
+  function initPid(){ $('pidGrid').innerHTML=I.t(C.PID_KEYS.map(k=>`<div class="pid-item"><label>${k}<b id="live${k}">--</b></label><input aria-label="${k} 参数" id="edit${k}" inputmode="decimal" type="number" step="0.01" min="${C.RANGES[k][0]}" max="${pidRanges()[k][1]}"></div>`).join(''));C.PID_KEYS.forEach(k=>$('edit'+k).addEventListener('input',pidDelta)); }
+  function inputPid(){return checkFirmwarePid(C.boundedPid(Object.fromEntries(C.PID_KEYS.map(k=>[k,$('edit'+k).value]))));}
+  function setPid(p,copy=false){S.pid={...p};S.pidAt=Date.now();C.PID_KEYS.forEach(k=>{I.text($('live'+k),p[k].toFixed(2));if(copy)$('edit'+k).value=p[k].toFixed(2);});pidDelta();}
+  function pidDelta(){if(!S.pid){I.text($('pidDelta'),'先读取当前 PID，才允许人工写入。');return;}try{const p=inputPid();I.text($('pidDelta'),C.PID_KEYS.map(k=>`${k} ${((p[k]-S.pid[k])*100/Math.abs(S.pid[k])).toFixed(2)}%`).join('　'));}catch(e){I.text($('pidDelta'),e.message);}}
+  const settingIds=['serviceUuid','charUuid','namePrefix','chunkSize','chunkDelay','llmBase','llmModel','reviewBase','reviewModel','baselineSeconds','trialSeconds'];
+  function loadSettings(){try{const s=JSON.parse(localStorage.getItem('routea-bluefy-v2')||'{}');for(const id of settingIds)if(typeof s[id]==='string'&&(!['baselineSeconds','trialSeconds'].includes(id)||s.windowPolicy===2))$(id).value=s[id];}catch(e){log('SYS','无法读取本地设置');}}
+  function communicationSettings(){const svc=$('serviceUuid').value.trim().toLowerCase(),ch=$('charUuid').value.trim().toLowerCase();if(!/^[\da-f]{8}(-[\da-f]{4}){3}-[\da-f]{12}$/.test(svc)||!/^[\da-f]{8}(-[\da-f]{4}){3}-[\da-f]{12}$/.test(ch))throw Error('BLE UUID 格式错误');const size=Number($('chunkSize').value),pause=Number($('chunkDelay').value);if(!Number.isInteger(size)||size<1||size>20||!Number.isFinite(pause)||pause<0||pause>100)throw Error('分片字节必须为 1..20 整数，间隔 0..100ms');return {svc,ch,size,pause};}
+  function saveSettings(){communicationSettings();limits();C.endpoint($('llmBase').value.trim());if($('reviewBase').value.trim())C.endpoint($('reviewBase').value.trim());localStorage.setItem('routea-bluefy-v2',JSON.stringify({...Object.fromEntries(settingIds.map(id=>[id,$(id).value.trim()])),windowPolicy:2}));status('通信、LLM 与审核设置已保存；密钥仅保留在本页面会话');}
+  function clearCandidate(){S.candidate=null;S.review=null;I.text($('candidateBox'),'尚无合格候选');I.text($('proposalSource'),'无');I.text($('reviewResult'),'尚未审核');}
+  function cancelWaiters(reason){for(const w of [...S.waiters])w.reject(Error(reason));}
+  function reset(){S.ending=null;S.lastProposal=null;cancelContinuous();S.features=null;S.featureAt=0;S.epoch++;cancelWaiters('会话已结束');cancelQueue('会话已结束');cancelLlm();stopHeartbeat();cancelAuto();clearMotion();S.parser=new C.StreamParser(512);S.transportFault=false;S.pidFault=null;S.verified=false;S.busy=false;S.pid=null;S.pidAt=0;S.fast=null;S.slow=null;S.fastAt=0;S.slowAt=0;S.locked=null;S.balance=null;S.fw=null;S.phase='IDLE';S.id=0;S.baseline=null;S.samples=[];S.trialSamples=[];S.metrics=null;S.trialMetrics=null;S.chart=[];S.trialAt=0;S.trialBase=null;S.trialPid=null;S.trialLimits=null;S.sawTrial=false;S.rxTimes=[];S.recovery=false;S.firmware='—';clearCandidate();C.PID_KEYS.forEach(k=>{I.text($('live'+k),'--');$('edit'+k).value='';});I.text($('metricsBox'),'尚未计算');I.text($('sampleCount'),'0 样本');I.text($('trialMetrics'),'尚无试验数据');pidDelta();}
+  function detach(){S.ch?.removeEventListener('characteristicvaluechanged',notification);S.device?.removeEventListener('gattserverdisconnected',disconnected);}
+  function cleanup(disconnect=true){detach();const d=S.device;if(S.simTimer)clearInterval(S.simTimer);S.simTimer=null;S.sim=null;S.mock=false;S.connected=false;S.connecting=false;S.ch=null;S.server=null;S.device=null;reset();if(disconnect&&d?.gatt?.connected)d.gatt.disconnect();update();}
+  async function connect(){
+    if(S.connecting||S.connected)return;
+    if(!navigator.bluetooth)throw Error('当前浏览器没有 Web Bluetooth；iPhone 请在 Bluefy 打开 HTTPS 页面');
+    if(!window.isSecureContext)throw Error('BLE 需要 HTTPS 安全上下文');
+    if(S.mock)cleanup();
+    const cfg=communicationSettings();reset();S.connecting=true;update();const epoch=S.epoch;
+    let device;
+    const current=()=>epoch===S.epoch;
+    try{
+      const prefix=$('namePrefix').value.trim();
+      device=await navigator.bluetooth.requestDevice({...(prefix?{filters:[{namePrefix:prefix},{namePrefix:' Yah'}]}:{acceptAllDevices:true}),optionalServices:[cfg.svc]});
+      if(!current()){if(device.gatt.connected)device.gatt.disconnect();return;}
+      S.device=device;device.addEventListener('gattserverdisconnected',disconnected);
+      I.text($('deviceName'),device.name||'BLE 设备');
+      const server=await device.gatt.connect();
+      if(!current()){device.gatt.disconnect();return;}S.server=server;
+      const svc=await server.getPrimaryService(cfg.svc);
+      if(!current())return;
+      const ch=await svc.getCharacteristic(cfg.ch);
+      if(!current())return;
+      S.ch=ch;ch.addEventListener('characteristicvaluechanged',notification);
+      await ch.startNotifications();
+      if(!current()){ch.removeEventListener('characteristicvaluechanged',notification);return;}
+      S.connected=true;S.connecting=false;
+      status('GATT 已连接；正在验证 GET → PID 双向通信');await readPid();
+      if(current())status('双向通信已确认，PID 来自固件读回');
+    }catch(e){if(current()){if(S.connected){S.connecting=false;S.verified=false;update();throw Error('GET 握手未确认：'+e.message+'；BLE 和遥测已保留，命令功能仍锁定。');}cleanup();throw Error('连接/握手失败：'+e.message+'。检查 Test_Mode、UART5 和 FFE1 通知。');}}
+  }
+  function disconnected(){cleanup(false);status('BLE 已断开，旧 PID / 候选已清除；请确认小车停止');toast(S.op);}
+  function notification(e){const v=e.target.value;receive(new Uint8Array(v.buffer,v.byteOffset,v.byteLength));}
+  function receive(bytes){for(const raw of S.parser.feed(bytes))handleFrame(raw);}
+  function waiter(predicate,label,timeout=4000){const epoch=S.epoch;let timer,w;const promise=new Promise((resolve,reject)=>{const remove=()=>{clearTimeout(timer);S.waiters=S.waiters.filter(v=>v!==w);};w={epoch,predicate,resolve:v=>{remove();resolve(v);},reject:e=>{remove();reject(e);}};S.waiters.push(w);timer=setTimeout(()=>w.reject(Error(label+'：等待固件响应超时')),timeout);});promise.catch(()=>{});return {promise,cancel:e=>w.reject(e)};}
+  async function exchange(text,predicate,label,timeout=4000,priority=false){const w=waiter(predicate,label,timeout);try{const [,reply]=await Promise.all([send(text,priority),w.promise]);return reply;}catch(e){w.cancel(e);cancelQueue('固件操作未确认，取消后续发送');throw e;}}
+  async function readPid(expected){if(!active())throw Error('请先连接小车');const p=await exchange(C.getPid(),e=>e.type==='PID','GET/PID');if(expected){if(expected.pid&&!C.samePid(p.pid,expected.pid))throw Error('PID 读回不一致，不能判定写入已生效');if(expected.fw!==undefined&&p.state!==expected.fw)throw Error('固件状态读回不一致');if(expected.lock!==undefined&&p.trainingLocked!==expected.lock)throw Error('训练锁读回不一致');}S.verified=true;update();return p;}
+  async function settledPid(expected){const deadline=Date.now()+1500;do{const p=await readPid();if((!expected.pid||C.samePid(p.pid,expected.pid))&&(expected.fw===undefined||p.state===expected.fw)&&(expected.lock===undefined||p.trainingLocked===expected.lock))return p;await sleep(60);}while(Date.now()<deadline);throw Error('控制周期后 PID / 状态读回不一致，操作未确认');}
+  async function ack(text,name,id=0,priority=false){requireLink();if(['ACCEPT','ROLLBACK'].includes(name)){stopHeartbeat();S.ending={command:name,id,ackSeen:false};priority=true;}status(`等待 ${name} ACK（事务 ${id}）`);return exchange(text,e=>e.type==='ACK'&&e.name===name&&e.id===id,`${name} / ${id}`,4000,priority);}
+  function cancelQueue(reason){S.writeGeneration++;for(const q of S.queue.splice(0))q.reject(Error(reason));}
+  function send(text,priority=false,kind='command'){if(!active())return Promise.reject(Error('BLE 未连接'));const epoch=S.epoch;return new Promise((resolve,reject)=>{const q={text,epoch,kind,resolve,reject};if(priority)S.queue.unshift(q);else S.queue.push(q);pump();});}
+  async function pump(){if(S.writing)return;S.writing=true;try{while(S.queue.length){const q=S.queue.shift();try{if(q.epoch!==S.epoch)throw Error('过期会话命令已取消');await write(q.text,q.epoch,S.writeGeneration);q.resolve();}catch(e){q.reject(e);}}}finally{S.writing=false;}}
+  async function write(text,epoch,generation){if(S.transportFault)throw Error('BLE 写入接口未完成，请断开后重连');if(epoch!==S.epoch||!active())throw Error('会话已断开');log('TX',text);if(S.mock){S.sim.receive(text);return;}const {size,pause}=communicationSettings(),ch=S.ch,bytes=new TextEncoder().encode(text);for(let i=0;i<bytes.length;i+=size){if(epoch!==S.epoch||generation!==S.writeGeneration||ch!==S.ch||!S.connected)throw Error('发送已取消或连接断开');const chunk=bytes.slice(i,i+size);await nativeWrite(ch,chunk,epoch);if(pause&&i+size<bytes.length)await sleep(pause);}}
+  async function nativeWrite(ch,chunk,epoch){const p=ch.properties||{};let timer,expired=false;try{let pending;if(p.write&&typeof ch.writeValueWithResponse==='function')pending=ch.writeValueWithResponse(chunk);else if(p.writeWithoutResponse&&typeof ch.writeValueWithoutResponse==='function')pending=ch.writeValueWithoutResponse(chunk);else if(typeof ch.writeValue==='function')pending=ch.writeValue(chunk);else if(typeof ch.writeValueWithResponse==='function')pending=ch.writeValueWithResponse(chunk);else throw Error('FFE1 没有可用写入方法');await Promise.race([pending,new Promise((_,reject)=>{timer=setTimeout(()=>{expired=true;reject(Error('BLE 写入接口超过 5 秒未完成；请断开后重连'));},5000);})]);}catch(e){if(expired&&epoch===S.epoch){S.transportFault=true;S.verified=false;stopHeartbeat();cancelQueue('BLE 写入超时');status(e.message);}throw e;}finally{clearTimeout(timer);}}
+  function invalidatePid(reason,raw){cancelContinuous();const message='PID 回读异常：'+reason+'；已锁定控制，请通过硬件停止并检查固件并重新读取 PID';const changed=S.pidFault!==message;S.pidFault=message;S.verified=false;S.pid=null;S.pidAt=0;S.slowAt=0;S.baseline=null;S.metrics=null;S.samples=[];S.phase=S.id?'UNCERTAIN':'IDLE';cancelAuto();stopHeartbeat();clearMotion();cancelLlm();clearCandidate();cancelWaiters(message);cancelQueue('PID 异常');C.PID_KEYS.forEach(k=>I.text($('live'+k),'异常'));pidDelta();if(changed){log('PID_FAULT',raw);status(message);toast(message);}update();}
+  function handleFrame(raw){if(!active())return;log('RX',raw);if(raw==='$ReceivePackError#'){log('LEGACY_ERR','固件未识别 Route A 包头，请使用 RA1.9-AUTO6 六参数固件');cancelWaiters('固件返回 ReceivePackError：接收包未识别为 Route A');return;}if(!C.verify(raw)){S.bad++;update();return;}let event=C.parseAck(raw),pid=C.parsePidStatus(raw),fast=C.parseFast(raw),slow=C.parseSlow(raw);if(pid)event={type:'PID',...pid};else if(fast)event={type:'FAST',...fast};else if(slow)event={type:'SLOW',...slow};else if(C.parseFeatures(raw)){const f=C.parseFeatures(raw);S.features=f;S.featureAt=Date.now();S.telemetry.push({at:S.featureAt,source:S.mock?'simulation':'ble',kind:'features',...f});update();return;}else if(!event&&raw.startsWith('$P1,READY,'))event={type:'READY'};if(event?.type==='ACK'&&S.ending&&event.name===S.ending.command&&(event.id===S.ending.id||event.name==='TRAIN_STOP'))S.ending.ackSeen=true;if(event?.type==='ERR'&&event.code==='TRIAL,0'){if(S.ending?.ackSeen){log('SYS','结束ACK已确认；迟到TRIAL,0不打断PID读回，仍须核对实际参数和IDLE状态');return;}if(!S.id&&S.history.length){log('SYS','已结束事务的迟到 TRIAL,0 回包；保留已核对的事务结果');return;}stopHeartbeat();cancelAuto();event={...event,code:'事务已失效（TRIAL,0）；固件当前无活动事务，需读回确认结果'};}if(event?.type==='ERR'&&event.code.startsWith('PID_LIVE_RANGE')){invalidatePid('固件实时参数越界',raw);return;}if(!event){if(raw.startsWith('$P1,PID,')||raw.startsWith('$T1,S,'))invalidatePid('字段非法',raw);else{S.bad++;update();}return;}if((raw.startsWith('$P1,PID,')&&!pid)||(raw.startsWith('$T1,S,')&&!slow)){invalidatePid('字段非法',raw);return;}if(pid||slow){try{C.boundedPid((pid||slow).pid);}catch(e){if(slow)S.firmware=slow.firmware;invalidatePid(e.message,raw);return;}}S.seq++;S.ok++;const at=Date.now();if(fast)S.rxTimes.push(at);S.rxTimes=S.rxTimes.filter(t=>at-t<5000);I.text($('lastRx'),new Date(at).toLocaleTimeString(I.locale(),{hour12:false}));
+    if(pid){if(pid.state===2&&S.id)S.sawTrial=true;S.pidFault=null;const first=!S.pid;setPid(pid.pid,first);S.fw=pid.state;S.locked=pid.trainingLocked;S.balance=pid.balanceStarted;}
+    if(fast){Object.assign(fast,S.features||{osc:null,lean:null,leanBand:null,warm:false});fast.ms=C.parseFast(raw).ms;fast.featuresFresh=!!S.features&&at-S.featureAt<=600;if(fast.state===2&&S.id)S.sawTrial=true;if(S.fw!==fast.state)log('STATE',JSON.stringify({state:fast.state,angle:fast.angle,ml:fast.ml,mr:fast.mr,lock:fast.trainingLocked}));const sample={at,source:S.mock?'simulation':'ble',...fast};S.fast=fast;S.fastAt=at;S.fw=fast.state;S.locked=fast.trainingLocked;S.balance=fast.balanceStarted;S.telemetry.push({...sample,at:new Date(at).toISOString(),kind:'fast'});if(S.telemetry.length>15000)S.telemetry.shift();S.chart.push(sample);S.chart=S.chart.filter(p=>at-p.at<60000);if(S.phase==='BASELINE'){
+        if(!S.locked||!S.balance||fast.state!==0){S.phase='IDLE';S.samples=[];S.baseline=null;status('基线已中止：平衡/训练锁/固件状态不符合条件');}
+        else S.samples.push(sample);
+      }
+      if(S.phase==='TRIAL'&&fast.state===2&&(!A.running||Date.now()-S.trialAt>=1000))S.trialSamples.push(sample);
+      if((S.phase==='TRIAL'&&(fast.state!==2||!fast.trainingLocked||!fast.balanceStarted))||(['PREPARED','UNCERTAIN'].includes(S.phase)&&fast.state===0&&S.trialBase)){
+        S.phase='UNCERTAIN';stopHeartbeat();cancelAuto();status('固件已结束试验或发生保护；正在读取回滚结果');verifyLocalRollback().catch(fail);
+      }
+    }
+    if(slow){if(S.phase==='BASELINE'&&S.baseline&&!C.samePid(slow.pid,S.baseline.pid)){S.phase='IDLE';S.samples=[];status('基线已中止：PID 在采集中变化');}setPid(slow.pid,!S.pid);S.slow=slow;S.slowAt=at;S.firmware=slow.firmware;S.locked=slow.trainingLocked;S.balance=slow.balanceStarted;S.telemetry.push({at,source:S.mock?'simulation':'ble',kind:'slow',...slow});}
+    for(const w of [...S.waiters]){if(w.epoch!==S.epoch)continue;if(event.type==='ERR')w.reject(Error('固件拒绝：'+event.code));else if(w.predicate(event))w.resolve(event);}
+    if(event.type==='ERR'){status('固件拒绝：'+event.code);toast(S.op);}update();draw();
+  }
+  async function exclusive(fn){if(S.busy)throw Error('另一项固件操作正在等待确认');const epoch=S.epoch;S.busy=true;update();try{return await fn();}finally{if(epoch===S.epoch)S.busy=false;update();}}
+  async function manualPid(){return exclusive(async()=>{requireLink();if(S.locked||S.fw!==0)throw Error('训练锁定或活动事务期间不能人工调参');const p=inputPid();await readPid({fw:0,lock:false});if(!confirm(I.t('确认将六个 PID 写入小车？完成后将核对 ACK 和 PID 读回。')))return;await ack(C.manualSet(p),'MSET');await settledPid({pid:p,fw:0,lock:false});clearCandidate();S.metrics=null;status('人工 PID 已获 ACK，且六个参数读回一致');toast('参数已确认生效');});}
+  async function trainStart(){return exclusive(async()=>{requireLink();if(!S.balance||S.locked||S.fw!==0||S.phase!=='IDLE')throw Error('需要平衡已启动、固件空闲且训练未锁定');await ack(C.training('START'),'TRAIN_START');await readPid({fw:0,lock:true});clearCandidate();status('训练锁已由固件确认；可以采集基线');});}
+  async function trainStop(){cancelContinuous();cancelAuto();cancelLlm();clearMotion();cancelQueue('停止训练，已取消待发命令');cancelWaiters('停止训练');return exclusive(async()=>{requireLink();stopHeartbeat();S.ending={command:'TRAIN_STOP',id:S.id,ackSeen:false};await exchange(C.training('STOP'),e=>e.type==='ACK'&&e.name==='TRAIN_STOP','TRAIN_STOP',4000,true);await settledPid({fw:0,lock:false});stopHeartbeat();S.phase='IDLE';S.id=0;S.ending=null;S.metrics=null;S.baseline=null;clearCandidate();status('训练已停止、事务已结束、人工 PID 已解锁（固件读回确认）');});}
+  async function baselineStart(){return exclusive(async()=>{requireTraining();if(!['IDLE','REVIEW'].includes(S.phase))throw Error('存在活动试验');await send(C.legacyMotion(0,0,S.pid),true);await readPid({fw:0,lock:true});S.baseline={pid:{...S.pid},epoch:S.epoch,source:S.mock?'simulation':'ble',startedAt:Date.now(),windowSeconds:limits().baselineSeconds,dropped:S.slow.dropped,battery:S.slow.battery,limits:limits()};S.samples=[];S.metrics=null;clearCandidate();S.phase='BASELINE';I.text($('metricsBox'),`采集中；记录当前抖动${S.baseline.windowSeconds}秒，采集期间不发送移动指令`);status('开始采集当前 PID 下的基线数据（来源见顶部标识）');});}
+  function metricText(m){return `osc均值 ${m.meanOsc.toFixed(3)} °/s / lean均值 ${m.meanLean.toFixed(3)}° / 指标样本 ${m.featureSamples}
+倾角 RMS ${m.rmsAngle.toFixed(3)}° / 峰值 ${m.peakAngle.toFixed(3)}°\n角速度 RMS ${m.rmsGyro.toFixed(3)} raw / PWM 饱和率 ${(m.saturationRate*100).toFixed(2)}%\n${m.samples} 样本 / ${(m.durationMs/1000).toFixed(1)} 秒 / 最大间隔 ${m.maxGapMs} ms`;}
+  function baselineFinish(){requireTraining();if(S.phase!=='BASELINE')throw Error('当前没有基线采集');const m=C.metrics(S.samples);quality(m);if(!C.samePid(S.pid,S.baseline.pid))throw Error('当前 PID 与采集基线不同');S.metrics=m;S.baseline.finishedAt=Date.now();S.phase='REVIEW';I.text($('metricsBox'),metricText(m));status('基线采集完成；可以调用 LLM 或粘贴候选');update();}
+  function readyReview(){requireTraining();if(S.phase!=='REVIEW'||!S.metrics||!S.baseline)throw Error('请先完成基线采集');quality(S.metrics);if(S.baseline.epoch!==S.epoch||!C.samePid(S.pid,S.baseline.pid))throw Error('PID 或会话已变化，请重新采集基线');if(Date.now()-S.baseline.finishedAt>180000)throw Error('基线超过 3 分钟，请重新采集');}
+  function proposal(p,source){requireAutomatic();readyReview();try{S.candidate=C.validateProposal(p,S.baseline.pid);}catch(e){if(e instanceof SyntaxError)throw Error('LLM返回不是有效JSON：'+e.message);throw e;}checkFirmwarePid(S.candidate.candidate);S.lastProposal={round:A.round,proposal:structuredClone(S.candidate)};S.review=null;I.text($('proposalSource'),source);I.text($('candidateBox'),`${S.candidate.decision.toUpperCase()} / 置信度 ${(S.candidate.confidence*100).toFixed(0)}%\n${C.PID_KEYS.map(k=>`${k} ${S.candidate.candidate[k].toFixed(2)}`).join('　')}\n${I.verbatim(S.candidate.expected_effect)}`);I.text($('reviewResult'),'候选校验通过，尚未审核或发送小车');log('PROPOSAL',JSON.stringify({source,proposal:S.candidate}));update();}
+
+
+  function payload(){readyReview();const down=S.samples.filter((_,i)=>i%Math.max(1,Math.ceil(S.samples.length/60))===0);return {schema_version:1,prompt_version:'route-a-bluefy-v3.7-active-tuning',ui_language:I.language(),source:S.baseline.source,firmware:S.firmware,stage:'balance',current_pid:S.baseline.pid,trial_scenario:{name:'quiet_balance',completed:true,motion_command:'stop'},data_quality:{complete:true,duration_ms:S.metrics.durationMs,max_gap_ms:S.metrics.maxGapMs,dropped_tx_delta:S.slow.dropped-S.baseline.dropped},metrics:S.metrics,battery:{start:S.baseline.battery,current:S.slow.battery},telemetry_samples:down,recent_history:S.history.slice(-5),harness_limits:{relative_change_limit:null,parameter_ranges:pidRanges(),allowed_parameters:C.PID_KEYS,acceptance_policy:C.ACCEPTANCE,automatic_only:true,feature_definition:{sample_hz:200,osc:'8-16 Hz gyro band RMS /16.4, deg/s',lean:'0.3-2 Hz angle band RMS, deg',leanBand:'signed low-frequency angle, deg',warmup_ms:3000},feature_status:{warm:S.features?.warm===true,fresh:Date.now()-S.featureAt<=600}}};}
+  function cancelLlm(){if(S.llm){S.llm.abort();S.llm=null;}S.llmBusy=false;update();}
+  async function completion(system,data,review=false){system=I.prompt(system);if(S.llmBusy)throw Error('LLM 请求进行中，请等待或取消');const base=(review&&$('reviewBase').value.trim())||$('llmBase').value.trim(),model=(review&&$('reviewModel').value.trim())||$('llmModel').value.trim(),key=(review&&$('reviewKey').value.trim())||$('llmKey').value.trim();if(!model)throw Error('请填写模型 ID');const url=C.endpoint(base),sameOrigin=new URL(url).origin===location.origin;if(!key&&!sameOrigin)throw Error('请在设置页填写 API Key');const controller=new AbortController(),epoch=S.epoch;S.llm=controller;S.llmBusy=true;S.llmSince=Date.now();update();const timer=setTimeout(()=>controller.abort('timeout'),45000);I.text($('llmStatus'),'正在请求 '+(review?'审核':'建议')+' LLM…');I.text($('llmPayload'),JSON.stringify(data,null,2));log('LLM','请求 '+(review?'审核':'建议')+'，模型 '+model);
+    try{const response=await fetch(url,{method:'POST',signal:controller.signal,headers:{'Content-Type':'application/json',...(key?{Authorization:'Bearer '+key}:{})},body:JSON.stringify({model,stream:false,response_format:{type:'json_object'},messages:[{role:'system',content:system},{role:'user',content:JSON.stringify(data)}]})});if(!response.ok)throw Error(`HTTP ${response.status}：${redact((await response.text()).slice(0,300))}`);const result=await response.json();const raw=result.choices?.[0]?.message?.content;if(typeof raw!=='string'||!raw.trim())throw Error('接口未返回 choices[0].message.content');if(epoch!==S.epoch||controller.signal.aborted)throw Error('过期 LLM 响应已丢弃');I.text($('llmResponse'),redact(raw));log('LLM',raw);if(result.choices?.[0]?.finish_reason==='length')throw Error('LLM输出被截断（finish_reason=length），未发送候选；请检查接口输出长度设置');I.text($('llmStatus'),'接口响应成功；正在校验 JSON');return raw;}
+    catch(e){const msg=controller.signal.aborted?'LLM 请求已取消或超过 45 秒':e instanceof TypeError?'网络/CORS 请求失败；请检查 HTTPS、接口地址或使用随附同源代理':e.message;I.text($('llmStatus'),redact(msg));throw Error(msg);}
+    finally{clearTimeout(timer);if(S.llm===controller){S.llm=null;S.llmBusy=false;}update();}
+  }
+  async function requestLlm(){requireAutomatic();const data=payload(),fingerprint=JSON.stringify(S.baseline);const raw=await completion("You tune a Yahboom Route A two-wheel balance car using measured telemetry. Actively explore decisive, potentially large PID changes when the measured behavior justifies them. Small incremental changes are not required. Angle is in degrees; gyro telemetry is raw sensor counts, not degrees per second, so judge gyro together with angle timing and recent runs. Return exactly one JSON object, no Markdown, with exactly schema_version:1, decision:propose|hold|rollback, stage:balance, candidate:{AP,AD,VP,VI,TP,TD}, expected_effect:string (max 500 chars), requested_test:quiet_balance|balance_recovery, confidence:number 0..1. Treat sustained angle oscillation, poor recovery, or repeatedly large gyro activity supported by angle samples as evidence to act. When data_quality is complete and oscillation persists, prefer propose with a concrete justified PID change over hold. A car that has not fallen can still need tuning; do not require a failed protection threshold before proposing improvement. There is no relative percentage-change cap. Size the change to test a specific damping or stiffness hypothesis within harness_limits.parameter_ranges; make it meaningful instead of automatically selecting a tiny step. A large coordinated change or a candidate near an absolute bound is allowed if you explain its physical hypothesis. Do not treat a large percentage change as a reason to hold. Never exceed the supplied absolute bounds. All six AP/AD/VP/VI/TP/TD may change. Choose the relevant loop for the observed problem: balance stiffness/damping, velocity drift/slow sway, or steering imbalance. You may jointly change multiple or all six coefficients when justified; there is no requirement to tune one coefficient or one loop at a time. Stationary telemetry may not identify steering performance: do not invent evidence for TP/TD. Use osc (8-16 Hz gyro RMS, deg/s), lean (0.3-2 Hz angle RMS, deg), signed leanBand and their warmup/freshness, not universal gain thresholds. Gyro raw counts remain raw. Compare recent accepted and rejected trials and do not repeat a failed candidate. Use angle/gyro timing, saturation, battery, and recent_history together; distinguish repeated oscillation from an isolated spike and do not blindly keep increasing gains. Uncertain improvement alone is not a reason to hold: when evidence supports a plausible reversible trial, propose and report honest confidence. Use hold for genuinely insufficient/inconsistent data or stable behavior with no justified change; explain the missing evidence or stability. Use rollback when recent trial evidence supports returning to the accepted baseline; for hold/rollback copy current_pid unchanged. In expected_effect, cite the observed pattern, explain the change direction and intended measurable effect, and give the specific reason for hold/rollback when chosen. Write expected_effect in Simplified Chinese. Prefer quiet_balance so the existing reviewed trial can evaluate the candidate. The automatic acceptance rule uses weighted measured cost with 10% exploration tolerance, allows tradeoffs among individual metrics, has no mandatory 5% improvement gate and does not reject a candidate because of its PID change magnitude. A candidate is an experiment, not a proven improvement. Never issue motor commands or claim the candidate is already proven safe or accepted. Label simulation evidence as simulation."+EMPIRICAL_PRIOR,data);readyReview();if(fingerprint!==JSON.stringify(S.baseline))throw Error('基线已变化，丢弃旧 LLM 建议');proposal(raw,'LLM');status('LLM 建议已收到，自动检查并进入试验');}
+  async function testLlm(){const raw=await completion('Return exactly the JSON object {"ok":true}.',{purpose:'connection_test',no_robot_command:true});const p=JSON.parse(raw);if(p.ok!==true)throw Error('测试响应不符合 {"ok":true}');I.text($('llmStatus'),'LLM 接口、模型和 JSON 返回验证成功；未向小车发送参数');toast('LLM 接口测试通过');}
+  function reviewRules(){readyReview();if(!S.candidate)throw Error('请先生成并验证候选');const p=C.validateProposal(S.candidate,S.baseline.pid);checkFirmwarePid(p.candidate);if(p.decision!=='propose')throw Error('当前建议为 '+p.decision+'，无需应用候选');if(C.samePid(p.candidate,S.baseline.pid))throw Error('候选没有改变 PID，无需试验');return {approved:true,reason:'基线质量、六参数绝对范围、训练锁和实时数据检查通过'};}
+  async function review(){
+    requireAutomatic();const mode=$('loopReview').value;let r=reviewRules();
+    const fingerprint=JSON.stringify(S.candidate),epoch=S.epoch;
+    if(mode==='llm-auto'){
+      const raw=await completion('Review an automatic six-PID experiment. Return exactly JSON {"approved":boolean,"reason":string}. All six may change, including large coordinated changes within parameter_ranges. There is no relative change cap, no mandatory small-step policy, and no requirement that every metric improve. Evaluate the physical explanation against measured telemetry, osc/lean, and recent_history. Reject invalid or contradictory evidence and bounds violations, not large magnitude alone. Existing firmware fault rollback remains. Write reason in Simplified Chinese.'+EMPIRICAL_PRIOR,{...payload(),proposal:S.candidate},true);
+      r=JSON.parse(raw);if(!r||Object.keys(r).sort().join()!=='approved,reason'||typeof r.approved!=='boolean'||typeof r.reason!=='string'||!r.reason.trim())throw Error('审核返回格式无效');if(r.reason.length>C.MAX_EXPLANATION_CHARS)throw Error(`审核说明过长：${r.reason.length} 字符，上限 ${C.MAX_EXPLANATION_CHARS}`);
+    }
+    requireAutomatic();if(epoch!==S.epoch||fingerprint!==JSON.stringify(S.candidate))throw Error('会话或候选已变化');readyReview();S.review={...r,mode,at:new Date().toISOString()};I.text($('reviewResult'),r.approved?'自动检查通过，开始试验':r.reason);log('REVIEW',JSON.stringify(S.review));
+    if(!r.approved)return;
+    S.auto=true;const token=++S.autoToken;
+    try{await prepare(true);if(!S.auto||token!==S.autoToken||!A.running)return;await apply(true);status('候选六参数已读回，自动观察并评价');}
+    catch(e){cancelAuto();if(active())await stopContinuous('自动流程失败：'+e.message,A.running);throw e;}
+  }
+  async function prepare(automatic=false){requireAutomatic();if(!automatic)throw Error('仅自动应用候选');return exclusive(async()=>{reviewRules();if(S.llmBusy)throw Error('请等待 LLM 请求结束');S.ending=null;S.lastEvaluation=null;S.trialBase={...S.baseline.pid};S.trialPid={...S.candidate.candidate};S.trialLimits=limits();S.id=crypto.getRandomValues(new Uint32Array(1))[0]%2000000000+1;S.phase='PREPARING';S.sawTrial=false;update();try{await ack(C.prepare(S.id,30000,S.trialPid),'PREP',S.id);startHeartbeat();await readPid({pid:S.trialBase,fw:1,lock:true});S.phase='PREPARED';status('PREP ACK 和 IDLE→PREPARED 状态已确认，当前 PID 仍是基线');}catch(e){S.phase='UNCERTAIN';stopHeartbeat();status('PREP 结果未确认，请回滚后重新采集');if(S.fw===0)await verifyLocalRollback().catch(()=>{});throw e;}});}
+  function assertTrialReady(){if(!fresh()||!S.fast)throw Error('快遥测未就绪，不能 APPLY');}
+  async function apply(automatic=false){requireAutomatic();if(!automatic)throw Error('仅自动应用候选');return exclusive(async()=>{requireLink();if(S.phase!=='PREPARED'||S.fw!==1||!S.locked)throw Error('PREPARE 尚未确认');assertTrialReady();if(!fresh()||!S.balance||Date.now()-S.slowAt>5000)throw Error('实时遥测或平衡启动状态不符合 APPLY 条件');await readPid({pid:S.trialBase,fw:1,lock:true});assertTrialReady();S.phase='APPLYING';S.trialSamples=[];startHeartbeat();try{await ack(C.command('APPLY',S.id),'APPLY',S.id);await settledPid({pid:S.trialPid,fw:2,lock:true});S.phase='TRIAL';S.trialAt=Date.now();status('APPLY ACK、TRIAL 状态和候选六参数读回一致；开始试验采集');}catch(e){S.phase='UNCERTAIN';throw e;}});}
+  function evaluateTrial(){
+    quality(S.trialMetrics,'trial');if(S.trialMetrics.featureSamples<S.trialMetrics.samples*.8)throw Error('有效osc/lean样本不足80%');
+    return S.lastEvaluation=C.evaluateCost(S.metrics,S.trialMetrics);
+  }
+  async function accept(automatic=false){requireAutomatic();if(!automatic)throw Error('仅自动接受候选');return exclusive(async()=>{requireLink();if(S.phase!=='TRIAL'||S.fw!==2||!fresh())throw Error('没有已确认的实时 TRIAL');S.trialMetrics=C.metrics(S.trialSamples);quality(S.trialMetrics,'trial');const judgment=evaluateTrial();if(!judgment.approved)throw Error('试验审核拒绝：'+judgment.reason);const id=S.id;S.phase='ACCEPTING';await ack(C.command('ACCEPT',id),'ACCEPT',id);await readPid({pid:S.trialPid,fw:0,lock:true});finishTransaction('accepted',judgment.reason);status('ACCEPT ACK 和六参数读回一致；新 PID 已确认，下一轮需重新采集基线');});}
+  function finishTransaction(outcome,reason){S.history.push({time:new Date().toISOString(),source:S.mock?'simulation':'ble',id:S.id,outcome,base:S.trialBase,candidate:S.trialPid,appliedConfirmed:S.sawTrial,baseline_metrics:S.metrics,trial_metrics:S.trialMetrics,review:S.review,evaluation:S.lastEvaluation,reason});stopHeartbeat();cancelAuto();S.phase='IDLE';S.id=0;S.ending=null;S.baseline=null;S.metrics=null;clearCandidate();}
+
+  async function verifyLocalRollback(){if(S.recovery)return false;S.recovery=true;try{const p=await readPid();if(p.state===0&&C.samePid(p.pid,S.trialBase)){finishTransaction('firmware_rollback','固件自行结束试验，基线已读回');status(S.sawTrial?'候选曾生效，随后试验结束/保护回滚；基线 PID 已读回确认':'候选事务已结束，基线 PID 已读回；未收到 TRIAL 生效确认');return true;}else{status('事务结束但基线未确认，请停止训练并重新读取 PID');return false;}}finally{S.recovery=false;}}
+  function cancelAuto(){S.auto=false;S.autoToken++;}
+  async function recover(reason){if(A.running)recordAutoFailure(reason);cancelContinuous();if(S.recovery)return;S.recovery=true;cancelAuto();cancelLlm();clearMotion();cancelQueue('保护触发，待发命令已取消');cancelWaiters('保护触发：'+reason);S.phase='UNCERTAIN';status('请求停止/回滚：'+reason);try{if(active()){await send(C.legacyMotion(0,0,S.pid||C.DEFAULT_PID),true);const id=S.id;if(id){await ack(C.command('ROLLBACK',id),'ROLLBACK',id,true);await settledPid({pid:S.trialBase,fw:0});finishTransaction('rolled_back',reason);status('保护回滚已获 ACK，基线 PID 已读回：'+reason);}else status('已发送停止移动；无当前网页事务 ID，请读取固件状态');}}catch(e){stopHeartbeat();S.phase='UNCERTAIN';status('停止/回滚未确认：'+e.message+'；请现场确认小车状态');}finally{S.recovery=false;update();}}
+  function startHeartbeat(){stopHeartbeat();S.heartbeat=setInterval(()=>{if(active()&&S.id&&['PREPARING','PREPARED','APPLYING','TRIAL'].includes(S.phase)&&!S.queue.some(q=>q.kind==='heartbeat'))send(C.command('HB',S.id),false,'heartbeat').catch(e=>recover(e.message));},500);}
+  function stopHeartbeat(){clearInterval(S.heartbeat);S.heartbeat=null;S.queue=S.queue.filter(q=>{if(q.kind==='heartbeat'){q.resolve();return false;}return true;});}
+  function clearMotion(){S.motionToken++;S.activeMotion?.classList.remove('pressed');S.activeMotion=null;}
+  async function releaseMotion(){if(!S.activeMotion)return;clearMotion();S.queue=S.queue.filter(q=>{if(q.kind==='motion'){q.reject(Error('移动已释放'));return false;}return true;});if(active())await send(C.legacyMotion(0,0,S.pid||C.DEFAULT_PID),true);}
+  function bindMotion(button){const [move,pivot]=button.dataset.motion.split(',').map(Number);const start=e=>{e.preventDefault();if(S.activeMotion)return;try{requireLink();if(!S.balance||!fresh()||S.locked||S.fw!==0)throw Error('移动需要实时平衡数据、训练未锁定且无事务');S.activeMotion=button;S.motionToken++;button.classList.add('pressed');button.setPointerCapture?.(e.pointerId);send(C.legacyMotion(move,pivot,S.pid),false,'motion').catch(err=>{releaseMotion().catch(fail);fail(err);});}catch(err){fail(err);}};const stop=e=>{if(S.activeMotion===button){e.preventDefault();releaseMotion().catch(fail);}};button.addEventListener('pointerdown',start);for(const type of ['pointerup','pointercancel','lostpointercapture'])button.addEventListener(type,stop);}
+  async function safeStop(){cancelContinuous();cancelAuto();cancelLlm();clearMotion();cancelQueue('紧急停止取消待发命令');cancelWaiters('紧急停止');if(!active()){status('未连接；无法向小车发送停止命令');return;}if(!firmwareWritable())throw Error('当前为只读反馈，停止指令尚不可确认；请通过小车硬件停止');if(S.id){await recover('用户紧急停止');return;}await send(C.legacyMotion(0,0,S.pid||C.DEFAULT_PID),true);if(!S.balance&&!S.locked&&S.fw===0)await send(C.motorDiag('STOP'),true);status(S.balance?'停止移动指令已发送；平衡控制仍在运行，请观察电机反馈':'停止移动与诊断停止已发送；请观察电机反馈确认');}
+  async function safeDisconnect(){if(!S.mock&&!firmwareWritable()){cleanup();status('只读 BLE 连接已关闭；小车平衡状态由硬件控制');return;}try{await safeStop();if(S.locked){await exchange(C.training('STOP'),e=>e.type==='ACK'&&e.name==='TRAIN_STOP','断开前 TRAIN_STOP',3000,true);await settledPid({fw:0,lock:false});}}finally{cleanup();status('连接已关闭，旧数据已清除；请现场确认小车停止');}}
+  async function motorDiag(action){return exclusive(async()=>{requireLink();if(S.balance||S.locked||S.fw!==0)throw Error('诊断仅允许轮子架空、平衡启动前、训练未锁定');if(action!=='STOP'&&!confirm(I.t('确认两轮已经架空？电机将进行短脉冲。')))return;await ack(C.motorDiag(action),action);status('诊断命令已获 ACK，请查看电机和 TIM8 CCR 反馈');});}
+  async function startMock(){if(S.connected||S.connecting)throw Error('请先安全断开真实设备');cleanup();S.mock=true;const epoch=S.epoch;S.sim=new window.RouteASimulator.Simulator(raw=>{if(epoch!==S.epoch)return;for(let i=0;i<raw.length;i+=13)receive(raw.slice(i,i+13));});I.text($('deviceName'),'模拟 YahBoom_BL（非真车）');S.sim.tick();S.simTimer=setInterval(()=>S.sim.tick(),200);await readPid();status('演示模式：独立固件模拟器，所有数据均为模拟');switchPage('status');}
+  function watchUnsafe(){const age=Date.now()-S.fastAt;if(S.activeMotion&&(!fresh()||document.hidden))releaseMotion().catch(fail);if(S.phase==='BASELINE'&&S.samples.length&&Date.now()-S.baseline.startedAt>=60000){try{baselineFinish();}catch(e){S.phase='IDLE';fail(e);}}if(S.phase==='BASELINE'&&S.samples.length&&age>2500){S.phase='IDLE';S.samples=[];status('基线中止：遥测中断，请重新采集');}if(['APPLYING','TRIAL'].includes(S.phase)&&S.fastAt&&age>2500)recover('实时遥测中断');if(S.phase==='TRIAL'&&S.trialSamples.length){S.trialMetrics=C.metrics(S.trialSamples);I.text($('trialMetrics'),metricText(S.trialMetrics));if(S.auto&&S.trialMetrics.durationMs>=S.trialLimits.seconds*1000&&!S.busy){const result=evaluateTrial();I.text($('reviewResult'),'试验自动审核：'+result.reason);if(result.approved)accept(true).catch(e=>stopContinuous('接受结果未确认：'+e.message,true));else if(A.running)rollbackRound(result.reason).catch(e=>stopContinuous('回滚结果未确认：'+e.message,true));else recover(result.reason);}}update();draw();}
+  function watch(){try{watchUnsafe();}catch(e){if(S.id)recover(e.message);else fail(e);}}
+  function update(){const connected=active(),known=connected&&S.verified&&firmwareWritable(),working=S.busy||S.recovery;const pill=$('connectionPill');pill.className='pill '+(S.connecting?'connecting':connected?'online':'offline');I.text(pill.querySelector('b'),S.connecting?'连接中':S.mock?'演示模式':S.connected?(S.pidFault?'PID 异常':S.verified?(firmwareWritable()?'真车已确认':'只读反馈'):'等待回包'):'未连接');$('connectionPill').disabled=S.connecting;
+    I.text($('dataBanner'),S.mock?'演示数据：本页未连接真实小车':!connected?'未连接：旧数据已清除':S.pidFault?S.pidFault:!S.verified?'已连接 GATT，尚未验证小车 PID 回包':!firmwareWritable()?'真实反馈只读：命令功能需要 RA1.9-AUTO6 六参数固件':!fresh()?'真车连接；快遥测未收到或已过期，移动和试验已禁用':'真实 BLE 数据 / 最近快遥测 '+((Date.now()-S.fastAt)/1000).toFixed(1)+' 秒前');
+    $('editVP').max=String(pidRanges().VP[1]);I.text($('rxHz'),(S.rxTimes.filter(t=>Date.now()-t<5000).length/5).toFixed(1)+' Hz');I.text($('frameCounts'),`${S.ok} / ${S.bad}`);I.text($('angleHero'),S.fast?S.fast.angle.toFixed(2)+'°':'--.-°');I.text($('gyroHero'),S.fast?'角速度 '+S.fast.gyro.toFixed(1)+' raw':'角速度 --.-');I.text($('battery'),S.slow?S.slow.battery.toFixed(2)+' V':'-- V');I.text($('encoders'),S.fast?`${S.fast.el} / ${S.fast.er}`:'-- / --');I.text($('motors'),S.fast?`${S.fast.ml} / ${S.fast.mr}`:'-- / --');I.text($('ccrLeft'),S.fast?`${S.fast.c1} / ${S.fast.c2}`:'—');I.text($('ccrRight'),S.fast?`${S.fast.c3} / ${S.fast.c4}`:'—');I.text($('loopOutputs'),S.slow?`${S.slow.balancePwm} / ${S.slow.velocityPwm} / ${S.slow.turnPwm}`:'—');I.text($('firmware'),S.firmware);I.text($('dropped'),S.slow?S.slow.dropped:'—');I.text($('balanceState'),S.balance===null?'未确认':S.balance?'已启动':'未启动');I.text($('lockState'),S.locked===null?'未确认':S.locked?'已锁定':'未锁定');I.text($('fwState'),['IDLE / 基线','PREPARED','TRIAL'][S.fw]||'未知');I.text($('linkReady'),S.verified?'GET / PID 已确认':'尚未确认');I.text($('trialState'),S.phase);I.text($('sampleCount'),`${S.samples.length} 样本`);I.text($('driveReady'),known&&fresh()&&S.balance?'实时平衡反馈':'等待有效反馈');
+    $('manualPidButton').disabled=!known||working||S.locked!==false||S.fw!==0;
+    document.querySelectorAll('[data-motion]').forEach(b=>b.disabled=!known||!fresh()||!S.balance||S.locked||S.fw!==0||working);document.querySelectorAll('[data-diag]').forEach(b=>b.disabled=!known||working||(S.balance||S.locked||S.fw!==0));
+    document.querySelector('[data-action="get-pid"]').disabled=!connected||working;document.querySelector('[data-action="copy-pid"]').disabled=!known||working;document.querySelectorAll('[data-action="connect"]').forEach(b=>b.disabled=S.connecting||S.connected);document.querySelector('[data-action="disconnect"]').disabled=!connected&&!S.connecting;
+    I.text($('pidIntegrity'),S.pidFault||(!S.pid?'等待小车六参数读回':'六参数数值范围检查通过；参数是否生效以 ACK 和读回一致为准'));
+    updateContinuous();I.text($('workflowHint'),!known?'先连接并确认固件与PID':!S.balance?'按小车硬件流程启动平衡':A.running?'自动采集、应用和评价；保持Bluefy前台':'配置接口后启动，LLM调参全程自动；人工PID仍在PID页');
+    document.querySelectorAll('[data-step]').forEach(el=>{const key=el.dataset.step;el.classList.toggle('done',key==='lock'?!!S.locked:key==='baseline'?!!S.metrics:key==='review'?!!S.candidate:key==='trial'?!!S.id:false);});
+  }
+  function prepCanvas(canvas,height){const dpr=window.devicePixelRatio||1,w=canvas.clientWidth||160,h=height||canvas.clientHeight||160;if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);}const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);return {ctx,w,h};}
+  function draw(){drawFeatures();drawAutoHistory();const {ctx,w,h}=prepCanvas($('angleGauge')),a=S.fast?.angle||0,r=Math.min(w,h)/2-12;ctx.clearRect(0,0,w,h);ctx.lineWidth=10;ctx.lineCap='round';ctx.strokeStyle='#1d3a51';ctx.beginPath();ctx.arc(w/2,h/2,r,.75*Math.PI,2.25*Math.PI);ctx.stroke();ctx.strokeStyle=Math.abs(a)>10?'#fb4b5c':'#2dd4bf';ctx.beginPath();ctx.arc(w/2,h/2,r,.75*Math.PI,.75*Math.PI+Math.max(0,Math.min(1,(a+25)/50))*1.5*Math.PI);ctx.stroke();ctx.fillStyle='#8fa7ba';ctx.font='12px system-ui';ctx.textAlign='center';ctx.fillText(I.t('±25°'),w/2,h/2+6);drawTelemetryChart('chart','angle','#2dd4bf','angleScale');drawTelemetryChart('gyroChart','gyro','#fbbf24','gyroScale');}
+  function drawTelemetryChart(id,key,color,scaleId){
+    const {ctx,w,h}=prepCanvas($(id),180),plot=P.series(S.chart,key,Date.now(),w,h);
+    ctx.clearRect(0,0,w,h);ctx.font='10px system-ui';ctx.lineWidth=1;
+    for(const value of plot.ticks){
+      const y=plot.top+(plot.limit-value)/(2*plot.limit)*(plot.bottom-plot.top);
+      ctx.strokeStyle=value===0?'#60798b':'#1b354b';ctx.beginPath();ctx.moveTo(plot.left,y);ctx.lineTo(plot.right,y);ctx.stroke();
+      ctx.fillStyle='#a4bccf';ctx.textAlign='right';ctx.fillText(String(Number(value.toFixed(2))),plot.left-6,y+3);
+    }
+    ctx.fillStyle='#8fa7ba';ctx.textAlign='left';ctx.fillText('-30 s',plot.left,h-6);ctx.textAlign='center';ctx.fillText('-15 s',(plot.left+plot.right)/2,h-6);ctx.textAlign='right';ctx.fillText('0 s',plot.right,h-6);
+    ctx.save();ctx.beginPath();ctx.rect(plot.left,plot.top,plot.right-plot.left,plot.bottom-plot.top);ctx.clip();
+    ctx.strokeStyle=color;ctx.lineWidth=2;ctx.beginPath();plot.points.forEach((point,i)=>{if(!i||point.at-plot.points[i-1].at>1500)ctx.moveTo(point.x,point.y);else ctx.lineTo(point.x,point.y);});ctx.stroke();ctx.restore();
+    I.text($(scaleId),'±'+plot.limit+' '+plot.unit);
+  }
+
+  function drawFeatures(){
+    const {ctx,w,h}=prepCanvas($('featureChart'),150);ctx.clearRect(0,0,w,h);ctx.font='12px system-ui';
+    const pts=S.chart.filter(p=>p.featuresFresh&&p.warm&&Date.now()-p.at<=30000);
+    for(const [key,color,unit] of [['osc','#fbbf24','°/s'],['lean','#2dd4bf','°']]){
+      const max=Math.max(key==='osc'?1:.1,...pts.map(p=>p[key]));ctx.strokeStyle=color;ctx.lineWidth=2;ctx.beginPath();pts.forEach((p,i)=>{const x=w-(Date.now()-p.at)/30000*w,y=130-p[key]/max*95;i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();ctx.fillStyle=color;ctx.textAlign='left';ctx.fillText(I.t(`${key} 满刻度 ${max.toFixed(2)} ${unit}`),6,key==='osc'?14:30);
+    }
+  }
+  function drawAutoHistory(){
+    const {ctx,w,h}=prepCanvas($('autoChart'),140);ctx.clearRect(0,0,w,h);const rows=S.history.slice(A.historyStart).filter(x=>x.evaluation).slice(-24);const max=Math.max(1.3,...rows.map(x=>x.evaluation.cost));
+    const y=v=>h-22-v/max*(h-42);ctx.strokeStyle='#60798b';ctx.beginPath();ctx.moveTo(0,y(1.10));ctx.lineTo(w,y(1.10));ctx.stroke();ctx.fillStyle='#8fa7ba';ctx.font='11px system-ui';ctx.fillText(I.t('接受线 1.10 · 越低越好'),6,12);
+    rows.forEach((x,i)=>{const px=(i+.5)*w/Math.max(rows.length,6);ctx.fillStyle=x.outcome==='accepted'?'#2dd4bf':'#fbbf24';ctx.fillRect(px-5,y(x.evaluation.cost),10,Math.max(1,h-22-y(x.evaluation.cost)));});
+  }
+  function download(name,type,content){const a=document.createElement('a'),url=URL.createObjectURL(new Blob([content],{type}));a.href=url;a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},1000);}
+  function exportJson(){download(`routea-${Date.now()}.json`,'application/json',redact(JSON.stringify({schema_version:2,exportedAt:new Date().toISOString(),currentSource:S.mock?'simulation':S.connected?'ble':'disconnected',continuous:{running:A.running,round:A.round,phase:A.phase},pid:S.pid,pidFault:S.pidFault,lastFailure:S.lastFailure,baseline:S.baseline,metrics:S.metrics,proposal:S.candidate,review:S.review,trialMetrics:S.trialMetrics,history:S.history,telemetry:S.telemetry,logs:S.logs,keyLogs:S.keyLogs},null,2)));}
+  function exportCsv(){const cols=['osc','lean','leanBand','warm','featuresFresh','at','source','kind','ms','angle','gyro','el','er','ml','mr','state','trainingLocked','balanceStarted','c1','c2','c3','c4','battery','balancePwm','velocityPwm','turnPwm','dropped','firmware'];const csvCell=v=>'"'+String(v??'').replace(/"/g,'""')+'"';download(`routea-${Date.now()}.csv`,'text/csv;charset=utf-8','\ufeff'+cols.join(',')+'\n'+S.telemetry.map(x=>cols.map(k=>csvCell(x[k])).join(',')).join('\n'));}
+  function switchPage(name){if(S.activeMotion)releaseMotion().catch(fail);document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.dataset.page===name));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.nav===name));window.scrollTo({top:0,behavior:'smooth'});setTimeout(draw,80);}
+  async function run(fn){try{await fn();}catch(e){fail(e);}update();}
+
+  function updateContinuous(){
+    renderAutoFailure();
+    I.text($('continuousState'),A.running?A.phase:S.lastFailure?'已停止 · 详细原因见上方':'已停止 · '+A.phase);
+    I.text($('roundCount'),`第 ${A.round} 轮`);
+    $('continuousStart').disabled=A.running||S.busy||S.llmBusy||!active()||!S.verified||!firmwareWritable()||!S.balance||S.fw!==0||S.id!==0;
+    $('continuousStop').disabled=!A.running&&!S.id&&!S.locked;
+    I.text($('oscValue'),S.features?S.features.osc.toFixed(3)+' °/s':'—');I.text($('leanValue'),S.features?S.features.lean.toFixed(3)+' °':'—');I.text($('leanBandValue'),S.features?S.features.leanBand.toFixed(3)+' °':'—');
+    I.text($('featureState'),!S.features?'等待指标':Date.now()-S.featureAt>600?'指标过期':S.features.warm?'已预热 · STM32 200 Hz':'预热中（3秒）');
+    const stage=!A.running?'idle':S.llmBusy?'llm':S.phase==='BASELINE'?'sample':['PREPARING','PREPARED','APPLYING','REVIEW'].includes(S.phase)?'apply':['TRIAL','ACCEPTING','ROLLING_BACK'].includes(S.phase)?'evaluate':'wait';
+    const order=['sample','llm','apply','evaluate','wait'];
+    document.querySelectorAll('[data-stage]').forEach(el=>{el.classList.toggle('active',el.dataset.stage===stage);el.classList.toggle('done',A.running&&order.indexOf(el.dataset.stage)<order.indexOf(stage));});
+    let progress=0,detail='等待启动';
+    if(stage==='sample'){const elapsed=S.baseline?Date.now()-S.baseline.startedAt:0;progress=Math.min(100,elapsed/(Number($('baselineSeconds').value)*10));detail=`已采集 ${(elapsed/1000).toFixed(1)} 秒 / ${S.samples.length} 样本`;}
+    else if(stage==='llm')detail=`等待模型响应 · ${((Date.now()-S.llmSince)/1000).toFixed(1)} 秒`;
+    else if(stage==='evaluate'){const ms=S.trialMetrics?.durationMs||0;progress=Math.min(100,ms/(Number($('trialSeconds').value)*10));detail=`观察 ${(ms/1000).toFixed(1)} / ${$('trialSeconds').value} 秒 · ${S.trialSamples.length} 样本`;}
+    else if(A.running)detail=stage==='apply'?'等待ACK及实际六参数读回':'本轮已结束，等待下一轮';
+    $('autoProgress').value=progress;I.text($('autoDetail'),detail);
+    I.text($('autoCounts'),`已接受 ${S.history.slice(A.historyStart).filter(x=>x.outcome==='accepted').length} · 已回滚 ${S.history.slice(A.historyStart).filter(x=>x.outcome!=='accepted').length}`);
+    const shown=S.candidate||S.lastProposal?.proposal;const grid='<div class="pid-compare-row"><b>参数</b><b>当前</b><b>候选</b></div>'+C.PID_KEYS.map(k=>`<div class="pid-compare-row"><span>${k}</span><span>${S.pid?S.pid[k].toFixed(2):'—'}</span><strong>${shown?shown.candidate[k].toFixed(2):'—'}</strong></div>`).join('');if($('candidateGrid').innerHTML!==I.t(grid))$('candidateGrid').innerHTML=I.t(grid);
+    if(shown){I.text($('candidateBox'),shown.decision.toUpperCase()+' · '+I.verbatim(shown.expected_effect));I.text($('proposalSource'),S.candidate?'本轮建议':'第'+S.lastProposal.round+'轮建议');}
+    I.text($('scoreValue'),S.lastEvaluation?S.lastEvaluation.cost.toFixed(3):'—');
+    I.text($('roundHistory'),S.history.slice(A.historyStart).slice(-8).reverse().map((h,i)=>`${h.time.slice(11,19)} ${h.outcome==='accepted'?'接受':'回滚'}${h.evaluation?' · 代价 '+h.evaluation.cost.toFixed(3):''}\n${h.reason}`).join('\n\n')||'首轮结束后显示结果');
+    for(const id of ['loopReview','loopSource','baselineSeconds','loopCooldown','trialSeconds'])$(id).disabled=A.running||S.busy;
+    for(const action of ['test-llm','use-proxy'])document.querySelector(`[data-action="${action}"]`).disabled=S.llmBusy||S.busy;
+  }
+  function requireAutomatic(){if(!A.running)throw Error('LLM调参仅允许在自动运行中执行');}
+  function cancelContinuous(){A.running=false;A.token++;if(A.phase==='运行中')A.phase='已取消';}
+  async function loopWait(ms,token){const end=Date.now()+ms;while(Date.now()<end){if(!A.running||token!==A.token)throw Error('连续调参已停止');if(!active()||!fresh()||!S.balance||!S.locked||document.hidden)throw Error('连续调参实时条件失效');await sleep(Math.min(200,end-Date.now()));}}
+  function loopCheck(token){if(!A.running||token!==A.token)throw Error('连续调参已停止');requireTraining();if(!S.features?.warm||Date.now()-S.featureAt>600)throw Error('osc/lean未预热或已过期');}
+  async function rollbackRound(reason){return exclusive(async()=>{
+    const id=S.id;S.phase='ROLLING_BACK';await ack(C.command('ROLLBACK',id),'ROLLBACK',id,true);await settledPid({pid:S.trialBase,fw:0,lock:true});finishTransaction('rolled_back',reason);status('本轮回滚已确认：'+reason);
+  });}
+  async function startContinuous(){
+    requireLink();if(A.running||S.busy||S.id||S.fw!==0||!S.balance||!fresh())throw Error('需要无事务且已启动平衡的实时连接');
+    
+    if(!S.features?.warm||Date.now()-S.featureAt>600)throw Error('请等待osc/lean预热完成');
+    const baselineSeconds=Number($('baselineSeconds').value),cooldown=Number($('loopCooldown').value);
+    if(!Number.isFinite(baselineSeconds)||baselineSeconds<1||baselineSeconds>20||!Number.isFinite(cooldown)||cooldown<2||cooldown>60)throw Error('采集1..20秒，轮间等待2..60秒');
+    const demo=$('loopSource').value==='demo';if(demo&&!S.mock)throw Error('演示建议源只允许模拟设备');if(!demo){const url=C.endpoint($('llmBase').value.trim());if(!$('llmModel').value.trim()||(!$('llmKey').value.trim()&&new URL(url).origin!==location.origin))throw Error('请先配置LLM模型和会话密钥');}limits();if(!S.locked)await trainStart();
+    S.lastFailure=null;A.running=true;A.round=0;A.failures=0;A.startedAt=Date.now();A.historyStart=S.history.length;A.phase='运行中';const token=++A.token;update();
+    try{while(A.running&&token===A.token){
+      loopCheck(token);A.round++;A.phase='采集新基线';update();await baselineStart();await loopWait(baselineSeconds*1000+300,token);loopCheck(token);baselineFinish();
+      if(S.metrics.featureSamples<S.metrics.samples*.8)throw Error('基线有效指标不足80%');
+      A.phase=demo?'生成模拟候选':'LLM生成建议';update();if(demo){const p={...S.baseline.pid,AP:Math.min(288,S.baseline.pid.AP+1)};proposal({schema_version:1,decision:'propose',stage:'balance',candidate:p,expected_effect:I.t('模拟候选仅用于展示闭环；不代表物理优化'),requested_test:'quiet_balance',confidence:.5},'模拟演示');}else await requestLlm();loopCheck(token);
+      if(S.candidate.decision!=='propose'||C.samePid(S.candidate.candidate,S.baseline.pid)){
+        A.phase='保持参数，等待重新观察';S.phase='IDLE';S.baseline=null;S.metrics=null;clearCandidate();update();await loopWait(cooldown*1000,token);continue;
+      }
+      if(S.candidate.requested_test!=='quiet_balance')throw Error('连续模式仅支持静止平衡，不能自动实施恢复扰动');
+      A.phase='自动检查与应用';update();await review();
+      if(!A.running||token!==A.token)break;
+      if(S.review&&!S.review.approved){A.failures++;A.phase='审核拒绝，重新观察';S.phase='IDLE';clearCandidate();await loopWait(cooldown*1000,token);continue;}
+      if(S.phase!=='TRIAL')throw Error('未确认候选已进入TRIAL');
+      const historyCount=S.history.length;A.phase='试验采集与自动评价';update();
+      while(A.running&&token===A.token&&S.history.length===historyCount){await loopWait(200,token);if(S.phase==='UNCERTAIN')throw Error('事务结果未确认');}
+      if(!A.running||token!==A.token)break;
+      const result=S.history[S.history.length-1];if(result.outcome==='firmware_rollback')throw Error('固件保护已回滚，需检查实车后再启动');A.failures=result.outcome==='accepted'?0:A.failures+1;
+      A.phase=result.outcome==='accepted'?'参数已接受，等待下一轮':'已恢复基线，等待下一轮';update();
+      
+      await loopWait(cooldown*1000,token);
+    }}catch(e){if(A.running&&token===A.token){await stopContinuous(e.message,true);}}
+    finally{if(token===A.token)A.running=false;update();}
+  }
+  async function stopContinuous(reason='用户停止连续调参',failure=false){
+    if(failure)recordAutoFailure(reason);
+    cancelContinuous();cancelLlm();A.phase=reason;
+    if(!active()){update();return;}
+    if(S.id)await recover(reason);
+    const stopDeadline=Date.now()+5000;while(S.busy&&Date.now()<stopDeadline)await sleep(100);if(S.busy){status('当前操作尚未结束，自动流程已停止；请使用停止训练同步状态');return;}
+    if(S.locked)await trainStop();
+    update();
+  }
+  function bind(){
+    document.querySelectorAll('[data-nav]').forEach(b=>b.addEventListener('click',()=>switchPage(b.dataset.nav)));
+    document.querySelectorAll('[data-motion]').forEach(bindMotion);document.querySelectorAll('[data-diag]').forEach(b=>b.addEventListener('click',()=>run(()=>motorDiag(b.dataset.diag))));
+    const actions={'continuous-start':startContinuous,'continuous-stop':()=>stopContinuous(),connect,disconnect:safeDisconnect,stop:safeStop,'get-pid':()=>exclusive(async()=>{await readPid();status('当前PID已读取');}),'manual-pid':manualPid,'copy-pid':()=>{requireLink();setPid(S.pid,true);},'save-settings':saveSettings,mock:startMock,'export-csv':exportCsv,'export-json':exportJson,'clear-log':()=>{S.logs=[];S.keyLogs=[];renderLog();},'test-llm':testLlm,'cancel-llm':()=>A.running?stopContinuous('用户取消LLM请求'):cancelLlm(),'use-proxy':()=>{if(!/^https?:$/.test(location.protocol))throw Error('需通过HTTPS代理服务打开');$('llmBase').value=location.origin+'/api';$('reviewBase').value='';status('已选择同源代理');}};
+    document.querySelectorAll('[data-action]').forEach(b=>{if(!actions[b.dataset.action])throw Error('未绑定操作 '+b.dataset.action);b.addEventListener('click',()=>run(actions[b.dataset.action]));});
+    for(const id of ['trialSeconds','baselineSeconds','loopCooldown','loopReview','loopSource'])$(id).addEventListener('input',()=>{if(A.running)stopContinuous('运行设置已改变').catch(fail);});
+    window.addEventListener('blur',()=>{if(S.activeMotion)releaseMotion().catch(fail);});
+    document.addEventListener('visibilitychange',()=>{if(document.hidden){if(A.running||S.id)stopContinuous('页面进入后台').catch(fail);else if(S.activeMotion)releaseMotion().catch(fail);cancelLlm();}});
+    window.addEventListener('pagehide',()=>{safeStop().catch(()=>{});stopHeartbeat();});window.addEventListener('resize',draw);
+  }
+  I.init(document);initPid();loadSettings();bind();
+  $('languageSelect').addEventListener('change',()=>I.setLanguage($('languageSelect').value));
+  I.onChange(()=>{for(const k of C.PID_KEYS)$('edit'+k).setAttribute('aria-label',I.t(k+' 参数'));renderLog();update();draw();});
+  update();draw();setInterval(watch,250);
+  I.text($('secureBanner'),!window.isSecureContext?'当前为非 HTTPS 页面，Bluefy 蓝牙连接需要安全上下文':!navigator.bluetooth?'当前浏览器没有 Web Bluetooth；iPhone 请在 Bluefy 中打开 HTTPS 页面':'');log('SYS','Route A 控制台 v3.7 就绪；调参倾角/饱和/低电压门槛已移除；匹配 RA1.9-AUTO6-TXFIX-VP100-NOGUARD');
+  // Read-only diagnostics used by automated browser tests. No keys or transport handles are exposed.
+  window.RouteAApp={snapshot:()=>({language:I.language(),continuous:{...A},features:S.features&&{...S.features},connected:S.connected,mock:S.mock,verified:S.verified,pidFault:S.pidFault,pid:S.pid&&{...S.pid},locked:S.locked,balance:S.balance,fw:S.fw,phase:S.phase,id:S.id,lastFailure:structuredClone(S.lastFailure),busy:S.busy,auto:S.auto,ok:S.ok,bad:S.bad,samples:S.samples.length,trialSamples:S.trialSamples.length,history:structuredClone(S.history),op:S.op})};
+  if(new URLSearchParams(location.search).get('mock')==='1')run(startMock);
+})();
+
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>
+
+

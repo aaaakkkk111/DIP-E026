@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.venv/
+
+# Local development settings and caches
+.idea/
+.pytest_cache/
+
+# Temporary conversion, rendering, and review files
+tmp/
+~$*
+
+# Operating-system metadata
+Thumbs.db
+.DS_Store

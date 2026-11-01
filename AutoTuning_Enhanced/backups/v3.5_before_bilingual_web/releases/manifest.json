@@ -1,0 +1,45 @@
+{
+  "firmware_version": "RA1.9-AUTO6-TXFIX-VP100-NOGUARD",
+  "web_version": "3.5",
+  "active_firmware_file": "stm32_Balance_Car_RA1_9_AUTO6_TXFIX_VP100_NOGUARD.hex",
+  "rollback_firmware_file": "stm32_Balance_Car_RA1_9_AUTO6_TXFIX_VP100.hex",
+  "build": {
+    "compiler": "Product: MDK Plus 5.40\nComponent: ARM Compiler 5.06 update 7 (build 960)\nTool: armcc [4d365d]\nFor support see http://www.arm.com/support\nSoftware supplied by: ARM Limited",
+    "source_files": 49,
+    "max_address": "0x800b463",
+    "load_bytes": 46180,
+    "hex_sha256": "ccf09e69bc008c300fff321a710487a46657d477c3e01892618d884fec878b83",
+    "warnings": 2,
+    "errors": 0
+  },
+  "web_test_count": 52,
+  "arm_test_count": 18,
+  "hardware_verified": false,
+  "real_llm_verified": false,
+  "url": "https://aaaakkkk111.github.io/DIP-E026/?v=NOGUARD-3.5",
+  "firmware_changed": true,
+  "previous_arm_tests_reused": false,
+  "removed_trial_gates": [
+    "web_apply_angle_25",
+    "web_apply_output_2595",
+    "web_review_battery",
+    "web_apply_battery",
+    "web_trial_angle_25",
+    "web_trial_battery",
+    "firmware_trial_three_cycle_angle_output_battery"
+  ],
+  "unchanged_file_hashes": {
+    "firmware/firmware/APP/app_motor.c": "84286240c38ec66fb5cee5fb2201372776e4c0ef144c90ff6333f44de1106402",
+    "firmware/firmware/APP/app_control.c": "ec851c1391089079f977112588f71cba7542f7472b7d2ff95ea4f54a3bf879cb",
+    "firmware/firmware/APP/PID/pid_control.c": "dc9d602b2f57df04569fe5ba311655142619f42bc8f4c879365ab5fad7551e97",
+    "firmware/firmware/USER/stm32_Balance_Car.uvprojx": "8c4e7b7ee86fa59475dceef63a0799c30cd924823ee39aceccddae5eee4c3108",
+    "web/src/core.js": "7bb1a092bc232c4a9cb06136cbb482fa85df276d26fedfce3ed1cb4c55d0d2b3",
+    "docs/LLM_SYSTEM_tuning.txt": "438cf5496960a97f9849c1d075b181e781b010866e4b75fee16f39c82b38c1a1",
+    "docs/LLM_SYSTEM_review.txt": "8ab8c10225fafe5d6a848d8224f7c44b1e4c6c6747801d98cced9d7da6ebee02"
+  },
+  "files": {
+    "index.html": "9a162b992852673cfdad632613ce5a31c2cef6a4a1dfb087b1510883f0432c1c",
+    "routea_bluefy.html": "9a162b992852673cfdad632613ce5a31c2cef6a4a1dfb087b1510883f0432c1c",
+    "stm32_Balance_Car_RA1_9_AUTO6_TXFIX_VP100_NOGUARD.hex": "ccf09e69bc008c300fff321a710487a46657d477c3e01892618d884fec878b83"
+  }
+}

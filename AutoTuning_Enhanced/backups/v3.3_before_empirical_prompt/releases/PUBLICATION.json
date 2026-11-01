@@ -1,0 +1,22 @@
+{
+  "web_version": "3.3",
+  "firmware_version": "RA1.9-AUTO6-TXFIX-VP100",
+  "firmware_changed": true,
+  "commit": "6967497fc8b75b8d6d962d25eb2f844030a7c698",
+  "branch": "codex/routea-mobile-v1.5",
+  "workflow_run": 40062563878,
+  "workflow_conclusion": "success",
+  "expected_sha256": "4b137e957b5def64ac40023fe3f1cfba2160554802bda90a64d6ed7a06839ac7",
+  "pages": [
+    {
+      "url": "https://aaaakkkk111.github.io/DIP-E026/?v=VP100-3.3",
+      "sha256": "4b137e957b5def64ac40023fe3f1cfba2160554802bda90a64d6ed7a06839ac7",
+      "matches_release": true
+    },
+    {
+      "url": "https://aaaakkkk111.github.io/DIP-E026/AutoTuning_Enhanced/routea_bluefy.html?v=VP100-3.3",
+      "sha256": "4b137e957b5def64ac40023fe3f1cfba2160554802bda90a64d6ed7a06839ac7",
+      "matches_release": true
+    }
+  ]
+}

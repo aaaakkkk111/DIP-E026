@@ -1,0 +1,17 @@
+{
+  "commit": "df5677e063df2714cf994924c9058cd5b72635a5",
+  "branch": "codex/routea-mobile-v1.5",
+  "expected_sha256": "6a99d9bc43fa168c2c89cd1a2db1f9b779b307ffc994f4f693dc61fc5e74b405",
+  "pages": [
+    {
+      "url": "https://aaaakkkk111.github.io/DIP-E026/?v=AUTO6-3.0",
+      "sha256": "6a99d9bc43fa168c2c89cd1a2db1f9b779b307ffc994f4f693dc61fc5e74b405",
+      "matches_release": true
+    },
+    {
+      "url": "https://aaaakkkk111.github.io/DIP-E026/AutoTuning_Enhanced/routea_bluefy.html?v=AUTO6-3.0",
+      "sha256": "6a99d9bc43fa168c2c89cd1a2db1f9b779b307ffc994f4f693dc61fc5e74b405",
+      "matches_release": true
+    }
+  ]
+}

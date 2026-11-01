@@ -1,0 +1,2 @@
+RA1.9-AUTO6-TXFIX / Web v3.2
+Firmware + webpage fix for late HB after ACCEPT; acquisition 3s / evaluation 1s configurable. Fast telemetry remains 5 Hz.

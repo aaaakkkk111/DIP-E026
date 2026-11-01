@@ -1,0 +1,57 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"D:\DIP\Auto tuning_10.22\AutoTuning_Enhanced\firmware\firmware\APP\filter\filter.c", line 14: Warning:  #550-D: variable "angle_dot"  was set but never used
+  	static float angle_dot;
+  	             ^
+"D:\DIP\Auto tuning_10.22\AutoTuning_Enhanced\firmware\firmware\APP\filter\filter.c", line 84: Warning:  #550-D: variable "angle_dot"  was set but never used
+  	static float angle_dot;
+  	             ^
+D:\DIP\Auto tuning_10.22\AutoTuning_Enhanced\firmware\firmware\APP\filter\filter.c: 2 warnings, 0 errors
+
+
+
+

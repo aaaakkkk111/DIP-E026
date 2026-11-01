@@ -1,0 +1,21 @@
+{
+  "web_version": "3.1",
+  "firmware_version": "RA1.9-AUTO6",
+  "firmware_changed": false,
+  "commit": "5bf82ab333cfcc3f7f9b4ce6f58957ad93378d7c",
+  "branch": "codex/routea-mobile-v1.5",
+  "workflow_run": 39932019669,
+  "expected_sha256": "023de6d854d01007e6419471f6029af85259f48e7c77baf6e0d6b07d045de1d3",
+  "pages": [
+    {
+      "url": "https://aaaakkkk111.github.io/DIP-E026/?v=AUTO6-3.1",
+      "sha256": "023de6d854d01007e6419471f6029af85259f48e7c77baf6e0d6b07d045de1d3",
+      "matches_release": true
+    },
+    {
+      "url": "https://aaaakkkk111.github.io/DIP-E026/AutoTuning_Enhanced/routea_bluefy.html?v=AUTO6-3.1",
+      "sha256": "023de6d854d01007e6419471f6029af85259f48e7c77baf6e0d6b07d045de1d3",
+      "matches_release": true
+    }
+  ]
+}
